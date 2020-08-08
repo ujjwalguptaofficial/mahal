@@ -1,0 +1,45 @@
+{
+  "name": "taj",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/taj.commonjs2.js",
+  "types": "build/ts/src/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:grammar": "node build_helper/grammar.js",
+    "build": "npm run build:grammar && npm run webpack:dev",
+    "build:pack": "npm run build && npm pack",
+    "lint": "tslint src/**/*.ts",
+    "test:dev": "karma start test/karma.config.dev.js",
+    "test:prod": "karma start test/karma.config.prod.js",
+    "build:dev": "npm run lint && npm run build && npm run test:dev",
+    "build:node": "webpack --config webpack/webpack.node.config.js",
+    "build:prod": "npm run webpack:prod && npm run test:prod",
+    "build:ci": "npm run build:dev && npm run build:prod",
+    "webpack:dev": "webpack --config webpack/webpack.dev.config.js",
+    "webpack:prod": "webpack --config webpack/webpack.prod.config.js",
+    "move:deploy_file": "node build_helper/deploy_helper.js",
+    "deploy": "npm run build:ci && npm run build:node && npm run move:deploy_file"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ujjwalguptaofficial/taj.git"
+  },
+  "author": "Ujjwal Gupta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ujjwalguptaofficial/taj/issues"
+  },
+  "homepage": "https://github.com/ujjwalguptaofficial/taj#readme",
+  "devDependencies": {
+    "pegjs": "^0.10.0",
+    "smart-banner-webpack-plugin": "^3.0.1",
+    "ts-loader": "^8.0.2",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.1",
+    "webpack-merge": "^5.1.1"
+  },
+  "dependencies": {
+    "webpack-cli": "^3.3.12"
+  }
+}
