@@ -28,7 +28,9 @@ If= "#if(" exp:Expression ")"{
    return new Function('ctx', "return "+ exp.split(" ").map(item => {
                     switch (item) {
                         case '&&':
-                        case 'true': return item;
+                        case '||':
+                        case 'true': 
+                        case 'false': return item;
                         default: return "ctx." + item;
                     }
                 }).join(" ")) 

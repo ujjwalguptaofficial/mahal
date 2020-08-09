@@ -1,6 +1,7 @@
 import { Util } from "../util";
 import { HTML_TAG } from "../enums";
 import { ICompiledView } from "../interface";
+
 export class Controller {
     private element: HTMLElement;
     template: string;
@@ -20,7 +21,7 @@ export class Controller {
 
     createElement(compiled: ICompiledView) {
         if (compiled.view.ifExp) {
-            if ((compiled.view.ifExp as Function)(this)) {
+            if (!(compiled.view.ifExp as Function)(this)) {
                 return document.createComment("");
             }
         }
