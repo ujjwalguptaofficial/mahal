@@ -1,7 +1,7 @@
 export interface ICompiledView {
     view: {
         tag: string,
-        ifExp: string
+        ifExp: Function | string
     },
     child: ICompiledView[]
 }

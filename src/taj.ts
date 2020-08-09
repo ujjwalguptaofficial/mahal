@@ -14,7 +14,7 @@ export class Taj {
     }
 
     create() {
-        this.component.element = this.element;
+        (this.component as any).element = this.element;
         // this.view = this.element.innerHTML;
         // const compiled = Util.parseview(this.view);
         // console.log("compiled", compiled);

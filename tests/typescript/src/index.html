@@ -1,11 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     <div id="app"></div>
+
+    <!-- Example -->
+
+    <!-- if -->
+    <div on:click="ok" #if(isExist)>
+
+    </div>
+    <!-- for loop -->
+    <div on:click="ok" #for(item in items) $stock="stock">
+
+    </div>
+
+    <!-- variable store -->
+    <div on:click="ok" $stock="stock">
+
+    </div>
+
+    <!-- pass prop -->
+    <div on:click="ok" prop:value="stock">
+
+    </div>
+
+    <!-- bind value -->
+    <div on:click="ok" bind:value="stock">
+
+    </div>
+
+    <!-- bind value -->
+    <div on:click="ok" :value="stock">
+
+    </div>
+
+    <div id="vueApp">
+        <p v-if="dd"></p>
+        {{ message }}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#vueApp',
+            data: {
+                message: 'Hello Vue!'
+            }
+        })
+    </script>
 </body>
+
 </html>

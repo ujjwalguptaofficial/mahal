@@ -1,6 +1,7 @@
 Exp =  View
 View = HtmlTag
 HtmlTag = open:HtmlOpen child:(HtmlTag/Html)* HtmlClose {
+  //return new Function('ctx', "return "+ open.ifExp).toString()
   return {
    view:open,
    child:child
@@ -8,9 +9,10 @@ HtmlTag = open:HtmlOpen child:(HtmlTag/Html)* HtmlClose {
 }
 
 HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:If? EndTag {
+  
   return {
     tag:word,
-    ifExp:ifExp
+    ifExp: ifExp
   }
 }
 
@@ -23,7 +25,13 @@ Ws "Whitespace" = [ \t];
 _ "One or more whitespaces" = space:Ws+ {return null;}
 
 If= "#if(" exp:Expression ")"{
-   return exp;
+   return new Function('ctx', "return "+ exp.split(" ").map(item => {
+                    switch (item) {
+                        case '&&':
+                        case 'true': return item;
+                        default: return "ctx." + item;
+                    }
+                }).join(" ")) 
 }
 
 For= "#for(" exp:Expression ")"{
