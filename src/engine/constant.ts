@@ -1,0 +1,1 @@
+// export const htmlTags = ["div", "span", "b", "table", "tr", "thead", "tbody", "td", "th", "section"];

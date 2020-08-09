@@ -1,6 +1,6 @@
 Exp =  View
 View = HtmlTag
-HtmlTag = open:HtmlOpen child:HtmlTag* HtmlClose {
+HtmlTag = open:HtmlOpen child:(HtmlTag/Html)* HtmlClose {
   return {
    view:open,
    child:child
@@ -40,6 +40,10 @@ Identifier "identifier"= val:[a-zA-Z]+ {
 }
 
 Expression "Expression"= val:[a-zA-Z\&\ \|]+ {
+	return val.join("");
+}
+
+Html "Expression"= val:[a-zA-Z\&\ \|]+ {
 	return val.join("");
 }
 
