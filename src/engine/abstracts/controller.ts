@@ -19,11 +19,9 @@ export class Controller {
             compiled.child.forEach((item, index) => {
                 if (item.view) {
                     if (HTML_TAG[item.view.tag]) {
-                        // const controller = new Controller();
-                        // controller.element = this.element.children[index] as HTMLElement;
-                        // controller.template = 
-                        // controller.render();
-                        // return "";
+                        element.appendChild(
+                            this.createElement(item)
+                        )
                     }
                     else {
                         throw "Invalid Component";
