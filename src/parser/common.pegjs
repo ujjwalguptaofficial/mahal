@@ -1,11 +1,21 @@
 Exp =  View
 View = HtmlTag
+
 HtmlTag = open:HtmlOpen child:(HtmlTag/Html)* HtmlClose {
-  //return new Function('ctx', "return "+ open.ifExp).toString()
-  return {
-   view:open,
-   child:child
-  } 
+  const parsed = {
+    tag:open.tag,
+    child:child
+  }
+  if(open.ifExp){
+    return new Function('ctx', 'createElement',  `open.ifExp(ctx) ? ctx.element.appendChild(createElement(${JSON.stringify(parsed)})) : document.createComment()`);
+  }
+  else{
+    return new Function('ctx', 'createElement',  `ctx.element.appendChild(createElement(${JSON.stringify(parsed)}))`);
+  }
+  // return {
+  //  view:open,
+  //  child:child
+  // } 
 }
 
 HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:If? EndTag {

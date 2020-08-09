@@ -1,5 +1,5 @@
 import { Util } from "./engine/util";
-import { ICompiledView } from "./engine/interface";
+import { IRenderInput } from "./engine/interface";
 import { Controller } from "./engine";
 
 export class Taj {

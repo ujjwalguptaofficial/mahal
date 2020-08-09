@@ -1,6 +1,6 @@
 import { Util } from "../util";
 import { HTML_TAG } from "../enums";
-import { ICompiledView } from "../interface";
+import { IRenderInput } from "../interface";
 
 export class Controller {
     private element: HTMLElement;
@@ -14,22 +14,16 @@ export class Controller {
         // }
         const compiled = Util.parseview(this.template);
         console.log("compiled", compiled);
-        this.element.appendChild(
-            this.createElement(compiled)
-        );
+        compiled(this, this.createElement);
+
     }
 
-    createElement(compiled: ICompiledView) {
-        if (compiled.view.ifExp) {
-            if (!(compiled.view.ifExp as Function)(this)) {
-                return document.createComment("");
-            }
-        }
-        const element = document.createElement(compiled.view.tag);
+    createElement(compiled: IRenderInput) {
+        const element = document.createElement(compiled.tag);
         const renderChild = () => {
             compiled.child.forEach((item, index) => {
-                if (item.view) {
-                    if (HTML_TAG[item.view.tag]) {
+                if (item.tag) {
+                    if (HTML_TAG[item.tag]) {
                         element.appendChild(
                             this.createElement(item)
                         )
