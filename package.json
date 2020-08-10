@@ -9,6 +9,7 @@
     "build:grammar": "node build_helper/grammar.js",
     "build": "npm run build:grammar && npm run webpack:dev",
     "build:pack": "npm run build && npm pack",
+    "build:install":"npm run build:pack && node tests/typescript/installer.js",
     "lint": "tslint src/**/*.ts",
     "test:dev": "karma start test/karma.config.dev.js",
     "test:prod": "karma start test/karma.config.prod.js",

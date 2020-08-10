@@ -1,6 +1,6 @@
 Exp =  View
 View = HtmlTag
-HtmlTag = open:HtmlOpen child:(HtmlTag/Html)* HtmlClose {
+HtmlTag = open:HtmlOpen child:(HtmlTag/Html/MustacheExpression)* HtmlClose {
   //return new Function('ctx', "return "+ open.ifExp).toString()
   return {
    view:open,
@@ -25,15 +25,7 @@ Ws "Whitespace" = [ \t];
 _ "One or more whitespaces" = space:Ws+ {return null;}
 
 If= "#if(" exp:Expression ")"{
-   return new Function('ctx', "return "+ exp.split(" ").map(item => {
-                    switch (item) {
-                        case '&&':
-                        case '||':
-                        case 'true': 
-                        case 'false': return item;
-                        default: return "ctx." + item;
-                    }
-                }).join(" ")) 
+   return options.createFnFromStringExpression(exp);
 }
 
 For= "#for(" exp:Expression ")"{
@@ -49,13 +41,14 @@ Identifier "identifier"= val:[a-zA-Z]+ {
 	return val.join("");
 }
 
+MustacheExpression "mustache expression" = "{{" val:Expression "}}"+ {
+	return {mustacheExp:options.createFnFromStringExpression(val)};
+}
+
 Expression "Expression"= val:[a-zA-Z\&\ \|]+ {
 	return val.join("");
 }
 
-Html "Expression"= val:[a-zA-Z\&\ \|]+ {
+Html "html"= val:[a-zA-Z\&\ \|]+ {
 	return val.join("");
 }
-
-Letter = [^'%]
-Word "word"= l:Letter+ {return l.join("");}

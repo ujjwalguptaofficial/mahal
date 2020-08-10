@@ -1,1 +1,3 @@
-// export const htmlTags = ["div", "span", "b", "table", "tr", "thead", "tbody", "td", "th", "section"];
+(window as any).queueMicrotask = queueMicrotask || ((cb: Function) => {
+    setTimeout(cb, 10)
+});

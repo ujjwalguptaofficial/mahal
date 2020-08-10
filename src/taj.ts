@@ -18,7 +18,7 @@ export class Taj {
         // this.view = this.element.innerHTML;
         // const compiled = Util.parseview(this.view);
         // console.log("compiled", compiled);
-        this.component.render();
+        // this.component.render();
     }
 
 }
