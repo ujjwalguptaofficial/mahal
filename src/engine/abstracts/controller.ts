@@ -63,41 +63,36 @@ export class Controller {
     }
 
     createElement(compiled: ICompiledView) {
-        if (compiled.view.ifExp) {
-            if (!(compiled.view.ifExp as Function)(this)) {
-                return document.createComment("");
+
+        let element;
+        if (compiled.view) {
+            if (compiled.view.ifExp) {
+                if (!(compiled.view.ifExp as Function)(this)) {
+                    return document.createComment("");
+                }
             }
-        }
-        const element = document.createElement(compiled.view.tag);
-        const listenToEvents = (events) => {
-            events.forEach(ev => {
+            if (HTML_TAG[compiled.view.tag]) {
+                element = document.createElement(compiled.view.tag);
+            }
+            else {
+                throw "Invalid Component";
+            }
+
+            compiled.view.events.forEach(ev => {
                 element['on' + ev.name] = this[ev.handler];
             });
-        };
-        const renderChild = () => {
-            compiled.child.forEach((item, index) => {
-                if (item.view) {
-                    if (HTML_TAG[item.view.tag]) {
-                        element.appendChild(
-                            this.createElement(item)
-                        )
-                        listenToEvents(item.view.events);
-                    }
-                    else {
-                        throw "Invalid Component";
-                    }
-
-                }
-                else if (item.mustacheExp) {
-                    element.appendChild(document.createTextNode(item.mustacheExp(this)));
-                }
-                else {
-                    element.appendChild(document.createTextNode(item as any));
-                }
+        }
+        else if (compiled.mustacheExp) {
+            element = document.createTextNode(compiled.mustacheExp(this));
+        }
+        else {
+            element = document.createTextNode(compiled as any);
+        }
+        if (compiled.child) {
+            compiled.child.forEach((item) => {
+                element.appendChild(this.createElement(item));
             });
         }
-        listenToEvents(compiled.view.events);
-        renderChild();
         return element;
     }
 }
