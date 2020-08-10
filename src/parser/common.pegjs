@@ -8,11 +8,12 @@ HtmlTag = open:HtmlOpen child:(HtmlTag/Html/MustacheExpression)* HtmlClose {
   } 
 }
 
-HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:If? EndTag {
+HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:If? ev:Event* Ws* EndTag {
   
   return {
     tag:word,
-    ifExp: ifExp
+    ifExp: ifExp,
+    events:ev
   }
 }
 
@@ -43,6 +44,10 @@ Identifier "identifier"= val:[a-zA-Z]+ {
 
 MustacheExpression "mustache expression" = "{{" val:Expression "}}"+ {
 	return {mustacheExp:options.createFnFromStringExpression(val)};
+}
+
+Event "event syntax" = "on:" event:Expression "='" handler:Identifier "'"+ {
+	return {name:event, handler:handler};
 }
 
 Expression "Expression"= val:[a-zA-Z\&\ \|]+ {

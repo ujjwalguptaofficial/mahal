@@ -38,7 +38,6 @@ export class Controller {
                     Object.defineProperty(this, key, {
                         set(newValue) {
                             cached[key] = newValue;
-                            console.log("new value", newValue);
                             that.render();
                         },
                         get() {
@@ -70,6 +69,11 @@ export class Controller {
             }
         }
         const element = document.createElement(compiled.view.tag);
+        const listenToEvents = (events) => {
+            events.forEach(ev => {
+                element['on' + ev.name] = this[ev.handler];
+            });
+        };
         const renderChild = () => {
             compiled.child.forEach((item, index) => {
                 if (item.view) {
@@ -77,10 +81,12 @@ export class Controller {
                         element.appendChild(
                             this.createElement(item)
                         )
+                        listenToEvents(item.view.events);
                     }
                     else {
                         throw "Invalid Component";
                     }
+
                 }
                 else if (item.mustacheExp) {
                     element.appendChild(document.createTextNode(item.mustacheExp(this)));
@@ -90,6 +96,7 @@ export class Controller {
                 }
             });
         }
+        listenToEvents(compiled.view.events);
         renderChild();
         return element;
     }

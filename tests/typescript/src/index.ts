@@ -1,13 +1,13 @@
 import { Taj, Controller } from "taj";
 
 class Main extends Controller {
-    template = "<div>Hello {{name}} <b>World<span>Hey</span></b> <span #if(flag || ss)> Lets go</span></div>"
+    template = "<div on:click='onClick'>Hello {{name}} <b>World<span>Hey</span></b> <span #if(flag || ss)> Lets go</span></div>"
 
     flag = true;
     name = "ujjwal"
 
-    callMe({ flag }) {
-        console.log(flag)
+    onClick() {
+        alert('ujjwal')
     }
 
     constructor() {
