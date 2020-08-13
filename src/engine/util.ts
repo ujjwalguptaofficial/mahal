@@ -41,7 +41,7 @@ export class Util {
                     if (compiled.child) {
                         var child = "["
                         compiled.child.forEach((item) => {
-                            child += `${createFnFromCompiled(item)},
+                            child += `  ${createFnFromCompiled(item)},
                             `;
                         });
                         child += "]";
@@ -52,31 +52,30 @@ export class Util {
                     }
                     return tagHtml;
                 }
+
+                const handleOption = () => {
+                    let optionStr = ",{";
+                    let eventStr = "";
+                    const eventLength = compiled.view.events.length;
+                    compiled.view.events.forEach((ev, index) => {
+                        eventStr += `${ev.name}:ctx.${ev.handler}`;
+                        if (index + 1 < eventLength) {
+                            eventStr += ","
+                        }
+                    });
+                    if (eventStr.length > 0) {
+                        optionStr += `on:{${eventStr}}`;
+                    }
+
+                    optionStr += "})";
+                    return optionStr;
+                }
                 if (compiled.view.ifExp) {
-                    // str+=`compiled.view.ifExp.toString()?`
-                    // if (!(compiled.view.ifExp as Function)(this)) {
-                    //     return document.createComment("");
-                    // }
-                    str += `${compiled.view.ifExp}?${handleTag()}:cc()`
+                    str += `${compiled.view.ifExp}?${handleTag() + handleOption()}:cc()`
                 }
                 else {
-                    str += handleTag();
+                    str += handleTag() + handleOption()
                 }
-
-                str += ",{";
-                let eventStr = "";
-                const eventLength = compiled.view.events.length;
-                compiled.view.events.forEach((ev, index) => {
-                    eventStr += `${ev.name}:ctx.${ev.handler}`;
-                    if (index + 1 < eventLength) {
-                        eventStr += ","
-                    }
-                });
-                if (eventStr.length > 0) {
-                    str += `on:{${eventStr}}`;
-                }
-
-                str += "})";
             }
             else if (compiled.mustacheExp) {
                 str += `ct(${compiled.mustacheExp.toString()})`;

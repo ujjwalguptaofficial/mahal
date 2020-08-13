@@ -82,7 +82,6 @@ export class Controller {
             });
             if (option.on) {
                 const events = option.on;
-                const ctx = this;
                 for (const eventName in events) {
                     element['on' + eventName] = events[eventName];
                 }
