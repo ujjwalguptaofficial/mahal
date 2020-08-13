@@ -3,7 +3,7 @@ import { Taj, Controller } from "taj";
 class Main extends Controller {
     template = "<div on:click='onClick'>Hello {{name}} <b>World<span>Hey</span></b> <span #if(flag || ss)> Lets go</span></div>"
 
-    flag = true;
+    flag = false;
     name = "ujjwal"
 
     onClick() {

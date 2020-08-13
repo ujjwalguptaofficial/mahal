@@ -30,34 +30,39 @@ export class Util {
     static createRenderer(compiledParent: ICompiledView) {
         let parentStr = `const ctx= this; 
         const ce= ctx.createElement;
-        const ct= ctx.createTextNode;`;
+        const ct= ctx.createTextNode;
+        const cc= ctx.createCommentNode;
+        `;
         const createFnFromCompiled = (compiled: ICompiledView) => {
             let str = "";
             if (compiled.view) {
+                const handleTag = () => {
+                    let tagHtml = `ce('${compiled.view.tag}',`
+                    if (compiled.child) {
+                        var child = "["
+                        compiled.child.forEach((item) => {
+                            child += `${createFnFromCompiled(item)},
+                            `;
+                        });
+                        child += "]";
+                        tagHtml += child + ")";
+                    }
+                    else {
+                        tagHtml += "[])";
+                    }
+                    return tagHtml;
+                }
                 if (compiled.view.ifExp) {
                     // str+=`compiled.view.ifExp.toString()?`
                     // if (!(compiled.view.ifExp as Function)(this)) {
                     //     return document.createComment("");
                     // }
-                }
-                if (HTML_TAG[compiled.view.tag]) {
-                    str += `ce('${compiled.view.tag}',`
+                    str += `${compiled.view.ifExp}?${handleTag()}:cc()`
                 }
                 else {
-                    throw "Invalid Component";
+                    str += handleTag();
                 }
-                if (compiled.child) {
-                    var child = "["
-                    compiled.child.forEach((item) => {
-                        child += `${createFnFromCompiled(item)},
-                        `;
-                    });
-                    child += "]";
-                    str += child + ")";
-                }
-                else {
-                    str += "[])";
-                }
+
 
                 // compiled.view.events.forEach(ev => {
                 //     element['on' + ev.name] = this[ev.handler];
