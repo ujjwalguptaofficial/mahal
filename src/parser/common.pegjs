@@ -1,9 +1,23 @@
 Exp =  View
 View = HtmlTag
-HtmlTag = open:HtmlOpen child:(HtmlTag/Html/MustacheExpression)* HtmlClose {
+HtmlTag = openTag:HtmlOpen child:(HtmlTag/Html/MustacheExpression)* HtmlClose {
   //return new Function('ctx', "return "+ open.ifExp).toString()
+  let str= "";
+  child.forEach(item=>{
+    if(item.mustacheExp){
+      str+=item.mustacheExp.toString()+",";
+    }
+    else if(typeof item=='function'){
+       str+=item.toString()+",";
+    }
+    else{
+      str+="createEement('"+item+"'),";
+    }
+  })
+  const fn = new Function('ctx', "return "+ "createElement('"+  openTag.tag +"',["+ str +"])")
+  //return fn;
   return {
-   view:open,
+   view:openTag,
    child:child
   } 
 }

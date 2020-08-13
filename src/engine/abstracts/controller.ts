@@ -57,42 +57,58 @@ export class Controller {
 
     render() {
         this.element.innerHTML = '';
+        const renderFn = Util.createRenderer(this.compiledTemplate);
+        console.log("renderer", renderFn);
+        // console.log("result", renderFn.call(this));
         this.element.appendChild(
-            this.createElement(this.compiledTemplate)
+            renderFn.call(this)
         );
     }
 
-    createElement(compiled: ICompiledView) {
 
-        let element;
-        if (compiled.view) {
-            if (compiled.view.ifExp) {
-                if (!(compiled.view.ifExp as Function)(this)) {
-                    return document.createComment("");
-                }
-            }
-            if (HTML_TAG[compiled.view.tag]) {
-                element = document.createElement(compiled.view.tag);
-            }
-            else {
-                throw "Invalid Component";
-            }
+    createTextNode(value) {
+        return document.createTextNode(value);
+    }
 
-            compiled.view.events.forEach(ev => {
-                element['on' + ev.name] = this[ev.handler];
-            });
-        }
-        else if (compiled.mustacheExp) {
-            element = document.createTextNode(compiled.mustacheExp(this));
-        }
-        else {
-            element = document.createTextNode(compiled as any);
-        }
-        if (compiled.child) {
-            compiled.child.forEach((item) => {
-                element.appendChild(this.createElement(item));
-            });
-        }
+    createElement(tag, childs: HTMLElement[]) {
+        const element = document.createElement(tag);
+        childs.forEach((item) => {
+            element.appendChild(item);
+        });
         return element;
     }
+
+    // createElement(compiled: ICompiledView) {
+
+    //     let element;
+    //     if (compiled.view) {
+    //         if (compiled.view.ifExp) {
+    //             if (!(compiled.view.ifExp as Function)(this)) {
+    //                 return document.createComment("");
+    //             }
+    //         }
+    //         if (HTML_TAG[compiled.view.tag]) {
+    //             element = document.createElement(compiled.view.tag);
+    //         }
+    //         else {
+    //             throw "Invalid Component";
+    //         }
+
+    //         compiled.view.events.forEach(ev => {
+    //             element['on' + ev.name] = this[ev.handler];
+    //         });
+    //     }
+    //     else if (compiled.mustacheExp) {
+    //         element = document.createTextNode(compiled.mustacheExp(this));
+    //     }
+    //     else {
+    //         element = document.createTextNode(compiled as any);
+    //     }
+    //     if (compiled.child) {
+    //         compiled.child.forEach((item) => {
+    //             element.appendChild(this.createElement(item));
+    //         });
+    //     }
+    //     return element;
+    // }
 }
