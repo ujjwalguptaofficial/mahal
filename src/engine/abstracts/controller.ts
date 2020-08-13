@@ -69,17 +69,24 @@ export class Controller {
     createTextNode(value) {
         return document.createTextNode(value);
     }
-    
+
     createCommentNode() {
         return document.createComment("");
     }
 
-    createElement(tag, childs: HTMLElement[]) {
+    createElement(tag, childs: HTMLElement[], option) {
         if (HTML_TAG[tag]) {
             const element = document.createElement(tag);
             childs.forEach((item) => {
                 element.appendChild(item);
             });
+            if (option.on) {
+                const events = option.on;
+                const ctx = this;
+                for (const eventName in events) {
+                    element['on' + eventName] = events[eventName];
+                }
+            }
             return element;
         }
         else {

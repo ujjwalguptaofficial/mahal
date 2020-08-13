@@ -45,10 +45,10 @@ export class Util {
                             `;
                         });
                         child += "]";
-                        tagHtml += child + ")";
+                        tagHtml += child;
                     }
                     else {
-                        tagHtml += "[])";
+                        tagHtml += "[]";
                     }
                     return tagHtml;
                 }
@@ -63,10 +63,20 @@ export class Util {
                     str += handleTag();
                 }
 
+                str += ",{";
+                let eventStr = "";
+                const eventLength = compiled.view.events.length;
+                compiled.view.events.forEach((ev, index) => {
+                    eventStr += `${ev.name}:ctx.${ev.handler}`;
+                    if (index + 1 < eventLength) {
+                        eventStr += ","
+                    }
+                });
+                if (eventStr.length > 0) {
+                    str += `on:{${eventStr}}`;
+                }
 
-                // compiled.view.events.forEach(ev => {
-                //     element['on' + ev.name] = this[ev.handler];
-                // });
+                str += "})";
             }
             else if (compiled.mustacheExp) {
                 str += `ct(${compiled.mustacheExp.toString()})`;
