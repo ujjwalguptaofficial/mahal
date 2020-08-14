@@ -27,20 +27,24 @@ _ "One or more whitespaces" = space:Ws+ {return null;}
 
 
 If= "#if(" exp:Expression ")"{
-   return {ifCond:options.createFnFromStringExpression(exp)};
+   return {ifCond:exp};
 }
 
 ElseIf= "#else-if(" exp:Expression ")"{
-   return {elseIfCond:options.createFnFromStringExpression(exp)};
+   return {elseIfCond:exp};
 }
 Else= "#else"{
    return {else:true}
 }
 
-For= "#for("_* key:Identifier _* "in" _* value:Identifier _* ")"{
+For= "#for("_* key:Identifier _* index:ForIndex?  _* "in" _* value:Identifier _* ")"{
    return {
-      key, value: options.createFnFromStringExpression(value)
+      key, value,index : index || 'i'
    }
+}
+
+ForIndex = "," _* index:Identifier{
+	return index ;
 }
 
 StartOpenTag "<" = [<];

@@ -9,6 +9,7 @@ export interface ICompiledView {
         forExp: {
             key: string;
             value: string;
+            index: string;
         }
         events: {
             name: string;

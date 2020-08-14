@@ -2,7 +2,7 @@ import { Taj, Controller } from "taj";
 
 class Main extends Controller {
     // template = "<div on:click='onClick'>Hello {{name}} <b>World<span>Hey</span></b> <span #if(flag || ss)> Lets go</span></div>"
-    template = "<div><b #for(item in items)>{{item}}<span>{{item}}</span></b></div>"
+    template = "<div><b #for(item,index in items)>{{item}}<span>{{index}}</span></b></div>"
 
     flag = false;
     name = "ujjwal"
@@ -17,7 +17,7 @@ class Main extends Controller {
         super();
         setTimeout(() => {
             // alert("name changed");
-            this.name = "ujjwal gupta";
+            // this.name = "ujjwal gupta";
         }, 1000);
     }
 }

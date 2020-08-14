@@ -77,20 +77,26 @@ export class Util {
 
                 const handleFor = (value: string) => {
                     let forExp = compiled.view.forExp;
+                    forExp.value = Util.createFnFromStringExpression(forExp.value);
                     const getRegex = (subStr) => {
                         return new RegExp(subStr, 'g');
                     }
-                    return `...${forExp.value}.map((${forExp.key})=>{
+                    return `...${forExp.value}.map((${forExp.key},${forExp.index})=>{
                                 
-                                return ${value.replace(getRegex(`ctx.${forExp.key}`), forExp.key)}
+                                return ${
+                        value.replace(getRegex(`ctx.${forExp.key}`), forExp.key).
+                            replace(getRegex(`ctx.${forExp.index}`), forExp.index)
+                        }
                             })
                     `
                     //return forStr;
                 }
 
                 if (compiled.view.ifExp) {
-                    if (compiled.view.ifExp.ifCond || compiled.view.ifExp.elseIfCond) {
-                        str += `${compiled.view.ifExp}?${handleTag() + handleOption()}:cc()`
+                    const ifExp = compiled.view.ifExp;
+                    const ifCond = Util.createFnFromStringExpression(ifExp.ifCond);
+                    if (ifCond || ifExp.elseIfCond) {
+                        str += `${ifCond}?${handleTag() + handleOption()}:cc()`
                     }
                 }
                 else {
