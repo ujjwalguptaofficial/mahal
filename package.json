@@ -9,7 +9,7 @@
     "build:grammar": "node build_helper/grammar.js",
     "build": "npm run build:grammar && npm run webpack:dev",
     "build:pack": "npm run build && npm pack",
-    "build:install":"npm run build:pack && node tests/typescript/installer.js",
+    "build:install": "npm run build:pack && node tests/typescript/installer.js",
     "lint": "tslint src/**/*.ts",
     "test:dev": "karma start test/karma.config.dev.js",
     "test:prod": "karma start test/karma.config.prod.js",
@@ -34,6 +34,7 @@
   "homepage": "https://github.com/ujjwalguptaofficial/taj#readme",
   "devDependencies": {
     "pegjs": "^0.10.0",
+    "prettier": "2.0.5",
     "smart-banner-webpack-plugin": "^3.0.1",
     "ts-loader": "^8.0.2",
     "typescript": "^3.9.7",

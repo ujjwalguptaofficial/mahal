@@ -1,12 +1,20 @@
 export interface ICompiledView {
     view: {
         tag: string,
-        ifExp: Function | string,
+        ifExp: {
+            ifCond: string;
+            elseIfCond: string;
+            else: string;
+        },
+        forExp: {
+            key: string;
+            value: string;
+        }
         events: {
             name: string;
             handler: string;
         }[]
     },
-    mustacheExp: Function,
+    mustacheExp: string,
     child: ICompiledView[]
 }

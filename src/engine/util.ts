@@ -2,23 +2,27 @@ import * as parser from '../../build/parser';
 import { LogHelper } from './log_helper';
 import { ERROR_TYPE, HTML_TAG } from './enums';
 import { ICompiledView } from './interface';
+import prettier from "prettier";
 
 export class Util {
+
+    static createFnFromStringExpression(exp) {
+        return exp.split(" ").map(item => {
+            switch (item) {
+                case '&&':
+                case '||':
+                case 'true':
+                case 'false': return item;
+                default: return "ctx." + item;
+            }
+        }).join(" ");
+    }
+
     static parseview(viewCode: string) {
         // try {
         viewCode = viewCode.replace(new RegExp('\n', 'g'), '').trim();
         return parser.parse(viewCode, {
-            createFnFromStringExpression: (exp) => {
-                return exp.split(" ").map(item => {
-                    switch (item) {
-                        case '&&':
-                        case '||':
-                        case 'true':
-                        case 'false': return item;
-                        default: return "ctx." + item;
-                    }
-                }).join(" ");
-            }
+            createFnFromStringExpression: Util.createFnFromStringExpression
         }) as ICompiledView;
         // }
         // catch (ex) {
@@ -70,23 +74,47 @@ export class Util {
                     optionStr += "})";
                     return optionStr;
                 }
+
+                const handleFor = (value: string) => {
+                    let forExp = compiled.view.forExp;
+                    const getRegex = (subStr) => {
+                        return new RegExp(subStr, 'g');
+                    }
+                    return `...${forExp.value}.map((${forExp.key})=>{
+                                
+                                return ${value.replace(getRegex(`ctx.${forExp.key}`), forExp.key)}
+                            })
+                    `
+                    //return forStr;
+                }
+
                 if (compiled.view.ifExp) {
-                    str += `${compiled.view.ifExp}?${handleTag() + handleOption()}:cc()`
+                    if (compiled.view.ifExp.ifCond || compiled.view.ifExp.elseIfCond) {
+                        str += `${compiled.view.ifExp}?${handleTag() + handleOption()}:cc()`
+                    }
                 }
                 else {
-                    str += handleTag() + handleOption()
+                    if (compiled.view.forExp) {
+                        str += handleFor(handleTag() + handleOption())
+                    }
+                    else {
+                        str += handleTag() + handleOption()
+                    }
                 }
             }
             else if (compiled.mustacheExp) {
-                str += `ct(${compiled.mustacheExp.toString()})`;
+                str += `ct(${Util.createFnFromStringExpression(compiled.mustacheExp)})`;
             }
             else {
                 str += `ct('${compiled}')`;
             }
             return str;
         }
-        parentStr += `
-        return ${createFnFromCompiled(compiledParent)}`;
+        parentStr += `return ${createFnFromCompiled(compiledParent)}`;
+        // parentStr = prettier.format(
+        //     parentStr,
+        //     { semi: false, parser: "typescript" }
+        // )
         // else {
         //     str += `,[]`
         // }
