@@ -59,6 +59,8 @@ export class Util {
 
                 const handleOption = () => {
                     let optionStr = ",{";
+
+                    // handle event
                     let eventStr = "";
                     const eventLength = compiled.view.events.length;
                     compiled.view.events.forEach((ev, index) => {
@@ -71,6 +73,12 @@ export class Util {
                         optionStr += `on:{${eventStr}}`;
                     }
 
+                    // handle attributes
+                    const attr = compiled.view.attr;
+                    if (attr) {
+                        const attrString = JSON.stringify(attr);
+                        optionStr += `attr:${attrString}`;
+                    }
                     optionStr += "})";
                     return optionStr;
                 }

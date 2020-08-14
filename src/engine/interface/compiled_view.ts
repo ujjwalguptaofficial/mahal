@@ -10,7 +10,9 @@ export interface ICompiledView {
             key: string;
             value: string;
             index: string;
-        }
+        },
+        attr: { [type: string]: string },
+        model: string,
         events: {
             name: string;
             handler: string;

@@ -76,7 +76,7 @@ export class Controller {
 
     createElement(tag, childs: HTMLElement[], option) {
         if (HTML_TAG[tag]) {
-            const element = document.createElement(tag);
+            const element = document.createElement(tag) as HTMLElement;
             childs.forEach((item) => {
                 element.appendChild(item);
             });
@@ -84,6 +84,12 @@ export class Controller {
                 const events = option.on;
                 for (const eventName in events) {
                     element['on' + eventName] = events[eventName];
+                }
+            }
+            if (option.attr) {
+                const attr = option.attr;
+                for (const key in attr) {
+                    element.setAttribute(key, attr[key]);
                 }
             }
             return element;

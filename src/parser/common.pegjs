@@ -7,13 +7,15 @@ HtmlTag = openTag:HtmlOpen child:(HtmlTag/Html/MustacheExpression)* HtmlClose {
   } 
 }
 
-HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:(If/ElseIf/Else)? forExp:For? ev:Event* Ws* EndTag {
+HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:(If/ElseIf/Else)? model:Model? forExp:For? ev:Event* Ws* attr:Attribute? EndTag {
   
   return {
     tag:word,
     ifExp: ifExp,
     events:ev,
-    forExp:forExp
+    forExp:forExp,
+    attr:attr,
+    model
   }
 }
 
@@ -37,10 +39,18 @@ Else= "#else"{
    return {else:true}
 }
 
+Model= "#model" "(" word:Identifier ")"{
+   return word;
+}
+
 For= "#for("_* key:Identifier _* index:ForIndex?  _* "in" _* value:Identifier _* ")"{
    return {
       key, value,index : index || 'i'
    }
+}
+
+Attribute= attr:Identifier _* "=" "'" word:Identifier "'"{
+   return {[attr]:word};
 }
 
 ForIndex = "," _* index:Identifier{
