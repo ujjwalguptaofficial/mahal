@@ -119,7 +119,7 @@ export class Controller {
             if (option.on) {
                 const events = option.on;
                 for (const eventName in events) {
-                    element['on' + eventName] = events[eventName];
+                    element['on' + eventName] = events[eventName].bind(this);
                 }
             }
             if (option.attr) {
@@ -127,6 +127,14 @@ export class Controller {
                 for (const key in attr) {
                     element.setAttribute(key, attr[key]);
                 }
+            }
+            if (option.dep) {
+                option.dep.forEach(item => {
+                    if (this.dependency[item] == null) {
+                        this.dependency[item] = [];
+                    }
+                    this.dependency[item].push(element);
+                });
             }
             return element;
         }

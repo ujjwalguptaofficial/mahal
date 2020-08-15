@@ -33,13 +33,14 @@ export class Util {
 
     static createRenderer(compiledParent: ICompiledView) {
         let parentStr = `const ctx= this; 
-        const ce= ctx.createElement;
+        const ce= ctx.createElement.bind(ctx);
         const ct= ctx.createTextNode.bind(ctx);
         const cc= ctx.createCommentNode;
         `;
         const createFnFromCompiled = (compiled: ICompiledView) => {
             let str = "";
             if (compiled.view) {
+                const dep = [];
                 const handleTag = () => {
                     let tagHtml = `ce('${compiled.view.tag}',`
                     if (compiled.child) {
@@ -79,8 +80,9 @@ export class Util {
                         compiled.view.attr.push({
                             isBind: true,
                             key: 'value',
-                            value: compiled.view.model
+                            value: compiled.view.model,
                         })
+                        dep.push(compiled.view.model);
                     }
 
 
@@ -103,6 +105,21 @@ export class Util {
 
                         optionStr += `${optionStr.length > 2 ? "," : ''} attr:{${attrString}}`;
                     }
+
+                    // handle dep
+                    const depLength = dep.length;
+                    if (depLength > 0) {
+                        let depString = "["
+                        dep.forEach((item, index) => {
+                            depString += `'${item}'`;
+                            if (index + 1 < depLength) {
+                                depString += ","
+                            }
+                        });
+                        depString += "]"
+                        optionStr += `${optionStr.length > 2 ? "," : ''} dep:${depString}`;
+                    }
+
                     optionStr += "})";
                     return optionStr;
                 }
