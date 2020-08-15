@@ -76,6 +76,11 @@ export class Util {
                         optionStr += `on:{input:(e)=>{
                             ctx.${compiled.view.model}= e.target.value;
                         }}`;
+                        compiled.view.attr.push({
+                            isBind: true,
+                            key: 'value',
+                            value: compiled.view.model
+                        })
                     }
 
 

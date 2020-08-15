@@ -14,7 +14,7 @@ export interface ICompiledView {
         attr: {
             key: string,
             value: string,
-            isBind: string
+            isBind: Boolean
         }[],
         model: string,
         events: {
