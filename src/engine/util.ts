@@ -61,23 +61,42 @@ export class Util {
                     let optionStr = ",{";
 
                     // handle event
-                    let eventStr = "";
                     const eventLength = compiled.view.events.length;
-                    compiled.view.events.forEach((ev, index) => {
-                        eventStr += `${ev.name}:ctx.${ev.handler}`;
-                        if (index + 1 < eventLength) {
-                            eventStr += ","
-                        }
-                    });
-                    if (eventStr.length > 0) {
+                    if (eventLength > 0) {
+                        let eventStr = "";
+                        compiled.view.events.forEach((ev, index) => {
+                            eventStr += `${ev.name}:ctx.${ev.handler}`;
+                            if (index + 1 < eventLength) {
+                                eventStr += ","
+                            }
+                        });
                         optionStr += `on:{${eventStr}}`;
                     }
+                    else if (compiled.view.model) {
+                        optionStr += `on:{input:(e)=>{
+                            ctx.${compiled.view.model}= e.target.value;
+                        }}`;
+                    }
+
 
                     // handle attributes
                     const attr = compiled.view.attr;
-                    if (attr) {
-                        const attrString = JSON.stringify(attr);
-                        optionStr += `attr:${attrString}`;
+                    const attrLength = attr.length;
+                    if (attrLength > 0) {
+                        let attrString = '';
+                        attr.forEach((item, index) => {
+                            if (item.isBind) {
+                                attrString += `${item.key}:ctx.${item.value}`;
+                            }
+                            else {
+                                attrString += `${item.key}:'${item.value}'`;
+                            }
+                            if (index + 1 < attrLength) {
+                                attrString += ","
+                            }
+                        });
+
+                        optionStr += `${optionStr.length > 2 ? "," : ''} attr:{${attrString}}`;
                     }
                     optionStr += "})";
                     return optionStr;

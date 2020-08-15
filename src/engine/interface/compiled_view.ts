@@ -11,7 +11,11 @@ export interface ICompiledView {
             value: string;
             index: string;
         },
-        attr: { [type: string]: string },
+        attr: {
+            key: string,
+            value: string,
+            isBind: string
+        }[],
         model: string,
         events: {
             name: string;

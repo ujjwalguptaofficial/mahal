@@ -1,13 +1,13 @@
 Exp =  HtmlTag
 
-HtmlTag = openTag:HtmlOpen child:(HtmlTag/Html/MustacheExpression)* HtmlClose {
+HtmlTag = openTag:HtmlOpen child:(HtmlTag/Html/MustacheExpression)* HtmlClose? {
   return {
    view:openTag,
    child:child
   } 
 }
 
-HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:(If/ElseIf/Else)? model:Model? forExp:For? ev:Event* Ws* attr:Attribute? EndTag {
+HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:(If/ElseIf/Else)? model:Model? forExp:For? ev:Event* Ws* attr:Attribute* EndOpenTag {
   
   return {
     tag:word,
@@ -49,8 +49,8 @@ For= "#for("_* key:Identifier _* index:ForIndex?  _* "in" _* value:Identifier _*
    }
 }
 
-Attribute= attr:Identifier _* "=" "'" word:Identifier "'"{
-   return {[attr]:word};
+Attribute= isBind:":"? attr:Identifier _* "=" "'" word:Identifier "'" _*{
+   return {key:attr,value:word, isBind:isBind!=null};
 }
 
 ForIndex = "," _* index:Identifier{
@@ -61,6 +61,8 @@ StartOpenTag "<" = [<];
 StartCloseTag "</" = [<][/]; 
 
 EndTag ">" = [>];
+
+EndOpenTag ">" = "/"? [>];
 
 Identifier "identifier"= val:[a-zA-Z]+ {
 	return val.join("");

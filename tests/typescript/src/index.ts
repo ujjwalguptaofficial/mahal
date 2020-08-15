@@ -2,7 +2,7 @@ import { Taj, Controller } from "taj";
 
 class Main extends Controller {
     // template = "<div on:click='onClick'>Hello {{name}} <b>World<span>Hey</span></b> <span #if(flag || ss)> Lets go</span></div>"
-    template = `<div><input #model(name) type='text'></input></div>`
+    template = `<div><input :value='name' type='text'></input></div>`
 
     flag = false;
     name = "ujjwal"
