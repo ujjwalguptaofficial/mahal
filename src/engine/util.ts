@@ -34,7 +34,7 @@ export class Util {
     static createRenderer(compiledParent: ICompiledView) {
         let parentStr = `const ctx= this; 
         const ce= ctx.createElement;
-        const ct= ctx.createTextNode;
+        const ct= ctx.createTextNode.bind(ctx);
         const cc= ctx.createCommentNode;
         `;
         const createFnFromCompiled = (compiled: ICompiledView) => {
@@ -141,7 +141,7 @@ export class Util {
                 }
             }
             else if (compiled.mustacheExp) {
-                str += `ct(${Util.createFnFromStringExpression(compiled.mustacheExp)})`;
+                str += `ct(${Util.createFnFromStringExpression(compiled.mustacheExp)},'${compiled.mustacheExp}')`;
             }
             else {
                 str += `ct('${compiled}')`;

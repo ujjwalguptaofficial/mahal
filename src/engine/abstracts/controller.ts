@@ -4,16 +4,23 @@ import { ICompiledView } from "../interface";
 
 const blackListProperty = {
     "template": true,
-    "element": true
+    "element": true,
+    "dependency": true
+}
+
+interface IDomDependency {
+
 }
 
 export class Controller {
     private element: HTMLElement;
     template: string;
 
-    keys = [];
+    // keys = [];
 
     private compiledTemplate: ICompiledView;
+
+    private dependency: { [key: string]: HTMLElement[] } = {};
 
     constructor() {
         // this = new Proxy(this, {
@@ -38,7 +45,8 @@ export class Controller {
                     Object.defineProperty(this, key, {
                         set(newValue) {
                             cached[key] = newValue;
-                            that.render();
+                            // that.render();
+                            that.updateDOM_(key);
                         },
                         get() {
                             return cached[key];
@@ -55,19 +63,47 @@ export class Controller {
         })
     }
 
+    private updateDOM_(key: string) {
+        for (const prop in this.dependency) {
+            if (prop === key) {
+                const elements = this.dependency[prop];
+                elements.forEach(el => {
+                    switch (el.nodeType) {
+                        // Text Node
+                        case 3:
+                            el.nodeValue = this[key]; break;
+                        default:
+                            (el as HTMLInputElement).value = this[key];
+                    }
+                });
+                return;
+            }
+        }
+    }
+
     render() {
         this.element.innerHTML = '';
         const renderFn = Util.createRenderer(this.compiledTemplate);
         console.log("renderer", renderFn);
         // console.log("result", renderFn.call(this));
+
         this.element.appendChild(
             renderFn.call(this)
         );
     }
 
 
-    createTextNode(value) {
-        return document.createTextNode(value);
+    createTextNode(value, propDependency) {
+        const el = document.createTextNode(value);
+        if (propDependency) {
+            if (this.dependency[propDependency] == null) {
+                this.dependency[propDependency] = [el as any];
+            }
+            else {
+                this.dependency[propDependency].push(el as any);
+            }
+        }
+        return el;
     }
 
     createCommentNode() {
@@ -98,38 +134,4 @@ export class Controller {
             throw "Invalid Component";
         }
     }
-
-    // createElement(compiled: ICompiledView) {
-
-    //     let element;
-    //     if (compiled.view) {
-    //         if (compiled.view.ifExp) {
-    //             if (!(compiled.view.ifExp as Function)(this)) {
-    //                 return document.createComment("");
-    //             }
-    //         }
-    //         if (HTML_TAG[compiled.view.tag]) {
-    //             element = document.createElement(compiled.view.tag);
-    //         }
-    //         else {
-    //             throw "Invalid Component";
-    //         }
-
-    //         compiled.view.events.forEach(ev => {
-    //             element['on' + ev.name] = this[ev.handler];
-    //         });
-    //     }
-    //     else if (compiled.mustacheExp) {
-    //         element = document.createTextNode(compiled.mustacheExp(this));
-    //     }
-    //     else {
-    //         element = document.createTextNode(compiled as any);
-    //     }
-    //     if (compiled.child) {
-    //         compiled.child.forEach((item) => {
-    //             element.appendChild(this.createElement(item));
-    //         });
-    //     }
-    //     return element;
-    // }
 }

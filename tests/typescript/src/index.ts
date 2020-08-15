@@ -2,14 +2,15 @@ import { Taj, Controller } from "taj";
 
 class Main extends Controller {
     // template = "<div on:click='onClick'>Hello {{name}} <b>World<span>Hey</span></b> <span #if(flag || ss)> Lets go</span></div>"
-    template = `<div>Hello {{name}}
+    template = `<div on:click='onClick' >Hello {{name}}
     <input #model(name) type='text'></input></div>`
 
     flag = false;
     name = "ujjwal"
 
     onClick() {
-        alert('ujjwal')
+        // alert('ujjwal')
+        this.name = "name changed";
     }
 
     items = ["hello", "world"]
