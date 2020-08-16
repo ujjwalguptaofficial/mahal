@@ -9,9 +9,7 @@ const blackListProperty = {
     "dependency": true
 }
 
-interface IDomDependency {
-
-}
+let uniqueCounter = 0
 
 export class Controller {
     private element: HTMLElement;
@@ -24,15 +22,11 @@ export class Controller {
     private dependency: { [key: string]: any[] } = {};
 
     constructor() {
-        // this = new Proxy(this, {
-        //     set: (obj, prop, value) => {
-        //         obj[prop] = value;
-        //         console.log("updated");
-        //         this.render();
-        //         return true;
-        //     }
-        // });
         this.attachGetterSetter_();
+    }
+
+    get unique() {
+        return ++uniqueCounter;
     }
 
     private attachGetterSetter_() {
@@ -134,15 +128,39 @@ export class Controller {
         return el;
     }
 
-    private storeForExp_(key, method: Function) {
+    private storeForExp_(key, method: Function, id: string) {
         const els = this[key].map((item, i) => {
             return method(item, i);
         });
+        const lastEl = els[els.length - 1];
         this.storeDependency_(key, {
             forExp: true,
             method: method,
-            lastEl: els[els.length - 1]
+            lastEl: lastEl,
+            id: id
         });
+        if (lastEl) {
+            // Create an observer instance linked to the callback function
+            const observer = new MutationObserver((mutationsList, observer) => {
+                // Use traditional 'for loops' for IE 11
+                for (let mutation of mutationsList) {
+                    if (mutation.type === 'childList') {
+                        if (document.body.contains(lastEl) === false) {
+                            observer.disconnect();
+                            const depIndex = this.dependency[key].findIndex(q => q.id === id);
+                            this.dependency[key].splice(depIndex, 1);
+                        }
+                    }
+                    else if (mutation.type === 'attributes') {
+                        console.log('The ' + mutation.attributeName + ' attribute was modified.');
+                    }
+                }
+            });
+            // Start observing the target node for configured mutations
+            nextTick(() => {
+                observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+            })
+        }
         return els;
     }
 
@@ -171,9 +189,11 @@ export class Controller {
             return;
         }
         if (this.dependency[key] == null) {
-            this.dependency[key] = [];
+            this.dependency[key] = [value];
         }
-        this.dependency[key].push(value);
+        else {
+            this.dependency[key].push(value);
+        }
     }
 
     createCommentNode() {
@@ -200,10 +220,7 @@ export class Controller {
             }
             if (option.dep) {
                 option.dep.forEach(item => {
-                    if (this.dependency[item] == null) {
-                        this.dependency[item] = [];
-                    }
-                    this.dependency[item].push(element);
+                    this.storeDependency_(item, element);
                 });
             }
             return element;

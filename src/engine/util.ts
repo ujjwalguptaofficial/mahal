@@ -41,8 +41,9 @@ export class Util {
         const ce= ctx.createElement.bind(ctx);
         const ct= ctx.createTextNode.bind(ctx);
         const cc= ctx.createCommentNode;
-        const sife= ctx.storeIfExp_.bind(this);
-        const sfore= ctx.storeForExp_.bind(this);
+        const sife= ctx.storeIfExp_.bind(ctx);
+        const sfore= ctx.storeForExp_.bind(ctx);
+        const unique= ctx.unique;
         `;
         const createFnFromCompiled = (compiled: ICompiledView) => {
             let str = "";
@@ -146,7 +147,7 @@ export class Util {
                         value.replace(getRegex(`ctx.${forExp.key}`), forExp.key).
                             replace(getRegex(`ctx.${forExp.index}`), forExp.index)
                         }
-                            })
+                            },unique)
                     `
                     //return forStr;
                 }

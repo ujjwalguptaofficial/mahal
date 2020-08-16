@@ -3,5 +3,6 @@ export enum HTML_TAG {
     b = "b",
     span = "span",
     input = "input",
-    u = "u"
+    u = "u",
+    button = "button"
 }
