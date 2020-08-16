@@ -162,7 +162,7 @@ export class Util {
                         keys += "]"
                     });
                     if (ifCond || ifExp.elseIfCond) {
-                        str += `sife(()=>{return ${ifCond}?${handleTag() + handleOption()}:cc()},${keys})`
+                        str += `sife(()=>{return ${ifCond} }, (ifCond)=>{return ifCond?${handleTag() + handleOption()}:cc()},${keys},unique)`
                     }
                 }
                 else {

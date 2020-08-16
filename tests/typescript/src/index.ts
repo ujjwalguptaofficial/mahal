@@ -8,19 +8,26 @@ class Main extends Controller {
     // <input #model(name) type='text'></input></div>`
     template = `<div>
         <button on:click='toggleFlag'>Show Div</button>
+        <button on:click='incrementCounter'>Increment Counter</button>
         <button on:click='addItem'>Additem</button>
+        <div>{{counter}}</div>
         <div #if(flag)><b #for(item in items)>{{item}}</b></div>
     </div>`
 
     flag = true;
     name = "ujjwal"
 
+    counter = 0;
+
+    incrementCounter() {
+        this.counter++;
+        this.flag = this.counter > 0;
+    }
+
     toggleFlag() {
         this.flag = !this.flag;
         console.log("flag", this.flag);
     }
-
-  
 
     addItem() {
         this.items.push("ujjwal" + this.items.length)

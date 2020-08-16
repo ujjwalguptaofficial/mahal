@@ -93,8 +93,8 @@ export class Controller {
     private updateDOM_(key: string) {
         for (const prop in this.dependency) {
             if (prop === key) {
-                const elements = this.dependency[prop];
-                elements.forEach(item => {
+                const depItems = this.dependency[prop];
+                depItems.forEach(item => {
                     switch (item.nodeType) {
                         // Text Node
                         case 3:
@@ -104,11 +104,17 @@ export class Controller {
                             (item as HTMLInputElement).value = this[key];
                             break;
                         default:
-                            const el = item.method();
-                            (item.el as HTMLElement).parentNode.replaceChild(
-                                el, item.el
-                            )
-                            item.el = el;
+                            if (item.ifExp) {
+                                const result = item.ifExp();
+                                if (result != item.prevResult) {
+                                    item.prevResult = item.ifExp()
+                                    const el = item.method(item.prevResult);
+                                    (item.el as HTMLElement).parentNode.replaceChild(
+                                        el, item.el
+                                    )
+                                    item.el = el;
+                                }
+                            }
                     }
                 });
                 return;
@@ -116,13 +122,16 @@ export class Controller {
         }
     }
 
-    private storeIfExp_(method: Function, keys: string[]) {
-        const el = method();
+    private storeIfExp_(ifExp, method: Function, keys: string[], id: string) {
+        const ifResult = ifExp();
+        const el = method(ifResult);
         keys.forEach(item => {
             this.storeDependency_(item, {
-                ifExp: true,
+                ifExp: ifExp,
                 el: el,
-                method: method
+                method: method,
+                id: id,
+                prevResult: ifResult
             });
         })
         return el;
@@ -140,26 +149,15 @@ export class Controller {
             id: id
         });
         if (lastEl) {
-            // Create an observer instance linked to the callback function
             const observer = new MutationObserver((mutationsList, observer) => {
-                // Use traditional 'for loops' for IE 11
-                for (let mutation of mutationsList) {
-                    if (mutation.type === 'childList') {
-                        if (document.body.contains(lastEl) === false) {
-                            observer.disconnect();
-                            const depIndex = this.dependency[key].findIndex(q => q.id === id);
-                            this.dependency[key].splice(depIndex, 1);
-                        }
-                    }
-                    else if (mutation.type === 'attributes') {
-                        console.log('The ' + mutation.attributeName + ' attribute was modified.');
-                    }
+                if (document.body.contains(lastEl) === false) {
+                    observer.disconnect();
+                    const depIndex = this.dependency[key].findIndex(q => q.id === id);
+                    this.dependency[key].splice(depIndex, 1);
                 }
             });
-            // Start observing the target node for configured mutations
-            nextTick(() => {
-                observer.observe(document.body, { attributes: true, childList: true, subtree: true });
-            })
+            observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+
         }
         return els;
     }
@@ -191,7 +189,7 @@ export class Controller {
         if (this.dependency[key] == null) {
             this.dependency[key] = [value];
         }
-        else {
+        else if (this.dependency[key].findIndex(q => q.id === value.id) < 0) {
             this.dependency[key].push(value);
         }
     }
