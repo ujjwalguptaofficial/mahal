@@ -20,7 +20,7 @@ export class Controller {
 
     private compiledTemplate: ICompiledView;
 
-    private dependency: { [key: string]: HTMLElement[] } = {};
+    private dependency: { [key: string]: any[] } = {};
 
     constructor() {
         // this = new Proxy(this, {
@@ -67,18 +67,37 @@ export class Controller {
         for (const prop in this.dependency) {
             if (prop === key) {
                 const elements = this.dependency[prop];
-                elements.forEach(el => {
-                    switch (el.nodeType) {
+                elements.forEach(item => {
+                    switch (item.nodeType) {
                         // Text Node
                         case 3:
-                            el.nodeValue = this[key]; break;
+                            item.nodeValue = this[key]; break;
+                        // Input node 
+                        case 1:
+                            (item as HTMLInputElement).value = this[key];
+                            break;
                         default:
-                            (el as HTMLInputElement).value = this[key];
+                            const el = item.method();
+                            (item.el as HTMLElement).parentNode.replaceChild(
+                                el, item.el
+                            )
+                            item.el = el;
                     }
                 });
                 return;
             }
         }
+    }
+
+    private storeDepExp_(method: Function, keys: string[]) {
+        const el = method();
+        keys.forEach(item => {
+            this.storeDependency_(item, {
+                el: el,
+                method: method
+            });
+        })
+        return el;
     }
 
     render() {
@@ -96,14 +115,16 @@ export class Controller {
     createTextNode(value, propDependency) {
         const el = document.createTextNode(value);
         if (propDependency) {
-            if (this.dependency[propDependency] == null) {
-                this.dependency[propDependency] = [el as any];
-            }
-            else {
-                this.dependency[propDependency].push(el as any);
-            }
+            this.storeDependency_(propDependency, el);
         }
         return el;
+    }
+
+    private storeDependency_(key: string, value) {
+        if (this.dependency[key] == null) {
+            this.dependency[key] = [];
+        }
+        this.dependency[key].push(value);
     }
 
     createCommentNode() {

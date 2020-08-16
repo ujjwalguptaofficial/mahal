@@ -6,16 +6,21 @@ import prettier from "prettier";
 
 export class Util {
 
-    static createFnFromStringExpression(exp) {
-        return exp.split(" ").map(item => {
+    static createFnFromStringExpression(exp, cb?) {
+        const keys = [];
+        const modifiedExpression = exp.split(" ").map(item => {
             switch (item) {
                 case '&&':
                 case '||':
                 case 'true':
                 case 'false': return item;
-                default: return "ctx." + item;
+                default: keys.push(item); return "ctx." + item;
             }
         }).join(" ");
+        if (cb) {
+            cb(keys);
+        }
+        return modifiedExpression;
     }
 
     static parseview(viewCode: string) {
@@ -36,6 +41,7 @@ export class Util {
         const ce= ctx.createElement.bind(ctx);
         const ct= ctx.createTextNode.bind(ctx);
         const cc= ctx.createCommentNode;
+        const sde= ctx.storeDepExp_.bind(this);
         `;
         const createFnFromCompiled = (compiled: ICompiledView) => {
             let str = "";
@@ -143,9 +149,15 @@ export class Util {
 
                 if (compiled.view.ifExp) {
                     const ifExp = compiled.view.ifExp;
-                    const ifCond = Util.createFnFromStringExpression(ifExp.ifCond);
+                    let keys = "["
+                    const ifCond = Util.createFnFromStringExpression(ifExp.ifCond, (param) => {
+                        param.forEach((key, index) => {
+                            keys += `'${key}',`
+                        });
+                        keys += "]"
+                    });
                     if (ifCond || ifExp.elseIfCond) {
-                        str += `${ifCond}?${handleTag() + handleOption()}:cc()`
+                        str += `sde(()=>{return ${ifCond}?${handleTag() + handleOption()}:cc()},${keys})`
                     }
                 }
                 else {
