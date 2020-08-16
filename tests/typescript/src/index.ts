@@ -4,14 +4,18 @@ class Main extends Controller {
     // template = "<div on:click='onClick'>Hello {{name}} <b>World<span>Hey</span></b> <span #if(flag || ss)> Lets go</span></div>"
     // template = `<div on:click='onClick' >Hello {{name}}
     // <input #model(name) type='text'></input></div>`
-    template = `<div on:click='toggleFlag'>Hello<b #if(flag)>{{name}}</b></div>`
+    template = `<div on:click='addItem'>Hello<div #if(flag)><b #for(item in items)>{{item}}</b></div></div>`
 
-    flag = false;
+    flag = true;
     name = "ujjwal"
 
     toggleFlag() {
         this.flag = !this.flag;
         console.log("flag", this.flag);
+    }
+
+    addItem() {
+        this.items.push("ujjwal" + this.items.length)
     }
 
     onClick() {

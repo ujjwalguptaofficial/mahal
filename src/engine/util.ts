@@ -41,7 +41,8 @@ export class Util {
         const ce= ctx.createElement.bind(ctx);
         const ct= ctx.createTextNode.bind(ctx);
         const cc= ctx.createCommentNode;
-        const sde= ctx.storeDepExp_.bind(this);
+        const sife= ctx.storeIfExp_.bind(this);
+        const sfore= ctx.storeForExp_.bind(this);
         `;
         const createFnFromCompiled = (compiled: ICompiledView) => {
             let str = "";
@@ -132,11 +133,14 @@ export class Util {
 
                 const handleFor = (value: string) => {
                     let forExp = compiled.view.forExp;
-                    forExp.value = Util.createFnFromStringExpression(forExp.value);
+                    let key;
+                    forExp.value = Util.createFnFromStringExpression(forExp.value, (param) => {
+                        key = param[0];
+                    });
                     const getRegex = (subStr) => {
                         return new RegExp(subStr, 'g');
                     }
-                    return `...${forExp.value}.map((${forExp.key},${forExp.index})=>{
+                    return `...sfore('${key}',(${forExp.key},${forExp.index})=>{
                                 
                                 return ${
                         value.replace(getRegex(`ctx.${forExp.key}`), forExp.key).
@@ -157,7 +161,7 @@ export class Util {
                         keys += "]"
                     });
                     if (ifCond || ifExp.elseIfCond) {
-                        str += `sde(()=>{return ${ifCond}?${handleTag() + handleOption()}:cc()},${keys})`
+                        str += `sife(()=>{return ${ifCond}?${handleTag() + handleOption()}:cc()},${keys})`
                     }
                 }
                 else {

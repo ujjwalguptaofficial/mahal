@@ -1,6 +1,7 @@
 import { Util } from "../util";
 import { HTML_TAG } from "../enums";
 import { ICompiledView } from "../interface";
+import { nextTick } from "../helpers";
 
 const blackListProperty = {
     "template": true,
@@ -35,7 +36,7 @@ export class Controller {
     }
 
     private attachGetterSetter_() {
-        queueMicrotask(() => {
+        nextTick(() => {
             // call created
             const that = this;
             const cached = {};
@@ -51,7 +52,19 @@ export class Controller {
                         get() {
                             return cached[key];
                         }
-                    })
+                    });
+
+                    if (Array.isArray(this[key])) {
+                        Object.defineProperty(this[key], "push", {
+                            value: function (...args) {
+                                let result = Array.prototype.push.apply(this, args);
+                                nextTick(() => {
+                                    that.onArrayModified_(key, 'push', args[0]);
+                                });
+                                return result;
+                            }
+                        });
+                    }
                 }
 
             })
@@ -62,6 +75,26 @@ export class Controller {
             this.render();
         })
     }
+
+    private onArrayModified_(key: string, method: string, newValue?) {
+        for (const prop in this.dependency) {
+            if (prop === key) {
+                const values = this.dependency[prop].filter(q => q.forExp === true);
+                switch (method) {
+                    case 'push':
+                        values.forEach(item => {
+                            const newElement = item.method(newValue, this[key].length - 1);
+                            (item.lastEl as HTMLElement).parentNode.insertBefore(newElement, item.lastEl.nextSibling);
+                            item.lastEl = newElement;
+                        });
+                        break;
+                }
+                console.log("value", values);
+                return;
+            }
+        }
+    }
+
 
     private updateDOM_(key: string) {
         for (const prop in this.dependency) {
@@ -89,15 +122,28 @@ export class Controller {
         }
     }
 
-    private storeDepExp_(method: Function, keys: string[]) {
+    private storeIfExp_(method: Function, keys: string[]) {
         const el = method();
         keys.forEach(item => {
             this.storeDependency_(item, {
+                ifExp: true,
                 el: el,
                 method: method
             });
         })
         return el;
+    }
+
+    private storeForExp_(key, method: Function) {
+        const els = this[key].map((item, i) => {
+            return method(item, i);
+        });
+        this.storeDependency_(key, {
+            forExp: true,
+            method: method,
+            lastEl: els[els.length - 1]
+        });
+        return els;
     }
 
     render() {
@@ -121,6 +167,9 @@ export class Controller {
     }
 
     private storeDependency_(key: string, value) {
+        if (this[key] == null) {
+            return;
+        }
         if (this.dependency[key] == null) {
             this.dependency[key] = [];
         }
