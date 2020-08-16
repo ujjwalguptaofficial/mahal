@@ -149,21 +149,19 @@ export class Controller {
             id: id
         });
         if (lastEl) {
-            const observer = new MutationObserver((mutationsList, observer) => {
+            new MutationObserver((mutationsList, observer) => {
                 if (document.body.contains(lastEl) === false) {
                     observer.disconnect();
                     const depIndex = this.dependency[key].findIndex(q => q.id === id);
                     this.dependency[key].splice(depIndex, 1);
                 }
-            });
-            observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+            }).observe(this.element, { attributes: true, childList: true, subtree: true });
 
         }
         return els;
     }
 
     render() {
-        this.element.innerHTML = '';
         const renderFn = Util.createRenderer(this.compiledTemplate);
         console.log("renderer", renderFn);
         // console.log("result", renderFn.call(this));
