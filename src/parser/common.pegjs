@@ -72,11 +72,15 @@ MustacheExpression "mustache expression" = "{{" val:Expression "}}"+ {
 	return {mustacheExp:val};
 }
 
-Event "event syntax" = "on:" event:Expression "='" handler:Identifier "'"+ {
+Event "event syntax" = "on:" event:Identifier "='" handler:EventAssignment "'"+ {
 	return {name:event, handler:handler};
 }
 
 Expression "Expression"= val:[a-zA-Z\&\ \|]+ {
+	return val.join("");
+}
+
+EventAssignment "Event Assignment"= val:[a-zA-Z0-9\&\=\>\{\}\(\)\ \|]+ {
 	return val.join("");
 }
 

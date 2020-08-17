@@ -73,8 +73,11 @@ export class Util {
                     const eventLength = compiled.view.events.length;
                     if (eventLength > 0) {
                         let eventStr = "";
+                        // const identifierRegex = /([a-zA-Z]+)/g
+                        // const identifierRegex = /\b(?!(?:false\b))([\w]+)/g
+                        const identifierRegex = /\b(?!(?:false\b))([a-zA-Z]+)/g
                         compiled.view.events.forEach((ev, index) => {
-                            eventStr += `${ev.name}:ctx.${ev.handler}`;
+                            eventStr += `${ev.name}:${ev.handler.replace(identifierRegex, 'ctx.$1')}`;
                             if (index + 1 < eventLength) {
                                 eventStr += ","
                             }
@@ -142,7 +145,6 @@ export class Util {
                         return new RegExp(subStr, 'g');
                     }
                     return `...sfore('${key}',(${forExp.key},${forExp.index})=>{
-                                
                                 return ${
                         value.replace(getRegex(`ctx.${forExp.key}`), forExp.key).
                             replace(getRegex(`ctx.${forExp.index}`), forExp.index)
