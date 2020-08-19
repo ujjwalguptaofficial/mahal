@@ -1,7 +1,7 @@
 import * as parser from '../../build/parser';
 import { LogHelper } from './log_helper';
 import { ERROR_TYPE, HTML_TAG } from './enums';
-import { ICompiledView } from './interface';
+import { ICompiledView, IIfExpModified } from './interface';
 import prettier from "prettier";
 
 export class Util {
@@ -45,16 +45,59 @@ export class Util {
         const sfore= ctx.storeForExp_.bind(ctx);
         const unique= ctx.unique;
         `;
-        const createFnFromCompiled = (compiled: ICompiledView) => {
+        const createJsEqFromCompiled = (compiled: ICompiledView) => {
             let str = "";
             if (compiled.view) {
                 const dep = [];
                 const handleTag = () => {
                     let tagHtml = `ce('${compiled.view.tag}',`
                     if (compiled.child) {
+                        let ifModifiedExpression: IIfExpModified;
+                        let indexOfIfCond;
+                        const indexToRemove = [];
+                        const onIfCondEnd = (last: number) => {
+                            compiled.child[indexOfIfCond].view.ifExpModified = ifModifiedExpression;
+                            ifModifiedExpression = null;
+                            console.log("if cond modified", indexOfIfCond, compiled.child[indexOfIfCond]);
+                            for (let i = indexOfIfCond + 1; i < last; i++) {
+                                indexToRemove.push(i);
+                            }
+                        }
+                        compiled.child.forEach((child, index) => {
+                            if (!(child.view && child.view.ifExp)) {
+                                return;
+                            }
+                            const ifExp = child.view.ifExp;
+                            if (ifExp.ifCond) {
+                                ifModifiedExpression = {
+                                    ifExp: ifExp.ifCond,
+                                    ifElseList: []
+                                } as IIfExpModified;
+                                indexOfIfCond = index;
+                            }
+                            else if (ifExp.elseIfCond) {
+                                ifModifiedExpression.ifElseList.push(child);
+                            }
+                            else if (ifExp.else) {
+                                ifModifiedExpression.else = child;
+                            }
+                            else {
+                                onIfCondEnd(index);
+                            }
+                        });
+
+                        // there was no end found and loop has ended
+                        if (ifModifiedExpression) {
+                            onIfCondEnd(compiled.child.length);
+                        }
+                        console.log("indexOfIfCond", indexToRemove);
+                        compiled.child = compiled.child.filter((child, index) => {
+                            return indexToRemove.indexOf(index) < 0
+                        })
+
                         var child = "["
                         compiled.child.forEach((item) => {
-                            child += `  ${createFnFromCompiled(item)},
+                            child += `  ${createJsEqFromCompiled(item)},
                             `;
                         });
                         child += "]";
@@ -75,7 +118,7 @@ export class Util {
                         let eventStr = "";
                         // const identifierRegex = /([a-zA-Z]+)/g
                         // const identifierRegex = /\b(?!(?:false\b))([\w]+)/g
-                        const identifierRegex = /\b(?!(?:false\b))([a-zA-Z]+)/g
+                        const identifierRegex = /\b(?!(?:false|true\b))([a-zA-Z]+)/g
                         compiled.view.events.forEach((ev, index) => {
                             eventStr += `${ev.name}:${ev.handler.replace(identifierRegex, 'ctx.$1')}`;
                             if (index + 1 < eventLength) {
@@ -153,19 +196,40 @@ export class Util {
                     `
                     //return forStr;
                 }
-
-                if (compiled.view.ifExp) {
-                    const ifExp = compiled.view.ifExp;
+                const ifModified = compiled.view.ifExpModified;
+                if (ifModified && ifModified.ifExp) {
                     let keys = "["
-                    const ifCond = Util.createFnFromStringExpression(ifExp.ifCond, (param) => {
-                        param.forEach((key, index) => {
+                    const ifCond = Util.createFnFromStringExpression(ifModified.ifExp, (param) => {
+                        param.forEach((key) => {
                             keys += `'${key}',`
                         });
-                        keys += "]"
                     });
-                    if (ifCond || ifExp.elseIfCond) {
-                        str += `sife(()=>{return ${ifCond} }, (ifCond)=>{return ifCond?${handleTag() + handleOption()}:cc()},${keys},unique)`
+                    str += `sife(()=>{return ${ifCond} }, (ifCond)=>{return ifCond?${handleTag() + handleOption()}`
+
+                    ifModified.ifElseList.forEach(item => {
+                        const ifElseCond = Util.createFnFromStringExpression(item.view.ifExp.elseIfCond, (param) => {
+                            param.forEach((key) => {
+                                keys += `'${key}',`
+                            });
+                        });
+                        str += `:${ifElseCond} ? ${createJsEqFromCompiled(item)} `
+                    });
+                    keys += "]"
+                    let elseString;
+                    if (ifModified.else) {
+                        elseString = createJsEqFromCompiled(ifModified.else);
                     }
+                    else {
+                        elseString = `cc()`;
+                    }
+                    // str += (() => {
+                    //     let temp = "";
+                    //     for (let i = 0, len = ifModified.ifElseList.length; i < len; i++) {
+                    //         temp += "})"
+                    //     }
+                    //     return temp;
+                    // })();
+                    str += `:${elseString} },${keys},unique)`
                 }
                 else {
                     if (compiled.view.forExp) {
@@ -184,7 +248,7 @@ export class Util {
             }
             return str;
         }
-        parentStr += `return ${createFnFromCompiled(compiledParent)}`;
+        parentStr += `return ${createJsEqFromCompiled(compiledParent)}`;
         // parentStr = prettier.format(
         //     parentStr,
         //     { semi: false, parser: "typescript" }

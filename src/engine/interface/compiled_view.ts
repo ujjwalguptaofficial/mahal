@@ -1,6 +1,12 @@
+export interface IIfExpModified {
+    ifExp: string;
+    ifElseList: ICompiledView[];
+    else: ICompiledView;
+}
 export interface ICompiledView {
     view: {
         tag: string,
+        ifExpModified: IIfExpModified,
         ifExp: {
             ifCond: string;
             elseIfCond: string;

@@ -11,11 +11,16 @@ class Main extends Controller {
         <button on:click='incrementCounter'>Increment Counter</button>
         <button on:click='addItem'>Additem</button>
         <div>{{counter}}</div>
-        <div #if(flag)><b #for(item in items)>{{item}}</b></div>
+        <div #if(flagOne)><b>ujj</b></div>
+        <div #else-if(flagTwo)>ok</div>
+        <div #else>word</div>
+       
     </div>`
 
     flag = true;
     name = "ujjwal"
+
+    flagOne = true
 
     counter = 0;
 
