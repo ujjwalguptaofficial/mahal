@@ -6,21 +6,32 @@ class Main extends Controller {
     // template = "<div on:click='onClick'>Hello {{name}} <b>World<span>Hey</span></b> <span #if(flag || ss)> Lets go</span></div>"
     // template = `<div on:click='onClick' >Hello {{name}}
     // <input #model(name) type='text'></input></div>`
-    template = `<div on:click='()=>{ flag = 1 }'>
+    template = `<div >
         <button on:click='toggleFlag'>Show Div</button>
         <button on:click='incrementCounter'>Increment Counter</button>
         <button on:click='addItem'>Additem</button>
         <div>{{counter}}</div>
-        <div #if(flagOne)><b>ujj</b></div>
-        <div #else-if(flagTwo)>ok</div>
-        <div #else>word</div>
+        <button on:click='toggleFlagOne'>Change FlagOne</button>
+       <button on:click='toggleFlagTwo'>Change FlagTwo</button>
+        <div #if(flagOne)><b>Flag one rendered</b></div>
+        <div #else-if(flagTwo)>Flag two rendered</div>
+        <div #else>else rendered</div>
        
     </div>`
 
     flag = true;
     name = "ujjwal"
 
-    flagOne = true
+    flagOne = false
+    flagTwo = true
+
+    toggleFlagOne() {
+        this.flagOne = !this.flagOne
+    }
+
+    toggleFlagTwo() {
+        this.flagTwo = !this.flagTwo
+    }
 
     counter = 0;
 

@@ -204,7 +204,17 @@ export class Util {
                             keys += `'${key}',`
                         });
                     });
-                    str += `sife(()=>{return ${ifCond} }, (ifCond)=>{return ifCond?${handleTag() + handleOption()}`
+                    // let ifExpEvaluatorString = `sife(()=>{return ${ifCond} ? ${ifCond}`;
+                    // ifModified.ifElseList.forEach(item => {
+                    //     item.view.ifExp = Util.createFnFromStringExpression(item.view.ifExp.elseIfCond, (param) => {
+                    //         param.forEach((key) => {
+                    //             keys += `'${key}',`
+                    //         });
+                    //     });
+                    //     ifExpEvaluatorString += `:${item.view.ifExp} ? ${item.view.ifExp}`;
+                    // });
+                    // str += ` ${ifExpEvaluatorString} :false }, (ifCond)=>{return ifCond?${handleTag() + handleOption()}`
+                    str += `sife(()=>{return ${ifCond} ? ${handleTag() + handleOption()}`
 
                     ifModified.ifElseList.forEach(item => {
                         const ifElseCond = Util.createFnFromStringExpression(item.view.ifExp.elseIfCond, (param) => {
@@ -214,6 +224,7 @@ export class Util {
                         });
                         str += `:${ifElseCond} ? ${createJsEqFromCompiled(item)} `
                     });
+
                     keys += "]"
                     let elseString;
                     if (ifModified.else) {

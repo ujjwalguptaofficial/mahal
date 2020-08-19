@@ -105,15 +105,11 @@ export class Controller {
                             break;
                         default:
                             if (item.ifExp) {
-                                const result = item.ifExp();
-                                if (result != item.prevResult) {
-                                    item.prevResult = item.ifExp()
-                                    const el = item.method(item.prevResult);
-                                    (item.el as HTMLElement).parentNode.replaceChild(
-                                        el, item.el
-                                    )
-                                    item.el = el;
-                                }
+                                const el = item.method();
+                                (item.el as HTMLElement).parentNode.replaceChild(
+                                    el, item.el
+                                )
+                                item.el = el;
                             }
                     }
                 });
@@ -122,17 +118,16 @@ export class Controller {
         }
     }
 
-    private storeIfExp_(ifExp, method: Function, keys: string[], id: string) {
-        const ifResult = ifExp();
-        const el = method(ifResult);
+    private storeIfExp_(method: Function, keys: string[], id: string) {
+        const el = method();
+        const dep = {
+            el: el,
+            method: method,
+            id: id,
+            ifExp: true
+        }
         keys.forEach(item => {
-            this.storeDependency_(item, {
-                ifExp: ifExp,
-                el: el,
-                method: method,
-                id: id,
-                prevResult: ifResult
-            });
+            this.storeDependency_(item, dep);
         })
         return el;
     }
