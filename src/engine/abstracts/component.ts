@@ -13,7 +13,6 @@ let uniqueCounter = 0
 export abstract class Component {
     child: { [key: string]: typeof Component };
     private element_: HTMLElement;
-    template: string;
     private dependency_: { [key: string]: any[] } = {};
 
     constructor() {
@@ -154,7 +153,7 @@ export abstract class Component {
     executeRender_() {
         const renderFn = this.render || (() => {
             //compile
-            const compiledTemplate = ParserUtil.parseview(this.template);
+            const compiledTemplate = ParserUtil.parseview((this as any).template);
             console.log("compiled", compiledTemplate);
             return ParserUtil.createRenderer(compiledTemplate);
         })()

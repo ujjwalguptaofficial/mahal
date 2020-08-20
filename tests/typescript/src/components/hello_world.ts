@@ -1,6 +1,7 @@
-import { Component } from "taj";
+import { Component, Template } from "taj";
 
-export default class extends Component {
-    template = `<div>Hello World {{count}}</div>`
+@Template("<div>Hello World {{count}}</div>")
+export default class HelloWorld extends Component {
 
 }
+
