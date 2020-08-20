@@ -1,8 +1,15 @@
 export enum HTML_TAG {
-    div = "div",
+    div = 1,
     b = "b",
     span = "span",
     input = "input",
     u = "u",
-    button = "button"
+    button = "button",
+    table = "table",
+    tr = 1,
+    td = 1,
+    thead = 1,
+    tbody = 1,
+    tfoot = 1,
+    strong = 1,
 }

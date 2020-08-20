@@ -3,17 +3,19 @@ import { ICompiledView } from "./interface";
 import { Component } from "./abstracts";
 
 export class Taj {
-    component: Component;
+    component: typeof Component;
     element: HTMLElement;
 
     constructor(component, element: HTMLElement) {
-        this.component = new component();
+        this.component = component;
         this.element = element;
-
     }
 
     create() {
-        (this.component as any).element = this.element;
+        const component: Component = new (this as any).component();
+        this.element.appendChild(
+            component.executeRender_()
+        );
     }
 
 }

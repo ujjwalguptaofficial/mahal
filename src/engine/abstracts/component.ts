@@ -1,23 +1,28 @@
 import { ParserUtil } from "../parser_util";
 import { HTML_TAG } from "../enums";
-import { ICompiledView } from "../interface";
 import { nextTick } from "../helpers";
 
 const blackListProperty = {
     "template": true,
-    "element": true,
-    "dependency": true
+    "element_": true,
+    "dependency_": true
 }
 
 let uniqueCounter = 0
 
 export abstract class Component {
-    private element: HTMLElement;
+    child: { [key: string]: typeof Component };
+    private element_: HTMLElement;
     template: string;
-    private dependency: { [key: string]: any[] } = {};
+    private dependency_: { [key: string]: any[] } = {};
 
     constructor() {
-        this.attachGetterSetter_();
+        nextTick(() => {
+            this.attachGetterSetter_();
+        })
+        if (this.child == null) {
+            this.child = {};
+        }
     }
 
     get unique() {
@@ -25,48 +30,43 @@ export abstract class Component {
     }
 
     private attachGetterSetter_() {
-        nextTick(() => {
-            // call created
-            const that = this;
-            const cached = {};
-            Object.keys(this).forEach(key => {
-                if (!blackListProperty[key]) {
-                    cached[key] = this[key];
-                    Object.defineProperty(this, key, {
-                        set(newValue) {
-                            cached[key] = newValue;
-                            // that.render();
-                            that.updateDOM_(key);
-                        },
-                        get() {
-                            return cached[key];
+        // call created
+        const that = this;
+        const cached = {};
+        Object.keys(this).forEach(key => {
+            if (!blackListProperty[key]) {
+                cached[key] = this[key];
+                Object.defineProperty(this, key, {
+                    set(newValue) {
+                        cached[key] = newValue;
+                        // that.render();
+                        that.updateDOM_(key);
+                    },
+                    get() {
+                        return cached[key];
+                    }
+                });
+
+                if (Array.isArray(this[key])) {
+                    Object.defineProperty(this[key], "push", {
+                        value: function (...args) {
+                            let result = Array.prototype.push.apply(this, args);
+                            nextTick(() => {
+                                that.onArrayModified_(key, 'push', args[0]);
+                            });
+                            return result;
                         }
                     });
-
-                    if (Array.isArray(this[key])) {
-                        Object.defineProperty(this[key], "push", {
-                            value: function (...args) {
-                                let result = Array.prototype.push.apply(this, args);
-                                nextTick(() => {
-                                    that.onArrayModified_(key, 'push', args[0]);
-                                });
-                                return result;
-                            }
-                        });
-                    }
                 }
+            }
 
-            })
-
-            // render
-            this.executeRender();
         })
     }
 
     private onArrayModified_(key: string, method: string, newValue?) {
-        for (const prop in this.dependency) {
+        for (const prop in this.dependency_) {
             if (prop === key) {
-                const values = this.dependency[prop].filter(q => q.forExp === true);
+                const values = this.dependency_[prop].filter(q => q.forExp === true);
                 switch (method) {
                     case 'push':
                         values.forEach(item => {
@@ -84,9 +84,9 @@ export abstract class Component {
 
 
     private updateDOM_(key: string) {
-        for (const prop in this.dependency) {
+        for (const prop in this.dependency_) {
             if (prop === key) {
-                const depItems = this.dependency[prop];
+                const depItems = this.dependency_[prop];
                 depItems.forEach(item => {
                     switch (item.nodeType) {
                         // Text Node
@@ -140,10 +140,10 @@ export abstract class Component {
             new MutationObserver((mutationsList, observer) => {
                 if (document.body.contains(lastEl) === false) {
                     observer.disconnect();
-                    const depIndex = this.dependency[key].findIndex(q => q.id === id);
-                    this.dependency[key].splice(depIndex, 1);
+                    const depIndex = this.dependency_[key].findIndex(q => q.id === id);
+                    this.dependency_[key].splice(depIndex, 1);
                 }
-            }).observe(this.element, { attributes: true, childList: true, subtree: true });
+            }).observe(this.element_, { attributes: true, childList: true, subtree: true });
 
         }
         return els;
@@ -151,7 +151,7 @@ export abstract class Component {
 
     render: () => void;
 
-    executeRender() {
+    executeRender_() {
         const renderFn = this.render || (() => {
             //compile
             const compiledTemplate = ParserUtil.parseview(this.template);
@@ -159,10 +159,8 @@ export abstract class Component {
             return ParserUtil.createRenderer(compiledTemplate);
         })()
         console.log("renderer", renderFn);
-
-        this.element.appendChild(
-            renderFn.call(this)
-        );
+        this.element_ = renderFn.call(this);
+        return this.element_;
     }
 
 
@@ -178,11 +176,11 @@ export abstract class Component {
         if (this[key] == null) {
             return;
         }
-        if (this.dependency[key] == null) {
-            this.dependency[key] = [value];
+        if (this.dependency_[key] == null) {
+            this.dependency_[key] = [value];
         }
-        else if (this.dependency[key].findIndex(q => q.id === value.id) < 0) {
-            this.dependency[key].push(value);
+        else if (this.dependency_[key].findIndex(q => q.id === value.id) < 0) {
+            this.dependency_[key].push(value);
         }
     }
 
@@ -215,8 +213,13 @@ export abstract class Component {
             }
             return element;
         }
+        else if (this.child[tag]) {
+            const component: Component = new (this.child[tag] as any)();
+            component.element_ = component.executeRender_();
+            return component.element_;
+        }
         else {
-            throw "Invalid Component";
+            throw `Invalid Component ${tag}. If you have created a component, Please register your component.`;
         }
     }
 }
