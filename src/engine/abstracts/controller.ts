@@ -11,14 +11,9 @@ const blackListProperty = {
 
 let uniqueCounter = 0
 
-export class Controller {
+export abstract class Controller {
     private element: HTMLElement;
     template: string;
-
-    // keys = [];
-
-    private compiledTemplate: ICompiledView;
-
     private dependency: { [key: string]: any[] } = {};
 
     constructor() {
@@ -62,11 +57,9 @@ export class Controller {
                 }
 
             })
-            //compile
-            this.compiledTemplate = Util.parseview(this.template);
-            console.log("compiled", this.compiledTemplate);
+
             // render
-            this.render();
+            this.executeRender();
         })
     }
 
@@ -156,10 +149,16 @@ export class Controller {
         return els;
     }
 
-    render() {
-        const renderFn = Util.createRenderer(this.compiledTemplate);
+    render: () => void;
+
+    executeRender() {
+        const renderFn = this.render || (() => {
+            //compile
+            const compiledTemplate = Util.parseview(this.template);
+            console.log("compiled", compiledTemplate);
+            return Util.createRenderer(compiledTemplate);
+        })()
         console.log("renderer", renderFn);
-        // console.log("result", renderFn.call(this));
 
         this.element.appendChild(
             renderFn.call(this)
