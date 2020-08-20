@@ -189,37 +189,52 @@ export abstract class Component {
     }
 
     createElement(tag, childs: HTMLElement[], option) {
+        let element;
         if (HTML_TAG[tag]) {
-            const element = document.createElement(tag) as HTMLElement;
+            element = document.createElement(tag) as HTMLElement;
             childs.forEach((item) => {
                 element.appendChild(item);
             });
-            if (option.on) {
-                const events = option.on;
-                for (const eventName in events) {
-                    element['on' + eventName] = events[eventName].bind(this);
-                }
-            }
             if (option.attr) {
                 const attr = option.attr;
                 for (const key in attr) {
                     element.setAttribute(key, attr[key]);
                 }
             }
-            if (option.dep) {
-                option.dep.forEach(item => {
-                    this.storeDependency_(item, element);
-                });
-            }
-            return element;
         }
         else if (this.child[tag]) {
             const component: Component = new (this.child[tag] as any)();
-            component.element_ = component.executeRender_();
-            return component.element_;
+
+            if (option.attr) {
+                const attr = option.attr;
+                for (const key in attr) {
+                    // if (attr.isBind) {
+                    component[key] = attr[key];
+                    // }
+                    // else {
+                    //     element.setAttribute(key, attr[key]);
+                    // }
+                }
+            }
+            element = component.element_ = component.executeRender_();
+
         }
         else {
             throw `Invalid Component ${tag}. If you have created a component, Please register your component.`;
         }
+        if (option.on) {
+            const events = option.on;
+            for (const eventName in events) {
+                element['on' + eventName] = events[eventName].bind(this);
+            }
+        }
+
+        if (option.dep) {
+            option.dep.forEach(item => {
+                this.storeDependency_(item, element);
+            });
+        }
+        return element;
+
     }
 }

@@ -11,7 +11,7 @@ class Main extends Component {
     // template = `<div on:click='onClick' >Hello {{name}}
     // <input #model(name) type='text'></input></div>`
     template = `<div >
-        <HelloWorld></HelloWorld>
+        <HelloWorld :count='counter'></HelloWorld>
         <button on:click='toggleFlag'>Show Div</button>
         <button on:click='incrementCounter'>Increment Counter</button>
         <button on:click='addItem'>Additem</button>

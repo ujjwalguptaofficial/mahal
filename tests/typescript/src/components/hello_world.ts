@@ -1,6 +1,6 @@
 import { Component } from "taj";
 
 export default class extends Component {
-    template = `<div>Hello World</div>`
+    template = `<div>Hello World {{count}}</div>`
 
 }
