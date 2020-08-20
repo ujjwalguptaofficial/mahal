@@ -1,4 +1,4 @@
-import { Util } from "../util";
+import { ParserUtil } from "../parser_util";
 import { HTML_TAG } from "../enums";
 import { ICompiledView } from "../interface";
 import { nextTick } from "../helpers";
@@ -11,7 +11,7 @@ const blackListProperty = {
 
 let uniqueCounter = 0
 
-export abstract class Controller {
+export abstract class Component {
     private element: HTMLElement;
     template: string;
     private dependency: { [key: string]: any[] } = {};
@@ -154,9 +154,9 @@ export abstract class Controller {
     executeRender() {
         const renderFn = this.render || (() => {
             //compile
-            const compiledTemplate = Util.parseview(this.template);
+            const compiledTemplate = ParserUtil.parseview(this.template);
             console.log("compiled", compiledTemplate);
-            return Util.createRenderer(compiledTemplate);
+            return ParserUtil.createRenderer(compiledTemplate);
         })()
         console.log("renderer", renderFn);
 

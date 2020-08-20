@@ -1,8 +1,8 @@
-import { Taj, Controller } from "taj";
+import { Taj, Component } from "taj";
 
 let uniqueCounter = 0;
 
-class Main extends Controller {
+class Main extends Component {
     // template = "<div on:click='onClick'>Hello {{name}} <b>World<span>Hey</span></b> <span #if(flag || ss)> Lets go</span></div>"
     // template = `<div on:click='onClick' >Hello {{name}}
     // <input #model(name) type='text'></input></div>`

@@ -4,7 +4,7 @@ import { ERROR_TYPE, HTML_TAG } from './enums';
 import { ICompiledView, IIfExpModified } from './interface';
 import prettier from "prettier";
 
-export class Util {
+export class ParserUtil {
 
     static createFnFromStringExpression(exp, cb?) {
         const keys = [];
@@ -27,7 +27,7 @@ export class Util {
         // try {
         viewCode = viewCode.replace(new RegExp('\n', 'g'), '').trim();
         return parser.parse(viewCode, {
-            createFnFromStringExpression: Util.createFnFromStringExpression
+            createFnFromStringExpression: ParserUtil.createFnFromStringExpression
         }) as ICompiledView;
         // }
         // catch (ex) {
@@ -181,7 +181,7 @@ export class Util {
                 const handleFor = (value: string) => {
                     let forExp = compiled.view.forExp;
                     let key;
-                    forExp.value = Util.createFnFromStringExpression(forExp.value, (param) => {
+                    forExp.value = ParserUtil.createFnFromStringExpression(forExp.value, (param) => {
                         key = param[0];
                     });
                     const getRegex = (subStr) => {
@@ -199,25 +199,15 @@ export class Util {
                 const ifModified = compiled.view.ifExpModified;
                 if (ifModified && ifModified.ifExp) {
                     let keys = "["
-                    const ifCond = Util.createFnFromStringExpression(ifModified.ifExp, (param) => {
+                    const ifCond = ParserUtil.createFnFromStringExpression(ifModified.ifExp, (param) => {
                         param.forEach((key) => {
                             keys += `'${key}',`
                         });
                     });
-                    // let ifExpEvaluatorString = `sife(()=>{return ${ifCond} ? ${ifCond}`;
-                    // ifModified.ifElseList.forEach(item => {
-                    //     item.view.ifExp = Util.createFnFromStringExpression(item.view.ifExp.elseIfCond, (param) => {
-                    //         param.forEach((key) => {
-                    //             keys += `'${key}',`
-                    //         });
-                    //     });
-                    //     ifExpEvaluatorString += `:${item.view.ifExp} ? ${item.view.ifExp}`;
-                    // });
-                    // str += ` ${ifExpEvaluatorString} :false }, (ifCond)=>{return ifCond?${handleTag() + handleOption()}`
                     str += `sife(()=>{return ${ifCond} ? ${handleTag() + handleOption()}`
 
                     ifModified.ifElseList.forEach(item => {
-                        const ifElseCond = Util.createFnFromStringExpression(item.view.ifExp.elseIfCond, (param) => {
+                        const ifElseCond = ParserUtil.createFnFromStringExpression(item.view.ifExp.elseIfCond, (param) => {
                             param.forEach((key) => {
                                 keys += `'${key}',`
                             });
@@ -252,7 +242,7 @@ export class Util {
                 }
             }
             else if (compiled.mustacheExp) {
-                str += `ct(${Util.createFnFromStringExpression(compiled.mustacheExp)},'${compiled.mustacheExp}')`;
+                str += `ct(${ParserUtil.createFnFromStringExpression(compiled.mustacheExp)},'${compiled.mustacheExp}')`;
             }
             else {
                 str += `ct('${compiled}')`;
