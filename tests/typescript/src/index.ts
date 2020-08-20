@@ -1,9 +1,9 @@
-import { Taj, Component, Template } from "taj";
+import { Taj, Component, Template, Children,Prop } from "taj";
 import HelloWorld from "./components/hello_world";
 
 let uniqueCounter = 0;
 @Template(`<div >
-<HelloWorld :count='counter'></HelloWorld>
+<HelloWorld name='ujjwal' :count='counter'></HelloWorld>
 <button on:click='toggleFlag'>Show Div</button>
 <button on:click='incrementCounter'>Increment Counter</button>
 <button on:click='addItem'>Additem</button>
@@ -15,16 +15,18 @@ let uniqueCounter = 0;
 <div #else>else rendered</div>
 
 </div>`)
+@Children({
+    HelloWorld
+})
 class Main extends Component {
-    child = {
-        HelloWorld
-    }
+
     // template = "<div on:click='onClick'>Hello {{name}} <b>World<span>Hey</span></b> <span #if(flag || ss)> Lets go</span></div>"
     // template = `<div on:click='onClick' >Hello {{name}}
     // <input #model(name) type='text'></input></div>`
     // template = 
 
     flag = true;
+
     name = "ujjwal"
 
     flagOne = false

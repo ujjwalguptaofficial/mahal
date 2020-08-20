@@ -1,8 +1,10 @@
+import { Component } from "../abstracts";
+
 // tslint:disable-next-line
-export const Template = (stringTemplate: string) => {
+export const Children = (value: { [key: string]: typeof Component }) => {
     return function Template<T extends { new(...args: any[]): {} }>(constructor: T) {
         return class extends constructor {
-            template = stringTemplate
+            children = value
         }
     }
 };

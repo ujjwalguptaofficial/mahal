@@ -1,6 +1,7 @@
 import { ParserUtil } from "../parser_util";
 import { HTML_TAG } from "../enums";
 import { nextTick } from "../helpers";
+import { IPropOption } from "../interface";
 
 const blackListProperty = {
     "template": true,
@@ -10,17 +11,22 @@ const blackListProperty = {
 
 let uniqueCounter = 0
 
+
 export abstract class Component {
-    child: { [key: string]: typeof Component };
+    children: { [key: string]: typeof Component }
     private element_: HTMLElement;
+    template: string;
+    props: {
+        [key: string]: IPropOption | any
+    } = {};
     private dependency_: { [key: string]: any[] } = {};
 
     constructor() {
         nextTick(() => {
             this.attachGetterSetter_();
         })
-        if (this.child == null) {
-            this.child = {};
+        if (this.children == null) {
+            this.children = {};
         }
     }
 
@@ -153,7 +159,7 @@ export abstract class Component {
     executeRender_() {
         const renderFn = this.render || (() => {
             //compile
-            const compiledTemplate = ParserUtil.parseview((this as any).template);
+            const compiledTemplate = ParserUtil.parseview(this.template);
             console.log("compiled", compiledTemplate);
             return ParserUtil.createRenderer(compiledTemplate);
         })()
@@ -201,22 +207,27 @@ export abstract class Component {
                 }
             }
         }
-        else if (this.child[tag]) {
-            const component: Component = new (this.child[tag] as any)();
-
+        else if (this.children[tag]) {
+            const component: Component = new (this.children[tag] as any)();
+            const htmlAttributes = [];
             if (option.attr) {
                 const attr = option.attr;
                 for (const key in attr) {
-                    // if (attr.isBind) {
-                    component[key] = attr[key];
-                    // }
-                    // else {
-                    //     element.setAttribute(key, attr[key]);
-                    // }
+                    if (component.props[key]) {
+                        component[key] = attr[key];
+                    }
+                    else {
+                        htmlAttributes.push({
+                            key,
+                            value: attr[key]
+                        })
+                    }
                 }
             }
             element = component.element_ = component.executeRender_();
-
+            htmlAttributes.forEach(item => {
+                element.setAttribute(item.key, item.value);
+            })
         }
         else {
             throw `Invalid Component ${tag}. If you have created a component, Please register your component.`;
