@@ -21,9 +21,12 @@ export abstract class Component {
     } = {};
     private dependency_: { [key: string]: any[] } = {};
 
+    private parent_: Component;
+
     constructor() {
         nextTick(() => {
             this.attachGetterSetter_();
+            this.emit("created");
         })
         if (this.children == null) {
             this.children = {};
@@ -148,8 +151,7 @@ export abstract class Component {
                     const depIndex = this.dependency_[key].findIndex(q => q.id === id);
                     this.dependency_[key].splice(depIndex, 1);
                 }
-            }).observe(this.element_, { attributes: true, childList: true, subtree: true });
-
+            }).observe(this.element_, { childList: true, subtree: true });
         }
         return els;
     }
@@ -165,6 +167,15 @@ export abstract class Component {
         })()
         console.log("renderer", renderFn);
         this.element_ = renderFn.call(this);
+        nextTick(() => {
+            new MutationObserver((mutationsList, observer) => {
+                if (document.body.contains(this.element_) === false) {
+                    observer.disconnect();
+                    this.clearAll_();
+                }
+            }).observe(document.body, { childList: true, subtree: true });
+            this.emit("rendered");
+        })
         return this.element_;
     }
 
@@ -191,6 +202,27 @@ export abstract class Component {
 
     createCommentNode() {
         return document.createComment("");
+    }
+
+    private events_: {
+        [key: string]: Function[]
+    } = {};
+
+    on(event: string, cb: Function) {
+        if (this.events_[event] == null) {
+            this.events_[event] = [];
+        }
+        this.events_[event].push(cb);
+        return this;
+    }
+
+    emit(event: string, data?: any) {
+        if (this.events_[event]) {
+            this.events_[event].forEach(cb => {
+                cb(data);
+            })
+        }
+        return this;
     }
 
     createElement(tag, childs: HTMLElement[], option) {
@@ -246,5 +278,10 @@ export abstract class Component {
         }
         return element;
 
+    }
+
+    clearAll_() {
+        this.events_ = null;
+        this.emit("destroyed");
     }
 }

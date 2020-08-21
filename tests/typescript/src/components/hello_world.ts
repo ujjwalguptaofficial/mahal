@@ -7,5 +7,17 @@ export default class HelloWorld extends Component {
         count: Number
     }
     count;
+
+    constructor() {
+        super();
+        this.on("rendered", this.onRendered);
+        this.on("created", function () {
+            console.log("created");
+        });
+    }
+
+    onRendered() {
+        console.log("Hello world rendered")
+    }
 }
 

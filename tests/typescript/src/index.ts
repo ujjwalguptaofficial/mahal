@@ -1,8 +1,8 @@
-import { Taj, Component, Template, Children,Prop } from "taj";
+import { Taj, Component, Template, Children, Prop } from "taj";
 import HelloWorld from "./components/hello_world";
 
 let uniqueCounter = 0;
-@Template(`<div >
+@Template(`<div>
 <HelloWorld name='ujjwal' :count='counter'></HelloWorld>
 <button on:click='toggleFlag'>Show Div</button>
 <button on:click='incrementCounter'>Increment Counter</button>
