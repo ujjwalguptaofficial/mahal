@@ -19,6 +19,11 @@ export abstract class Component {
     props: {
         [key: string]: IPropOption | any
     } = {};
+
+    watch: {
+        [key: string]: (oldValue, newValue) => void
+    } = {};
+
     private dependency_: { [key: string]: any[] } = {};
 
     private parent_: Component;
@@ -46,9 +51,12 @@ export abstract class Component {
                 cached[key] = this[key];
                 Object.defineProperty(this, key, {
                     set(newValue) {
+                        const oldValue = cached[key];
                         cached[key] = newValue;
-                        // that.render();
-                        that.updateDOM_(key);
+                        nextTick(() => {
+                            that.watch[key](oldValue, newValue);
+                            that.updateDOM_(key);
+                        })
                     },
                     get() {
                         return cached[key];
@@ -90,8 +98,8 @@ export abstract class Component {
         }
     }
 
-
     private updateDOM_(key: string) {
+
         for (const prop in this.dependency_) {
             if (prop === key) {
                 const depItems = this.dependency_[prop];

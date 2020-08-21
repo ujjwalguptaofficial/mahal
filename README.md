@@ -5,14 +5,15 @@
 * IF - done
 * If else - done
 * For - done
-* customComponent
+* customComponent - done
 * Event 
   * on:click - done
   * on:input - done
 
-* LifeCycle events
+* LifeCycle events - done
+* Events from child to parent - done
 * model - Done
-* Attributes - Pending
+* Attributes - done
 * Dynamic class 
 * Dom Reference
 * Watch
