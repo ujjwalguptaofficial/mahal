@@ -15,7 +15,8 @@
 * model - Done
 * Attributes - done
 * Dynamic class 
-* Dom Reference
-* Watch
+* Dom Reference - done
+* Watch - Done
 * Router
 * Store
+* Inner Html - 

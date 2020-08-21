@@ -37,7 +37,7 @@ export abstract class Component {
 
     constructor() {
         nextTick(() => {
-            this.attachGetterSetter_();
+            this.attachGetterSetter$$();
             this.emit("created");
         })
         if (this.children == null) {
@@ -49,7 +49,7 @@ export abstract class Component {
         return ++uniqueCounter;
     }
 
-    private attachGetterSetter_() {
+    private attachGetterSetter$$() {
         const that = this;
         const cached = {};
         Object.keys(this).forEach(key => {
@@ -65,7 +65,7 @@ export abstract class Component {
                                     cb(newValue, oldValue);
                                 })
                             }
-                            that.updateDOM_(key);
+                            that.updateDOM$$(key);
                         })
                     },
                     get() {
@@ -78,7 +78,7 @@ export abstract class Component {
                         value: function (...args) {
                             let result = Array.prototype.push.apply(this, args);
                             nextTick(() => {
-                                that.onArrayModified_(key, 'push', args[0]);
+                                that.onArrayModified$$(key, 'push', args[0]);
                             });
                             return result;
                         }
@@ -88,7 +88,7 @@ export abstract class Component {
         })
     }
 
-    private onArrayModified_(key: string, method: string, newValue?) {
+    private onArrayModified$$(key: string, method: string, newValue?) {
         for (const prop in this.dependency_) {
             if (prop === key) {
                 const values = this.dependency_[prop].filter(q => q.forExp === true);
@@ -107,7 +107,7 @@ export abstract class Component {
         }
     }
 
-    private updateDOM_(key: string) {
+    private updateDOM$$(key: string) {
 
         for (const prop in this.dependency_) {
             if (prop === key) {
@@ -145,7 +145,7 @@ export abstract class Component {
             ifExp: true
         }
         keys.forEach(item => {
-            this.storeDependency_(item, dep);
+            this.storeDependency$$(item, dep);
         })
         return el;
     }
@@ -155,7 +155,7 @@ export abstract class Component {
             return method(item, i);
         });
         const lastEl = els[els.length - 1];
-        this.storeDependency_(key, {
+        this.storeDependency$$(key, {
             forExp: true,
             method: method,
             lastEl: lastEl,
@@ -175,7 +175,7 @@ export abstract class Component {
 
     render: () => void;
 
-    executeRender_() {
+    executeRender$$() {
         const renderFn = this.render || (() => {
             //compile
             const compiledTemplate = ParserUtil.parseview(this.template);
@@ -188,7 +188,7 @@ export abstract class Component {
             new MutationObserver((mutationsList, observer) => {
                 if (document.body.contains(this.element_) === false) {
                     observer.disconnect();
-                    this.clearAll_();
+                    this.clearAll$$();
                 }
             }).observe(document.body, { childList: true, subtree: true });
             this.emit("rendered");
@@ -200,12 +200,12 @@ export abstract class Component {
     createTextNode(value, propDependency) {
         const el = document.createTextNode(value);
         if (propDependency) {
-            this.storeDependency_(propDependency, el);
+            this.storeDependency$$(propDependency, el);
         }
         return el;
     }
 
-    private storeDependency_(key: string, value) {
+    private storeDependency$$(key: string, value) {
         if (this[key] == null) {
             return;
         }
@@ -278,7 +278,7 @@ export abstract class Component {
                         component[key] = value.v;
                         this.watch(value.k, (newValue) => {
                             component[key] = newValue;
-                            component.updateDOM_(key);
+                            component.updateDOM$$(key);
                         });
                     }
                     else {
@@ -300,7 +300,7 @@ export abstract class Component {
                     }
                 }
             }
-            element = component.element_ = component.executeRender_();
+            element = component.element_ = component.executeRender$$();
             htmlAttributes.forEach(item => {
                 element.setAttribute(item.key, item.value);
             })
@@ -313,16 +313,48 @@ export abstract class Component {
 
         if (option.dep) {
             option.dep.forEach(item => {
-                this.storeDependency_(item, element);
+                this.storeDependency$$(item, element);
             });
         }
         return element;
 
     }
 
-    clearAll_() {
+    clearAll$$() {
         this.events_ = null;
         this.watchList = null;
         this.emit("destroyed");
+    }
+
+    query(selector: string) {
+        return this.element_.querySelector(selector);
+    }
+
+    queryAll(selector: string) {
+        return this.element_.querySelectorAll(selector);
+    }
+
+    queryByName(name: string) {
+        return this.queryAllByName(name)[0];
+    }
+
+    queryAllByName(name: string) {
+        return (this.element_ as any).getElementsByName(name);
+    }
+
+    queryById(id: string) {
+        return (this.element_ as any).getElementById(id);
+    }
+
+    onRendered(cb) {
+        this.on("rendered", cb);
+    }
+
+    onCreated(cb) {
+        this.on("created", cb);
+    }
+
+    onDestroyed(cb) {
+        this.on("destroyed", cb);
     }
 }

@@ -14,7 +14,7 @@ export class Taj {
     create() {
         const component: Component = new (this as any).component();
         this.element.appendChild(
-            component.executeRender_()
+            component.executeRender$$()
         );
     }
 
