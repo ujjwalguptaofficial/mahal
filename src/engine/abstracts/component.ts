@@ -222,7 +222,6 @@ export abstract class Component {
                 cb(data);
             })
         }
-        return this;
     }
 
     createElement(tag, childs: HTMLElement[], option) {
@@ -236,6 +235,18 @@ export abstract class Component {
                 const attr = option.attr;
                 for (const key in attr) {
                     element.setAttribute(key, attr[key]);
+                }
+            }
+
+            if (option.on) {
+                const events = option.on;
+                for (const eventName in events) {
+                    if (events[eventName]) {
+                        element['on' + eventName] = events[eventName].bind(this);
+                    }
+                    else {
+                        throw `Invalid event handler for event ${eventName}, Handler does not exist`;
+                    }
                 }
             }
         }
@@ -256,6 +267,17 @@ export abstract class Component {
                     }
                 }
             }
+            if (option.on) {
+                const events = option.on;
+                for (const eventName in events) {
+                    if (events[eventName]) {
+                        component.on(eventName, events[eventName].bind(this));
+                    }
+                    else {
+                        throw `Invalid event handler for event ${eventName}, Handler does not exist`;
+                    }
+                }
+            }
             element = component.element_ = component.executeRender_();
             htmlAttributes.forEach(item => {
                 element.setAttribute(item.key, item.value);
@@ -264,12 +286,7 @@ export abstract class Component {
         else {
             throw `Invalid Component ${tag}. If you have created a component, Please register your component.`;
         }
-        if (option.on) {
-            const events = option.on;
-            for (const eventName in events) {
-                element['on' + eventName] = events[eventName].bind(this);
-            }
-        }
+
 
         if (option.dep) {
             option.dep.forEach(item => {

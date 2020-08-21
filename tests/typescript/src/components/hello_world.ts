@@ -1,11 +1,12 @@
 import { Component, Template, Prop } from "taj";
 
-@Template("<div>Hello World {{count}}</div>")
+@Template("<button on:click='onClick'>Hello World {{count}}</button>")
 export default class HelloWorld extends Component {
 
     props = {
         count: Number
     }
+
     count;
 
     constructor() {
@@ -18,6 +19,10 @@ export default class HelloWorld extends Component {
 
     onRendered() {
         console.log("Hello world rendered")
+    }
+
+    onClick() {
+        this.emit("click");
     }
 }
 

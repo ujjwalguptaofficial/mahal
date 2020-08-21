@@ -3,7 +3,7 @@ import HelloWorld from "./components/hello_world";
 
 let uniqueCounter = 0;
 @Template(`<div>
-<HelloWorld name='ujjwal' :count='counter'></HelloWorld>
+<HelloWorld on:click='onHelloWordClick' name='ujjwal' :count='counter'></HelloWorld>
 <button on:click='toggleFlag'>Show Div</button>
 <button on:click='incrementCounter'>Increment Counter</button>
 <button on:click='addItem'>Additem</button>
@@ -69,6 +69,10 @@ class Main extends Component {
             // alert("name changed");
             // this.name = "ujjwal gupta";
         }, 1000);
+    }
+
+    onHelloWordClick() {
+        alert("hello world clicked")
     }
 }
 
