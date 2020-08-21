@@ -19,12 +19,6 @@ let uniqueCounter = 0;
     HelloWorld
 })
 class Main extends Component {
-
-    // template = "<div on:click='onClick'>Hello {{name}} <b>World<span>Hey</span></b> <span #if(flag || ss)> Lets go</span></div>"
-    // template = `<div on:click='onClick' >Hello {{name}}
-    // <input #model(name) type='text'></input></div>`
-    // template = 
-
     flag = true;
 
     name = "ujjwal"

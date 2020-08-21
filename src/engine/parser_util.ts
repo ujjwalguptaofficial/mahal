@@ -147,10 +147,10 @@ export class ParserUtil {
                         let attrString = '';
                         attr.forEach((item, index) => {
                             if (item.isBind) {
-                                attrString += `${item.key}:ctx.${item.value}`;
+                                attrString += `${item.key}:{v:ctx.${item.value},k:'${item.value}'}`;
                             }
                             else {
-                                attrString += `${item.key}:'${item.value}'`;
+                                attrString += `${item.key}:{v:'${item.value}'}`;
                             }
                             if (index + 1 < attrLength) {
                                 attrString += ","

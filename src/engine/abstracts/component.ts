@@ -20,9 +20,16 @@ export abstract class Component {
         [key: string]: IPropOption | any
     } = {};
 
-    watch: {
-        [key: string]: (oldValue, newValue) => void
+    watchList: {
+        [key: string]: Array<(newValue, oldValue) => void>
     } = {};
+
+    watch(propName: string, cb: (newValue, oldValue) => void) {
+        if (this.watchList[propName] == null) {
+            this.watchList[propName] = [];
+        }
+        this.watchList[propName].push(cb);
+    }
 
     private dependency_: { [key: string]: any[] } = {};
 
@@ -43,7 +50,6 @@ export abstract class Component {
     }
 
     private attachGetterSetter_() {
-        // call created
         const that = this;
         const cached = {};
         Object.keys(this).forEach(key => {
@@ -54,7 +60,11 @@ export abstract class Component {
                         const oldValue = cached[key];
                         cached[key] = newValue;
                         nextTick(() => {
-                            that.watch[key](oldValue, newValue);
+                            if (that.watchList[key]) {
+                                that.watchList[key].forEach(cb => {
+                                    cb(newValue, oldValue);
+                                })
+                            }
                             that.updateDOM_(key);
                         })
                     },
@@ -75,7 +85,6 @@ export abstract class Component {
                     });
                 }
             }
-
         })
     }
 
@@ -242,7 +251,7 @@ export abstract class Component {
             if (option.attr) {
                 const attr = option.attr;
                 for (const key in attr) {
-                    element.setAttribute(key, attr[key]);
+                    element.setAttribute(key, attr[key].v);
                 }
             }
 
@@ -264,13 +273,18 @@ export abstract class Component {
             if (option.attr) {
                 const attr = option.attr;
                 for (const key in attr) {
+                    const value = attr[key];
                     if (component.props[key]) {
-                        component[key] = attr[key];
+                        component[key] = value.v;
+                        this.watch(value.k, (newValue) => {
+                            component[key] = newValue;
+                            component.updateDOM_(key);
+                        });
                     }
                     else {
                         htmlAttributes.push({
                             key,
-                            value: attr[key]
+                            value: value.v
                         })
                     }
                 }
@@ -290,6 +304,7 @@ export abstract class Component {
             htmlAttributes.forEach(item => {
                 element.setAttribute(item.key, item.value);
             })
+
         }
         else {
             throw `Invalid Component ${tag}. If you have created a component, Please register your component.`;
@@ -307,6 +322,7 @@ export abstract class Component {
 
     clearAll_() {
         this.events_ = null;
+        this.watchList = null;
         this.emit("destroyed");
     }
 }
