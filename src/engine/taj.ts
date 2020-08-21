@@ -1,5 +1,3 @@
-import { ParserUtil } from "./parser_util";
-import { ICompiledView } from "./interface";
 import { Component } from "./abstracts";
 
 export class Taj {

@@ -7,7 +7,7 @@ HtmlTag = openTag:HtmlOpen child:(HtmlTag/Html/MustacheExpression)* HtmlClose? {
   } 
 }
 
-HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:(If/ElseIf/Else)? model:Model? forExp:For? ev:Event* Ws* attr:Attribute* EndOpenTag {
+HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:(If/ElseIf/Else)? model:Model? forExp:For? ev:Event* Ws* attr:Attribute* html:InnerHtml? EndOpenTag {
   
   return {
     tag:word,
@@ -15,7 +15,8 @@ HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:(If/ElseIf/Else)? model:Model
     events:ev,
     forExp:forExp,
     attr:attr,
-    model
+    model,
+    html
   }
 }
 
@@ -49,12 +50,16 @@ For= "#for("_* key:Identifier _* index:ForIndex?  _* "in" _* value:Identifier _*
    }
 }
 
-Attribute= isBind:":"? attr:Identifier _* "=" "'" word:Identifier "'" _*{
+Attribute= isBind:":"? attr:Identifier _* "=" StringSymbol word:Identifier StringSymbol _*{
    return {key:attr,value:word, isBind:isBind!=null};
 }
 
 ForIndex = "," _* index:Identifier{
 	return index ;
+}
+
+InnerHtml= "#html" _* "=" StringSymbol? val:Identifier StringSymbol? {
+   return val;
 }
 
 StartOpenTag "<" = [<];
@@ -87,3 +92,5 @@ EventAssignment "Event Assignment"= val:[a-zA-Z0-9\&\=\>\{\}\(\)\ \|]+ {
 Html "html"= val:[a-zA-Z\&\ \|]+ {
 	return val.join("");
 }
+
+StringSymbol "string" = ['/"]

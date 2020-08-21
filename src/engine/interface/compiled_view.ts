@@ -23,6 +23,7 @@ export interface ICompiledView {
             isBind: Boolean
         }[],
         model: string,
+        html: string,
         events: {
             name: string;
             handler: string;

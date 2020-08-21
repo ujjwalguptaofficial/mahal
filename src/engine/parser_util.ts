@@ -139,6 +139,10 @@ export class ParserUtil {
                         dep.push(compiled.view.model);
                     }
 
+                    
+                    if (compiled.view.html) {
+                        optionStr += `${optionStr.length > 2 ? "," : ''} html:ctx.${compiled.view.html}`;
+                    }
 
                     // handle attributes
                     const attr = compiled.view.attr;

@@ -248,6 +248,11 @@ export abstract class Component {
             childs.forEach((item) => {
                 element.appendChild(item);
             });
+
+            if (option.html) {
+                (element as HTMLElement).innerHTML = option.html;
+            }
+
             if (option.attr) {
                 const attr = option.attr;
                 for (const key in attr) {

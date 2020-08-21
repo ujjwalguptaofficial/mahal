@@ -1,6 +1,6 @@
 import { Component, Template, Prop } from "taj";
 
-@Template("<button on:click='onClick'>Hello World {{count}}</button>")
+@Template("<div><button on:click='onClick'>Hello World {{count}}</button><p #html=myHtml></p></div>")
 export default class HelloWorld extends Component {
 
     props = {
@@ -8,6 +8,8 @@ export default class HelloWorld extends Component {
     }
 
     count;
+
+    myHtml="<b>BOLD</b>"
 
     constructor() {
         super();

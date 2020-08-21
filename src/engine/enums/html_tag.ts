@@ -1,5 +1,6 @@
 export enum HTML_TAG {
     div = 1,
+    p = 1,
     b = "b",
     span = "span",
     input = "input",
