@@ -1,7 +1,12 @@
-import { Component, Template, Prop } from "taj";
+import { Component, Template, Prop, Taj } from "taj";
 
 @Template("<div><button on:click='onClick'>Hello World {{count}}</button><p #html=myHtml></p></div>")
-export default class HelloWorld extends Component {
+
+class BaseComponent extends Component {
+    $callMe
+}
+
+export default class HelloWorld extends BaseComponent {
 
     props = {
         count: Number
@@ -9,7 +14,7 @@ export default class HelloWorld extends Component {
 
     count;
 
-    myHtml="<b>BOLD</b>"
+    myHtml = "<b>BOLD</b>"
 
     constructor() {
         super();
@@ -24,7 +29,11 @@ export default class HelloWorld extends Component {
     }
 
     onClick() {
+        this.$callMe("hey there")
         this.emit("click");
     }
 }
 
+(Component.prototype as any).$callMe = () => {
+    alert("call from prototype")
+}

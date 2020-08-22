@@ -1,4 +1,4 @@
-import { Component } from "./abstracts";
+import { Component, Plugin } from "./abstracts";
 
 export class Taj {
     component: typeof Component;
@@ -16,4 +16,7 @@ export class Taj {
         );
     }
 
+    static register(plugin, options) {
+        new plugin.configure(Component, options);
+    }
 }
