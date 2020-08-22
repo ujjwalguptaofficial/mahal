@@ -8,10 +8,8 @@ class BaseComponent extends Component {
 
 export default class HelloWorld extends BaseComponent {
 
-    props = {
-        count: Number
-    }
 
+    @Prop(Number)
     count;
 
     // @Prop("as")

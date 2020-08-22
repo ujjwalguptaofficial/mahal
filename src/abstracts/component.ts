@@ -17,13 +17,17 @@ export abstract class Component {
     children: { [key: string]: typeof Component }
     private element_: HTMLElement;
     template: string;
-    props: {
-        [key: string]: IPropOption | any
-    } = {};
 
     watchList: {
         [key: string]: Array<(newValue, oldValue) => void>
     } = {};
+
+    addProp(name: string, option: IPropOption | any) {
+        if ((this as any).prototype.$_props == null) {
+            (this as any).prototype.$_props = {};
+        }
+        (this as any).prototype.$_props = option;
+    }
 
     watch(propName: string, cb: (newValue, oldValue) => void) {
         if (this.watchList[propName] == null) {
@@ -53,8 +57,11 @@ export abstract class Component {
     private attachGetterSetter$$() {
         const that = this;
         const cached = {};
+        if (!this.$_props) {
+            this.$_props = {};
+        }
         Object.keys(this).forEach(key => {
-            if (!blackListProperty[key]) {
+            if (!blackListProperty[key] && !this.$_props[key]) {
                 cached[key] = this[key];
                 Object.defineProperty(this, key, {
                     set(newValue) {
@@ -280,7 +287,7 @@ export abstract class Component {
                 const attr = option.attr;
                 for (const key in attr) {
                     const value = attr[key];
-                    if (component.props[key]) {
+                    if (component.$_props[key]) {
                         component[key] = value.v;
                         this.watch(value.k, (newValue) => {
                             component[key] = newValue;
@@ -375,5 +382,6 @@ export abstract class Component {
     }
 
     private $_filters;
+    private $_props;
 
 }
