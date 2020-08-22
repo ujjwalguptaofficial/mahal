@@ -20,3 +20,4 @@
 * Router
 * Store
 * Inner Html - done
+* Filter 

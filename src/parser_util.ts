@@ -13,6 +13,7 @@ export class ParserUtil {
                 case '&&':
                 case '||':
                 case 'true':
+                case '':
                 case 'false': return item;
                 default: keys.push(item); return "ctx." + item;
             }
@@ -44,6 +45,7 @@ export class ParserUtil {
         const sife= ctx.storeIfExp_.bind(ctx);
         const sfore= ctx.storeForExp_.bind(ctx);
         const unique= ctx.unique;
+        const f= ctx.$filter.bind(this);
         `;
         const createJsEqFromCompiled = (compiled: ICompiledView) => {
             let str = "";
@@ -139,7 +141,7 @@ export class ParserUtil {
                         dep.push(compiled.view.model);
                     }
 
-                    
+
                     if (compiled.view.html) {
                         optionStr += `${optionStr.length > 2 ? "," : ''} html:ctx.${compiled.view.html}`;
                     }
@@ -246,7 +248,14 @@ export class ParserUtil {
                 }
             }
             else if (compiled.mustacheExp) {
-                str += `ct(${ParserUtil.createFnFromStringExpression(compiled.mustacheExp)},'${compiled.mustacheExp}')`;
+                str += `ct(`;
+                let brackets = "";
+                compiled.filters.forEach(item => {
+                    str += `f('${item}',`
+                    brackets += ")"
+                });
+                str += `${ParserUtil.createFnFromStringExpression(compiled.mustacheExp)} ${brackets},'${compiled.mustacheExp}')`
+
             }
             else {
                 str += `ct('${compiled}')`;

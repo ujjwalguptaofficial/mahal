@@ -2,6 +2,7 @@ import { ParserUtil } from "../parser_util";
 import { HTML_TAG } from "../enums";
 import { nextTick } from "../helpers";
 import { IPropOption } from "../interface";
+import { globalFilters } from "../constant";
 
 const blackListProperty = {
     "template": true,
@@ -362,4 +363,17 @@ export abstract class Component {
     onDestroyed(cb) {
         this.on("destroyed", cb);
     }
+
+    $filter(name: string, value) {
+        if (globalFilters[name]) {
+            return globalFilters[name](value);
+        }
+        else if (this.$_filters[name]) {
+            return this.$_filters[name](value);
+        }
+        throw `Can not find filter ${name}`;
+    }
+
+    private $_filters;
+
 }

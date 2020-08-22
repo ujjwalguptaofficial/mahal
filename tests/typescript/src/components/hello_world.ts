@@ -1,6 +1,6 @@
-import { Component, Template, Prop, Taj } from "taj";
+import { Component, Template, Prop, Taj, Filter } from "taj";
 
-@Template("<div><button on:click='onClick'>Hello World {{count}}</button><p #html=myHtml></p></div>")
+@Template("<div>{{name | toUpper}}<button on:click='onClick'>Hello World {{count}}</button><p #html=myHtml></p></div>")
 
 class BaseComponent extends Component {
     $callMe
@@ -14,23 +14,32 @@ export default class HelloWorld extends BaseComponent {
 
     count;
 
+    // @Prop("as")
     myHtml = "<b>BOLD</b>"
+
+    name = "ujjwal gupta"
 
     constructor() {
         super();
         this.on("rendered", this.onRendered);
         this.on("created", function () {
-            console.log("created");
+            console.log("created", this);
         });
     }
 
     onRendered() {
-        console.log("Hello world rendered")
+        console.log("Hello world rendered", this);
     }
 
     onClick() {
-        this.$callMe("hey there")
+        console.log("this", this, HelloWorld);
+        // this.$callMe("hey there")
         this.emit("click");
+    }
+
+    @Filter("toUpper")
+    upperCase(value: string) {
+        return value.toUpperCase();
     }
 }
 

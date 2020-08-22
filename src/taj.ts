@@ -1,4 +1,5 @@
 import { Component, Plugin } from "./abstracts";
+import { globalFilters } from "./constant";
 
 export class Taj {
     component: typeof Component;
@@ -18,5 +19,9 @@ export class Taj {
 
     static register(plugin, options) {
         new plugin.configure(Component, options);
+    }
+
+    filters(name: string, cb) {
+        globalFilters[name] = cb;
     }
 }

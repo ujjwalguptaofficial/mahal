@@ -31,4 +31,5 @@ export interface ICompiledView {
     },
     mustacheExp: string,
     child: ICompiledView[]
+    filters: string[];
 }

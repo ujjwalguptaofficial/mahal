@@ -73,15 +73,23 @@ Identifier "identifier"= val:[a-zA-Z]+ {
 	return val.join("");
 }
 
-MustacheExpression "mustache expression" = "{{" val:Expression "}}"+ {
-	return {mustacheExp:val};
+MustacheExpression "mustache expression" = "{{" val:Html or:MustacheOr?  filters:Filter* _*  "}}"+ {
+	return {mustacheExp:val + (or ? or :''), filters};
 }
 
-Event "event syntax" = "on:" event:Identifier "='" handler:EventAssignment "'"+ {
+Filter "filter" = _* "|" _* val:Identifier {
+  return val;
+}
+
+MustacheOr = "||" or:Html{
+  return "||" +or;
+}
+
+Event "event syntax" = "on:" event:Identifier "=" StringSymbol handler:EventAssignment StringSymbol+ {
 	return {name:event, handler:handler};
 }
 
-Expression "Expression"= val:[a-zA-Z\&\ \|]+ {
+Expression "Expression"= val:[a-zA-Z\&\ \|\.]+ {
 	return val.join("");
 }
 
@@ -89,7 +97,7 @@ EventAssignment "Event Assignment"= val:[a-zA-Z0-9\&\=\>\{\}\(\)\ \|]+ {
 	return val.join("");
 }
 
-Html "html"= val:[a-zA-Z\&\ \|]+ {
+Html "html"= val:[a-zA-Z\&\ \.]+ {
 	return val.join("");
 }
 
