@@ -1,3 +1,3 @@
 export abstract class Plugin {
-    abstract configure(component, options);
+    abstract setup(component, options);
 }

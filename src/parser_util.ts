@@ -1,8 +1,9 @@
 import * as parser from '../build/parser';
-import { LogHelper } from './log_helper';
+import { LogHelper } from './utils/log_helper';
 import { ERROR_TYPE, HTML_TAG } from './enums';
 import { ICompiledView, IIfExpModified } from './interface';
 import prettier from "prettier";
+import { nextTick } from './helpers';
 
 export class ParserUtil {
 
@@ -37,7 +38,15 @@ export class ParserUtil {
         // }
     }
 
-    static createRenderer(compiledParent: ICompiledView) {
+    static createRenderer(template: string) {
+        const compiledParent = ParserUtil.parseview(template);
+        console.log("compiled", compiledParent);
+        if (compiledParent.view) {
+            if (compiledParent.view.forExp) {
+                console.error(`Invalid template ${template}`);
+                throw new LogHelper(ERROR_TYPE.ForExpAsRoot).get();
+            }
+        }
         let parentStr = `const ctx= this; 
         const ce= ctx.createElement.bind(ctx);
         const ct= ctx.createTextNode.bind(ctx);

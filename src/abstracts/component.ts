@@ -4,11 +4,6 @@ import { nextTick } from "../helpers";
 import { IPropOption } from "../interface";
 import { globalFilters } from "../constant";
 
-const blackListProperty = {
-    "template": true,
-    "element_": true,
-    "dependency_": true
-}
 
 let uniqueCounter = 0
 
@@ -36,13 +31,13 @@ export abstract class Component {
         this.watchList[propName].push(cb);
     }
 
-    private dependency_: { [key: string]: any[] } = {};
+    private _$dependency: { [key: string]: any[] } = {};
 
-    private parent_: Component;
+    private _$parent: Component;
 
     constructor() {
         nextTick(() => {
-            this.attachGetterSetter$$();
+            this._$attachGetterSetter();
             this.emit("created");
         })
         if (this.children == null) {
@@ -54,7 +49,7 @@ export abstract class Component {
         return ++uniqueCounter;
     }
 
-    private attachGetterSetter$$() {
+    private _$attachGetterSetter() {
         const that = this;
         const cached = {};
 
@@ -70,7 +65,7 @@ export abstract class Component {
                                 cb(newValue, oldValue);
                             })
                         }
-                        that.updateDOM$$(key);
+                        that._$updateDOM(key);
                     })
                 },
                 get() {
@@ -83,7 +78,7 @@ export abstract class Component {
                     value: function (...args) {
                         let result = Array.prototype.push.apply(this, args);
                         nextTick(() => {
-                            that.onArrayModified$$(key, 'push', args[0]);
+                            that._$onArrayModified(key, 'push', args[0]);
                         });
                         return result;
                     }
@@ -92,10 +87,10 @@ export abstract class Component {
         })
     }
 
-    private onArrayModified$$(key: string, method: string, newValue?) {
-        for (const prop in this.dependency_) {
+    private _$onArrayModified(key: string, method: string, newValue?) {
+        for (const prop in this._$dependency) {
             if (prop === key) {
-                const values = this.dependency_[prop].filter(q => q.forExp === true);
+                const values = this._$dependency[prop].filter(q => q.forExp === true);
                 switch (method) {
                     case 'push':
                         values.forEach(item => {
@@ -111,11 +106,11 @@ export abstract class Component {
         }
     }
 
-    private updateDOM$$(key: string) {
+    private _$updateDOM(key: string) {
 
-        for (const prop in this.dependency_) {
+        for (const prop in this._$dependency) {
             if (prop === key) {
-                const depItems = this.dependency_[prop];
+                const depItems = this._$dependency[prop];
                 depItems.forEach(item => {
                     switch (item.nodeType) {
                         // Text Node
@@ -166,26 +161,23 @@ export abstract class Component {
             id: id
         });
         if (lastEl) {
-            new MutationObserver((mutationsList, observer) => {
-                if (document.body.contains(lastEl) === false) {
-                    observer.disconnect();
-                    const depIndex = this.dependency_[key].findIndex(q => q.id === id);
-                    this.dependency_[key].splice(depIndex, 1);
-                }
-            }).observe(this.element_, { childList: true, subtree: true });
+            nextTick(() => {
+                new MutationObserver((mutationsList, observer) => {
+                    if (document.body.contains(lastEl) === false) {
+                        observer.disconnect();
+                        const depIndex = this._$dependency[key].findIndex(q => q.id === id);
+                        this._$dependency[key].splice(depIndex, 1);
+                    }
+                }).observe(this.element_, { childList: true, subtree: true });
+            });
         }
         return els;
     }
 
     render: () => void;
 
-    executeRender$$() {
-        const renderFn = this.render || (() => {
-            //compile
-            const compiledTemplate = ParserUtil.parseview(this.template);
-            console.log("compiled", compiledTemplate);
-            return ParserUtil.createRenderer(compiledTemplate);
-        })()
+    _$executeRender() {
+        const renderFn = this.render || ParserUtil.createRenderer(this.template);
         console.log("renderer", renderFn);
         this.element_ = renderFn.call(this);
         nextTick(() => {
@@ -213,11 +205,11 @@ export abstract class Component {
         if (this[key] == null) {
             return;
         }
-        if (this.dependency_[key] == null) {
-            this.dependency_[key] = [value];
+        if (this._$dependency[key] == null) {
+            this._$dependency[key] = [value];
         }
-        else if (this.dependency_[key].findIndex(q => q.id === value.id) < 0) {
-            this.dependency_[key].push(value);
+        else if (this._$dependency[key].findIndex(q => q.id === value.id) < 0) {
+            this._$dependency[key].push(value);
         }
     }
 
@@ -287,7 +279,7 @@ export abstract class Component {
                         component[key] = value.v;
                         this.watch(value.k, (newValue) => {
                             component[key] = newValue;
-                            component.updateDOM$$(key);
+                            component._$updateDOM(key);
                         });
                     }
                     else {
@@ -309,7 +301,7 @@ export abstract class Component {
                     }
                 }
             }
-            element = component.element_ = component.executeRender$$();
+            element = component.element_ = component._$executeRender();
             htmlAttributes.forEach(item => {
                 element.setAttribute(item.key, item.value);
             })

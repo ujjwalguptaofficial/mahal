@@ -1,6 +1,6 @@
-import { IError } from "./interface";
-import { ERROR_TYPE } from "./enums";
-import { Config } from "./config";
+import { IError } from "../interface";
+import { ERROR_TYPE } from "../enums";
+import { Config } from "../config";
 
 export class LogHelper implements IError {
     type: ERROR_TYPE;
@@ -11,12 +11,6 @@ export class LogHelper implements IError {
         this.type = type;
         this.info_ = info;
         this.message = this.getMsg_();
-    }
-
-    static log(msg) {
-        if (Config.isLogEnabled) {
-            console.log(msg);
-        }
     }
 
     logError() {
@@ -39,6 +33,9 @@ export class LogHelper implements IError {
         switch (this.type) {
             case ERROR_TYPE.SynTaxError:
                 errMsg = this.info_;
+                break;
+            case ERROR_TYPE.ForExpAsRoot:
+                errMsg = `For is not allowed in root element. Create a child element instead.`
                 break;
             default:
                 errMsg = this.message;

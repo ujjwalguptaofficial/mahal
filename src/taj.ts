@@ -13,15 +13,19 @@ export class Taj {
     create() {
         const component: Component = new (this as any).component();
         this.element.appendChild(
-            component.executeRender$$()
+            component._$executeRender()
         );
     }
 
-    static register(plugin, options) {
-        new plugin.configure(Component, options);
+    addPlugin(plugin, options) {
+        const pluginInstane = new plugin();
+        pluginInstane.setup(Component, options);
+        this.plugins_.push(plugin);
     }
 
     filters(name: string, cb) {
         globalFilters[name] = cb;
     }
+
+    private plugins_ = [];
 }

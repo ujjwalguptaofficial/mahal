@@ -69,7 +69,7 @@ EndTag ">" = [>];
 
 EndOpenTag ">" = "/"? [>];
 
-Identifier "identifier"= val:[a-zA-Z]+ {
+Identifier "identifier"= val:[a-zA-Z/$]+ {
 	return val.join("");
 }
 
