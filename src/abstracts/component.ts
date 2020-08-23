@@ -150,7 +150,7 @@ export abstract class Component {
     }
 
     private storeForExp_(key, method: Function, id: string) {
-        const els = this[key].map((item, i) => {
+        const els = this._$resolve(key).map((item, i) => {
             return method(item, i);
         });
         const lastEl = els[els.length - 1];
@@ -172,6 +172,11 @@ export abstract class Component {
             });
         }
         return els;
+    }
+
+    private _$resolve(path) {
+        var properties = Array.isArray(path) ? path : path.split(".")
+        return properties.reduce((prev, curr) => prev && prev[curr], this)
     }
 
     render: () => void;

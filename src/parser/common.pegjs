@@ -44,7 +44,7 @@ Model= "#model" "(" word:Identifier ")"{
    return word;
 }
 
-For= "#for("_* key:Identifier _* index:ForIndex?  _* "in" _* value:Identifier _* ")"{
+For= "#for("_* key:Identifier _* index:ForIndex?  _* "in" _* value:Expression _* ")"{
    return {
       key, value,index : index || 'i'
    }
@@ -69,7 +69,7 @@ EndTag ">" = [>];
 
 EndOpenTag ">" = "/"? [>];
 
-Identifier "identifier"= val:[a-zA-Z/$]+ {
+Identifier "identifier"= val:[a-zA-Z\$]+ {
 	return val.join("");
 }
 
@@ -89,7 +89,7 @@ Event "event syntax" = "on:" event:Identifier "=" StringSymbol handler:EventAssi
 	return {name:event, handler:handler};
 }
 
-Expression "Expression"= val:[a-zA-Z\&\ \|\.]+ {
+Expression "Expression"= val:[a-zA-Z\&\ \|\.\$]+ {
 	return val.join("");
 }
 
