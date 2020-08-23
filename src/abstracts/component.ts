@@ -1,7 +1,7 @@
 import { ParserUtil } from "../parser_util";
 import { HTML_TAG } from "../enums";
 import { nextTick } from "../helpers";
-import { IPropOption } from "../interface";
+import { IPropOption, ITajStore } from "../interface";
 import { globalFilters } from "../constant";
 
 
@@ -43,6 +43,7 @@ export abstract class Component {
         if (this.children == null) {
             this.children = {};
         }
+
     }
 
     get unique() {
@@ -193,7 +194,7 @@ export abstract class Component {
                 }
             }).observe(document.body, { childList: true, subtree: true });
             if ((this as any).$store) {
-                this._$storeWatchCb = [];
+
                 for (let key in this._$dependency) {
                     if (key.indexOf("$store.state") >= 0) {
                         const cb = () => {
@@ -290,6 +291,24 @@ export abstract class Component {
         }
         else if (this.children[tag]) {
             const component: Component = new (this.children[tag] as any)();
+            if (component._$storeGetters) {
+                // can not make it async because if item is array then it will break
+                // because at that time value will be undefined
+                // so set it before rendering
+                component._$storeGetters.forEach(item => {
+                    component[item.prop] = component.$store.state[item.state];
+                    const cb = (newValue) => {
+                        component[item.prop] = newValue;
+                        component._$updateDOM(item.prop);
+                    }
+                    component.$store.watch(item.state, cb);
+                    component._$storeWatchCb.push({
+                        key: item.state,
+                        cb
+                    });
+                });
+            }
+
             const htmlAttributes = [];
             if (option.attr) {
                 const attr = option.attr;
@@ -392,10 +411,14 @@ export abstract class Component {
         throw `Can not find filter ${name}`;
     }
 
+    $store: ITajStore;
+
     private $_filters;
     private $_props;
     private $_reactives;
 
-    private _$storeWatchCb: { key: string, cb: any }[];
+    private _$storeWatchCb: { key: string, cb: Function }[] = [];
+
+    private _$storeGetters: { prop: string, state: string }[];
 
 }
