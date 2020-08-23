@@ -115,10 +115,10 @@ export abstract class Component {
                     switch (item.nodeType) {
                         // Text Node
                         case 3:
-                            item.nodeValue = this[key]; break;
+                            item.nodeValue = this._$resolve(key); break;
                         // Input node 
                         case 1:
-                            (item as HTMLInputElement).value = this[key];
+                            (item as HTMLInputElement).value = this._$resolve(key)
                             break;
                         default:
                             if (item.ifExp) {
@@ -144,7 +144,7 @@ export abstract class Component {
             ifExp: true
         }
         keys.forEach(item => {
-            this.storeDependency$$(item, dep);
+            this.__$storeDependency(item, dep);
         })
         return el;
     }
@@ -154,7 +154,7 @@ export abstract class Component {
             return method(item, i);
         });
         const lastEl = els[els.length - 1];
-        this.storeDependency$$(key, {
+        this.__$storeDependency(key, {
             forExp: true,
             method: method,
             lastEl: lastEl,
@@ -192,6 +192,15 @@ export abstract class Component {
                     this.clearAll$$();
                 }
             }).observe(document.body, { childList: true, subtree: true });
+            if ((this as any).$store) {
+                for (let key in this._$dependency) {
+                    if (key.indexOf("$store.state") >= 0) {
+                        (this as any).$store.watch(key.replace("$store.state.", ''), () => {
+                            this._$updateDOM(key);
+                        });
+                    }
+                }
+            }
             this.emit("rendered");
         })
         return this.element_;
@@ -201,15 +210,15 @@ export abstract class Component {
     createTextNode(value, propDependency) {
         const el = document.createTextNode(value);
         if (propDependency) {
-            this.storeDependency$$(propDependency, el);
+            this.__$storeDependency(propDependency, el);
         }
         return el;
     }
 
-    private storeDependency$$(key: string, value) {
-        if (this[key] == null) {
-            return;
-        }
+    private __$storeDependency(key: string, value) {
+        // if (this[key] == null) {
+        //     return;
+        // }
         if (this._$dependency[key] == null) {
             this._$dependency[key] = [value];
         }
@@ -319,7 +328,7 @@ export abstract class Component {
 
         if (option.dep) {
             option.dep.forEach(item => {
-                this.storeDependency$$(item, element);
+                this.__$storeDependency(item, element);
             });
         }
         return element;

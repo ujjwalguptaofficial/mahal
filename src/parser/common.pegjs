@@ -97,7 +97,7 @@ EventAssignment "Event Assignment"= val:[a-zA-Z0-9\&\=\>\{\}\(\)\ \|]+ {
 	return val.join("");
 }
 
-Html "html"= val:[a-zA-Z\&\ \.]+ {
+Html "html"= val:[a-zA-Z\&\ \.\$]+ {
 	return val.join("");
 }
 
