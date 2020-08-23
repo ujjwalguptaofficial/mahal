@@ -189,14 +189,20 @@ export abstract class Component {
             new MutationObserver((mutationsList, observer) => {
                 if (document.body.contains(this.element_) === false) {
                     observer.disconnect();
-                    this.clearAll$$();
+                    this._$clearAll();
                 }
             }).observe(document.body, { childList: true, subtree: true });
             if ((this as any).$store) {
+                this._$storeWatchCb = [];
                 for (let key in this._$dependency) {
                     if (key.indexOf("$store.state") >= 0) {
-                        (this as any).$store.watch(key.replace("$store.state.", ''), () => {
+                        const cb = () => {
                             this._$updateDOM(key);
+                        };
+                        key = key.replace("$store.state.", '');
+                        (this as any).$store.watch(key, cb);
+                        this._$storeWatchCb.push({
+                            key, cb
                         });
                     }
                 }
@@ -335,10 +341,13 @@ export abstract class Component {
 
     }
 
-    clearAll$$() {
+    _$clearAll() {
+        this.emit("destroyed");
+        this._$storeWatchCb.forEach(item => {
+            (this as any).$store.unwatch(item.key, item.cb)
+        });
         this.events_ = null;
         this.watchList = null;
-        this.emit("destroyed");
     }
 
     query(selector: string) {
@@ -386,5 +395,7 @@ export abstract class Component {
     private $_filters;
     private $_props;
     private $_reactives;
+
+    private _$storeWatchCb: { key: string, cb: any }[];
 
 }
