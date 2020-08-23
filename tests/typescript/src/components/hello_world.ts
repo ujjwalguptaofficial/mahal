@@ -1,4 +1,4 @@
-import { Component, Template, Prop, Taj, Filter } from "taj";
+import { Component, Template, Prop, Taj, Filter, Reactive } from "taj";
 
 @Template("<div>{{name | toUpper}}<button on:click='onClick'>Hello World {{count}}</button><p #html=myHtml></p></div>")
 
@@ -15,6 +15,7 @@ export default class HelloWorld extends BaseComponent {
     // @Prop("as")
     myHtml = "<b>BOLD</b>"
 
+    @Reactive
     name = "ujjwal gupta"
 
     constructor() {

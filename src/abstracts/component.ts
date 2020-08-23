@@ -57,41 +57,37 @@ export abstract class Component {
     private attachGetterSetter$$() {
         const that = this;
         const cached = {};
-        if (!this.$_props) {
-            this.$_props = {};
-        }
-        Object.keys(this).forEach(key => {
-            if (!blackListProperty[key] && !this.$_props[key]) {
-                cached[key] = this[key];
-                Object.defineProperty(this, key, {
-                    set(newValue) {
-                        const oldValue = cached[key];
-                        cached[key] = newValue;
+
+        (this.$_reactives || []).forEach(key => {
+            cached[key] = this[key];
+            Object.defineProperty(this, key, {
+                set(newValue) {
+                    const oldValue = cached[key];
+                    cached[key] = newValue;
+                    nextTick(() => {
+                        if (that.watchList[key]) {
+                            that.watchList[key].forEach(cb => {
+                                cb(newValue, oldValue);
+                            })
+                        }
+                        that.updateDOM$$(key);
+                    })
+                },
+                get() {
+                    return cached[key];
+                }
+            });
+
+            if (Array.isArray(this[key])) {
+                Object.defineProperty(this[key], "push", {
+                    value: function (...args) {
+                        let result = Array.prototype.push.apply(this, args);
                         nextTick(() => {
-                            if (that.watchList[key]) {
-                                that.watchList[key].forEach(cb => {
-                                    cb(newValue, oldValue);
-                                })
-                            }
-                            that.updateDOM$$(key);
-                        })
-                    },
-                    get() {
-                        return cached[key];
+                            that.onArrayModified$$(key, 'push', args[0]);
+                        });
+                        return result;
                     }
                 });
-
-                if (Array.isArray(this[key])) {
-                    Object.defineProperty(this[key], "push", {
-                        value: function (...args) {
-                            let result = Array.prototype.push.apply(this, args);
-                            nextTick(() => {
-                                that.onArrayModified$$(key, 'push', args[0]);
-                            });
-                            return result;
-                        }
-                    });
-                }
             }
         })
     }
@@ -383,5 +379,6 @@ export abstract class Component {
 
     private $_filters;
     private $_props;
+    private $_reactives;
 
 }

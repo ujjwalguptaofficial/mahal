@@ -1,7 +1,6 @@
-import { Taj, Component, Template, Children, Prop } from "taj";
+import { Taj, Component, Template, Children, Reactive } from "taj";
 import HelloWorld from "./components/hello_world";
 
-let uniqueCounter = 0;
 @Template(`<div>
 <HelloWorld on:click='onHelloWordClick' name='ujjwal' :count='counter'></HelloWorld>
 <button on:click='toggleFlag'>Show Div</button>
@@ -34,6 +33,7 @@ class Main extends Component {
         this.flagTwo = !this.flagTwo
     }
 
+    @Reactive
     counter = 0;
 
     incrementCounter() {
