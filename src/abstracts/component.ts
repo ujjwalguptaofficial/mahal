@@ -75,35 +75,55 @@ export abstract class Component {
             });
 
             if (Array.isArray(this[key])) {
-                Object.defineProperty(this[key], "push", {
-                    value: function (...args) {
-                        let result = Array.prototype.push.apply(this, args);
-                        nextTick(() => {
-                            that._$onArrayModified(key, 'push', args[0]);
-                        });
-                        return result;
+                // Object.defineProperty(this[key], "push", {
+                //     value: function (...args) {
+                //         let result = Array.prototype.push.apply(this, args);
+                //         nextTick(() => {
+                //             that._$onArrayModified(key, 'push', args[0]);
+                //         });
+                //         return result;
+                //     }
+                // });
+                this[key] = new Proxy(this[key], {
+                    get(obj, prop) {
+                        debugger;
+
+                        return obj[prop]
+                    },
+                    set(obj, prop, value) {
+                        debugger;
+                        that._$onArrayModified(key, prop, value);
+                        return true;
                     }
-                });
+                })
             }
         })
     }
 
-    private _$onArrayModified(key: string, method: string, newValue?) {
-        for (const prop in this._$dependency) {
-            if (prop === key) {
-                const values = this._$dependency[prop].filter(q => q.forExp === true);
-                switch (method) {
-                    case 'push':
-                        values.forEach(item => {
-                            const newElement = item.method(newValue, this[key].length - 1);
-                            (item.lastEl as HTMLElement).parentNode.insertBefore(newElement, item.lastEl.nextSibling);
-                            item.lastEl = newElement;
-                        });
-                        break;
-                }
-                console.log("value", values);
-                return;
+    private _$onArrayModified(key: string, prop, newValue?) {
+        if (this._$dependency[key]) {
+            const values = this._$dependency[key].filter(q => q.forExp === true);
+            switch (prop) {
+                case 'length':
+                    return;
+                default:
+                    values.forEach(item => {
+                        const newElement = item.method(newValue, prop);
+                        // (item.lastEl as HTMLElement).parentNode.insertBefore(newElement, item.lastEl.nextSibling);
+                        // item.lastEl = newElement;
+                        const parent = (item.ref as Comment).parentNode;
+                        if (this[key][prop]) {
+                            (item.parent as HTMLElement).insertBefore(newElement, item.parent.children[prop]);
+                        }
+                        else {
+                            // (item.parent as HTMLElement).appendChild(newElement);
+                            (parent as HTMLElement).insertBefore(newElement, item.ref.nextSibling);
+                        }
+                    });
+                    break;
             }
+            console.log("value", values);
+            return;
         }
     }
 
@@ -151,27 +171,26 @@ export abstract class Component {
     }
 
     private storeForExp_(key, method: Function, id: string) {
-        const els = this._$resolve(key).map((item, i) => {
-            return method(item, i);
+        const cmNode = this.createCommentNode();
+        const els = [cmNode];
+        this._$resolve(key).map((item, i) => {
+            els.push(method(item, i));
         });
-        const lastEl = els[els.length - 1];
-        this.__$storeDependency(key, {
-            forExp: true,
-            method: method,
-            lastEl: lastEl,
-            id: id
-        });
-        if (lastEl) {
-            nextTick(() => {
-                new MutationObserver((mutationsList, observer) => {
-                    if (document.body.contains(lastEl) === false) {
-                        observer.disconnect();
-                        const depIndex = this._$dependency[key].findIndex(q => q.id === id);
-                        this._$dependency[key].splice(depIndex, 1);
-                    }
-                }).observe(this.element_, { childList: true, subtree: true });
+        nextTick(() => {
+            this.__$storeDependency(key, {
+                forExp: true,
+                method: method,
+                ref: cmNode,
+                id: id
             });
-        }
+            new MutationObserver((mutationsList, observer) => {
+                if (document.body.contains(cmNode) === false) {
+                    observer.disconnect();
+                    const depIndex = this._$dependency[key].findIndex(q => q.id === id);
+                    this._$dependency[key].splice(depIndex, 1);
+                }
+            }).observe(this.element_, { childList: true, subtree: true });
+        });
         return els;
     }
 
