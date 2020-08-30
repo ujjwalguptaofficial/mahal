@@ -51,4 +51,8 @@ export class LogHelper implements IError {
         }
         return errMsg;
     }
+
+    static warn(...args) {
+        console.warn(...args);
+    }
 }

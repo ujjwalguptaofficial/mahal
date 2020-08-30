@@ -5,7 +5,7 @@ import { Component, Template, Prop, Taj, Filter, Reactive } from "taj";
 <div>
     <table>
     <tr>
-        <td><input #model(name) ></td>
+        <td><input #model(name) ></input></td>
         <td on:click="addStudent"><button>Add Student</button></td>
     </tr>
       <tr #for(student,index in students)>
@@ -33,13 +33,21 @@ export default class extends Component {
     }
 
     editStudent(index) {
-        this.students[index].isEdit = true;
+        this.editName = this.students[index].name;
+        this.$set(this.students, index, {
+            ... this.students[index], ...{
+                isEdit: true
+            }
+        })
     }
 
     updateStudent(index) {
         this.students[index].name = this.editName;
-        this.students[index].isEdit = false;
-
+        this.$set(this.students, index, {
+            ... this.students[index], ...{
+                isEdit: false
+            }
+        })
     }
 
     @Reactive

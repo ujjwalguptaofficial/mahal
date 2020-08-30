@@ -1,6 +1,6 @@
 import { ParserUtil } from "../parser_util";
 import { HTML_TAG } from "../enums";
-import { nextTick } from "../helpers";
+import { nextTick, setAndReact } from "../helpers";
 import { IPropOption, ITajStore } from "../interface";
 import { globalFilters } from "../constant";
 
@@ -114,17 +114,14 @@ export abstract class Component {
             this._$dependency[key].filter(q => q.forExp === true).forEach(item => {
                 const parent = (item.ref as Comment).parentNode;
                 const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
-
                 switch (prop) {
                     case 'push':
                         const length = this[key].length;
                         var newElement = item.method(params, length - 1);
-                        const parent = (item.ref as Comment).parentNode;
-                        const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
                         (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + length]);
                         break;
                     case 'splice':
-                        for (let i = 0; i < params[1]; i++) {
+                        for (let i = 1; i <= params[1]; i++) {
                             parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
                         }
                         var newElement = item.method(params[2], params[0]);
@@ -159,6 +156,10 @@ export abstract class Component {
             // console.log("value", values);
             // return;
         }
+    }
+
+    $set(target, prop, valueToSet) {
+        setAndReact(target, prop, valueToSet);
     }
 
     private _$updateDOM(key: string) {
