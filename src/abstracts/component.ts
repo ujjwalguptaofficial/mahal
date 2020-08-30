@@ -75,61 +75,86 @@ export abstract class Component {
             });
 
             if (Array.isArray(this[key])) {
-                // Object.defineProperty(this[key], "push", {
-                //     value: function (...args) {
-                //         let result = Array.prototype.push.apply(this, args);
-                //         nextTick(() => {
-                //             that._$onArrayModified(key, 'push', args[0]);
-                //         });
-                //         return result;
-                //     }
-                // });
-                this[key] = new Proxy(this[key], {
-                    get(obj, prop) {
-                        debugger;
-
-                        return obj[prop]
-                    },
-                    set(obj, prop, value) {
-                        debugger;
-                        that._$onArrayModified(key, prop, value);
-                        return true;
+                Object.defineProperty(this[key], "push", {
+                    value: function (...args) {
+                        let result = Array.prototype.push.apply(this, args);
+                        nextTick(() => {
+                            that._$onArrayModified(key, 'push', args[0]);
+                        });
+                        return result;
                     }
-                })
+                });
+                Object.defineProperty(this[key], "splice", {
+                    value: function (...args) {
+                        let result = Array.prototype.splice.apply(this, args);
+                        nextTick(() => {
+                            that._$onArrayModified(key, 'splice', args);
+                        });
+                        return result;
+                    }
+                });
+                // this[key] = new Proxy(this[key], {
+                //     get(obj, prop) {
+                //         debugger;
+
+                //         return obj[prop]
+                //     },
+                //     set(obj, prop, value) {
+                //         debugger;
+                //         that._$onArrayModified(key, prop, value);
+                //         return true;
+                //     }
+                // })
             }
         })
     }
 
-    private _$onArrayModified(key: string, prop, newValue?) {
+    private _$onArrayModified(key: string, prop, params) {
         if (this._$dependency[key]) {
             const values = this._$dependency[key].filter(q => q.forExp === true);
             switch (prop) {
-                case 'length':
-                    return;
-                default:
+                case 'push':
                     values.forEach(item => {
-                        const newElement = item.method(newValue, prop);
-                        // (item.lastEl as HTMLElement).parentNode.insertBefore(newElement, item.lastEl.nextSibling);
-                        // item.lastEl = newElement;
+                        const length = this[key].length;
+                        const newElement = item.method(params, length);
                         const parent = (item.ref as Comment).parentNode;
-                        if (prop === "0") {
-                            (parent as HTMLElement).insertBefore(newElement, item.ref);
+                        const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
+                        (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + length]);
+                    }); break;
+                case 'splice':
+                    values.forEach(item => {
+                        const parent = (item.ref as Comment).parentNode;
+                        const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
+                        for (let i = 0; i < params[1]; i++) {
+                            parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
                         }
-                        else {
-                            const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
+                        const newElement = item.method(params[2], params[0]);
+                        (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
+                    }); break;
+                default:
+                // values.forEach(item => {
+                //     const newElement = item.method(newValue, prop);
+                //     // (item.lastEl as HTMLElement).parentNode.insertBefore(newElement, item.lastEl.nextSibling);
+                //     // item.lastEl = newElement;
+                //     const parent = (item.ref as Comment).parentNode;
+                //     if (prop === "0") {
+                //         (parent as HTMLElement).insertBefore(newElement, item.ref);
+                //     }
+                //     else {
+                //         const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
 
-                            if (this[key][prop]) {
-                                // (item.parent as HTMLElement).insertBefore(newElement, item.parent.children[prop]);
-                                parent.replaceChild(newElement, parent.childNodes[indexOfRef + Number(prop)]);
-                            }
-                            else {
-                                // (item.parent as HTMLElement).appendChild(newElement);
-                                (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + 1 + Number(prop)]);
-                            }
-                        }
+                //         if (this[key][prop]) {
+                //             // (item.parent as HTMLElement).insertBefore(newElement, item.parent.children[prop]);
+                //             parent.replaceChild(newElement, parent.childNodes[indexOfRef + Number(prop)]);
+                //         }
+                //         else {
+                //             // (item.parent as HTMLElement).appendChild(newElement);
+                //             (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + 1 + Number(prop)]);
+                //         }
+                //     }
 
-                    });
-                    break;
+                // });
+                // break;
             }
             console.log("value", values);
             return;
