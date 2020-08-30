@@ -27,7 +27,8 @@ export class ParserUtil {
 
     static parseview(viewCode: string) {
         // try {
-        viewCode = viewCode.replace(new RegExp('\n', 'g'), '').trim();
+        // viewCode = viewCode.replace(new RegExp('\n', 'g'), '').trim();
+        viewCode = viewCode.trim();
         return parser.parse(viewCode, {
             createFnFromStringExpression: ParserUtil.createFnFromStringExpression
         }) as ICompiledView;
@@ -266,7 +267,7 @@ export class ParserUtil {
                 str += `${ParserUtil.createFnFromStringExpression(compiled.mustacheExp)} ${brackets},'${compiled.mustacheExp}')`
 
             }
-            else {
+            else if ((compiled as any).trim().length > 0) {
                 str += `ct('${compiled}')`;
             }
             return str;

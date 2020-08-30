@@ -112,13 +112,22 @@ export abstract class Component {
                         // (item.lastEl as HTMLElement).parentNode.insertBefore(newElement, item.lastEl.nextSibling);
                         // item.lastEl = newElement;
                         const parent = (item.ref as Comment).parentNode;
-                        if (this[key][prop]) {
-                            (item.parent as HTMLElement).insertBefore(newElement, item.parent.children[prop]);
+                        if (prop === "0") {
+                            (parent as HTMLElement).insertBefore(newElement, item.ref);
                         }
                         else {
-                            // (item.parent as HTMLElement).appendChild(newElement);
-                            (parent as HTMLElement).insertBefore(newElement, item.ref.nextSibling);
+                            const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
+
+                            if (this[key][prop]) {
+                                // (item.parent as HTMLElement).insertBefore(newElement, item.parent.children[prop]);
+                                parent.replaceChild(newElement, parent.childNodes[indexOfRef + Number(prop)]);
+                            }
+                            else {
+                                // (item.parent as HTMLElement).appendChild(newElement);
+                                (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + 1 + Number(prop)]);
+                            }
                         }
+
                     });
                     break;
             }
