@@ -7,7 +7,7 @@ HtmlTag = openTag:HtmlOpen child:(HtmlTag/Html/MustacheExpression)* HtmlClose? {
   } 
 }
 
-HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:(If/ElseIf/Else)? model:Model? forExp:For? ev:Event* Ws* attr:Attribute* html:InnerHtml? EndOpenTag {
+HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:(If/ElseIf/Else)? _* model:Model? forExp:For? ev:Event* Ws* attr:Attribute* html:InnerHtml? EndOpenTag {
   
   return {
     tag:word,

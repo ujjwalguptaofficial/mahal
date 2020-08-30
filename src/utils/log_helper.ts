@@ -28,6 +28,14 @@ export class LogHelper implements IError {
         } as IError;
     }
 
+    getPlain() {
+        var err = this.get(), str = ""
+        for (const key in err) {
+            str += `'${key}' : ${err[key]} `;
+        }
+        return str;
+    }
+
     private getMsg_() {
         let errMsg: string;
         switch (this.type) {

@@ -34,9 +34,6 @@ export class ParserUtil {
             }) as ICompiledView;
         }
         catch (ex) {
-            // const start = location.start;
-            // viewCode.split("\n")[start.line].split(" ")
-            console.log("template", viewCode);
             const location = ex.location;
             const css = `background: #222; color: #bada55`;
             const lines = viewCode.split("\n");
@@ -46,8 +43,7 @@ export class ParserUtil {
                 "%c" + lines.slice(location.start.line - 1, location.end.line).join("\n") +
                 "%c" + lines.slice(location.end.line).join("\n")
                 , css, css + ';color:red', css);
-            // console.log("%c" + lines[location.start.line], css);
-            const err = new LogHelper(ERROR_TYPE.SynTaxError, ex.message).get();
+            const err = new LogHelper(ERROR_TYPE.SynTaxError, ex.message).getPlain();
             throw err;
         }
     }
@@ -105,6 +101,7 @@ export class ParserUtil {
                             }
                             else if (ifExp.else) {
                                 ifModifiedExpression.else = child;
+                                onIfCondEnd(index + 1);
                             }
                             else {
                                 onIfCondEnd(index);

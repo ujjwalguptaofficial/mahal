@@ -1,35 +1,24 @@
 import { Component, Template, Prop, Taj, Filter, Reactive } from "taj";
 
 
-// @Template(`
-// <div>
-//     <table>
-//     <tr>
-//         <td><input #model(name) ></td>
-//         <td on:click="addStudent"><button>Add Student</button></td>
-//     </tr>
-//       <tr #for(student,index in students)>
-//        <td>{{index}}</td>
-//        <td #if(!student.isEdit)>{{student.name}}</td>
-//        <td #else><input #model(editName) ></td>
-//        <td  #if(!student.isEdit) on:click="()=>{editStudent(index)}"><button>EditStudent</button></td>
-//        <td  #else on:click="()=>{updateStudent(index)}"><button>UpdateStudent</button></td>
-//       </tr>
-//     </table>
+@Template(`
+<div>
+    <table>
+    <tr>
+        <td><input #model(name) ></td>
+        <td on:click="addStudent"><button>Add Student</button></td>
+    </tr>
+      <tr #for(student,index in students)>
+       <td>{{index}}</td>
+       <td #if(student.isEdit) >as{{student | toS}}<input #model(editName) ></input></td>
+       <td #else >{{student.name}}</td>
+       <td #if(student.isEdit) on:click="()=>{updateStudent(index)}"><button>UpdateStudent</button></td>
+       <td #else on:click="()=>{editStudent(index)}"><button>EditStudent</button></td>
+      </tr>
+    </table>
  
-// </div>
-// `)
-@Template(`<div #if(!s.s=false1)>
-{{ name }}
-<button on:click="changeName">ChangeName</button>
-<button on:click="()=>{flag=false}">Hide Name</button>
-<table>
-  <tr #for(student in students)>
-   <td>{{student.name}}</td>
-   <td on:click="addStudent"><button>AddStudent</button></td>
-  </tr>
-</table
-</div>`)
+</div>
+`)
 export default class extends Component {
 
     @Reactive

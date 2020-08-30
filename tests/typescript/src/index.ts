@@ -4,16 +4,7 @@ import Student from "./components/student";
 
 @Template(`<div>
 <Student/>
-<HelloWorld on:click='onHelloWordClick' name='ujjwal' :count='counter'></HelloWorld>
-<button on:click='toggleFlag'>Show Div</button>
-<button on:click='incrementCounter'>Increment Counter</button>
-<button on:click='addItem'>Additem</button>
-<div>{{counter}}</div>
-<button on:click='toggleFlagOne'>Change FlagOne</button>
-<button on:click='toggleFlagTwo'>Change FlagTwo</button>
-<div #if(flagOne)><b>Flag one rendered</b></div>
-<div #else-if(flagTwo)>Flag two rendered</div>
-<div #else>else rendered</div>
+
 
 </div>`)
 @Children({
