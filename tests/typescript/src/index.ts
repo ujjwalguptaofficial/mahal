@@ -1,7 +1,9 @@
 import { Taj, Component, Template, Children, Reactive } from "taj";
 import HelloWorld from "./components/hello_world";
+import Student from "./components/student";
 
 @Template(`<div>
+<Student/>
 <HelloWorld on:click='onHelloWordClick' name='ujjwal' :count='counter'></HelloWorld>
 <button on:click='toggleFlag'>Show Div</button>
 <button on:click='incrementCounter'>Increment Counter</button>
@@ -15,7 +17,7 @@ import HelloWorld from "./components/hello_world";
 
 </div>`)
 @Children({
-    HelloWorld
+    HelloWorld, Student
 })
 class Main extends Component {
     flag = true;

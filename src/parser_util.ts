@@ -26,17 +26,30 @@ export class ParserUtil {
     }
 
     static parseview(viewCode: string) {
-        // try {
-        // viewCode = viewCode.replace(new RegExp('\n', 'g'), '').trim();
-        viewCode = viewCode.trim();
-        return parser.parse(viewCode, {
-            createFnFromStringExpression: ParserUtil.createFnFromStringExpression
-        }) as ICompiledView;
-        // }
-        // catch (ex) {
-        //     const err = new LogHelper(ERROR_TYPE.SynTaxError, ex.message).get();
-        //     throw err;
-        // }
+        try {
+            // viewCode = viewCode.replace(new RegExp('\n', 'g'), '').trim();
+            viewCode = viewCode.trim();
+            return parser.parse(viewCode, {
+                createFnFromStringExpression: ParserUtil.createFnFromStringExpression
+            }) as ICompiledView;
+        }
+        catch (ex) {
+            // const start = location.start;
+            // viewCode.split("\n")[start.line].split(" ")
+            console.log("template", viewCode);
+            const location = ex.location;
+            const css = `background: #222; color: #bada55`;
+            const lines = viewCode.split("\n");
+            // console.log(`%c${viewCode.substring(0, location.start.offset)}%c${viewCode.substring(location.start.offset, location.end.offset + 1)}%c${viewCode.substring(location.end.offset + 1)}`,
+            //     css, css + ';color:red', css);
+            console.log("%c" + lines.slice(0, location.start.line - 1).join("\n") +
+                "%c" + lines.slice(location.start.line - 1, location.end.line).join("\n") +
+                "%c" + lines.slice(location.end.line).join("\n")
+                , css, css + ';color:red', css);
+            // console.log("%c" + lines[location.start.line], css);
+            const err = new LogHelper(ERROR_TYPE.SynTaxError, ex.message).get();
+            throw err;
+        }
     }
 
     static createRenderer(template: string) {

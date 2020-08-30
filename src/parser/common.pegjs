@@ -89,7 +89,7 @@ Event "event syntax" = "on:" event:Identifier "=" StringSymbol handler:EventAssi
 	return {name:event, handler:handler};
 }
 
-Expression "Expression"= val:[a-zA-Z\&\ \|\.\$]+ {
+Expression "Expression"= val:[a-zA-Z0-9\&\ \|\.\$\!\=]+ {
 	return val.join("");
 }
 

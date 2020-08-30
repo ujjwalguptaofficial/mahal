@@ -111,53 +111,53 @@ export abstract class Component {
 
     private _$onArrayModified(key: string, prop, params) {
         if (this._$dependency[key]) {
-            const values = this._$dependency[key].filter(q => q.forExp === true);
-            switch (prop) {
-                case 'push':
-                    values.forEach(item => {
+            this._$dependency[key].filter(q => q.forExp === true).forEach(item => {
+                const parent = (item.ref as Comment).parentNode;
+                const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
+
+                switch (prop) {
+                    case 'push':
                         const length = this[key].length;
-                        const newElement = item.method(params, length);
+                        var newElement = item.method(params, length - 1);
                         const parent = (item.ref as Comment).parentNode;
                         const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
                         (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + length]);
-                    }); break;
-                case 'splice':
-                    values.forEach(item => {
-                        const parent = (item.ref as Comment).parentNode;
-                        const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
+                        break;
+                    case 'splice':
                         for (let i = 0; i < params[1]; i++) {
                             parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
                         }
-                        const newElement = item.method(params[2], params[0]);
+                        var newElement = item.method(params[2], params[0]);
                         (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
-                    }); break;
-                default:
-                // values.forEach(item => {
-                //     const newElement = item.method(newValue, prop);
-                //     // (item.lastEl as HTMLElement).parentNode.insertBefore(newElement, item.lastEl.nextSibling);
-                //     // item.lastEl = newElement;
-                //     const parent = (item.ref as Comment).parentNode;
-                //     if (prop === "0") {
-                //         (parent as HTMLElement).insertBefore(newElement, item.ref);
-                //     }
-                //     else {
-                //         const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
+                        break;
+                    default:
+                    // values.forEach(item => {
+                    //     const newElement = item.method(newValue, prop);
+                    //     // (item.lastEl as HTMLElement).parentNode.insertBefore(newElement, item.lastEl.nextSibling);
+                    //     // item.lastEl = newElement;
+                    //     const parent = (item.ref as Comment).parentNode;
+                    //     if (prop === "0") {
+                    //         (parent as HTMLElement).insertBefore(newElement, item.ref);
+                    //     }
+                    //     else {
+                    //         const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
 
-                //         if (this[key][prop]) {
-                //             // (item.parent as HTMLElement).insertBefore(newElement, item.parent.children[prop]);
-                //             parent.replaceChild(newElement, parent.childNodes[indexOfRef + Number(prop)]);
-                //         }
-                //         else {
-                //             // (item.parent as HTMLElement).appendChild(newElement);
-                //             (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + 1 + Number(prop)]);
-                //         }
-                //     }
+                    //         if (this[key][prop]) {
+                    //             // (item.parent as HTMLElement).insertBefore(newElement, item.parent.children[prop]);
+                    //             parent.replaceChild(newElement, parent.childNodes[indexOfRef + Number(prop)]);
+                    //         }
+                    //         else {
+                    //             // (item.parent as HTMLElement).appendChild(newElement);
+                    //             (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + 1 + Number(prop)]);
+                    //         }
+                    //     }
 
-                // });
-                // break;
-            }
-            console.log("value", values);
-            return;
+                    // });
+                    // break;
+                }
+            });
+            // console.log("value", values);
+            // return;
         }
     }
 
