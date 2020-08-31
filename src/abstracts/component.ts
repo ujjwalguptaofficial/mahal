@@ -1,8 +1,9 @@
 import { ParserUtil } from "../parser_util";
 import { HTML_TAG } from "../enums";
-import { nextTick, setAndReact } from "../helpers";
+import { nextTick, setAndReact, Observer } from "../helpers";
 import { IPropOption, ITajStore } from "../interface";
 import { globalFilters } from "../constant";
+import { isArray } from "../utils";
 
 
 let uniqueCounter = 0
@@ -54,6 +55,21 @@ export abstract class Component {
         const that = this;
         const cached = {};
 
+        new Observer(this).create((key, oldValue, newValue) => {
+            if (this.watchList[key]) {
+                this.watchList[key].forEach(cb => {
+                    cb(newValue, oldValue);
+                })
+            }
+            this._$updateDOM(key);
+        }, (key) => {
+            if (isArray(this[key])) {
+                new Observer(this[key]).createForArray((arrayProp, params) => {
+                    this._$onArrayModified(key, arrayProp, params);
+                })
+            }
+        }, this.$_reactives || []);
+
         (this.$_reactives || []).forEach(key => {
             cached[key] = this[key];
             Object.defineProperty(this, key, {
@@ -74,38 +90,7 @@ export abstract class Component {
                 }
             });
 
-            if (Array.isArray(this[key])) {
-                Object.defineProperty(this[key], "push", {
-                    value: function (...args) {
-                        let result = Array.prototype.push.apply(this, args);
-                        nextTick(() => {
-                            that._$onArrayModified(key, 'push', args[0]);
-                        });
-                        return result;
-                    }
-                });
-                Object.defineProperty(this[key], "splice", {
-                    value: function (...args) {
-                        let result = Array.prototype.splice.apply(this, args);
-                        nextTick(() => {
-                            that._$onArrayModified(key, 'splice', args);
-                        });
-                        return result;
-                    }
-                });
-                // this[key] = new Proxy(this[key], {
-                //     get(obj, prop) {
-                //         debugger;
-
-                //         return obj[prop]
-                //     },
-                //     set(obj, prop, value) {
-                //         debugger;
-                //         that._$onArrayModified(key, prop, value);
-                //         return true;
-                //     }
-                // })
-            }
+          
         })
     }
 
