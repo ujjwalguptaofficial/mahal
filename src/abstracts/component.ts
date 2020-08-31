@@ -67,7 +67,7 @@ export abstract class Component {
             }
             else if (isObject(this[key])) {
                 new Observer(this[key]).create((objectProp, oldValue, newValue) => {
-                    this._$onObjModified(key, objectProp, newValue);
+                    this._$onObjModified(key, objectProp, oldValue);
                 })
             }
         }, this.$_reactives || []);
@@ -80,9 +80,8 @@ export abstract class Component {
                 const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
                 switch (prop) {
                     case 'push':
-                        const length = this[key].length;
-                        var newElement = item.method(params, length - 1);
-                        (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + length]);
+                        var newElement = item.method(params.value, params.key);
+                        (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
                         break;
                     case 'splice':
                         for (let i = 1; i <= params[1]; i++) {

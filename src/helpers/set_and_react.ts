@@ -13,8 +13,14 @@ export function setAndReact(target, prop, valueToSet) {
         return target.splice(prop, 1, valueToSet);
     }
 
-    if (target.hasOwnProperty(prop)) {
-        return target[prop] = valueToSet;
+    if (target[prop]) {
+        if (target.hasOwnProperty(prop)) {
+            return target[prop] = valueToSet;
+        }
+    } else {
+        target.push(valueToSet, prop);
     }
+
+
 
 }

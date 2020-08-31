@@ -33,7 +33,7 @@ export default class extends Component {
         // this.students[this.name] = {
         //     name: this.name
         // };
-        this.$set(this.students, 'name', {
+        this.$set(this.students, this.name, {
             name: this.name
         })
         this.name = "";

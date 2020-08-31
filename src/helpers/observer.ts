@@ -29,6 +29,33 @@ export class Observer {
                 onAttach(key);
             }
         })
+
+        this.input.__proto__.push = (value, key) => {
+            this.input[key] = value;
+            // const result = Object.keys(this.input[key]).length;
+            const result = Object.keys(this.input).length;
+            nextTick(() => {
+                Object.defineProperty(this.input, key, {
+                    set(newValue) {
+                        const oldValue = value;
+                        value = newValue;
+                        nextTick(() => {
+                            onSet(key, oldValue, newValue);
+                        })
+                    },
+                    get() {
+                        return value;
+                    }
+                })
+                onSet("push", {
+                    value: value,
+                    key: key,
+                    length: result
+                }, null);
+            });
+            return result;
+        }
+
     }
 
     createForArray(onSet: (arrayProp, payload) => void, keys?: any[]) {
@@ -43,7 +70,12 @@ export class Observer {
                         onSet(key, (() => {
                             switch (key) {
                                 case 'push':
-                                    return args[0];
+                                    // return args[0];
+                                    return {
+                                        value: args[0],
+                                        key: result - 1,
+                                        length: result
+                                    }
                                 default:
                                     return args;
                             }
