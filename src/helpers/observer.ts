@@ -7,7 +7,7 @@ export class Observer {
         this.input = input;
     }
 
-    create(onSet: (key: string, oldValue, newValue) => void, onAttach: (key: string) => void, keys?: any[]) {
+    create(onSet: (key: string, oldValue, newValue) => void, onAttach?: (key: string) => void, keys?: any[]) {
         keys = keys || Object.keys(this.input);
         const cached = {};
         keys.forEach(key => {
@@ -25,7 +25,9 @@ export class Observer {
                 }
 
             });
-            onAttach(key);
+            if (onAttach) {
+                onAttach(key);
+            }
         })
     }
 

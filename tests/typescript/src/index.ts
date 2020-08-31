@@ -1,14 +1,15 @@
 import { Taj, Component, Template, Children, Reactive } from "taj";
 import HelloWorld from "./components/hello_world";
 import Student from "./components/student";
+import ObjectComponent from "./components/object";
 
 @Template(`<div>
-<Student/>
+<ObjectComponent/>
 
 
 </div>`)
 @Children({
-    HelloWorld, Student
+    HelloWorld, Student, ObjectComponent
 })
 class Main extends Component {
     flag = true;

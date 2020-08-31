@@ -8,12 +8,12 @@ import { Component, Template, Prop, Taj, Filter, Reactive } from "taj";
         <td><input #model(name) ></input></td>
         <td on:click="addStudent"><button>Add Student</button></td>
     </tr>
-      <tr #for(student,index in students)>
-       <td>{{index}}</td>
+      <tr #for(student,key in students)>
+       <td>{{key}}</td>
        <td #if(student.isEdit) >as{{student | toS}}<input #model(editName) ></input></td>
        <td #else >{{student.name}}</td>
-       <td #if(student.isEdit) on:click="()=>{updateStudent(index)}"><button>UpdateStudent</button></td>
-       <td #else on:click="()=>{editStudent(index)}"><button>EditStudent</button></td>
+       <td #if(student.isEdit) on:click="()=>{updateStudent(key)}"><button>UpdateStudent</button></td>
+       <td #else on:click="()=>{editStudent(key)}"><button>EditStudent</button></td>
       </tr>
     </table>
  
@@ -22,11 +22,20 @@ import { Component, Template, Prop, Taj, Filter, Reactive } from "taj";
 export default class extends Component {
 
     @Reactive
-    students: any = {}
+    students: any = {
+        'ujjwal': {
+            name: 'ujjwal'
+        }
+    }
 
 
     addStudent() {
-        this.students[name] = this.name;
+        // this.students[this.name] = {
+        //     name: this.name
+        // };
+        this.$set(this.students, 'name', {
+            name: this.name
+        })
         this.name = "";
     }
 

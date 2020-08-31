@@ -45,6 +45,9 @@ export class LogHelper implements IError {
             case ERROR_TYPE.ForExpAsRoot:
                 errMsg = `For is not allowed in root element. Create a child element instead.`
                 break;
+            case ERROR_TYPE.ForOnPrimitiveOrNull:
+                errMsg = `For expression can not be run on null or primitive datatype. Initiate variable ${this.info_} as array or object.`
+                break;
             default:
                 errMsg = this.message;
                 break;

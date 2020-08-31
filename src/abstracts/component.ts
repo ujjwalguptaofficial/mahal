@@ -1,9 +1,9 @@
 import { ParserUtil } from "../parser_util";
-import { HTML_TAG } from "../enums";
+import { HTML_TAG, ERROR_TYPE } from "../enums";
 import { nextTick, setAndReact, Observer } from "../helpers";
 import { IPropOption, ITajStore } from "../interface";
 import { globalFilters } from "../constant";
-import { isArray } from "../utils";
+import { isArray, isObject, isPrimitive, LogHelper, isNull } from "../utils";
 
 
 let uniqueCounter = 0
@@ -52,9 +52,6 @@ export abstract class Component {
     }
 
     private _$attachGetterSetter() {
-        const that = this;
-        const cached = {};
-
         new Observer(this).create((key, oldValue, newValue) => {
             if (this.watchList[key]) {
                 this.watchList[key].forEach(cb => {
@@ -65,39 +62,21 @@ export abstract class Component {
         }, (key) => {
             if (isArray(this[key])) {
                 new Observer(this[key]).createForArray((arrayProp, params) => {
-                    this._$onArrayModified(key, arrayProp, params);
+                    this._$onObjModified(key, arrayProp, params);
+                })
+            }
+            else if (isObject(this[key])) {
+                new Observer(this[key]).create((objectProp, oldValue, newValue) => {
+                    this._$onObjModified(key, objectProp, newValue);
                 })
             }
         }, this.$_reactives || []);
-
-        (this.$_reactives || []).forEach(key => {
-            cached[key] = this[key];
-            Object.defineProperty(this, key, {
-                set(newValue) {
-                    const oldValue = cached[key];
-                    cached[key] = newValue;
-                    nextTick(() => {
-                        if (that.watchList[key]) {
-                            that.watchList[key].forEach(cb => {
-                                cb(newValue, oldValue);
-                            })
-                        }
-                        that._$updateDOM(key);
-                    })
-                },
-                get() {
-                    return cached[key];
-                }
-            });
-
-          
-        })
     }
 
-    private _$onArrayModified(key: string, prop, params) {
+    private _$onObjModified(key: string, prop, params) {
         if (this._$dependency[key]) {
             this._$dependency[key].filter(q => q.forExp === true).forEach(item => {
-                const parent = (item.ref as Comment).parentNode;
+                const parent = (item.ref as Comment).parentNode as HTMLElement;
                 const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
                 switch (prop) {
                     case 'push':
@@ -113,6 +92,13 @@ export abstract class Component {
                         (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
                         break;
                     default:
+                        // if(isObject())
+                        const resolvedValue = this._$resolve(key)
+                        const index = Object.keys(resolvedValue).findIndex(q => q === prop);
+                        if (index >= 0) {
+                            var newElement = item.method(resolvedValue[prop], prop);
+                            parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
+                        }
                     // values.forEach(item => {
                     //     const newElement = item.method(newValue, prop);
                     //     // (item.lastEl as HTMLElement).parentNode.insertBefore(newElement, item.lastEl.nextSibling);
@@ -193,9 +179,25 @@ export abstract class Component {
     private storeForExp_(key, method: Function, id: string) {
         const cmNode = this.createCommentNode();
         const els = [cmNode];
-        this._$resolve(key).map((item, i) => {
-            els.push(method(item, i));
-        });
+        const resolvedValue = this._$resolve(key);
+
+        if (process.env.NODE_ENV !== 'production') {
+            if (isPrimitive(resolvedValue) || isNull(resolvedValue)) {
+                throw new LogHelper(ERROR_TYPE.ForOnPrimitiveOrNull, key).getPlain();
+            }
+        }
+
+        if (isArray(resolvedValue)) {
+            resolvedValue.map((item, i) => {
+                els.push(method(item, i));
+            });
+        }
+        else if (isObject(resolvedValue)) {
+            for (let key in resolvedValue) {
+                els.push(method(resolvedValue[key], key));
+            }
+        }
+
         nextTick(() => {
             this.__$storeDependency(key, {
                 forExp: true,
