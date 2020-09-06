@@ -2,7 +2,7 @@ import { ParserUtil } from "../parser_util";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
 import { nextTick, setAndReact, Observer } from "../helpers";
 import { IPropOption, ITajStore } from "../interface";
-import { globalFilters } from "../constant";
+import { globalFilters, MutationObserver } from "../constant";
 import { isArray, isObject, isPrimitive, LogHelper, isNull } from "../utils";
 
 

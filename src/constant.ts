@@ -1,3 +1,5 @@
+import { getFromWindow } from "./utils";
+
 export const globalFilters = {
     toS: function (value) {
         switch (typeof value) {
@@ -10,3 +12,5 @@ export const globalFilters = {
         }
     }
 }
+
+export const MutationObserver = getFromWindow("MutationObserver")
