@@ -11,7 +11,7 @@ let uniqueCounter = 0
 
 export abstract class Component {
     children: { [key: string]: typeof Component }
-    private element_: HTMLElement;
+    element: HTMLElement;
     template: string;
 
     watchList: {
@@ -210,7 +210,7 @@ export abstract class Component {
                     const depIndex = this._$dependency[key].findIndex(q => q.id === id);
                     this._$dependency[key].splice(depIndex, 1);
                 }
-            }).observe(this.element_, { childList: true, subtree: true });
+            }).observe(this.element, { childList: true, subtree: true });
         });
         return els;
     }
@@ -222,13 +222,13 @@ export abstract class Component {
 
     render: () => void;
 
-    _$executeRender() {
+    private _$executeRender() {
         const renderFn = this.render || ParserUtil.createRenderer(this.template);
         console.log("renderer", renderFn);
-        this.element_ = renderFn.call(this);
+        this.element = renderFn.call(this);
         nextTick(() => {
             new MutationObserver((mutationsList, observer) => {
-                if (document.body.contains(this.element_) === false) {
+                if (document.body.contains(this.element) === false) {
                     observer.disconnect();
                     this._$clearAll();
                 }
@@ -250,7 +250,7 @@ export abstract class Component {
             }
             this.emit("rendered");
         })
-        return this.element_;
+        return this.element;
     }
 
 
@@ -380,7 +380,7 @@ export abstract class Component {
                     }
                 }
             }
-            element = component.element_ = component._$executeRender();
+            element = component.element = component._$executeRender();
             htmlAttributes.forEach(item => {
                 element.setAttribute(item.key, item.value);
             })
@@ -410,11 +410,11 @@ export abstract class Component {
     }
 
     query(selector: string) {
-        return this.element_.querySelector(selector);
+        return this.element.querySelector(selector);
     }
 
     queryAll(selector: string) {
-        return this.element_.querySelectorAll(selector);
+        return this.element.querySelectorAll(selector);
     }
 
     queryByName(name: string) {
@@ -422,11 +422,11 @@ export abstract class Component {
     }
 
     queryAllByName(name: string) {
-        return (this.element_ as any).getElementsByName(name);
+        return (this.element as any).getElementsByName(name);
     }
 
     queryById(id: string) {
-        return (this.element_ as any).getElementById(id);
+        return (this.element as any).getElementById(id);
     }
 
     onRendered(cb) {

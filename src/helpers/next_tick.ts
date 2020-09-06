@@ -1,3 +1,3 @@
-export const nextTick = queueMicrotask || ((cb: Function) => {
+export const nextTick = window.queueMicrotask || ((cb: Function) => {
     setTimeout(cb, 10)
 });
