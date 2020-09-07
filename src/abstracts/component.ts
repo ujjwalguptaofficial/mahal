@@ -170,7 +170,7 @@ export abstract class Component {
             ifExp: true
         }
         keys.forEach(item => {
-            this.__$storeDependency(item, dep);
+            this._$storeDependency(item, dep);
         })
         return el;
     }
@@ -198,7 +198,7 @@ export abstract class Component {
         }
 
         nextTick(() => {
-            this.__$storeDependency(key, {
+            this._$storeDependency(key, {
                 forExp: true,
                 method: method,
                 ref: cmNode,
@@ -257,12 +257,12 @@ export abstract class Component {
     createTextNode(value, propDependency) {
         const el = document.createTextNode(value);
         if (propDependency) {
-            this.__$storeDependency(propDependency, el);
+            this._$storeDependency(propDependency, el);
         }
         return el;
     }
 
-    private __$storeDependency(key: string, value) {
+    private _$storeDependency(key: string, value) {
         // if (this[key] == null) {
         //     return;
         // }
@@ -393,14 +393,14 @@ export abstract class Component {
 
         if (option.dep) {
             option.dep.forEach(item => {
-                this.__$storeDependency(item, element);
+                this._$storeDependency(item, element);
             });
         }
         return element;
 
     }
 
-    _$clearAll() {
+    private _$clearAll() {
         this.emit("destroyed");
         this._$storeWatchCb.forEach(item => {
             (this as any).$store.unwatch(item.key, item.cb)
@@ -409,23 +409,23 @@ export abstract class Component {
         this.watchList = null;
     }
 
-    query(selector: string) {
+    find(selector: string) {
         return this.element.querySelector(selector);
     }
 
-    queryAll(selector: string) {
+    findAll(selector: string) {
         return this.element.querySelectorAll(selector);
     }
 
-    queryByName(name: string) {
-        return this.queryAllByName(name)[0];
+    findByName(name: string) {
+        return this.findAllByName(name)[0];
     }
 
-    queryAllByName(name: string) {
+    findAllByName(name: string) {
         return (this.element as any).getElementsByName(name);
     }
 
-    queryById(id: string) {
+    findById(id: string) {
         return (this.element as any).getElementById(id);
     }
 

@@ -1,3 +1,5 @@
+Exp =  HtmlTag
+
 HtmlTag = openTag:HtmlOpen child:(HtmlTag/Html/MustacheExpression)* HtmlClose? {
   return {
    view:openTag,
@@ -5,30 +7,16 @@ HtmlTag = openTag:HtmlOpen child:(HtmlTag/Html/MustacheExpression)* HtmlClose? {
   } 
 }
 
-HtmlOpen = StartOpenTag word: Identifier _* option:(HtmlOpenOption)* EndOpenTag {
-  const result = {
-     tag:word,
-     events:[],
-     attr:[]
-  }
-  option.forEach(val=>{
-    const key = Object.keys(val)[0];
-    switch(key){
-      case 'event':
-        result.events.push(val[key]);break;
-      case 'attr':
-        result.attr.push(val[key]);break;
-      default:
-        result[key] = val[key]   
-    }
-  });
- return result;
-}
-
-HtmlOpenOption = value:((If/ElseIf/Else)/Model/For/(Event)/Attribute/InnerHtml) _* {
-  const key = Object.keys(value)[0];
+HtmlOpen = StartOpenTag word: Identifier Ws* ifExp:(If/ElseIf/Else)? _* model:Model? forExp:For? ev:Event* Ws* attr:Attribute* html:InnerHtml? EndOpenTag {
+  
   return {
-     [key]:value[key]
+    tag:word,
+    ifExp: ifExp,
+    events:ev,
+    forExp:forExp,
+    attr:attr,
+    model,
+    html
   }
 }
 
@@ -42,18 +30,18 @@ _ "One or more whitespaces" = space:Ws+ {return null;}
 
 
 If= "#if(" exp:Expression ")"{
-   return {ifExp: {ifCond:exp}};
+   return {ifCond:exp};
 }
 
 ElseIf= "#else-if(" exp:Expression ")"{
-   return {ifExp: {elseIfCond:exp}};
+   return {elseIfCond:exp};
 }
 Else= "#else"{
-   return {ifExp: {else:true}}
+   return {else:true}
 }
 
 Model= "#model" "(" word:Identifier ")"{
-   return {model:word};
+   return word;
 }
 
 For= "#for("_* key:Identifier _* index:ForIndex?  _* "in" _* value:Expression _* ")"{
@@ -63,7 +51,7 @@ For= "#for("_* key:Identifier _* index:ForIndex?  _* "in" _* value:Expression _*
 }
 
 Attribute= isBind:":"? attr:Identifier _* "=" StringSymbol word:Identifier StringSymbol _*{
-   return {attr: {key:attr,value:word, isBind:isBind!=null}};
+   return {key:attr,value:word, isBind:isBind!=null};
 }
 
 ForIndex = "," _* index:Identifier{
@@ -71,7 +59,7 @@ ForIndex = "," _* index:Identifier{
 }
 
 InnerHtml= "#html" _* "=" StringSymbol? val:Identifier StringSymbol? {
-   return {html: val};
+   return val;
 }
 
 StartOpenTag "<" = [<];
@@ -98,7 +86,7 @@ MustacheOr = "||" or:Html{
 }
 
 Event "event syntax" = "on:" event:Identifier "=" StringSymbol handler:EventAssignment StringSymbol+ {
-	return {event: {name:event, handler:handler}};
+	return {name:event, handler:handler};
 }
 
 Expression "Expression"= val:[a-zA-Z0-9\&\ \|\.\$\!\=]+ {
