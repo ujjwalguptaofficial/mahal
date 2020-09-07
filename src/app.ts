@@ -18,18 +18,18 @@ export class App {
     create() {
         const componentInstance: Component = new (this as any).component();
         this.element.appendChild(
-            (componentInstance as any)._$executeRender()
+            (componentInstance as any).executeRender_()
         );
         return componentInstance;
     }
 
     addPlugin(plugin, options) {
         const pluginInstane = new plugin();
-        pluginInstane.setup(defaultExport, options);
+        pluginInstane.setup(defaultExport, this, options);
         this.plugins_.push(plugin);
     }
 
-    defineFilter(name: string, cb) {
+    addFilter(name: string, cb) {
         globalFilters[name] = cb;
     }
 

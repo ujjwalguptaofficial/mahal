@@ -1,13 +1,20 @@
-import { Component, Template, Prop, Taj, Filter, Reactive } from "taj";
+import { Component, Template, Prop, Filter, Reactive } from "taj";
 
-@Template("<div>{{name | toUpper}}<button on:click='onClick'>Hello World {{count}}</button><p #html=myHtml></p></div>")
+@Template(`
+<div>
+    <span id="name">{{name | toUpper}}</span>
+    <button id="count" on:click='onClick'>
+        {{count}}
+    </button>
+    <p class="p-html" #html=myHtml></p>
+</div>
+`)
 
 class BaseComponent extends Component {
     $callMe
 }
 
 export default class HelloWorld extends BaseComponent {
-
 
     @Prop(Number)
     count;
@@ -16,7 +23,7 @@ export default class HelloWorld extends BaseComponent {
     myHtml = "<b>BOLD</b>"
 
     @Reactive
-    name = "ujjwal gupta"
+    name = "ujjwal gupta" // leave value in lower case
 
     constructor() {
         super();
@@ -31,8 +38,6 @@ export default class HelloWorld extends BaseComponent {
     }
 
     onClick() {
-        console.log("this", this, HelloWorld);
-        // this.$callMe("hey there")
         this.emit("click");
     }
 
@@ -40,8 +45,4 @@ export default class HelloWorld extends BaseComponent {
     upperCase(value: string) {
         return value.toUpperCase();
     }
-}
-
-(Component.prototype as any).$callMe = () => {
-    alert("call from prototype")
 }

@@ -5,9 +5,7 @@ import { IPropOption, ITajStore } from "../interface";
 import { globalFilters, MutationObserver } from "../constant";
 import { isArray, isObject, isPrimitive, LogHelper, isNull } from "../utils";
 
-
 let uniqueCounter = 0
-
 
 export abstract class Component {
     children: { [key: string]: typeof Component }
@@ -62,18 +60,18 @@ export abstract class Component {
         }, (key) => {
             if (isArray(this[key])) {
                 new Observer(this[key]).createForArray((arrayProp, params) => {
-                    this._$onObjModified(key, arrayProp, params);
+                    this.onObjModified_(key, arrayProp, params);
                 })
             }
             else if (isObject(this[key])) {
                 new Observer(this[key]).create((objectProp, oldValue, newValue) => {
-                    this._$onObjModified(key, objectProp, oldValue);
+                    this.onObjModified_(key, objectProp, oldValue);
                 })
             }
         }, this.$_reactives || []);
     }
 
-    private _$onObjModified(key: string, prop, params) {
+    private onObjModified_(key: string, prop, params) {
         if (this._$dependency[key]) {
             this._$dependency[key].filter(q => q.forExp === true).forEach(item => {
                 const parent = (item.ref as Comment).parentNode as HTMLElement;
@@ -92,7 +90,7 @@ export abstract class Component {
                         break;
                     default:
                         // if(isObject())
-                        const resolvedValue = this._$resolve(key)
+                        const resolvedValue = this.resolve_(key)
                         const index = Object.keys(resolvedValue).findIndex(q => q === prop);
                         if (index >= 0) {
                             var newElement = item.method(resolvedValue[prop], prop);
@@ -141,10 +139,10 @@ export abstract class Component {
                     switch (item.nodeType) {
                         // Text Node
                         case 3:
-                            item.nodeValue = this._$resolve(key); break;
+                            item.nodeValue = this.resolve_(key); break;
                         // Input node 
                         case 1:
-                            (item as HTMLInputElement).value = this._$resolve(key)
+                            (item as HTMLInputElement).value = this.resolve_(key)
                             break;
                         default:
                             if (item.ifExp) {
@@ -170,7 +168,7 @@ export abstract class Component {
             ifExp: true
         }
         keys.forEach(item => {
-            this._$storeDependency(item, dep);
+            this.storeDependency_(item, dep);
         })
         return el;
     }
@@ -178,7 +176,7 @@ export abstract class Component {
     private storeForExp_(key, method: Function, id: string) {
         const cmNode = this.createCommentNode();
         const els = [cmNode];
-        const resolvedValue = this._$resolve(key);
+        const resolvedValue = this.resolve_(key);
 
         if (process.env.NODE_ENV !== 'production') {
             if (isPrimitive(resolvedValue) || isNull(resolvedValue)) {
@@ -198,7 +196,7 @@ export abstract class Component {
         }
 
         nextTick(() => {
-            this._$storeDependency(key, {
+            this.storeDependency_(key, {
                 forExp: true,
                 method: method,
                 ref: cmNode,
@@ -215,14 +213,14 @@ export abstract class Component {
         return els;
     }
 
-    private _$resolve(path) {
+    private resolve_(path) {
         var properties = Array.isArray(path) ? path : path.split(".")
         return properties.reduce((prev, curr) => prev && prev[curr], this)
     }
 
     render: () => void;
 
-    private _$executeRender() {
+    private executeRender_() {
         const renderFn = this.render || ParserUtil.createRenderer(this.template);
         console.log("renderer", renderFn);
         this.element = renderFn.call(this);
@@ -230,11 +228,10 @@ export abstract class Component {
             new MutationObserver((mutationsList, observer) => {
                 if (document.body.contains(this.element) === false) {
                     observer.disconnect();
-                    this._$clearAll();
+                    this.clearAll_();
                 }
             }).observe(document.body, { childList: true, subtree: true });
             if ((this as any).$store) {
-
                 for (let key in this._$dependency) {
                     if (key.indexOf("$store.state") >= 0) {
                         const cb = () => {
@@ -253,16 +250,15 @@ export abstract class Component {
         return this.element;
     }
 
-
     createTextNode(value, propDependency) {
         const el = document.createTextNode(value);
         if (propDependency) {
-            this._$storeDependency(propDependency, el);
+            this.storeDependency_(propDependency, el);
         }
         return el;
     }
 
-    private _$storeDependency(key: string, value) {
+    private storeDependency_(key: string, value) {
         // if (this[key] == null) {
         //     return;
         // }
@@ -380,7 +376,7 @@ export abstract class Component {
                     }
                 }
             }
-            element = component.element = component._$executeRender();
+            element = component.element = component.executeRender_();
             htmlAttributes.forEach(item => {
                 element.setAttribute(item.key, item.value);
             })
@@ -393,14 +389,14 @@ export abstract class Component {
 
         if (option.dep) {
             option.dep.forEach(item => {
-                this._$storeDependency(item, element);
+                this.storeDependency_(item, element);
             });
         }
         return element;
 
     }
 
-    private _$clearAll() {
+    private clearAll_() {
         this.emit("destroyed");
         this._$storeWatchCb.forEach(item => {
             (this as any).$store.unwatch(item.key, item.cb)
@@ -415,18 +411,6 @@ export abstract class Component {
 
     findAll(selector: string) {
         return this.element.querySelectorAll(selector);
-    }
-
-    findByName(name: string) {
-        return this.findAllByName(name)[0];
-    }
-
-    findAllByName(name: string) {
-        return (this.element as any).getElementsByName(name);
-    }
-
-    findById(id: string) {
-        return (this.element as any).getElementById(id);
     }
 
     onRendered(cb) {

@@ -8,7 +8,8 @@ const packageInfo = JSON.parse(content);
 if (packageInfo) {
     const version = packageInfo.version;
     console.log('version', version);
-    execSync(`npm i ../../taj-${version}.tgz --no-save`);
+    execSync(`npm i ../../taj-${version}.tgz`);
+    execSync(`npm i ../../../taj-test/taj-test-${version}.tgz --no-save`);
 }
 else {
     throw "no package found";

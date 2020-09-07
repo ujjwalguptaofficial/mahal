@@ -62,7 +62,7 @@ For= "#for("_* key:Identifier _* index:ForIndex?  _* "in" _* value:Expression _*
    }
 }
 
-Attribute= isBind:":"? attr:Identifier _* "=" StringSymbol word:Identifier StringSymbol _*{
+Attribute= isBind:":"? attr:Identifier _* "=" StringSymbol word:Word StringSymbol _*{
    return {attr: {key:attr,value:word, isBind:isBind!=null}};
 }
 
@@ -114,3 +114,7 @@ Html "html"= val:[a-zA-Z\&\ \.\$\n\r]+ {
 }
 
 StringSymbol "string" = ['/"]
+
+Word "word" = val:[a-zA-Z0-9\&\ \|\.\$\!\=\-]+ {
+	return val.join("");
+}
