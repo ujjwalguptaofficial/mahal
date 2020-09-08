@@ -8,5 +8,5 @@ if (process.env.NODE_ENV !== "test") {
     app.create();
 }
 else {
-    app.addPlugin(TajTest, null);
+    app.addPlugin(TajTest, app);
 }

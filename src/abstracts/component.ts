@@ -1,7 +1,7 @@
 import { ParserUtil } from "../parser_util";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
 import { nextTick, setAndReact, Observer } from "../helpers";
-import { IPropOption, ITajStore } from "../interface";
+import { IPropOption, ITajStore, IComponentOption } from "../interface";
 import { globalFilters, MutationObserver } from "../constant";
 import { isArray, isObject, isPrimitive, LogHelper, isNull } from "../utils";
 
@@ -17,10 +17,10 @@ export abstract class Component {
     } = {};
 
     addProp(name: string, option: IPropOption | any) {
-        if ((this as any).prototype.$_props == null) {
-            (this as any).prototype.$_props = {};
+        if ((this as any).prototype.props_ == null) {
+            (this as any).prototype.props_ = {};
         }
-        (this as any).prototype.$_props = option;
+        (this as any).prototype.props_ = option;
     }
 
     watch(propName: string, cb: (newValue, oldValue) => void) {
@@ -327,60 +327,11 @@ export abstract class Component {
         }
         else if (this.children[tag]) {
             const component: Component = new (this.children[tag] as any)();
-            if (component._$storeGetters) {
-                // can not make it async because if item is array then it will break
-                // because at that time value will be undefined
-                // so set it before rendering
-                component._$storeGetters.forEach(item => {
-                    component[item.prop] = component.$store.state[item.state];
-                    const cb = (newValue) => {
-                        component[item.prop] = newValue;
-                        component._$updateDOM(item.prop);
-                    }
-                    component.$store.watch(item.state, cb);
-                    component._$storeWatchCb.push({
-                        key: item.state,
-                        cb
-                    });
-                });
-            }
-
-            const htmlAttributes = [];
-            if (option.attr) {
-                const attr = option.attr;
-                for (const key in attr) {
-                    const value = attr[key];
-                    if (component.$_props[key]) {
-                        component[key] = value.v;
-                        this.watch(value.k, (newValue) => {
-                            component[key] = newValue;
-                            component._$updateDOM(key);
-                        });
-                    }
-                    else {
-                        htmlAttributes.push({
-                            key,
-                            value: value.v
-                        })
-                    }
-                }
-            }
-            if (option.on) {
-                const events = option.on;
-                for (const eventName in events) {
-                    if (events[eventName]) {
-                        component.on(eventName, events[eventName].bind(this));
-                    }
-                    else {
-                        throw `Invalid event handler for event ${eventName}, Handler does not exist`;
-                    }
-                }
-            }
+            const htmlAttributes = this.initComponent_(component, option);
             element = component.element = component.executeRender_();
             htmlAttributes.forEach(item => {
                 element.setAttribute(item.key, item.value);
             })
-
         }
         else {
             throw `Invalid Component ${tag}. If you have created a component, Please register your component.`;
@@ -394,6 +345,63 @@ export abstract class Component {
         }
         return element;
 
+    }
+
+    private initComponent_(component, option) {
+        if (component._$storeGetters) {
+            // can not make it async because if item is array then it will break
+            // because at that time value will be undefined
+            // so set it before rendering
+            component._$storeGetters.forEach(item => {
+                component[item.prop] = component.$store.state[item.state];
+                const cb = (newValue) => {
+                    component[item.prop] = newValue;
+                    component._$updateDOM(item.prop);
+                }
+                component.$store.watch(item.state, cb);
+                component._$storeWatchCb.push({
+                    key: item.state,
+                    cb
+                });
+            });
+        }
+
+        const htmlAttributes = [];
+        console.log("option", option);
+        if (option.attr) {
+            console.log("attr", "props", component.props_);
+
+            const attr = option.attr;
+            for (const key in attr) {
+                const value = attr[key];
+                if (component.props_[key]) {
+                    component[key] = value.v;
+                    this.watch(value.k, (newValue) => {
+                        component[key] = newValue;
+                        component._$updateDOM(key);
+                    });
+                }
+                else {
+                    htmlAttributes.push({
+                        key,
+                        value: value.v
+                    })
+                }
+            }
+        }
+        if (option.on) {
+            const events = option.on;
+            for (const eventName in events) {
+                if (events[eventName]) {
+                    component.on(eventName, events[eventName].bind(this));
+                }
+                else {
+                    throw `Invalid event handler for event ${eventName}, Handler does not exist`;
+                }
+            }
+        }
+        console.log("htmlAttributes", htmlAttributes);
+        return htmlAttributes;
     }
 
     private clearAll_() {
@@ -438,7 +446,7 @@ export abstract class Component {
     $store: ITajStore;
 
     private $_filters;
-    private $_props;
+    private props_;
     private $_reactives;
 
     private _$storeWatchCb: { key: string, cb: Function }[] = [];

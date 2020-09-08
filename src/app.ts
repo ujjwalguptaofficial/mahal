@@ -2,6 +2,7 @@ import { Component } from "./abstracts";
 import { globalFilters } from "./constant";
 import { isString } from "util";
 import { defaultExport } from "./default";
+import { IComponentOption } from "./interface";
 
 export class App {
     component: typeof Component;
@@ -15,8 +16,20 @@ export class App {
         }
     }
 
-    create() {
+    create(option?: IComponentOption) {
         const componentInstance: Component = new (this as any).component();
+        if (option) {
+            const componentInitOption = {};
+            if (option.props) {
+                componentInitOption["attr"] = {};
+                for (const prop in option.props) {
+                    componentInitOption["attr"][prop] = {
+                        v: option.props[prop]
+                    }
+                }
+            }
+            (componentInstance as any).initComponent_(componentInstance, componentInitOption);
+        }
         this.element.appendChild(
             (componentInstance as any).executeRender_()
         );

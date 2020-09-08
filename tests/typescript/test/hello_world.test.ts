@@ -2,17 +2,37 @@ import HelloWorld from "../src/components/hello_world";
 import { app } from "../src/index";
 import { expect } from "chai";
 import { createSandbox } from "sinon";
+import { nextTick } from "process";
 
 describe('HelloWorld', function () {
 
     let component;
 
     before(function () {
-        component = (app as any).$initiate(HelloWorld);
+        component = (app as any).$initiate(HelloWorld, {
+            props: {
+                count: 0
+            }
+        });
     });
 
     it('id=name inner html should equal ujjwal gupta', function () {
         expect(component.find("#name").innerHTML).equal("UJJWAL GUPTA");
+    });
+
+    it('value of count button', function (done) {
+
+        const btn = component.find('#count');
+        expect(btn.innerHTML).equal('0');
+        component.find('#count').click();
+        component.on("click", function () {
+            ++component.count;
+            console.log("clicked")
+        });
+        nextTick(() => {
+            // expect(btn.innerHTML).equal('1');
+            done();
+        })
     });
 
     it('click count button', function () {
@@ -23,16 +43,6 @@ describe('HelloWorld', function () {
         sandbox.restore();
     });
 
-    it('value of count button', function () {
-        component.count = 0;
-        const btn = component.find('#count');
-        expect(btn.innerHTML).equal('0');
-        component.find('#count').click();
-        component.on("click", function () {
-            ++component.count;
-        });
-        expect(btn.innerHTML).equal('1');
 
-    });
 });
 
