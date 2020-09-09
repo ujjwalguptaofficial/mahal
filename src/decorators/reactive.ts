@@ -1,6 +1,7 @@
 export function Reactive(target, key: string) {
-    if (!target.$_reactives) {
-        target.$_reactives = [];
+    if (!target.reactives_) {
+        target.reactives_ = [];
     }
-    target.$_reactives.push(key);
+    console.log("reactive key called", key);
+    target.reactives_.push(key);
 }

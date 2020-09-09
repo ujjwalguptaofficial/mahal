@@ -27,13 +27,12 @@ describe('HelloWorld', function () {
         component.on("click", function () {
             ++component.count;
         });
-        console.log("watcher", component.watchList_)
         component.find('#count').click();
         expect(component.count).equal(1);
         setTimeout(() => {
             expect(btn.innerHTML).equal('1');
             done();
-        }, 1000)
+        }, 100)
     });
 
     it('click count button', function () {

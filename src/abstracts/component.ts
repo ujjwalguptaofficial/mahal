@@ -68,7 +68,7 @@ export abstract class Component {
                     this.onObjModified_(key, objectProp, oldValue);
                 })
             }
-        }, this.$_reactives || []);
+        }, this.reactives_ || []);
     }
 
     private onObjModified_(key: string, prop, params) {
@@ -447,7 +447,7 @@ export abstract class Component {
 
     private $_filters;
     private props_;
-    private $_reactives;
+    private reactives_;
 
     private _$storeWatchCb: { key: string, cb: Function }[] = [];
 

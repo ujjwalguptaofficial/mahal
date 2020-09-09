@@ -3,6 +3,7 @@ import { globalFilters } from "./constant";
 import { isString } from "util";
 import { defaultExport } from "./default";
 import { IComponentOption } from "./interface";
+import { Reactive } from "./decorators";
 
 export class App {
     component: typeof Component;
@@ -23,6 +24,7 @@ export class App {
             if (option.props) {
                 componentInitOption["attr"] = {};
                 for (const key in option.props) {
+                    Reactive(componentInstance, key);
                     componentInitOption["attr"][key] = {
                         k: key,
                         v: option.props[key]
