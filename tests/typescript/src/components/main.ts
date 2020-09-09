@@ -5,7 +5,7 @@ import Student from "./student";
 import ObjectComponent from "./object";
 
 @Template(`<div>
-<HelloWorld :count="counter" />
+<HelloWorld :count="counter" on:click="incrementCounter" />
 
 
 </div>`)

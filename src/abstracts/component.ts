@@ -12,7 +12,7 @@ export abstract class Component {
     element: HTMLElement;
     template: string;
 
-    watchList: {
+    watchList_: {
         [key: string]: Array<(newValue, oldValue) => void>
     } = {};
 
@@ -24,10 +24,10 @@ export abstract class Component {
     }
 
     watch(propName: string, cb: (newValue, oldValue) => void) {
-        if (this.watchList[propName] == null) {
-            this.watchList[propName] = [];
+        if (this.watchList_[propName] == null) {
+            this.watchList_[propName] = [];
         }
-        this.watchList[propName].push(cb);
+        this.watchList_[propName].push(cb);
     }
 
     private _$dependency: { [key: string]: any[] } = {};
@@ -51,8 +51,8 @@ export abstract class Component {
 
     private _$attachGetterSetter() {
         new Observer(this).create((key, oldValue, newValue) => {
-            if (this.watchList[key]) {
-                this.watchList[key].forEach(cb => {
+            if (this.watchList_[key]) {
+                this.watchList_[key].forEach(cb => {
                     cb(newValue, oldValue);
                 })
             }
@@ -410,7 +410,7 @@ export abstract class Component {
             (this as any).$store.unwatch(item.key, item.cb)
         });
         this.events_ = null;
-        this.watchList = null;
+        this.watchList_ = null;
     }
 
     find(selector: string) {

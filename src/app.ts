@@ -22,9 +22,10 @@ export class App {
             const componentInitOption = {};
             if (option.props) {
                 componentInitOption["attr"] = {};
-                for (const prop in option.props) {
-                    componentInitOption["attr"][prop] = {
-                        v: option.props[prop]
+                for (const key in option.props) {
+                    componentInitOption["attr"][key] = {
+                        k: key,
+                        v: option.props[key]
                     }
                 }
             }

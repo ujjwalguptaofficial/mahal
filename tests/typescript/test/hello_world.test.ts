@@ -24,15 +24,16 @@ describe('HelloWorld', function () {
 
         const btn = component.find('#count');
         expect(btn.innerHTML).equal('0');
-        component.find('#count').click();
         component.on("click", function () {
             ++component.count;
-            console.log("clicked")
         });
-        nextTick(() => {
-            // expect(btn.innerHTML).equal('1');
+        console.log("watcher", component.watchList_)
+        component.find('#count').click();
+        expect(component.count).equal(1);
+        setTimeout(() => {
+            expect(btn.innerHTML).equal('1');
             done();
-        })
+        }, 1000)
     });
 
     it('click count button', function () {
