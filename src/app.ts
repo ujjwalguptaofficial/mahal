@@ -17,22 +17,8 @@ export class App {
         }
     }
 
-    create(option?: IComponentOption) {
+    create() {
         const componentInstance: Component = new (this as any).component();
-        if (option) {
-            const componentInitOption = {};
-            if (option.props) {
-                componentInitOption["attr"] = {};
-                for (const key in option.props) {
-                    Reactive(componentInstance, key);
-                    componentInitOption["attr"][key] = {
-                        k: key,
-                        v: option.props[key]
-                    }
-                }
-            }
-            (componentInstance as any).initComponent_(componentInstance, componentInitOption);
-        }
         this.element.appendChild(
             (componentInstance as any).executeRender_()
         );
