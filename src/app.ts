@@ -2,8 +2,6 @@ import { Component } from "./abstracts";
 import { globalFilters } from "./constant";
 import { isString } from "util";
 import { defaultExport } from "./default";
-import { IComponentOption } from "./interface";
-import { Reactive } from "./decorators";
 import { LogHelper } from "./utils";
 
 export class App {

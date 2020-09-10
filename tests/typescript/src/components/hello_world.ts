@@ -28,17 +28,18 @@ export default class HelloWorld extends BaseComponent {
 
     constructor() {
         super();
-        this.on("rendered", this.onRendered);
-        this.on("created", function () {
-            console.log("created", this);
-        });
-        this.on("destroyed", () => {
-            console.log("destroyed", this);
-        });
     }
 
     onRendered() {
-        console.log("Hello world rendered", this);
+        console.log("Hello world rendered", this.name);
+    }
+
+    onCreated() {
+        console.log("Hello world created", this.name);
+    }
+
+    onDestroyed() {
+        console.log("Hello world destroyed", this.name);
     }
 
     onClick() {

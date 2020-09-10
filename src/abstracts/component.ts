@@ -15,6 +15,10 @@ export abstract class Component {
 
     constructor() {
         nextTick(() => {
+            this.on(LIFECYCLE_EVENT.Rendered, this.onRendered.bind(this));
+            this.on(LIFECYCLE_EVENT.Created, this.onCreated.bind(this));
+            this.on(LIFECYCLE_EVENT.Destroyed, this.onDestroyed.bind(this));
+
             this.attachGetterSetter_();
             this.emit(LIFECYCLE_EVENT.Created);
         })
@@ -335,16 +339,13 @@ export abstract class Component {
         return this.element.querySelectorAll(selector);
     }
 
-    onRendered(cb) {
-        this.on(LIFECYCLE_EVENT.Rendered, cb);
+    onRendered() {
     }
 
     onCreated(cb) {
-        this.on(LIFECYCLE_EVENT.Created, cb);
     }
 
     onDestroyed(cb) {
-        this.on(LIFECYCLE_EVENT.Destroyed, cb);
     }
 
     filter(name: string, value) {
