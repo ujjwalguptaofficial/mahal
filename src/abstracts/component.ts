@@ -11,6 +11,7 @@ export abstract class Component {
     children: { [key: string]: typeof Component }
     element: HTMLElement;
     template: string;
+    $store: ITajStore;
 
     constructor() {
         nextTick(() => {
@@ -20,6 +21,10 @@ export abstract class Component {
         if (this.children == null) {
             this.children = {};
         }
+    }
+
+    destroy() {
+        this.element.parentNode.removeChild(this.element);
     }
 
     addProp(name: string, option: IPropOption | any) {
@@ -352,7 +357,6 @@ export abstract class Component {
         throw `Can not find filter ${name}`;
     }
 
-    $store: ITajStore;
 
     private initComponent_(component: this, option) {
         if (component._$storeGetters) {
@@ -408,12 +412,12 @@ export abstract class Component {
     }
 
     private clearAll_() {
-        this.emit(LIFECYCLE_EVENT.Destroyed);
         this._$storeWatchCb.forEach(item => {
-            (this as any).$store.unwatch(item.key, item.cb)
+            this.$store.unwatch(item.key, item.cb)
         });
-        this.events_ = null;
-        this.watchList_ = null;
+        this.events_ = {};
+        this.watchList_ = {};
+        this.emit(LIFECYCLE_EVENT.Destroyed);
     }
 
     private executeRender_() {

@@ -16,7 +16,7 @@ export class App {
         if (this.element == null) {
             this.element = document.body;
             if (process.env.NODE_ENV != 'production') {
-                LogHelper.warn("Provided element or element selector is not valid. Using default document.body")
+                LogHelper.warn("Provided element or element selector is not valid. Using body as default")
             }
         }
     }

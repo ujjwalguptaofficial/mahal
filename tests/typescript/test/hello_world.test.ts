@@ -18,8 +18,10 @@ describe('HelloWorld', function () {
                 count: 0
             }
         });
-        component.on("rendered", () => {
-            done();
+        component.on("created", () => {
+            component.on("rendered", () => {
+                done();
+            });
         });
     });
 
@@ -66,6 +68,17 @@ describe('HelloWorld', function () {
         })
     });
 
+    // it("destroy", function (done) {
+    //     component.on("destroyed", () => {
+    //         console.log("destroy called");
+    //         done();
+    //     });
+    //     component.destroy();
+    // })
+
+    it('inner html', () => {
+        expect(component.find('.p-html').innerHTML).equal("<b>BOLD</b>")
+    })
 
 });
 

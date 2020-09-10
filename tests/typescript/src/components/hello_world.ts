@@ -6,6 +6,7 @@ import { Component, Template, Prop, Filter, Reactive } from "taj";
     <button id="count" on:click='onClick'>
         {{count}}
     </button>
+    <button on:click="destroy">Destory</button>
     <p class="p-html" #html=myHtml></p>
 </div>
 `)
@@ -31,6 +32,9 @@ export default class HelloWorld extends BaseComponent {
         this.on("created", function () {
             console.log("created", this);
         });
+        this.on("destroyed", () => {
+            console.log("destroyed", this);
+        });
     }
 
     onRendered() {
@@ -45,4 +49,6 @@ export default class HelloWorld extends BaseComponent {
     upperCase(value: string) {
         return value.toUpperCase();
     }
+
+
 }

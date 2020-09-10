@@ -1,7 +1,9 @@
 const jsdom = require('jsdom');
+const { expect } = require("chai");
+
 
 // console.log(process.env.NODE_ENV)
-
+// global.expect = expect;
 const jsdomInstance = new jsdom.JSDOM(`<!DOCTYPE html>
 <html lang="en"><body> <div id="app"></div></body></html>`);
 global.window = jsdomInstance.window;

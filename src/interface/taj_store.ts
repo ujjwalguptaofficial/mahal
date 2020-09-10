@@ -8,5 +8,6 @@ export interface ITajStore {
     commit?(mutationName: string, payload?);
 
     watch?(name: string, cb: (newValue?, oldValue?) => void);
+    unwatch?(name: string, cb);
 
 }
