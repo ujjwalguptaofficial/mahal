@@ -26,9 +26,6 @@ export default class HelloWorld extends BaseComponent {
     @Reactive
     name = "ujjwal gupta" // leave value in lower case
 
-    constructor() {
-        super();
-    }
 
     onRendered() {
         console.log("Hello world rendered", this.name);

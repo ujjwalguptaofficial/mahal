@@ -23,6 +23,12 @@ export default class extends Component {
     @Reactive
     students = []
 
+    @Reactive
+    name = "";
+
+    @Reactive
+    editName = "";
+
 
     addStudent() {
         this.students.push({
@@ -49,10 +55,6 @@ export default class extends Component {
         })
     }
 
-    @Reactive
-    name = "";
 
-    @Reactive
-    editName = "";
 }
 
