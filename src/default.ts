@@ -1,6 +1,6 @@
 import { App } from "./app";
 import { Component } from "./abstracts";
-import { nextTick } from "./helpers";
+import { nextTick } from "./utils";
 
 export const defaultExport = {
     App,

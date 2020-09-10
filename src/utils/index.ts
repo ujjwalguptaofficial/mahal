@@ -6,3 +6,4 @@ export * from "./is_array_index";
 export * from "./is_object";
 export * from "./is_string";
 export * from "./get_from_window"
+export * from "./next_tick";

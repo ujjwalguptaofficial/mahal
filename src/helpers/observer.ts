@@ -1,5 +1,5 @@
 import { isArray, isNull, isPrimitive } from "../utils";
-import { nextTick } from "./next_tick";
+import { nextTick } from "../utils";
 export class Observer {
     input;
 

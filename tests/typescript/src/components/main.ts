@@ -33,7 +33,6 @@ export default class Main extends Component {
 
     incrementCounter() {
         this.counter++;
-        this.flag = this.counter > 0;
     }
 
     toggleFlag() {

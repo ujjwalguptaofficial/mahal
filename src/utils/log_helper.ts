@@ -18,7 +18,7 @@ export class LogHelper implements IError {
     }
 
     logWarning() {
-        console.warn(this.get());
+        console.warn("Taj warn :-", this.get());
     }
 
     get() {
@@ -56,6 +56,6 @@ export class LogHelper implements IError {
     }
 
     static warn(...args) {
-        console.warn(...args);
+        console.warn("Taj warn", ...args);
     }
 }

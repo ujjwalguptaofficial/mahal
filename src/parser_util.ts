@@ -3,7 +3,6 @@ import { LogHelper } from './utils/log_helper';
 import { ERROR_TYPE, HTML_TAG } from './enums';
 import { ICompiledView, IIfExpModified } from './interface';
 import prettier from "prettier";
-import { nextTick } from './helpers';
 
 export class ParserUtil {
 
@@ -39,6 +38,7 @@ export class ParserUtil {
             const lines = viewCode.split("\n");
             // console.log(`%c${viewCode.substring(0, location.start.offset)}%c${viewCode.substring(location.start.offset, location.end.offset + 1)}%c${viewCode.substring(location.end.offset + 1)}`,
             //     css, css + ';color:red', css);
+            // do not remove this
             console.log("%c" + lines.slice(0, location.start.line - 1).join("\n") +
                 "%c" + lines.slice(location.start.line - 1, location.end.line).join("\n") +
                 "%c" + lines.slice(location.end.line).join("\n")
@@ -50,7 +50,7 @@ export class ParserUtil {
 
     static createRenderer(template: string) {
         const compiledParent = ParserUtil.parseview(template);
-        console.log("compiled", compiledParent);
+        // console.log("compiled", compiledParent);
         if (compiledParent.view) {
             if (compiledParent.view.forExp) {
                 console.error(`Invalid template ${template}`);
@@ -79,7 +79,7 @@ export class ParserUtil {
                         const onIfCondEnd = (last: number) => {
                             compiled.child[indexOfIfCond].view.ifExpModified = ifModifiedExpression;
                             ifModifiedExpression = null;
-                            console.log("if cond modified", indexOfIfCond, compiled.child[indexOfIfCond]);
+                            // console.log("if cond modified", indexOfIfCond, compiled.child[indexOfIfCond]);
                             for (let i = indexOfIfCond + 1; i < last; i++) {
                                 indexToRemove.push(i);
                             }
@@ -112,7 +112,7 @@ export class ParserUtil {
                         if (ifModifiedExpression) {
                             onIfCondEnd(compiled.child.length);
                         }
-                        console.log("indexOfIfCond", indexToRemove);
+                        // console.log("indexOfIfCond", indexToRemove);
                         compiled.child = compiled.child.filter((child, index) => {
                             return indexToRemove.indexOf(index) < 0
                         })
@@ -290,7 +290,7 @@ export class ParserUtil {
         // else {
         //     str += `,[]`
         // }
-        console.log("renderer", parentStr);
+        // console.log("renderer", parentStr);
         return new Function(parentStr);
     }
 }

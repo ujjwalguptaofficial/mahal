@@ -1,9 +1,9 @@
 import { ParserUtil } from "../parser_util";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
-import { nextTick, setAndReact, Observer } from "../helpers";
-import { IPropOption, ITajStore, IComponentOption } from "../interface";
+import { setAndReact, Observer } from "../helpers";
+import { IPropOption, ITajStore } from "../interface";
 import { globalFilters, MutationObserver } from "../constant";
-import { isArray, isObject, isPrimitive, LogHelper, isNull } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull } from "../utils";
 
 let uniqueCounter = 0
 
@@ -222,7 +222,7 @@ export abstract class Component {
 
     private executeRender_() {
         const renderFn = this.render || ParserUtil.createRenderer(this.template);
-        console.log("renderer", renderFn);
+        // console.log("renderer", renderFn);
         this.element = renderFn.call(this);
         nextTick(() => {
             new MutationObserver((mutationsList, observer) => {
@@ -284,6 +284,18 @@ export abstract class Component {
         }
         this.events_[event].push(cb);
         return this;
+    }
+
+    off(event: string, cb: Function) {
+        if (this.events_[event]) {
+            if (cb) {
+                const index = this.events_[event].indexOf(cb);
+                this.events_[event].splice(index, 1);
+            }
+            else {
+                this.events_[event] = [];
+            }
+        }
     }
 
     emit(event: string, data?: any) {
@@ -367,10 +379,7 @@ export abstract class Component {
         }
 
         const htmlAttributes = [];
-        console.log("option", option);
         if (option.attr) {
-            console.log("attr", "props", component.props_);
-
             const attr = option.attr;
             for (const key in attr) {
                 const value = attr[key];
@@ -400,7 +409,6 @@ export abstract class Component {
                 }
             }
         }
-        console.log("htmlAttributes", htmlAttributes);
         return htmlAttributes;
     }
 

@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const webpack = require("webpack");
 module.exports = {
   entry: './src/index.ts',
   devtool: 'inline-source-map',
@@ -22,6 +23,9 @@ module.exports = {
     path: path.resolve(__dirname, 'bin/')
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    }),
     new HtmlWebPackPlugin({
       cache: true,
       hash: true,

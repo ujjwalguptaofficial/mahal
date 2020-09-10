@@ -4,6 +4,7 @@ import { isString } from "util";
 import { defaultExport } from "./default";
 import { IComponentOption } from "./interface";
 import { Reactive } from "./decorators";
+import { LogHelper } from "./utils";
 
 export class App {
     component: typeof Component;
@@ -13,7 +14,10 @@ export class App {
         this.component = component;
         this.element = isString(element) ? document.querySelector(element) : element;
         if (this.element == null) {
-            throw "Invalid element - either element doesn't exist or you have provided invalid element";
+            this.element = document.body;
+            if (process.env.NODE_ENV != 'production') {
+                LogHelper.warn("Provided element or element selector is not valid. Using default document.body")
+            }
         }
     }
 
