@@ -1,7 +1,7 @@
 import { Component, Template, Children, Reactive } from "taj";
 
 import HelloWorld from "./hello_world";
-import Student from "./student";
+import Student from "./array";
 import ObjectComponent from "./object";
 
 @Template(`<div>

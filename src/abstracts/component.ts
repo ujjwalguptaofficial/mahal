@@ -1,5 +1,5 @@
 import { ParserUtil } from "../parser_util";
-import { HTML_TAG, ERROR_TYPE } from "../enums";
+import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer } from "../helpers";
 import { IPropOption, ITajStore } from "../interface";
 import { globalFilters, MutationObserver } from "../constant";
@@ -12,9 +12,15 @@ export abstract class Component {
     element: HTMLElement;
     template: string;
 
-    watchList_: {
-        [key: string]: Array<(newValue, oldValue) => void>
-    } = {};
+    constructor() {
+        nextTick(() => {
+            this.attachGetterSetter_();
+            this.emit(LIFECYCLE_EVENT.Created);
+        })
+        if (this.children == null) {
+            this.children = {};
+        }
+    }
 
     addProp(name: string, option: IPropOption | any) {
         if ((this as any).prototype.props_ == null) {
@@ -30,33 +36,81 @@ export abstract class Component {
         this.watchList_[propName].push(cb);
     }
 
-    private _$dependency: { [key: string]: any[] } = {};
-
-    private _$parent: Component;
-
-    constructor() {
-        nextTick(() => {
-            this._$attachGetterSetter();
-            this.emit("created");
-        })
-        if (this.children == null) {
-            this.children = {};
-        }
-
-    }
-
     get unique() {
         return ++uniqueCounter;
     }
 
-    private _$attachGetterSetter() {
+    set(target, prop, valueToSet) {
+        setAndReact(target, prop, valueToSet);
+    }
+
+    render: () => void;
+
+    createTextNode(value, propDependency) {
+        const el = document.createTextNode(value);
+        if (propDependency) {
+            this.storeDependency_(propDependency, el);
+        }
+        return el;
+    }
+
+    createCommentNode() {
+        return document.createComment("");
+    }
+
+    private updateDOM_(key: string) {
+
+        for (const prop in this.dependency_) {
+            if (prop === key) {
+                const depItems = this.dependency_[prop];
+                depItems.forEach(item => {
+                    switch (item.nodeType) {
+                        // Text Node
+                        case 3:
+                            item.nodeValue = this.resolve_(key); break;
+                        // Input node 
+                        case 1:
+                            (item as HTMLInputElement).value = this.resolve_(key)
+                            break;
+                        default:
+                            if (item.ifExp) {
+                                const el = item.method();
+                                (item.el as HTMLElement).parentNode.replaceChild(
+                                    el, item.el
+                                )
+                                item.el = el;
+                            }
+                    }
+                });
+                return;
+            }
+        }
+    }
+
+    private storeIfExp_(method: Function, keys: string[], id: string) {
+        const el = method();
+        const dep = {
+            el: el,
+            method: method,
+            id: id,
+            ifExp: true
+        }
+        keys.forEach(item => {
+            this.storeDependency_(item, dep);
+        })
+        return el;
+    }
+
+    private dependency_: { [key: string]: any[] } = {};
+
+    private attachGetterSetter_() {
         new Observer(this).create((key, oldValue, newValue) => {
             if (this.watchList_[key]) {
                 this.watchList_[key].forEach(cb => {
                     cb(newValue, oldValue);
                 })
             }
-            this._$updateDOM(key);
+            this.updateDOM_(key);
         }, (key) => {
             if (isArray(this[key])) {
                 new Observer(this[key]).createForArray((arrayProp, params) => {
@@ -72,8 +126,8 @@ export abstract class Component {
     }
 
     private onObjModified_(key: string, prop, params) {
-        if (this._$dependency[key]) {
-            this._$dependency[key].filter(q => q.forExp === true).forEach(item => {
+        if (this.dependency_[key]) {
+            this.dependency_[key].filter(q => q.forExp === true).forEach(item => {
                 const parent = (item.ref as Comment).parentNode as HTMLElement;
                 const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
                 switch (prop) {
@@ -126,53 +180,6 @@ export abstract class Component {
         }
     }
 
-    $set(target, prop, valueToSet) {
-        setAndReact(target, prop, valueToSet);
-    }
-
-    private _$updateDOM(key: string) {
-
-        for (const prop in this._$dependency) {
-            if (prop === key) {
-                const depItems = this._$dependency[prop];
-                depItems.forEach(item => {
-                    switch (item.nodeType) {
-                        // Text Node
-                        case 3:
-                            item.nodeValue = this.resolve_(key); break;
-                        // Input node 
-                        case 1:
-                            (item as HTMLInputElement).value = this.resolve_(key)
-                            break;
-                        default:
-                            if (item.ifExp) {
-                                const el = item.method();
-                                (item.el as HTMLElement).parentNode.replaceChild(
-                                    el, item.el
-                                )
-                                item.el = el;
-                            }
-                    }
-                });
-                return;
-            }
-        }
-    }
-
-    private storeIfExp_(method: Function, keys: string[], id: string) {
-        const el = method();
-        const dep = {
-            el: el,
-            method: method,
-            id: id,
-            ifExp: true
-        }
-        keys.forEach(item => {
-            this.storeDependency_(item, dep);
-        })
-        return el;
-    }
-
     private storeForExp_(key, method: Function, id: string) {
         const cmNode = this.createCommentNode();
         const els = [cmNode];
@@ -205,8 +212,8 @@ export abstract class Component {
             new MutationObserver((mutationsList, observer) => {
                 if (document.body.contains(cmNode) === false) {
                     observer.disconnect();
-                    const depIndex = this._$dependency[key].findIndex(q => q.id === id);
-                    this._$dependency[key].splice(depIndex, 1);
+                    const depIndex = this.dependency_[key].findIndex(q => q.id === id);
+                    this.dependency_[key].splice(depIndex, 1);
                 }
             }).observe(this.element, { childList: true, subtree: true });
         });
@@ -218,60 +225,16 @@ export abstract class Component {
         return properties.reduce((prev, curr) => prev && prev[curr], this)
     }
 
-    render: () => void;
-
-    private executeRender_() {
-        const renderFn = this.render || ParserUtil.createRenderer(this.template);
-        // console.log("renderer", renderFn);
-        this.element = renderFn.call(this);
-        nextTick(() => {
-            new MutationObserver((mutationsList, observer) => {
-                if (document.body.contains(this.element) === false) {
-                    observer.disconnect();
-                    this.clearAll_();
-                }
-            }).observe(document.body, { childList: true, subtree: true });
-            if ((this as any).$store) {
-                for (let key in this._$dependency) {
-                    if (key.indexOf("$store.state") >= 0) {
-                        const cb = () => {
-                            this._$updateDOM(key);
-                        };
-                        key = key.replace("$store.state.", '');
-                        (this as any).$store.watch(key, cb);
-                        this._$storeWatchCb.push({
-                            key, cb
-                        });
-                    }
-                }
-            }
-            this.emit("rendered");
-        })
-        return this.element;
-    }
-
-    createTextNode(value, propDependency) {
-        const el = document.createTextNode(value);
-        if (propDependency) {
-            this.storeDependency_(propDependency, el);
-        }
-        return el;
-    }
-
     private storeDependency_(key: string, value) {
         // if (this[key] == null) {
         //     return;
         // }
-        if (this._$dependency[key] == null) {
-            this._$dependency[key] = [value];
+        if (this.dependency_[key] == null) {
+            this.dependency_[key] = [value];
         }
-        else if (this._$dependency[key].findIndex(q => q.id === value.id) < 0) {
-            this._$dependency[key].push(value);
+        else if (this.dependency_[key].findIndex(q => q.id === value.id) < 0) {
+            this.dependency_[key].push(value);
         }
-    }
-
-    createCommentNode() {
-        return document.createComment("");
     }
 
     private events_: {
@@ -339,7 +302,7 @@ export abstract class Component {
         }
         else if (this.children[tag]) {
             const component: Component = new (this.children[tag] as any)();
-            const htmlAttributes = this.initComponent_(component, option);
+            const htmlAttributes = this.initComponent_(component as any, option);
             element = component.element = component.executeRender_();
             htmlAttributes.forEach(item => {
                 element.setAttribute(item.key, item.value);
@@ -359,7 +322,39 @@ export abstract class Component {
 
     }
 
-    private initComponent_(component, option) {
+    find(selector: string) {
+        return this.element.querySelector(selector);
+    }
+
+    findAll(selector: string) {
+        return this.element.querySelectorAll(selector);
+    }
+
+    onRendered(cb) {
+        this.on(LIFECYCLE_EVENT.Rendered, cb);
+    }
+
+    onCreated(cb) {
+        this.on(LIFECYCLE_EVENT.Created, cb);
+    }
+
+    onDestroyed(cb) {
+        this.on(LIFECYCLE_EVENT.Destroyed, cb);
+    }
+
+    filter(name: string, value) {
+        if (globalFilters[name]) {
+            return globalFilters[name](value);
+        }
+        else if (this.filters_[name]) {
+            return this.filters_[name](value);
+        }
+        throw `Can not find filter ${name}`;
+    }
+
+    $store: ITajStore;
+
+    private initComponent_(component: this, option) {
         if (component._$storeGetters) {
             // can not make it async because if item is array then it will break
             // because at that time value will be undefined
@@ -368,7 +363,7 @@ export abstract class Component {
                 component[item.prop] = component.$store.state[item.state];
                 const cb = (newValue) => {
                     component[item.prop] = newValue;
-                    component._$updateDOM(item.prop);
+                    component.updateDOM_(item.prop);
                 }
                 component.$store.watch(item.state, cb);
                 component._$storeWatchCb.push({
@@ -387,7 +382,7 @@ export abstract class Component {
                     component[key] = value.v;
                     this.watch(value.k, (newValue) => {
                         component[key] = newValue;
-                        component._$updateDOM(key);
+                        component.updateDOM_(key);
                     });
                 }
                 else {
@@ -413,7 +408,7 @@ export abstract class Component {
     }
 
     private clearAll_() {
-        this.emit("destroyed");
+        this.emit(LIFECYCLE_EVENT.Destroyed);
         this._$storeWatchCb.forEach(item => {
             (this as any).$store.unwatch(item.key, item.cb)
         });
@@ -421,41 +416,44 @@ export abstract class Component {
         this.watchList_ = null;
     }
 
-    find(selector: string) {
-        return this.element.querySelector(selector);
+    private executeRender_() {
+        const renderFn = this.render || ParserUtil.createRenderer(this.template);
+        // console.log("renderer", renderFn);
+        this.element = renderFn.call(this);
+        nextTick(() => {
+            new MutationObserver((mutationsList, observer) => {
+                if (document.body.contains(this.element) === false) {
+                    observer.disconnect();
+                    this.clearAll_();
+                }
+            }).observe(document.body, { childList: true, subtree: true });
+            if ((this as any).$store) {
+                for (let key in this.dependency_) {
+                    if (key.indexOf("$store.state") >= 0) {
+                        const cb = () => {
+                            this.updateDOM_(key);
+                        };
+                        key = key.replace("$store.state.", '');
+                        (this as any).$store.watch(key, cb);
+                        this._$storeWatchCb.push({
+                            key, cb
+                        });
+                    }
+                }
+            }
+            this.emit(LIFECYCLE_EVENT.Rendered);
+        })
+        return this.element;
     }
 
-    findAll(selector: string) {
-        return this.element.querySelectorAll(selector);
-    }
 
-    onRendered(cb) {
-        this.on("rendered", cb);
-    }
-
-    onCreated(cb) {
-        this.on("created", cb);
-    }
-
-    onDestroyed(cb) {
-        this.on("destroyed", cb);
-    }
-
-    $filter(name: string, value) {
-        if (globalFilters[name]) {
-            return globalFilters[name](value);
-        }
-        else if (this.$_filters[name]) {
-            return this.$_filters[name](value);
-        }
-        throw `Can not find filter ${name}`;
-    }
-
-    $store: ITajStore;
-
-    private $_filters;
+    private filters_;
     private props_;
     private reactives_;
+
+    private watchList_: {
+        [key: string]: Array<(newValue, oldValue) => void>
+    } = {};
 
     private _$storeWatchCb: { key: string, cb: Function }[] = [];
 

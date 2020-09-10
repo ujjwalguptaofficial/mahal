@@ -64,7 +64,7 @@ export class ParserUtil {
         const sife= ctx.storeIfExp_.bind(ctx);
         const sfore= ctx.storeForExp_.bind(ctx);
         const unique= ctx.unique;
-        const f= ctx.$filter.bind(this);
+        const f= ctx.filter.bind(this);
         `;
         const createJsEqFromCompiled = (compiled: ICompiledView) => {
             let str = "";

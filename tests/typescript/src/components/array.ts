@@ -16,7 +16,6 @@ import { Component, Template, Reactive } from "taj";
        <td #else on:click="()=>{editStudent(index)}"><button>EditStudent</button></td>
       </tr>
     </table>
- 
 </div>
 `)
 export default class extends Component {
@@ -34,7 +33,7 @@ export default class extends Component {
 
     editStudent(index) {
         this.editName = this.students[index].name;
-        this.$set(this.students, index, {
+        this.set(this.students, index, {
             ... this.students[index], ...{
                 isEdit: true
             }
@@ -43,7 +42,7 @@ export default class extends Component {
 
     updateStudent(index) {
         this.students[index].name = this.editName;
-        this.$set(this.students, index, {
+        this.set(this.students, index, {
             ... this.students[index], ...{
                 isEdit: false
             }

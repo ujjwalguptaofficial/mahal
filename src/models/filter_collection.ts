@@ -1,6 +1,6 @@
 export class FilterCollection {
     add(name: string, filter: Function, Class) {
-        Class.prototype.$_filters[name] = filter;
+        Class.prototype.filters_[name] = filter;
     }
 
     get(name: string) {

@@ -13,8 +13,7 @@ describe('HelloWorld', function () {
     });
 
     it("initiate component", function (done) {
-        console.log("calling rendered");
-        component = (app as any).$initiate(HelloWorld, {
+        component = (app as any).initiate(HelloWorld, {
             props: {
                 count: 0
             }
