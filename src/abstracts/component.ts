@@ -344,7 +344,9 @@ export abstract class Component {
             if (option.attr) {
                 const attr = option.attr;
                 for (const key in attr) {
-                    element.setAttribute(key, attr[key].v);
+                    if (attr.hasOwnProperty(key)) {
+                        element.setAttribute(key, attr[key].v);
+                    }
                 }
             }
 
