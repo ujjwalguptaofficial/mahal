@@ -94,13 +94,17 @@ export abstract class Component {
                                 const ref: HTMLDivElement = item.ref;
                                 const els = this.runForExp_(key, resolvedValue, item.method);
                                 const parent = ref.parentNode;
+                                new Observer(resolvedValue).createForArray((arrayProp, params) => {
+                                    this.onObjModified_(key, arrayProp, params);
+                                })
                                 for (let i = 0, len = oldValue.length; i < len; i++) {
                                     parent.removeChild(ref.nextSibling);
                                 }
-                                els.forEach((el, index) => {
+                                resolvedValue.forEach((value, index) => {
                                     this.onObjModified_(key, "push", {
+                                        value: value,
                                         key: index,
-                                        value: el
+                                        length: index + 1
                                     })
                                 })
                             }
@@ -150,6 +154,7 @@ export abstract class Component {
     }
 
     private onObjModified_(key: string, prop, params) {
+        console.log("onObjModified", key, prop, params);
         if (this.dependency_[key]) {
             this.dependency_[key].filter(q => q.forExp === true).forEach(item => {
                 const parent = (item.ref as Comment).parentNode as HTMLElement;

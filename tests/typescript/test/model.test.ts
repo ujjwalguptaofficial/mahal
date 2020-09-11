@@ -24,8 +24,8 @@ describe('Array', function () {
 
     it("from element to component", function () {
         const input = component.find('input');
-        input.value = "random";
-        expect(input.value).equal('random');
+        input.setValue("random");
+        expect(component.text).equal('random');
     });
 
 });
