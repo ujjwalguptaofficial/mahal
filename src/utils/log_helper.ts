@@ -33,11 +33,12 @@ export class LogHelper implements IError {
     }
 
     getPlain() {
-        var err = this.get(), str = ""
-        for (const key in err) {
-            str += `'${key}' : ${err[key]} `;
-        }
-        return str;
+        var err = this.get();
+        return ` ${err.message}
+
+        type : ${err.type}
+        `
+        
     }
 
     private getMsg_() {
@@ -55,6 +56,9 @@ export class LogHelper implements IError {
             case ERROR_TYPE.InvalidEventHandler:
                 errMsg = `Invalid event handler for event "${this.info_.eventName}", Handler does not exist in component.`
                 break;
+            case ERROR_TYPE.InvalidComponent:
+                errMsg = `Invalid Component "${this.info_.tag}" - Component not registered. Register to use.`;
+                break;
             default:
                 errMsg = this.message;
                 break;
@@ -67,6 +71,6 @@ export class LogHelper implements IError {
     }
 
     throwPlain() {
-        throw this.getPlain();
+        throw "{Taj throw}:" + this.getPlain();
     }
 }

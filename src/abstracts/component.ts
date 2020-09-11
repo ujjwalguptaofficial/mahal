@@ -157,7 +157,7 @@ export abstract class Component {
 
     private attachGetterSetter_() {
         new Observer(this).create((key, oldValue, newValue) => {
-            if (this.watchList_[key]) {
+            if (this.watchList_[key] != null) {
                 this.watchList_[key].forEach(cb => {
                     cb(newValue, oldValue);
                 })
@@ -172,7 +172,7 @@ export abstract class Component {
                     this.onObjModified_(key, arrayProp, params);
                 })
             }
-            else if (isObject(this[key])) {
+            else {
                 new Observer(this[key]).create((objectProp, oldValue, newValue) => {
                     this.onObjModified_(key, objectProp, oldValue);
                 })
@@ -208,29 +208,6 @@ export abstract class Component {
                             var newElement = item.method(resolvedValue[prop], prop);
                             parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
                         }
-                    // values.forEach(item => {
-                    //     const newElement = item.method(newValue, prop);
-                    //     // (item.lastEl as HTMLElement).parentNode.insertBefore(newElement, item.lastEl.nextSibling);
-                    //     // item.lastEl = newElement;
-                    //     const parent = (item.ref as Comment).parentNode;
-                    //     if (prop === "0") {
-                    //         (parent as HTMLElement).insertBefore(newElement, item.ref);
-                    //     }
-                    //     else {
-                    //         const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
-
-                    //         if (this[key][prop]) {
-                    //             // (item.parent as HTMLElement).insertBefore(newElement, item.parent.children[prop]);
-                    //             parent.replaceChild(newElement, parent.childNodes[indexOfRef + Number(prop)]);
-                    //         }
-                    //         else {
-                    //             // (item.parent as HTMLElement).appendChild(newElement);
-                    //             (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + 1 + Number(prop)]);
-                    //         }
-                    //     }
-
-                    // });
-                    // break;
                 }
             });
             // console.log("value", values);
@@ -377,7 +354,10 @@ export abstract class Component {
             })
         }
         else {
-            throw `Invalid Component ${tag}. If you have created a component, Please register your component.`;
+            new LogHelper(ERROR_TYPE.InvalidComponent, {
+                tag: tag
+            }).throwPlain();
+     
         }
 
 
