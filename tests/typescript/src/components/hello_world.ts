@@ -2,6 +2,9 @@ import { Component, Template, Prop, Filter, Reactive } from "taj";
 
 @Template(`
 <div>
+    <span id="testFilter">
+        {{"ujjwal" | toUpper}}
+    </span>
     <span id="name">{{name | toUpper}}</span>
     <button id="count" on:click='onClick'>
         {{count}}

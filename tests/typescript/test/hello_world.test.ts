@@ -80,5 +80,11 @@ describe('HelloWorld', function () {
         expect(component.find('.p-html').innerHTML).equal("<b>BOLD</b>")
     })
 
+    it('test filter rendering', () => {
+        console.log("depen", component.dependency_);
+        expect(component.find('#testFilter').innerHTML).equal("UJJWAL");
+        expect(component.dependency_['"ujjwal" ']).equal(undefined);
+    })
+
 });
 

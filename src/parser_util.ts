@@ -2,20 +2,28 @@ import * as parser from '../build/parser';
 import { LogHelper } from './utils/log_helper';
 import { ERROR_TYPE, HTML_TAG } from './enums';
 import { ICompiledView, IIfExpModified } from './interface';
-var beautify = require('js-beautify')
+var beautify = require('js-beautify');
+
+const stringRegex = new RegExp(/["\']/g)
 export class ParserUtil {
 
-    static createFnFromStringExpression(exp, cb?) {
+    static addCtxToExpression(exp, cb?) {
         const keys = [];
-        const modifiedExpression = exp.split(" ").map(item => {
+        const modifiedExpression = exp.split(" ").map((item: string) => {
             switch (item) {
-                case '==':
                 case '&&':
                 case '||':
                 case 'true':
                 case '':
                 case 'false': return item;
-                default: keys.push(item.replace(/([=][=]|[!][=]).*/, '')); return "ctx." + item;
+                default:
+                    const key = item.replace(/([=][=]|[!][=]).*/, '');
+                    if (stringRegex.test(key) === false) {
+                        keys.push(key);
+                    }
+                    return stringRegex.test(item) === true ?
+                        item :
+                        "ctx." + item;
             }
         }).join(" ");
         if (cb) {
@@ -29,7 +37,7 @@ export class ParserUtil {
             // viewCode = viewCode.replace(new RegExp('\n', 'g'), '').trim();
             viewCode = viewCode.trim();
             return parser.parse(viewCode, {
-                createFnFromStringExpression: ParserUtil.createFnFromStringExpression
+                createFnFromStringExpression: ParserUtil.addCtxToExpression
             }) as ICompiledView;
         }
         catch (ex) {
@@ -207,7 +215,7 @@ export class ParserUtil {
                 const handleFor = (value: string) => {
                     let forExp = compiled.view.forExp;
                     let key;
-                    forExp.value = ParserUtil.createFnFromStringExpression(forExp.value, (param) => {
+                    forExp.value = ParserUtil.addCtxToExpression(forExp.value, (param) => {
                         key = param[0];
                     });
                     const getRegex = (subStr) => {
@@ -225,7 +233,7 @@ export class ParserUtil {
                 const ifModified = compiled.view.ifExpModified;
                 if (ifModified && ifModified.ifExp) {
                     let keys = "["
-                    const ifCond = ParserUtil.createFnFromStringExpression(ifModified.ifExp, (param) => {
+                    const ifCond = ParserUtil.addCtxToExpression(ifModified.ifExp, (param) => {
                         param.forEach((key) => {
                             keys += `'${key}',`
                         });
@@ -233,7 +241,7 @@ export class ParserUtil {
                     str += `sife(()=>{return ${ifCond} ? ${handleTag() + handleOption()}`
 
                     ifModified.ifElseList.forEach(item => {
-                        const ifElseCond = ParserUtil.createFnFromStringExpression(item.view.ifExp.elseIfCond, (param) => {
+                        const ifElseCond = ParserUtil.addCtxToExpression(item.view.ifExp.elseIfCond, (param) => {
                             param.forEach((key) => {
                                 keys += `'${key}',`
                             });
@@ -274,7 +282,7 @@ export class ParserUtil {
                     str += `f('${item}',`
                     brackets += ")"
                 });
-                str += `${ParserUtil.createFnFromStringExpression(compiled.mustacheExp)} ${brackets},'${compiled.mustacheExp}')`
+                str += `${ParserUtil.addCtxToExpression(compiled.mustacheExp)} ${brackets},'${compiled.mustacheExp}')`
 
             }
             else if ((compiled as any).trim().length > 0) {
@@ -284,6 +292,7 @@ export class ParserUtil {
         }
         parentStr += `return ${createJsEqFromCompiled(compiledParent)}`;
         parentStr = beautify(parentStr, { indent_size: 4, space_in_empty_paren: true })
+        console.log("parentstr", parentStr);
         return new Function(parentStr);
     }
 }

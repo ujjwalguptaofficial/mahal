@@ -7,7 +7,7 @@ describe('MODEL', function () {
 
     let component;
 
-    it("initiate invalid component", function () {
+    it("initiate invalid filter", function () {
         try {
             component = (app as any).initiate(InvalidFilter);
         } catch (error) {

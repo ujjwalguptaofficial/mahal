@@ -6,6 +6,7 @@ import ObjectComponent from "./object";
 import IfElse from "./if_else";
 
 @Template(`<div>
+{{"ujjwal" | toS}}
 <HelloWorld :count="counter" on:click="incrementCounter" ></HelloWorld>
 <ObjectComponent></ObjectComponent>
 <IfElse></IfElse>
@@ -56,7 +57,8 @@ export default class Main extends Component {
         super();
         setTimeout(() => {
             // alert("name changed");
-            // this.name = "ujjwal gupta";
+            this.name = "ujjwal gupta";
+            debugger;
         }, 1000);
     }
 
