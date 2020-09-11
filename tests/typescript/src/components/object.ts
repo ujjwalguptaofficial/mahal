@@ -69,7 +69,7 @@ export default class extends Component {
     }
 
     deleteStudent(key) {
-        this.students.splice(key, 1);
+        this.delete(this.students, key);
     }
 
     reset() {

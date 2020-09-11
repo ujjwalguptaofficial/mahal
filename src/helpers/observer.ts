@@ -32,28 +32,29 @@ export class Observer {
 
         this.input.__proto__.push = (value, key) => {
             this.input[key] = value;
-            // const result = Object.keys(this.input[key]).length;
-            const result = Object.keys(this.input).length;
-            nextTick(() => {
-                Object.defineProperty(this.input, key, {
-                    set(newValue) {
-                        const oldValue = value;
-                        value = newValue;
-                        nextTick(() => {
-                            onSet(key, oldValue, newValue);
-                        })
-                    },
-                    get() {
-                        return value;
-                    }
-                })
-                onSet("push", {
-                    value: value,
-                    key: key,
-                    length: result
-                }, null);
-            });
-            return result;
+            const length = Object.keys(this.input).length;
+            Object.defineProperty(this.input, key, {
+                set(newValue) {
+                    const oldValue = value;
+                    value = newValue;
+                    nextTick(() => {
+                        onSet(key, oldValue, newValue);
+                    })
+                },
+                get() {
+                    return value;
+                }
+            })
+            onSet("push", {
+                value: value,
+                key: key,
+                length: length
+            }, null);
+            return length;
+        }
+        // splice
+        this.input.__proto__.splice = (index, noOfItemToDelete) => {
+            onSet("splice", [index, noOfItemToDelete], null);
         }
 
     }

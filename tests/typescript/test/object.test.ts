@@ -78,15 +78,15 @@ describe('Object', function () {
         })
     });
 
-    // it("delete student", function (done) {
-    //     expect(component.students).length(1);
-    //     component.find('.btn-delete').click();
-    //     nextTick(() => {
-    //         expect(component.students).length(0);
-    //         expect(component.findAll(".tr-list")).length(0);
-    //         done();
-    //     })
-    // });
+    it("delete student", function (done) {
+        expect(getObjectLength(component.students)).equal(1);
+        component.find('.btn-delete').click();
+        nextTick(() => {
+            expect(getObjectLength(component.students)).equal(0);
+            expect(component.findAll(".tr-list")).length(0);
+            done();
+        })
+    });
 
 });
 

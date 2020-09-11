@@ -1,6 +1,6 @@
 import { ParserUtil } from "../parser_util";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { setAndReact, Observer } from "../helpers";
+import { setAndReact, Observer, deleteAndReact } from "../helpers";
 import { IPropOption, ITajStore } from "../interface";
 import { globalFilters, MutationObserver } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength } from "../utils";
@@ -51,6 +51,10 @@ export abstract class Component {
 
     set(target, prop, valueToSet) {
         setAndReact(target, prop, valueToSet);
+    }
+
+    delete(target, prop) {
+        deleteAndReact(target, prop);
     }
 
     render: () => void;
