@@ -21,7 +21,7 @@ describe('IfELSE', function () {
         component.state = 0;
         nextTick(() => {
             const div = component.find('div');
-            expect(div.innerHTML).equal('th0');
+            expect(div.innerHTML).equal('0th0');
             done();
         })
     });
@@ -30,7 +30,7 @@ describe('IfELSE', function () {
         component.state = 1;
         nextTick(() => {
             const div = component.find('div');
-            expect(div.innerHTML).equal('st1');
+            expect(div.innerHTML).equal('1st1');
             done();
         })
     });

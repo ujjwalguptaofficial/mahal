@@ -3,7 +3,7 @@ import { Component, Template, Reactive } from "taj";
 
 @Template(`
 <div>
-<button on:click="reset">Reset</button>
+<button on:click="()=>{students=[]}">Reset</button>
     <table>
     <tr>
         <td><input id="name" #model(name) ></input></td>
