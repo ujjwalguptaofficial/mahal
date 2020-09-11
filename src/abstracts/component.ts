@@ -25,6 +25,9 @@ export abstract class Component {
         if (this.children == null) {
             this.children = {};
         }
+        if (this.filters_ == null) {
+            this.filters_ = {};
+        }
     }
 
     destroy() {
@@ -357,7 +360,7 @@ export abstract class Component {
             new LogHelper(ERROR_TYPE.InvalidComponent, {
                 tag: tag
             }).throwPlain();
-     
+
         }
 
 
@@ -394,7 +397,9 @@ export abstract class Component {
         else if (this.filters_[name]) {
             return this.filters_[name](value);
         }
-        throw `Can not find filter ${name}`;
+        new LogHelper(ERROR_TYPE.InvalidFilter, {
+            filter: name
+        }).throwPlain();
     }
 
 

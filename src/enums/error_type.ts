@@ -4,4 +4,5 @@ export enum ERROR_TYPE {
     ForExpAsRoot = "for_exp_as_root",
     ForOnPrimitiveOrNull = "for_on_primitive|null",
     InvalidEventHandler = "invalid_event_handler",
+    InvalidFilter = "invalid_filter",
 }

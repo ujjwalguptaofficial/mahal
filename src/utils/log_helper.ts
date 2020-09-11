@@ -38,7 +38,7 @@ export class LogHelper implements IError {
 
         type : ${err.type}
         `
-        
+
     }
 
     private getMsg_() {
@@ -57,7 +57,10 @@ export class LogHelper implements IError {
                 errMsg = `Invalid event handler for event "${this.info_.eventName}", Handler does not exist in component.`
                 break;
             case ERROR_TYPE.InvalidComponent:
-                errMsg = `Invalid Component "${this.info_.tag}" - Component not registered. Register to use.`;
+                errMsg = `Component "${this.info_.tag}" is not registered. Make sure you have registered component either in parent component or globally.`;
+                break;
+            case ERROR_TYPE.InvalidFilter:
+                errMsg = `Can not find Filter "${this.info_.filter}". Make sure you have registered filter either in component or globally.`;
                 break;
             default:
                 errMsg = this.message;
