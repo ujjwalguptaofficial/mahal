@@ -3,7 +3,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer } from "../helpers";
 import { IPropOption, ITajStore } from "../interface";
 import { globalFilters, MutationObserver } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength } from "../utils";
 
 let uniqueCounter = 0
 
@@ -94,27 +94,39 @@ export abstract class Component {
                                 const ref: HTMLDivElement = item.ref;
                                 const els = this.runForExp_(key, resolvedValue, item.method);
                                 const parent = ref.parentNode;
+                                // remove all nodes
+                                for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
+                                    parent.removeChild(ref.nextSibling);
+                                }
+
                                 if (isArray(resolvedValue)) {
                                     new Observer(resolvedValue).createForArray((arrayProp, params) => {
                                         this.onObjModified_(key, arrayProp, params);
+                                    })
+                                    resolvedValue.forEach((value, index) => {
+                                        this.onObjModified_(key, "push", {
+                                            value: value,
+                                            key: index,
+                                            length: index + 1
+                                        })
                                     })
                                 }
                                 else {
                                     new Observer(resolvedValue).create((objectProp, oldValue, newValue) => {
                                         this.onObjModified_(key, objectProp, oldValue);
                                     })
+                                    let index = 0;
+                                    for (let prop in resolvedValue) {
+                                        if (resolvedValue.hasOwnProperty(prop)) {
+                                            index++;
+                                            this.onObjModified_(key, "push", {
+                                                value: resolvedValue[prop],
+                                                key: prop,
+                                                length: index + 1
+                                            })
+                                        }
+                                    }
                                 }
-
-                                for (let i = 0, len = oldValue.length; i < len; i++) {
-                                    parent.removeChild(ref.nextSibling);
-                                }
-                                resolvedValue.forEach((value, index) => {
-                                    this.onObjModified_(key, "push", {
-                                        value: value,
-                                        key: index,
-                                        length: index + 1
-                                    })
-                                })
                             }
                     }
                 });
@@ -148,6 +160,9 @@ export abstract class Component {
             }
             this.updateDOM_(key, oldValue);
         }, (key) => {
+            if (isObject(this[key]) === false) {
+                return;
+            }
             if (isArray(this[key])) {
                 new Observer(this[key]).createForArray((arrayProp, params) => {
                     this.onObjModified_(key, arrayProp, params);

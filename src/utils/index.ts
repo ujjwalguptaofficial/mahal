@@ -7,3 +7,4 @@ export * from "./is_object";
 export * from "./is_string";
 export * from "./get_from_window"
 export * from "./next_tick";
+export * from "./get_object_length";

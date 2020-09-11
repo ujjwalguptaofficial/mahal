@@ -6,7 +6,7 @@ import ObjectComponent from "./object";
 
 @Template(`<div>
 <HelloWorld :count="counter" on:click="incrementCounter" ></HelloWorld>
-<Student></Student>
+<ObjectComponent></ObjectComponent>
 
 </div>`)
 @Children({
