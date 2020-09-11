@@ -37,7 +37,6 @@ describe('Array', function () {
         ];
         nextTick(() => {
             expect(component.findAll(".tr-list")).length(2);
-            console.log("html after insert", component.element.innerHTML);
             done();
         })
     });
@@ -69,13 +68,21 @@ describe('Array', function () {
         expect(component.students).length(1);
         component.find('#btnEditStudent').click();
         nextTick(() => {
-            console.log("html", component.element.innerHTML);
             component.find('.edit-student-input input').setValue("hello");
             component.find('#btnUpdateStudent').click();
-
         })
         nextTick(() => {
             expect(component.students[0].name).equal('hello');
+            done();
+        })
+    });
+
+    it("delete student", function (done) {
+        expect(component.students).length(1);
+        component.find('.btn-delete').click();
+        nextTick(() => {
+            expect(component.students).length(0);
+            expect(component.findAll(".tr-list")).length(0);
             done();
         })
     });

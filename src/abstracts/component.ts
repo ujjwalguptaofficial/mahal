@@ -94,9 +94,17 @@ export abstract class Component {
                                 const ref: HTMLDivElement = item.ref;
                                 const els = this.runForExp_(key, resolvedValue, item.method);
                                 const parent = ref.parentNode;
-                                new Observer(resolvedValue).createForArray((arrayProp, params) => {
-                                    this.onObjModified_(key, arrayProp, params);
-                                })
+                                if (isArray(resolvedValue)) {
+                                    new Observer(resolvedValue).createForArray((arrayProp, params) => {
+                                        this.onObjModified_(key, arrayProp, params);
+                                    })
+                                }
+                                else {
+                                    new Observer(resolvedValue).create((objectProp, oldValue, newValue) => {
+                                        this.onObjModified_(key, objectProp, oldValue);
+                                    })
+                                }
+
                                 for (let i = 0, len = oldValue.length; i < len; i++) {
                                     parent.removeChild(ref.nextSibling);
                                 }
@@ -168,8 +176,10 @@ export abstract class Component {
                         for (let i = 1; i <= params[1]; i++) {
                             parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
                         }
-                        var newElement = item.method(params[2], params[0]);
-                        (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
+                        if (params[2]) {
+                            var newElement = item.method(params[2], params[0]);
+                            (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
+                        }
                         break;
                     default:
                         // if(isObject())
@@ -451,7 +461,7 @@ export abstract class Component {
 
     private executeRender_() {
         const renderFn = this.render || ParserUtil.createRenderer(this.template);
-        // console.log("renderer", renderFn);
+        console.log("renderer", renderFn);
         this.element = renderFn.call(this);
         nextTick(() => {
             new MutationObserver((mutationsList, observer) => {

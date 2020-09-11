@@ -105,7 +105,7 @@ Expression "Expression"= val:[a-zA-Z0-9\&\ \|\.\$\!\=]+ {
 	return val.join("");
 }
 
-EventAssignment "Event Assignment"= val:[a-zA-Z0-9\&\=\>\{\}\(\)\ \|]+ {
+EventAssignment "Event Assignment"= val:[a-zA-Z0-9\&\=\>\{\}\(\)\ \|\[\]]+ {
 	return val.join("");
 }
 

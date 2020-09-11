@@ -1,4 +1,4 @@
-import { Component, Template, Reactive, nextTick } from "taj";
+import { Component, Template, Reactive } from "taj";
 
 
 @Template(`
@@ -8,6 +8,7 @@ import { Component, Template, Reactive, nextTick } from "taj";
     <tr>
         <td><input id="name" #model(name) ></input></td>
         <td><button id="btnAdd" on:click="addStudent">Add Student</button></td>
+        <td></td>
     </tr>
     <tr class="tr-list" #for(student,index in students)>
     <td>{{index}}</td>
@@ -15,6 +16,7 @@ import { Component, Template, Reactive, nextTick } from "taj";
     <td #else >{{student.name}}</td>
     <td #if(student.isEdit) on:click="()=>{updateStudent(index)}"><button id="btnUpdateStudent">UpdateStudent</button></td>
     <td #else on:click="()=>{editStudent(index)}"><button id="btnEditStudent">EditStudent</button></td>
+    <td><button class="btn-delete" on:click="()=>{deleteStudent(index)}">Delete</button></td>
     </tr>
     </table>
 </div>
@@ -57,14 +59,11 @@ export default class extends Component {
     }
 
     reset() {
-        this.students = [
-            {
-                name: 'ujjwal'
-            },
-            {
-                name: 'ujjwal'
-            }
-        ];
+        this.students = [];
+    }
+
+    deleteStudent(index) {
+        this.students.splice(index, 1);
     }
 
 }
