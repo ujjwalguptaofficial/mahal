@@ -4,7 +4,7 @@ import { nextTick } from "taj";
 import { expect } from "chai";
 import { createSandbox } from "sinon";
 
-describe('Array', function () {
+describe('MODEL', function () {
 
     let component;
 

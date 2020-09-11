@@ -2,7 +2,6 @@ import ObjectComponent from "../src/components/object";
 import { app } from "../src/index";
 import { nextTick, getObjectLength } from "taj";
 import { expect } from "chai";
-import { createSandbox } from "sinon";
 
 describe('Object', function () {
 

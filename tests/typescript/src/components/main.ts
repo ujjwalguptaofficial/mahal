@@ -3,14 +3,14 @@ import { Component, Template, Children, Reactive } from "taj";
 import HelloWorld from "./hello_world";
 import Student from "./array";
 import ObjectComponent from "./object";
+import IfElse from "./if_else";
 
 @Template(`<div>
-<HelloWorld :count="counter" on:click="incrementCounter" ></HelloWorld>
-<ObjectComponent></ObjectComponent>
 
+<IfElse></IfElse>
 </div>`)
 @Children({
-    HelloWorld, Student, ObjectComponent
+    HelloWorld, Student, ObjectComponent, IfElse
 })
 export default class Main extends Component {
     flag = true;

@@ -2,20 +2,20 @@ import * as parser from '../build/parser';
 import { LogHelper } from './utils/log_helper';
 import { ERROR_TYPE, HTML_TAG } from './enums';
 import { ICompiledView, IIfExpModified } from './interface';
-import prettier from "prettier";
-
+var beautify = require('js-beautify')
 export class ParserUtil {
 
     static createFnFromStringExpression(exp, cb?) {
         const keys = [];
         const modifiedExpression = exp.split(" ").map(item => {
             switch (item) {
+                case '==':
                 case '&&':
                 case '||':
                 case 'true':
                 case '':
                 case 'false': return item;
-                default: keys.push(item); return "ctx." + item;
+                default: keys.push(item.replace(/([=][=]|[!][=]).*/, '')); return "ctx." + item;
             }
         }).join(" ");
         if (cb) {
@@ -283,14 +283,7 @@ export class ParserUtil {
             return str;
         }
         parentStr += `return ${createJsEqFromCompiled(compiledParent)}`;
-        // parentStr = prettier.format(
-        //     parentStr,
-        //     { semi: false, parser: "typescript" }
-        // )
-        // else {
-        //     str += `,[]`
-        // }
-        // console.log("renderer", parentStr);
+        parentStr = beautify(parentStr, { indent_size: 4, space_in_empty_paren: true })
         return new Function(parentStr);
     }
 }
