@@ -14,11 +14,15 @@ export class LogHelper implements IError {
     }
 
     logError() {
-        console.error(this.get());
+        console.error("{Taj error}:", this.get());
+    }
+
+    logPlainError() {
+        console.error("{Taj error}:", this.getPlain());
     }
 
     logWarning() {
-        console.warn("Taj warn :-", this.get());
+        console.warn("{Taj warn}:", this.get());
     }
 
     get() {
@@ -48,6 +52,9 @@ export class LogHelper implements IError {
             case ERROR_TYPE.ForOnPrimitiveOrNull:
                 errMsg = `For expression can not be run on null or primitive datatype. Initiate variable ${this.info_} as array or object.`
                 break;
+            case ERROR_TYPE.InvalidEventHandler:
+                errMsg = `Invalid event handler for event "${this.info_.eventName}", Handler does not exist in component.`
+                break;
             default:
                 errMsg = this.message;
                 break;
@@ -56,6 +63,10 @@ export class LogHelper implements IError {
     }
 
     static warn(...args) {
-        console.warn("Taj warn", ...args);
+        console.warn("{Taj warn}:", ...args);
+    }
+
+    throwPlain() {
+        throw this.getPlain();
     }
 }

@@ -3,12 +3,13 @@ import { Component, Template, Reactive } from "taj";
 
 @Template(`
 <div>
+<button on:click="reset">Reset</button>
     <table>
     <tr>
-        <td><input #model(name) ></input></td>
-        <td on:click="addStudent"><button>Add Student</button></td>
+        <td><input id="name" #model(name) ></input></td>
+        <td id="btnAdd"><button on:click="addStudent">Add Student</button></td>
     </tr>
-    <tr #for(student,index in students)>
+    <tr class="tr-list" #for(student,index in students)>
     <td>{{index}}</td>
     <td #if(student.isEdit) >as{{student | toS}}<input #model(editName) ></input></td>
     <td #else >{{student.name}}</td>
@@ -55,6 +56,9 @@ export default class extends Component {
         })
     }
 
+    reset() {
+        this.students = [];
+    }
 
 }
 

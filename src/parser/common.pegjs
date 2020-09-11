@@ -57,9 +57,9 @@ Model= "#model" "(" word:Identifier ")"{
 }
 
 For= "#for("_* key:Identifier _* index:ForIndex?  _* "in" _* value:Expression _* ")"{
-   return {
+   return {forExp:{
       key, value,index : index || 'i'
-   }
+   }}
 }
 
 Attribute= isBind:":"? attr:Identifier _* "=" StringSymbol word:Word StringSymbol _*{

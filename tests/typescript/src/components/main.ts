@@ -5,8 +5,8 @@ import Student from "./array";
 import ObjectComponent from "./object";
 
 @Template(`<div>
-<HelloWorld :count="counter" on:click="incrementCounter" />
-
+<HelloWorld :count="counter" on:click="incrementCounter" ></HelloWorld>
+<Student></Student>
 
 </div>`)
 @Children({

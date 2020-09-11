@@ -67,7 +67,7 @@ export abstract class Component {
         return document.createComment("");
     }
 
-    private updateDOM_(key: string) {
+    private updateDOM_(key: string, oldValue) {
 
         for (const prop in this.dependency_) {
             if (prop === key) {
@@ -88,6 +88,21 @@ export abstract class Component {
                                     el, item.el
                                 )
                                 item.el = el;
+                            }
+                            else if (item.forExp) {
+                                const resolvedValue = this.resolve_(key);
+                                const ref: HTMLDivElement = item.ref;
+                                const els = this.runForExp_(key, resolvedValue, item.method);
+                                const parent = ref.parentNode;
+                                for (let i = 0, len = oldValue.length; i < len; i++) {
+                                    parent.removeChild(ref.nextSibling);
+                                }
+                                els.forEach((el, index) => {
+                                    this.onObjModified_(key, "push", {
+                                        key: index,
+                                        value: el
+                                    })
+                                })
                             }
                     }
                 });
@@ -119,7 +134,7 @@ export abstract class Component {
                     cb(newValue, oldValue);
                 })
             }
-            this.updateDOM_(key);
+            this.updateDOM_(key, oldValue);
         }, (key) => {
             if (isArray(this[key])) {
                 new Observer(this[key]).createForArray((arrayProp, params) => {
@@ -189,27 +204,33 @@ export abstract class Component {
         }
     }
 
-    private storeForExp_(key, method: Function, id: string) {
-        const cmNode = this.createCommentNode();
-        const els = [cmNode];
-        const resolvedValue = this.resolve_(key);
-
+    private runForExp_(key, value, method) {
+        const els: any[] = [];
         if (process.env.NODE_ENV !== 'production') {
-            if (isPrimitive(resolvedValue) || isNull(resolvedValue)) {
-                throw new LogHelper(ERROR_TYPE.ForOnPrimitiveOrNull, key).getPlain();
+            if (isPrimitive(value) || isNull(value)) {
+                new LogHelper(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
             }
         }
 
-        if (isArray(resolvedValue)) {
-            resolvedValue.map((item, i) => {
+        if (isArray(value)) {
+            value.map((item, i) => {
                 els.push(method(item, i));
             });
         }
-        else if (isObject(resolvedValue)) {
-            for (let key in resolvedValue) {
-                els.push(method(resolvedValue[key], key));
+        else if (isObject(value)) {
+            for (let prop in value) {
+                els.push(method(value[prop], prop));
             }
         }
+        return els;
+    }
+
+    private storeForExp_(key, method: Function, id: string) {
+        const cmNode = this.createCommentNode();
+        let els = [cmNode];
+        const resolvedValue = this.resolve_(key);
+
+        els = els.concat(this.runForExp_(key, resolvedValue, method));
 
         nextTick(() => {
             this.storeDependency_(key, {
@@ -304,7 +325,9 @@ export abstract class Component {
                         element['on' + eventName] = events[eventName].bind(this);
                     }
                     else {
-                        throw `Invalid event handler for event ${eventName}, Handler does not exist`;
+                        new LogHelper(ERROR_TYPE.InvalidEventHandler, {
+                            eventName,
+                        }).logPlainError();
                     }
                 }
             }
@@ -366,9 +389,9 @@ export abstract class Component {
             // so set it before rendering
             component._$storeGetters.forEach(item => {
                 component[item.prop] = component.$store.state[item.state];
-                const cb = (newValue) => {
+                const cb = (newValue, oldValue) => {
                     component[item.prop] = newValue;
-                    component.updateDOM_(item.prop);
+                    component.updateDOM_(item.prop, oldValue);
                 }
                 component.$store.watch(item.state, cb);
                 component._$storeWatchCb.push({
@@ -385,9 +408,9 @@ export abstract class Component {
                 const value = attr[key];
                 if (component.props_[key]) {
                     component[key] = value.v;
-                    this.watch(value.k, (newValue) => {
+                    this.watch(value.k, (newValue, oldValue) => {
                         component[key] = newValue;
-                        component.updateDOM_(key);
+                        component.updateDOM_(key, oldValue);
                     });
                 }
                 else {
@@ -435,8 +458,8 @@ export abstract class Component {
             if ((this as any).$store) {
                 for (let key in this.dependency_) {
                     if (key.indexOf("$store.state") >= 0) {
-                        const cb = () => {
-                            this.updateDOM_(key);
+                        const cb = (newValue, oldValue) => {
+                            this.updateDOM_(key, oldValue);
                         };
                         key = key.replace("$store.state.", '');
                         (this as any).$store.watch(key, cb);
