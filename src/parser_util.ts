@@ -5,6 +5,11 @@ import { ICompiledView, IIfExpModified } from './interface';
 var beautify = require('js-beautify');
 
 const stringRegex = new RegExp(/["\']/g)
+let uniqueCount = 0;
+
+const unique = () => {
+    return ++uniqueCount;
+}
 export class ParserUtil {
 
     static addCtxToExpression(exp, cb?) {
@@ -72,8 +77,7 @@ export class ParserUtil {
         const cc= ctx.createCommentNode;
         const sife= ctx.storeIfExp_.bind(ctx);
         const sfore= ctx.storeForExp_.bind(ctx);
-        const unique= ctx.unique;
-        const f= ctx.filter.bind(this);
+        const f= ctx.filter.bind(ctx);
         `;
         const createJsEqFromCompiled = (compiled: ICompiledView) => {
             let str = "";
@@ -232,7 +236,7 @@ export class ParserUtil {
                         value.replace(getRegex(`ctx.${forExp.key}`), forExp.key).
                             replace(getRegex(`ctx.${forExp.index}`), forExp.index)
                         }
-                            },unique)
+                            },${unique()})
                     `
                     //return forStr;
                 }
@@ -270,7 +274,7 @@ export class ParserUtil {
                     //     }
                     //     return temp;
                     // })();
-                    str += `:${elseString} },${keys},unique)`
+                    str += `:${elseString} },${keys},${unique()})`
                 }
                 else {
                     if (compiled.view.forExp) {
@@ -282,7 +286,7 @@ export class ParserUtil {
                 }
             }
             else if (compiled.mustacheExp) {
-                
+
                 let method = `()=>{return ct(`;
                 let brackets = "";
                 compiled.filters.forEach(item => {
@@ -293,7 +297,7 @@ export class ParserUtil {
                 method += `${ParserUtil.addCtxToExpression(compiled.mustacheExp, (param) => {
                     keys = JSON.stringify(param);
                 })} ${brackets} )}`;
-                str += `sife(${method}, ${keys},unique)`
+                str += `sife(${method}, ${keys},${unique()})`
                 // if (stringRegex.test(compiled.mustacheExp) === false) {
                 //     str += `,'${compiled.mustacheExp.trim()}')`;
                 // }
