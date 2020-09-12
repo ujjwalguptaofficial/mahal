@@ -17,10 +17,7 @@ export class ParserUtil {
                 case '':
                 case 'false': return item;
                 default:
-                    const key = item.replace(/([=][=]|[!][=]).*/, '');
-                    if (stringRegex.test(key) === false) {
-                        keys.push(key);
-                    }
+                    keys.push(item.replace(/([=][=]|[!][=]).*/, ''));
                     return stringRegex.test(item) === true ?
                         item :
                         "ctx." + item;
@@ -282,7 +279,13 @@ export class ParserUtil {
                     str += `f('${item}',`
                     brackets += ")"
                 });
-                str += `${ParserUtil.addCtxToExpression(compiled.mustacheExp)} ${brackets},'${compiled.mustacheExp}')`
+                str += `${ParserUtil.addCtxToExpression(compiled.mustacheExp)} ${brackets}`
+                if (stringRegex.test(compiled.mustacheExp) === false) {
+                    str += `,'${compiled.mustacheExp}')`;
+                }
+                else {
+                    str += `)`;
+                }
 
             }
             else if ((compiled as any).trim().length > 0) {

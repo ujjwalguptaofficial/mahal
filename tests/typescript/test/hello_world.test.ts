@@ -82,7 +82,7 @@ describe('HelloWorld', function () {
 
     it('test filter rendering', () => {
         console.log("depen", component.dependency_);
-        expect(component.find('#testFilter').innerHTML).equal("UJJWAL");
+        expect(component.find('#testFilter').innerHTML).equal("STRING");
         expect(component.dependency_['"ujjwal" ']).equal(undefined);
     })
 

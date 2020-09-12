@@ -6,10 +6,7 @@ import ObjectComponent from "./object";
 import IfElse from "./if_else";
 
 @Template(`<div>
-{{"ujjwal" | toS}}
 <HelloWorld :count="counter" on:click="incrementCounter" ></HelloWorld>
-<ObjectComponent></ObjectComponent>
-<IfElse></IfElse>
 </div>`)
 @Children({
     HelloWorld, Student, ObjectComponent, IfElse

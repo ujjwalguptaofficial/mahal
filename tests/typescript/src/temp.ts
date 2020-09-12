@@ -5,23 +5,51 @@
 // const sife = ctx.storeIfExp_.bind(ctx);
 // const sfore = ctx.storeForExp_.bind(ctx);
 // const unique = ctx.unique;
-// return ce('div', [
-//     ct('        '),
-//     ce('button', [ct('Show Div'),], { on: { click: ctx.toggleFlag } }),
-//     ct('        '),
-//     ce('button', [ct('Increment Counter'),], { on: { click: ctx.incrementCounter } }),
-//     ct('        '),
-//     ce('button', [ct('Additem'),], { on: { click: ctx.addItem } }),
-//     ct('        '),
-//     ce('div', [ct(ctx.counter, 'counter'),], {}),
-//     ct('        '),
-//     ce('button', [ct('Change FlagOne'),], { on: { click: ctx.toggleFlagOne } }),
-//     ct('       '),
-//     ce('button', [ct('Change FlagTwo'),], { on: { click: ctx.toggleFlagTwo } }),
-//     ct('        '),
-//     sife(() => {
-//         return ctx.flagOne ? ce('div', [ce('b', [ct('Flag one rendered'),], {}),], {}) :
-//             ctx.flagTwo ? ce('div', [ct('Flag two rendered'),], {}) :
-//                 ce('div', [ct('else rendered'),], {})
-//     }, ['flagOne', 'flagTwo',], unique),
+// const f = ctx.filter.bind(this);
+// return ce('div', [,
+//     ce('span', [,
+//         ct(f('toUpper', "ujjwal")), ,
+//     ], {
+//         attr: {
+//             id: {
+//                 v: 'testFilter'
+//             }
+//         }
+//     }), ,
+//     ce('span', [ct(f('toUpper', ctx.name)), $ {
+//         compiled.mustacheExp
+//     }, ], {
+//         attr: {
+//             id: {
+//                 v: 'name'
+//             }
+//         }
+//     }), ,
+//     ce('button', [,
+//         ct(ctx.count), ${
+//             compiled.mustacheExp
+//         }, ,
+//     ], {
+//         on: {
+//             click: ctx.onClick
+//         },
+//         attr: {
+//             id: {
+//                 v: 'count'
+//             }
+//         }
+//     }), ,
+//     ce('button', [ct('Destory'), ], {
+//         on: {
+//             click: ctx.destroy
+//         }
+//     }), ,
+//     ce('p', [], {
+//         html: ctx.myHtml,
+//         attr: {
+//             class: {
+//                 v: 'p-html'
+//             }
+//         }
+//     }), ,
 // ], {})
