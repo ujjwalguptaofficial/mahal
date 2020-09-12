@@ -2,22 +2,25 @@
 
 # TODO 
 
-* IF - done
-* If else - done
-* For - done
-* customComponent - done
+* IF - done (test added)
+* If else - done (test added)
+* else - (test added)
+* For - done (test added)
+* customComponent - done (test added)
 * Event 
-  * on:click - done
-  * on:input - done
+  * on:click - done (test added)
+  * on:input - done (test added)
 
-* LifeCycle events - done
-* Events from child to parent - done
-* model - Done
+* LifeCycle events - done (test added)
+* Events from child to parent - done (test added)
+* model - Done (test added)
 * Attributes - done
 * Dynamic class 
-* Dom Reference - done
+* Dom Reference - done (test added) using find
 * Watch - Done
 * Router
 * Store
-* Inner Html - done
-* Filter - Done
+* Inner Html - done (test added)
+* Filter - Done (test added)
+* directives
+* slots

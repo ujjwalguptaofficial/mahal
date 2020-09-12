@@ -71,14 +71,7 @@ export class ParserUtil {
                 throw new LogHelper(ERROR_TYPE.ForExpAsRoot).get();
             }
         }
-        let parentStr = `const ctx= this; 
-        const ce= ctx.createElement.bind(ctx);
-        const ct= ctx.createTextNode.bind(ctx);
-        const cc= ctx.createCommentNode;
-        const sife= ctx.storeIfExp_.bind(ctx);
-        const sfore= ctx.storeForExp_.bind(ctx);
-        const f= ctx.filter.bind(ctx);
-        `;
+        let parentStr = `const ctx= this;`;
         const createJsEqFromCompiled = (compiled: ICompiledView) => {
             let str = "";
             if (compiled.view) {
@@ -231,7 +224,7 @@ export class ParserUtil {
                     const getRegex = (subStr) => {
                         return new RegExp(subStr, 'g');
                     }
-                    return `...sfore('${key}',(${forExp.key},${forExp.index})=>{
+                    return `...hForE('${key}',(${forExp.key},${forExp.index})=>{
                                 return ${
                         value.replace(getRegex(`ctx.${forExp.key}`), forExp.key).
                             replace(getRegex(`ctx.${forExp.index}`), forExp.index)
@@ -248,7 +241,7 @@ export class ParserUtil {
                             keys += `'${key}',`
                         });
                     });
-                    str += `sife(()=>{return ${ifCond} ? ${handleTag() + handleOption()}`
+                    str += `he(()=>{return ${ifCond} ? ${handleTag() + handleOption()}`
 
                     ifModified.ifElseList.forEach(item => {
                         const ifElseCond = ParserUtil.addCtxToExpression(item.view.ifExp.elseIfCond, (param) => {
@@ -265,7 +258,7 @@ export class ParserUtil {
                         elseString = createJsEqFromCompiled(ifModified.else);
                     }
                     else {
-                        elseString = `cc()`;
+                        elseString = `ce()`;
                     }
                     // str += (() => {
                     //     let temp = "";
@@ -297,13 +290,7 @@ export class ParserUtil {
                 method += `${ParserUtil.addCtxToExpression(compiled.mustacheExp, (param) => {
                     keys = JSON.stringify(param);
                 })} ${brackets} )}`;
-                str += `sife(${method}, ${keys},${unique()})`
-                // if (stringRegex.test(compiled.mustacheExp) === false) {
-                //     str += `,'${compiled.mustacheExp.trim()}')`;
-                // }
-                // else {
-                //     str += `)`;
-                // }
+                str += `he(${method}, ${keys},${unique()})`
             }
             else if ((compiled as any).trim().length > 0) {
                 str += `ct('${compiled}')`;
@@ -313,6 +300,6 @@ export class ParserUtil {
         parentStr += `return ${createJsEqFromCompiled(compiledParent)}`;
         parentStr = beautify(parentStr, { indent_size: 4, space_in_empty_paren: true })
         console.log("parentstr", parentStr);
-        return new Function(parentStr);
+        return new Function('ce', 'ct', 'f', 'he', 'hForE', parentStr);
     }
 }

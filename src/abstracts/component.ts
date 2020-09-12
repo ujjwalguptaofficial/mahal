@@ -56,15 +56,15 @@ export abstract class Component {
 
     render: () => void;
 
-    createTextNode(value, propDependency) {
+    private createTextNode_(value, propDependency) {
         const el = document.createTextNode(value);
-        if (propDependency) {
-            this.storeDependency_(propDependency, el);
-        }
+        // if (propDependency) {
+        //     this.storeDependency_(propDependency, el);
+        // }
         return el;
     }
 
-    createCommentNode() {
+    private createCommentNode_() {
         return document.createComment("");
     }
 
@@ -136,7 +136,7 @@ export abstract class Component {
         }
     }
 
-    private storeIfExp_(method: Function, keys: string[], id: string) {
+    private handleExp_(method: Function, keys: string[], id: string) {
         const el = method();
         const dep = {
             el: el,
@@ -233,8 +233,8 @@ export abstract class Component {
         return els;
     }
 
-    private storeForExp_(key, method: Function, id: string) {
-        const cmNode = this.createCommentNode();
+    private handleForExp_(key, method: Function, id: string) {
+        const cmNode = this.createCommentNode_();
         let els = [cmNode];
         const resolvedValue = this.resolve_(key);
 
@@ -307,7 +307,10 @@ export abstract class Component {
         }
     }
 
-    createElement(tag, childs: HTMLElement[], option) {
+    private createElement_(tag, childs: HTMLElement[], option) {
+        if (tag == null) {
+            return this.createCommentNode_();
+        }
         let element;
         if (HTML_TAG[tag]) {
             element = document.createElement(tag) as HTMLElement;
@@ -462,7 +465,13 @@ export abstract class Component {
     private executeRender_() {
         const renderFn = this.render || ParserUtil.createRenderer(this.template);
         console.log("renderer", renderFn);
-        this.element = renderFn.call(this);
+        this.element = renderFn.call(this,
+            this.createElement_.bind(this),
+            this.createTextNode_,
+            this.filter.bind(this),
+            this.handleExp_.bind(this),
+            this.handleForExp_.bind(this)
+        );
         nextTick(() => {
             new MutationObserver((mutationsList, observer) => {
                 if (document.body.contains(this.element) === false) {
