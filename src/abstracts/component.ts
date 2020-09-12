@@ -5,8 +5,6 @@ import { IPropOption, ITajStore } from "../interface";
 import { globalFilters, MutationObserver } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength } from "../utils";
 
-let uniqueCounter = 0
-
 export abstract class Component {
     children: { [key: string]: typeof Component }
     element: HTMLElement;
@@ -46,10 +44,6 @@ export abstract class Component {
             this.watchList_[propName] = [];
         }
         this.watchList_[propName].push(cb);
-    }
-
-    get unique() {
-        return ++uniqueCounter;
     }
 
     set(target, prop, valueToSet) {
@@ -140,10 +134,6 @@ export abstract class Component {
                 return;
             }
         }
-    }
-
-    private renderMustache_(method: Function, keys: string[], id: string) {
-        
     }
 
     private storeIfExp_(method: Function, keys: string[], id: string) {
