@@ -1,5 +1,5 @@
 import { Component } from "./abstracts";
-import { globalFilters } from "./constant";
+import { globalFilters, globalComponents, plugins } from "./constant";
 import { isString } from "util";
 import { defaultExport } from "./default";
 import { LogHelper } from "./utils";
@@ -27,16 +27,20 @@ export class App {
         return componentInstance;
     }
 
-    addPlugin(plugin, options) {
+    static addPlugin(plugin, options) {
         const pluginInstane = new plugin();
-        pluginInstane.setup(defaultExport, this, options);
-        this.plugins_.push(plugin);
+        pluginInstane.setup(defaultExport, options);
+        plugins.push(plugin);
     }
 
-    addFilter(name: string, cb) {
+    static addComponent(name, component) {
+        globalComponents[name] = component;
+    }
+
+    static addFilter(name: string, cb) {
         globalFilters[name] = cb;
     }
 
-    private plugins_ = [];
+
 
 }

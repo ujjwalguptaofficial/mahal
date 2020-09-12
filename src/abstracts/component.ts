@@ -2,7 +2,7 @@ import { ParserUtil } from "../parser_util";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact } from "../helpers";
 import { IPropOption, ITajStore } from "../interface";
-import { globalFilters, MutationObserver } from "../constant";
+import { globalFilters, MutationObserver, globalComponents } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength } from "../utils";
 
 export abstract class Component {
@@ -345,8 +345,8 @@ export abstract class Component {
                 }
             }
         }
-        else if (this.children[tag]) {
-            const component: Component = new (this.children[tag] as any)();
+        else if (this.children[tag] || globalComponents[tag]) {
+            const component: Component = new (this.children[tag] || globalComponents[tag] as any)();
             const htmlAttributes = this.initComponent_(component as any, option);
             element = component.element = component.executeRender_();
             htmlAttributes.forEach(item => {
@@ -359,7 +359,6 @@ export abstract class Component {
             }).throwPlain();
 
         }
-
 
         if (option.dep) {
             option.dep.forEach(item => {

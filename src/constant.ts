@@ -12,5 +12,7 @@ export const globalFilters = {
         }
     }
 }
+export const globalComponents = {}
+export const plugins = [];
 
 export const MutationObserver = getFromWindow("MutationObserver")

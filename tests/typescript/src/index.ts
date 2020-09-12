@@ -1,15 +1,17 @@
 import { App } from "taj";
 import Main from "./components/main";
+import Btn from "./components/btn";
 import TajTest from "taj-test";
 
 export const app = new App(Main, document.querySelector('#app'));
-app.addFilter("dollar", (value: string) => {
+App.addFilter("dollar", (value: string) => {
     return "$" + value;
-})
+});
+App.addComponent("Btn", Btn);
 console.log("env", process.env.NODE_ENV)
 if (process.env.NODE_ENV !== "test") {
     app.create();
 }
 else {
-    app.addPlugin(TajTest, app);
+    App.addPlugin(TajTest, app);
 }
