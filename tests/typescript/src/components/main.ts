@@ -6,7 +6,7 @@ import ObjectComponent from "./object";
 import IfElse from "./if_else";
 
 @Template(`<div>
-<HelloWorld :count="counter" on:click="incrementCounter" ></HelloWorld>
+<IfElse><IfElse/>
 </div>`)
 @Children({
     HelloWorld, Student, ObjectComponent, IfElse
@@ -52,11 +52,10 @@ export default class Main extends Component {
 
     constructor() {
         super();
-        setTimeout(() => {
-            // alert("name changed");
-            this.name = "ujjwal gupta";
-            debugger;
-        }, 1000);
+        // setTimeout(() => {
+        //     // alert("name changed");
+        //     this.name = "ujjwal gupta";
+        // }, 1000);
     }
 
     onHelloWordClick() {

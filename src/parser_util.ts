@@ -17,7 +17,11 @@ export class ParserUtil {
                 case '':
                 case 'false': return item;
                 default:
-                    keys.push(item.replace(/([=][=]|[!][=]).*/, ''));
+                    const key = item.replace(/([=][=]|[!][=]).*/, '');
+                    if (stringRegex.test(key) === false) {
+                        keys.push(key);
+                    }
+
                     return stringRegex.test(item) === true ?
                         item :
                         "ctx." + item;
@@ -123,10 +127,15 @@ export class ParserUtil {
                         })
 
                         var child = "["
-                        compiled.child.forEach((item) => {
-                            child += `  ${createJsEqFromCompiled(item)},
-                            `;
+                        compiled.child.forEach((item, index) => {
+                            const childCompiled = createJsEqFromCompiled(item);
+                            if (childCompiled && childCompiled.trim().length > 0) {
+                                child += `${childCompiled},`;
+                            }
                         });
+                        if (child[child.length - 1] === ",") {
+                            child = child.substr(0, child.length - 1);
+                        }
                         child += "]";
                         tagHtml += child;
                     }
@@ -273,20 +282,24 @@ export class ParserUtil {
                 }
             }
             else if (compiled.mustacheExp) {
-                str += `ct(`;
+                
+                let method = `()=>{return ct(`;
                 let brackets = "";
                 compiled.filters.forEach(item => {
-                    str += `f('${item}',`
+                    method += `f('${item}',`
                     brackets += ")"
                 });
-                str += `${ParserUtil.addCtxToExpression(compiled.mustacheExp)} ${brackets}`
-                if (stringRegex.test(compiled.mustacheExp) === false) {
-                    str += `,'${compiled.mustacheExp.trim()}')`;
-                }
-                else {
-                    str += `)`;
-                }
-
+                let keys;
+                method += `${ParserUtil.addCtxToExpression(compiled.mustacheExp, (param) => {
+                    keys = JSON.stringify(param);
+                })} ${brackets} )}`;
+                str += `sife(${method}, ${keys},unique)`
+                // if (stringRegex.test(compiled.mustacheExp) === false) {
+                //     str += `,'${compiled.mustacheExp.trim()}')`;
+                // }
+                // else {
+                //     str += `)`;
+                // }
             }
             else if ((compiled as any).trim().length > 0) {
                 str += `ct('${compiled}')`;

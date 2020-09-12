@@ -142,6 +142,10 @@ export abstract class Component {
         }
     }
 
+    private renderMustache_(method: Function, keys: string[], id: string) {
+        
+    }
+
     private storeIfExp_(method: Function, keys: string[], id: string) {
         const el = method();
         const dep = {
