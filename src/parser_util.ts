@@ -281,7 +281,7 @@ export class ParserUtil {
                 });
                 str += `${ParserUtil.addCtxToExpression(compiled.mustacheExp)} ${brackets}`
                 if (stringRegex.test(compiled.mustacheExp) === false) {
-                    str += `,'${compiled.mustacheExp}')`;
+                    str += `,'${compiled.mustacheExp.trim()}')`;
                 }
                 else {
                     str += `)`;

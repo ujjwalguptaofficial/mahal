@@ -29,6 +29,14 @@ describe('HelloWorld', function () {
         expect(component.find("#name").innerHTML).equal("UJJWAL GUPTA");
     });
 
+    it('change name', function (done) {
+        component.name = "hello!";
+        nextTick(() => {
+            expect(component.find("#name").innerHTML).equal("HELLO!");
+            done();
+        })
+    });
+
     it('value of count button', function (done) {
         const btn = component.find('#count');
         expect(btn.innerHTML).equal('0');
