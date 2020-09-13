@@ -3,8 +3,8 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact } from "../helpers";
 import { IPropOption, ITajStore } from "../interface";
 import { globalFilters, MutationObserver, globalComponents, globalDirectives } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength } from "../utils";
-import { Directive } from "./directive";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge } from "../utils";
+import { genericDirective } from "../generics";
 
 let uniqueCounter = 0;
 function unique() {
@@ -357,13 +357,13 @@ export abstract class Component {
                 for (const name in dir) {
                     const storedDirective = globalDirectives[name]
                     if (storedDirective != null) {
-                        const directive: Directive = new storedDirective(this);
                         const input = dir[name];
-                        directive.created(element, {
+                        const directive = Object.assign(genericDirective, storedDirective(element, {
                             args: "",
                             input: input,
                             modifiers: {}
-                        }, this.resolve_(input));
+                        }, this));
+                        directive.created(this.resolve_(input));
                         nextTick(() => {
                             this.watch(input, directive.valueUpdated.bind(directive));
                             this.directiveDep_[element.dirId] = element;

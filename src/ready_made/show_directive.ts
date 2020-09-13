@@ -1,18 +1,14 @@
-import { Directive } from "../abstracts";
-export class ShowDirective extends Directive {
 
-    el: HTMLElement;
-
-    created(el: HTMLElement, binding, value) {
-        this.el = el;
-        this.setElementShowHide(value);
+export function showDirective(el: HTMLElement, binding, component) {
+    function setElementShowHide(value) {
+        el.style.display = value ? 'unset' : 'none';
     }
-
-    valueUpdated(value) {
-        this.setElementShowHide(value);
-    }
-
-    setElementShowHide(value) {
-        this.el.style.display = value ? 'unset' : 'none';
+    return {
+        created(value) {
+            setElementShowHide(value);
+        },
+        valueUpdated(value) {
+            setElementShowHide(value);
+        }
     }
 }
