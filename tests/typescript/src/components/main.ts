@@ -6,6 +6,9 @@ import ObjectComponent from "./object";
 import IfElse from "./if_else";
 
 @Template(`<div>
+<div on:click="toggleFlag">toggle</div>
+<div #show(flag)>SHowHide</div>
+<Student></Student>
 <HelloWorld :count="counter" on:click="incrementCounter" ></HelloWorld>
 <IfElse><IfElse/>
 </div>`)
@@ -13,7 +16,8 @@ import IfElse from "./if_else";
     HelloWorld, Student, ObjectComponent, IfElse
 })
 export default class Main extends Component {
-    flag = true;
+    @Reactive
+    flag = false;
 
     name = "ujjwal"
 

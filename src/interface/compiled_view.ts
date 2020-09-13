@@ -27,7 +27,10 @@ export interface ICompiledView {
         events: {
             name: string;
             handler: string;
-        }[]
+        }[],
+        dir: {
+            [name: string]: string
+        }
     },
     mustacheExp: string,
     child: ICompiledView[]

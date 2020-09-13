@@ -160,7 +160,8 @@ export class ParserUtil {
                         });
                         optionStr += `on:{${eventStr}}`;
                     }
-                    else if (compiled.view.model) {
+
+                    if (compiled.view.model) {
                         optionStr += `on:{input:(e)=>{
                             ctx.${compiled.view.model}= e.target.value;
                         }}`;
@@ -172,6 +173,9 @@ export class ParserUtil {
                         dep.push(compiled.view.model);
                     }
 
+                    if (compiled.view.dir) {
+                        optionStr += `${optionStr.length > 2 ? "," : ''} dir:${JSON.stringify(compiled.view.dir)}`;
+                    }
 
                     if (compiled.view.html) {
                         optionStr += `${optionStr.length > 2 ? "," : ''} html:ctx.${compiled.view.html}`;

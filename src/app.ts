@@ -1,8 +1,9 @@
 import { Component } from "./abstracts";
-import { globalFilters, globalComponents, plugins } from "./constant";
+import { globalFilters, globalComponents, plugins, globalDirectives } from "./constant";
 import { isString } from "util";
 import { defaultExport } from "./default";
 import { LogHelper } from "./utils";
+import { dir } from "console";
 
 export class App {
     component: typeof Component;
@@ -39,6 +40,10 @@ export class App {
 
     static addFilter(name: string, cb) {
         globalFilters[name] = cb;
+    }
+
+    static addDirective(name: string, directive) {
+        globalDirectives[name] = directive;
     }
 
 

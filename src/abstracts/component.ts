@@ -2,8 +2,14 @@ import { ParserUtil } from "../parser_util";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact } from "../helpers";
 import { IPropOption, ITajStore } from "../interface";
-import { globalFilters, MutationObserver, globalComponents } from "../constant";
+import { globalFilters, MutationObserver, globalComponents, globalDirectives } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength } from "../utils";
+import { Directive } from "./directive";
+
+let uniqueCounter = 0;
+function unique() {
+    return ++uniqueCounter;
+}
 
 export abstract class Component {
     children: { [key: string]: typeof Component }
@@ -13,9 +19,9 @@ export abstract class Component {
 
     constructor() {
         nextTick(() => {
-            this.on(LIFECYCLE_EVENT.Rendered, this.onRendered.bind(this));
-            this.on(LIFECYCLE_EVENT.Created, this.onCreated.bind(this));
-            this.on(LIFECYCLE_EVENT.Destroyed, this.onDestroyed.bind(this));
+            this.on(LIFECYCLE_EVENT.Rendered, this.rendered.bind(this));
+            this.on(LIFECYCLE_EVENT.Created, this.created.bind(this));
+            this.on(LIFECYCLE_EVENT.Destroyed, this.destroyed.bind(this));
 
             this.attachGetterSetter_();
             this.emit(LIFECYCLE_EVENT.Created);
@@ -344,6 +350,28 @@ export abstract class Component {
                     }
                 }
             }
+
+            if (option.dir) {
+                const dir = option.dir;
+                element.dirId = unique();
+                for (const name in dir) {
+                    const storedDirective = globalDirectives[name]
+                    if (storedDirective != null) {
+                        const directive: Directive = new storedDirective(this);
+                        const input = dir[name];
+                        directive.created(element, {
+                            args: "",
+                            input: input,
+                            modifiers: {}
+                        }, this.resolve_(input));
+                        nextTick(() => {
+                            this.watch(input, directive.valueUpdated.bind(directive));
+                            this.directiveDep_[element.dirId] = element;
+                            directive.inserted();
+                        })
+                    }
+                }
+            }
         }
         else if (this.children[tag] || globalComponents[tag]) {
             const component: Component = new (this.children[tag] || globalComponents[tag] as any)();
@@ -377,13 +405,13 @@ export abstract class Component {
         return this.element.querySelectorAll(selector);
     }
 
-    onRendered() {
+    rendered() {
     }
 
-    onCreated(cb) {
+    created() {
     }
 
-    onDestroyed(cb) {
+    destroyed() {
     }
 
     filter(name: string, value) {
@@ -458,6 +486,7 @@ export abstract class Component {
         });
         this.events_ = {};
         this.watchList_ = {};
+        this.directiveDep_ = {};
         this.emit(LIFECYCLE_EVENT.Destroyed);
     }
 
@@ -473,6 +502,7 @@ export abstract class Component {
         );
         nextTick(() => {
             new MutationObserver((mutationsList, observer) => {
+                console.log("mutationsList", mutationsList);
                 if (document.body.contains(this.element) === false) {
                     observer.disconnect();
                     this.clearAll_();
@@ -497,6 +527,7 @@ export abstract class Component {
         return this.element;
     }
 
+    private directives_;
 
     private filters_;
     private props_;
@@ -509,5 +540,7 @@ export abstract class Component {
     private _$storeWatchCb: { key: string, cb: Function }[] = [];
 
     private _$storeGetters: { prop: string, state: string }[];
+
+    private directiveDep_ = {};
 
 }

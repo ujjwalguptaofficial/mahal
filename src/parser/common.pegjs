@@ -9,7 +9,8 @@ HtmlOpen = StartOpenTag word: Identifier _* option:(HtmlOpenOption)* EndOpenTag 
   const result = {
      tag:word,
      events:[],
-     attr:[]
+     attr:[],
+     dir:{}
   }
   option.forEach(val=>{
     const key = Object.keys(val)[0];
@@ -18,14 +19,21 @@ HtmlOpen = StartOpenTag word: Identifier _* option:(HtmlOpenOption)* EndOpenTag 
         result.events.push(val[key]);break;
       case 'attr':
         result.attr.push(val[key]);break;
+       case 'dir':
+         const dirValue = val[key];
+         result.dir[dirValue.name]=dirValue.value;
+         break;
       default:
         result[key] = val[key]   
     }
   });
+  if(Object.keys(result.dir).length===0){
+     delete result.dir;
+  }
  return result;
 }
 
-HtmlOpenOption = value:((If/ElseIf/Else)/Model/For/(Event)/Attribute/InnerHtml) _* {
+HtmlOpenOption = value:((If/ElseIf/Else)/Model/For/(Event)/Attribute/InnerHtml/Directive) _* {
   const key = Object.keys(value)[0];
   return {
      [key]:value[key]
@@ -40,6 +48,16 @@ Ws "Whitespace" = [ \t];
 
 _ "One or more whitespaces" = space:Ws+ {return null;}
 
+Directive "directive" = "#" name:Word value:DirectiveValue? {
+   return {dir:{
+      name,
+      value
+   }};
+}
+
+DirectiveValue = "(" exp:Expression ")" {
+  return exp;
+}
 
 If= "#if(" exp:Expression ")"{
    return {ifExp: {ifCond:exp}};
