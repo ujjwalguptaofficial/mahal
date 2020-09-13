@@ -6,7 +6,7 @@ import { Component, Template, Prop, Filter, Reactive } from "taj";
 </div>
 `)
 
-export default class HelloWorld extends Component {
+export default class extends Component {
 
     @Reactive
     text;

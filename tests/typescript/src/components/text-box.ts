@@ -12,6 +12,9 @@ export default class HelloWorld extends Component {
     @Prop()
     value;
 
+    @Prop()
+    textBoxId;
+
     onInput(value) {
         this.emit("input", value);
     }

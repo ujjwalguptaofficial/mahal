@@ -7,12 +7,16 @@ import IfElse from "./if_else";
 import TextBox from "./text-box";
 
 @Template(`<div>
-<div on:click="toggleFlag">toggle</div>
+<div :name="name" on:click="toggleFlag">toggle</div>
 <div #show(flag)>SHowHide</div>
-<div>{{name}}</div>
+<div on:click="onClick">{{name}}</div>
 <TextBox #model(name)></TextBox>
 <ObjectComponent></ObjectComponent>
 </div>`)
+// @Template(`<div>
+// <Btn label="Reset" on:click="()=>{counter=0}"></Btn>
+// <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
+// </div>`)
 @Children({
     HelloWorld, Student, ObjectComponent, IfElse, TextBox
 })

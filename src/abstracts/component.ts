@@ -1,7 +1,7 @@
 import { ParserUtil } from "../parser_util";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact } from "../helpers";
-import { IPropOption, ITajStore, IDirectiveBinding } from "../interface";
+import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem } from "../interface";
 import { globalFilters, MutationObserver, globalComponents, globalDirectives } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge } from "../utils";
 import { genericDirective } from "../generics";
@@ -360,8 +360,15 @@ export abstract class Component {
             if (option.attr) {
                 const attr = option.attr;
                 for (const key in attr) {
+                    // key is name of attribute , e.g- type
                     if (attr.hasOwnProperty(key)) {
-                        element.setAttribute(key, attr[key].v);
+                        const attrItem: IAttrItem = attr[key]
+                        element.setAttribute(key, attrItem.v);
+                        if (attrItem.k != null) {
+                            this.watch(attrItem.k, (newValue) => {
+                                element.setAttribute(key, newValue);
+                            })
+                        }
                     }
                 }
             }
@@ -464,7 +471,7 @@ export abstract class Component {
         if (option.attr) {
             const attr = option.attr;
             for (const key in attr) {
-                const value = attr[key];
+                const value: IAttrItem = attr[key];
                 if (component.props_[key]) {
                     component[key] = value.v;
                     this.watch(value.k, (newValue, oldValue) => {
