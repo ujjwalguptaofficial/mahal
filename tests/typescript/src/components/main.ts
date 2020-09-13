@@ -11,6 +11,7 @@ import TextBox from "./text-box";
 <div #show(flag)>SHowHide</div>
 <div>{{name}}</div>
 <TextBox #model(name)></TextBox>
+<ObjectComponent></ObjectComponent>
 </div>`)
 @Children({
     HelloWorld, Student, ObjectComponent, IfElse, TextBox
@@ -19,6 +20,7 @@ export default class Main extends Component {
     @Reactive
     flag = false;
 
+    @Reactive
     name = "ujjwal"
 
     flagOne = false

@@ -3,7 +3,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding } from "../interface";
 import { globalFilters, MutationObserver, globalComponents, globalDirectives } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge } from "../utils";
 import { genericDirective } from "../generics";
 
 let uniqueCounter = 0;
@@ -313,11 +313,40 @@ export abstract class Component {
         }
     }
 
+    private handleDirective_(element, dir, isComponent) {
+        if (dir) {
+            element.dirId = unique();
+            for (const name in dir) {
+                if (dir.hasOwnProperty(name)) {
+
+                    const storedDirective = globalDirectives[name]
+                    if (storedDirective != null) {
+                        const input = dir[name];
+                        const directive = merge(genericDirective,
+                            storedDirective(element, {
+                                args: "",
+                                input: input,
+                                modifiers: {},
+                                isComponent: isComponent
+                            } as IDirectiveBinding, this));
+                        directive.created(this.resolve_(input));
+                        nextTick(() => {
+                            this.watch(input, directive.valueUpdated);
+                            this.directiveDep_[element.dirId] = element;
+                            directive.inserted();
+                        })
+                    }
+                }
+            }
+        }
+    }
+
     private createElement_(tag, childs: HTMLElement[], option) {
         if (tag == null) {
             return this.createCommentNode_();
         }
         let element;
+        let component: Component;
         if (HTML_TAG[tag]) {
             element = document.createElement(tag) as HTMLElement;
             childs.forEach((item) => {
@@ -341,7 +370,9 @@ export abstract class Component {
                 const events = option.on;
                 for (const eventName in events) {
                     if (events[eventName]) {
-                        element['on' + eventName] = events[eventName].bind(this);
+                        element['on' + eventName] = (e) => {
+                            events[eventName].call(this, e.target.value);
+                        };
                     }
                     else {
                         new LogHelper(ERROR_TYPE.InvalidEventHandler, {
@@ -351,34 +382,11 @@ export abstract class Component {
                 }
             }
 
-            if (option.dir) {
-                const dir = option.dir;
-                element.dirId = unique();
-                for (const name in dir) {
-                    const storedDirective = globalDirectives[name]
-                    if (storedDirective != null) {
-                        const input = dir[name];
-                        const merge = function (obj1, obj2) {
-                            obj1 = Object.assign({}, obj1);
-                            return Object.assign(obj1, obj2);
-                        }
-                        const directive = merge(genericDirective, storedDirective(element, {
-                            args: "",
-                            input: input,
-                            modifiers: {}
-                        } as IDirectiveBinding, this));
-                        directive.created(this.resolve_(input));
-                        nextTick(() => {
-                            this.watch(input, directive.valueUpdated);
-                            this.directiveDep_[element.dirId] = element;
-                            directive.inserted();
-                        })
-                    }
-                }
-            }
+            this.handleDirective_(element, option.dir, false);
+
         }
         else if (this.children[tag] || globalComponents[tag]) {
-            const component: Component = new (this.children[tag] || globalComponents[tag] as any)();
+            component = new (this.children[tag] || globalComponents[tag] as any)();
             const htmlAttributes = this.initComponent_(component as any, option);
             element = component.element = component.executeRender_();
             htmlAttributes.forEach(item => {
@@ -391,6 +399,8 @@ export abstract class Component {
             }).throwPlain();
 
         }
+
+
 
         if (option.dep) {
             option.dep.forEach(item => {
@@ -431,7 +441,7 @@ export abstract class Component {
     }
 
 
-    private initComponent_(component: this, option) {
+    private initComponent_(component: Component, option) {
         if (component._$storeGetters) {
             // can not make it async because if item is array then it will break
             // because at that time value will be undefined
@@ -481,6 +491,7 @@ export abstract class Component {
                 }
             }
         }
+        this.handleDirective_(component, option.dir, true);
         return htmlAttributes;
     }
 

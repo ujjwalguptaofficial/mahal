@@ -3,12 +3,21 @@ export function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding,
     return {
         created(value) {
             el.value = value;
-            el.oninput = (event) => {
-                component[binding.input] = (event.target as any).value;
-            };
+            if (binding.isComponent === true) {
+                (el as any).on("input", (value) => {
+                    component[binding.input] = value;
+                })
+            }
+            else {
+                el.oninput = (event) => {
+                    component[binding.input] = (event.target as any).value;
+                };
+            }
         },
         valueUpdated(value) {
-            el.value = value;
+            if (el.value !== value) {
+                el.value = value;
+            }
         }
     }
 }

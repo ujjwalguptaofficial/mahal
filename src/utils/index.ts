@@ -9,3 +9,4 @@ export * from "./get_from_window"
 export * from "./next_tick";
 export * from "./get_object_length";
 export * from "./index_of";
+export * from "./merge";
