@@ -1,6 +1,5 @@
 import { defaultExport } from "./default";
-import { globalDirectives } from "./constant";
-import { ModelDirective, showDirective } from "./ready_made";
+import { modelDirective, showDirective } from "./ready_made";
 import { App } from "./app";
 
 export * from "./abstracts";
@@ -8,7 +7,7 @@ export * from "./decorators"
 export * from "./utils";
 export * from "./app";
 
-globalDirectives["model"] = ModelDirective;
+App.addDirective("model", modelDirective);
 App.addDirective("show", showDirective);
 
 export default defaultExport;

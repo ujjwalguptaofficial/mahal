@@ -4,16 +4,16 @@ import HelloWorld from "./hello_world";
 import Student from "./array";
 import ObjectComponent from "./object";
 import IfElse from "./if_else";
+import TextBox from "./text-box";
 
 @Template(`<div>
 <div on:click="toggleFlag">toggle</div>
 <div #show(flag)>SHowHide</div>
-<Student></Student>
-<HelloWorld :count="counter" on:click="incrementCounter" ></HelloWorld>
-<IfElse><IfElse/>
+<div>{{name}}</div>
+<TextBox #model(name)></TextBox>
 </div>`)
 @Children({
-    HelloWorld, Student, ObjectComponent, IfElse
+    HelloWorld, Student, ObjectComponent, IfElse, TextBox
 })
 export default class Main extends Component {
     @Reactive

@@ -1,9 +1,9 @@
 import { ParserUtil } from "../parser_util";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact } from "../helpers";
-import { IPropOption, ITajStore } from "../interface";
+import { IPropOption, ITajStore, IDirectiveBinding } from "../interface";
 import { globalFilters, MutationObserver, globalComponents, globalDirectives } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength } from "../utils";
 import { genericDirective } from "../generics";
 
 let uniqueCounter = 0;
@@ -358,14 +358,18 @@ export abstract class Component {
                     const storedDirective = globalDirectives[name]
                     if (storedDirective != null) {
                         const input = dir[name];
-                        const directive = Object.assign(genericDirective, storedDirective(element, {
+                        const merge = function (obj1, obj2) {
+                            obj1 = Object.assign({}, obj1);
+                            return Object.assign(obj1, obj2);
+                        }
+                        const directive = merge(genericDirective, storedDirective(element, {
                             args: "",
                             input: input,
                             modifiers: {}
-                        }, this));
+                        } as IDirectiveBinding, this));
                         directive.created(this.resolve_(input));
                         nextTick(() => {
-                            this.watch(input, directive.valueUpdated.bind(directive));
+                            this.watch(input, directive.valueUpdated);
                             this.directiveDep_[element.dirId] = element;
                             directive.inserted();
                         })

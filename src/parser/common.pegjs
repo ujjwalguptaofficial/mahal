@@ -33,7 +33,7 @@ HtmlOpen = StartOpenTag word: Identifier _* option:(HtmlOpenOption)* EndOpenTag 
  return result;
 }
 
-HtmlOpenOption = value:((If/ElseIf/Else)/Model/For/(Event)/Attribute/InnerHtml/Directive) _* {
+HtmlOpenOption = value:((If/ElseIf/Else)/For/(Event)/Attribute/InnerHtml/Directive) _* {
   const key = Object.keys(value)[0];
   return {
      [key]:value[key]
