@@ -10,3 +10,4 @@ export * from "./next_tick";
 export * from "./get_object_length";
 export * from "./index_of";
 export * from "./merge";
+export * from "./set_attribute";

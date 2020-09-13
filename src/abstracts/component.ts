@@ -3,7 +3,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem } from "../interface";
 import { globalFilters, MutationObserver, globalComponents, globalDirectives } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute } from "../utils";
 import { genericDirective } from "../generics";
 
 let uniqueCounter = 0;
@@ -359,14 +359,15 @@ export abstract class Component {
 
             if (option.attr) {
                 const attr = option.attr;
+
                 for (const key in attr) {
                     // key is name of attribute , e.g- type
                     if (attr.hasOwnProperty(key)) {
-                        const attrItem: IAttrItem = attr[key]
-                        element.setAttribute(key, attrItem.v);
+                        const attrItem: IAttrItem = attr[key];
+                        setAttribute(element, key, attrItem.v);
                         if (attrItem.k != null) {
                             this.watch(attrItem.k, (newValue) => {
-                                element.setAttribute(key, newValue);
+                                setAttribute(element, key, newValue);
                             })
                         }
                     }

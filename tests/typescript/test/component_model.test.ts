@@ -27,5 +27,14 @@ describe('Component MODEL', function () {
         expect(component.text).equal('random');
     });
 
+    it("from component to element once again", function (done) {
+        const input = component.find('input');
+        component.text = "value changed";
+        nextTick(() => {
+            expect(input.value).equal('value changed');
+            done();
+        })
+    });
+
 });
 
