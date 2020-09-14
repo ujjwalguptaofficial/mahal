@@ -70,10 +70,6 @@ Else= "#else"{
    return {ifExp: {else:true}}
 }
 
-Model= "#model" "(" word:Identifier ")"{
-   return {model:word};
-}
-
 For= "#for("_* key:Identifier _* index:ForIndex?  _* "in" _* value:Expression _* ")"{
    return {forExp:{
       key, value,index : index || 'i'
@@ -119,7 +115,7 @@ Event "event syntax" = "on:" event:Identifier "=" StringSymbol handler:EventAssi
 	return {event: {name:event, handler:handler}};
 }
 
-Expression "Expression"= val:[a-zA-Z0-9\&\ \|\.\$\!\=]+ {
+Expression "Expression"= val:[a-zA-Z0-9\&\ \|\.\$\!\=\>]+ {
 	return val.join("");
 }
 

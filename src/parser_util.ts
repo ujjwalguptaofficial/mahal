@@ -22,10 +22,18 @@ export class ParserUtil {
                 case '':
                 case 'false': return item;
                 default:
-                    const key = item.replace(/([=][=]|[!][=]).*/, '');
+                    // when empty string or digit is found, don't add to keys
+                    //or item
+                    // if (item.trim() === '') {
+                    //     return '';
+                    // }
+                    // if (/[0-9]/g.test(item) === false) {
+
+                    const key = item.replace(/([=][=]|[!][=]|[>]).*/, '');
                     if (stringRegex.test(key) === false) {
                         keys.push(key);
                     }
+                    // }
 
                     return stringRegex.test(item) === true ?
                         item :
@@ -56,7 +64,7 @@ export class ParserUtil {
             console.log("%c" + lines.slice(0, location.start.line - 1).join("\n") +
                 "%c" + lines.slice(location.start.line - 1, location.end.line).join("\n") +
                 "%c" + lines.slice(location.end.line).join("\n")
-                , css, css + ';color:red', css);
+                , css, css + ';color:#ff0000', css);
             const err = new LogHelper(ERROR_TYPE.SynTaxError, ex.message).getPlain();
             throw err;
         }
@@ -64,7 +72,7 @@ export class ParserUtil {
 
     static createRenderer(template: string) {
         const compiledParent = ParserUtil.parseview(template);
-        // console.log("compiled", compiledParent);
+        console.log("compiled", compiledParent);
         if (compiledParent.view) {
             if (compiledParent.view.forExp) {
                 console.error(`Invalid template ${template}`);
@@ -82,7 +90,9 @@ export class ParserUtil {
                         let ifModifiedExpression: IIfExpModified;
                         let indexOfIfCond;
                         const indexToRemove = [];
+                        let isIfCondEndFound = false;
                         const onIfCondEnd = (last: number) => {
+                            isIfCondEndFound = true;
                             compiled.child[indexOfIfCond].view.ifExpModified = ifModifiedExpression;
                             ifModifiedExpression = null;
                             // console.log("if cond modified", indexOfIfCond, compiled.child[indexOfIfCond]);
@@ -115,7 +125,7 @@ export class ParserUtil {
                         });
 
                         // there was no end found and loop has ended
-                        if (ifModifiedExpression) {
+                        if (ifModifiedExpression && isIfCondEndFound === false) {
                             onIfCondEnd(compiled.child.length);
                         }
                         // console.log("indexOfIfCond", indexToRemove);

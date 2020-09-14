@@ -2,10 +2,10 @@ import { Component, Template, Prop, Filter, Reactive } from "taj";
 
 @Template(`
 <div>
-    <span id="testFilter">
+    <span #show(flag) id="testFilter">
         {{"string" | toUpper}}
     </span>
-    <span id="name">{{name | toUpper}}</span>
+    <span  id="name">{{name | toUpper}}</span>
     <button id="count" on:click='onClick'>
         {{count}}
     </button>
@@ -29,9 +29,12 @@ export default class HelloWorld extends BaseComponent {
     @Reactive
     name = "ujjwal gupta" // leave value in lower case
 
+    @Reactive
+    flag = false;
+
+
 
     onRendered() {
-        // window["comp"] = this;
         console.log("Hello world rendered", this.name);
     }
 

@@ -29,6 +29,20 @@ describe('HelloWorld', function () {
         expect(component.find("#name").innerHTML).equal("UJJWAL GUPTA");
     });
 
+    // it('check if condition', function () {
+    //     expect(component.find("#testFilter")).equal(null);
+    // });
+
+    it('check show condition', function (done) {
+        const el = component.find("#testFilter");
+        expect(el.style.display).equal('none');
+        component.flag = true;
+        nextTick(() => {
+            expect(el.style.display).equal('unset');
+            done();
+        })
+    });
+
     it('change name', function (done) {
         component.name = "hello!";
         nextTick(() => {
