@@ -1,4 +1,4 @@
-import { ParserUtil } from "../parser_util";
+import { createRenderer } from "../compiler";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem } from "../interface";
@@ -514,7 +514,7 @@ export abstract class Component {
     }
 
     private executeRender_() {
-        const renderFn = this.render || ParserUtil.createRenderer(this.template);
+        const renderFn = this.render || createRenderer(this.template);
         console.log("renderer", renderFn);
         this.element = renderFn.call(this,
             this.createElement_.bind(this),

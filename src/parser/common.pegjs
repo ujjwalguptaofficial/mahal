@@ -99,23 +99,39 @@ Identifier "identifier"= val:[a-zA-Z\$]+ {
 	return val.join("");
 }
 
-MustacheExpression "mustache expression" = "{{" val:Html or:MustacheOr?  filters:Filter* _*  "}}"+ {
-	return {mustacheExp:val + (or ? or :''), filters};
+MustacheExpression "mustache expression" = "{{" val:Html filters:Filter* _*  "}}"+ {
+	return {mustacheExp:val , filters};
 }
 
 Filter "filter" = _* "|" _* val:Identifier {
   return val;
 }
 
-MustacheOr = "||" or:Html{
-  return "||" +or;
-}
-
 Event "event syntax" = "on:" event:Identifier "=" StringSymbol handler:EventAssignment StringSymbol+ {
 	return {event: {name:event, handler:handler}};
 }
 
-Expression "Expression"= val:[a-zA-Z0-9\&\ \|\.\$\!\=\>]+ {
+Expression = ExpressionWithConnector*
+
+ExpressionWithConnector = exp:SingleExpression op:Connector? {
+ return {exp,op}
+}
+
+SingleExpression = _* left:ExpWord _* op:Operator? _* right:ExpWord? _* {
+  return {
+   left,op,right
+  }
+}
+
+Connector = val:[&\|]+ {
+  return val.join("");
+}
+
+Operator = val:[>\=]+ {
+  return val.join("");
+}
+
+ExpWord "expression" = val:[a-zA-Z0-9\.\$\!\=\-]+ {
 	return val.join("");
 }
 
