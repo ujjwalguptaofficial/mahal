@@ -16,20 +16,22 @@ function replaceWithContext(value: string) {
 export function addCtxToExpression(expressions: IExpression[]) {
     const keys = [];
     let str = "";
+    function addCtxIfNotString(value: string) {
+        if (stringRegex.test(value) === true) {
+            str += value;
+        }
+        else {
+            str += replaceWithContext(value);
+            keys.push(value.trim());
+        }
+    }
     expressions.forEach(expression => {
-        str += replaceWithContext(expression.exp.left);
-        keys.push(expression.exp.left);
+        addCtxIfNotString(expression.exp.left);
         if (expression.exp.op != null) {
             str += expression.exp.op;
 
             if (expression.exp.right != null) {
-                if (stringRegex.test(expression.exp.right) === true) {
-                    str += expression.exp.right;
-                }
-                else {
-                    str += replaceWithContext(expression.exp.right);
-                    keys.push(expression.exp.right);
-                }
+                addCtxIfNotString(expression.exp.right);
             }
         }
         if (expression.op) {

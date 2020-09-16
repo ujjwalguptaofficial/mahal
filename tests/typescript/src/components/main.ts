@@ -7,11 +7,8 @@ import IfElse from "./if_else";
 import TextBox from "./text-box";
 
 @Template(`<div>
-<div :name="name" on:click="toggleFlag">toggle</div>
-<div #show(flag)>SHowHide</div>
-<div on:click="onClick">{{name}}</div>
-<TextBox #model(name)></TextBox>
-<ObjectComponent></ObjectComponent>
+
+<IfElse></IfElse>
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
