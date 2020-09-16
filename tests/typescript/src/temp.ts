@@ -1,55 +1,40 @@
-// const ctx = this;
-// const ce = ctx.createElement.bind(ctx);
-// const ct = ctx.createTextNode.bind(ctx);
-// const cc = ctx.createCommentNode;
-// const sife = ctx.storeIfExp_.bind(ctx);
-// const sfore = ctx.storeForExp_.bind(ctx);
-// const unique = ctx.unique;
-// const f = ctx.filter.bind(this);
-// return ce('div', [,
-//     ce('span', [,
-//         ct(f('toUpper', "ujjwal")), ,
-//     ], {
-//         attr: {
-//             id: {
-//                 v: 'testFilter'
-//             }
-//         }
-//     }), ,
-//     ce('span', [ct(f('toUpper', ctx.name)), $ {
-//         compiled.mustacheExp
-//     }, ], {
-//         attr: {
-//             id: {
-//                 v: 'name'
-//             }
-//         }
-//     }), ,
-//     ce('button', [,
-//         ct(ctx.count), ${
-//             compiled.mustacheExp
-//         }, ,
-//     ], {
+// (function anonymous(ce, ct, f, he, hForE
+// ) {
+//     const ctx = this;
+//     return ce('div', [ce('div', [ct('toggle'),], {
 //         on: {
-//             click: ctx.onClick
+//             click: ctx.toggleFlag
 //         },
 //         attr: {
-//             id: {
-//                 v: 'count'
+//             name: {
+//                 v: ctx.name,
+//                 k: 'name'
 //             }
 //         }
-//     }), ,
-//     ce('button', [ct('Destory'), ], {
+//     }), ce('div', [ct('SHowHide'),], {
+//         dir: {
+//             show: {
+//                 value: () => {
+//                     return ctx.flag
+//                 },
+//                 props: ['flag']
+//             }
+//         },
+//     }
+//     }), ce('div', [he(() => {
+//         return ct(ctx.name)
+//     }, ['name'], 1),], {
 //         on: {
-//             click: ctx.destroy
+//             click: ctx.onClick
 //         }
-//     }), ,
-//     ce('p', [], {
-//         html: ctx.myHtml,
-//         attr: {
-//             class: {
-//                 v: 'p-html'
+//     }), ce('TextBox', [], {
+//         dir: {
+//             model: {
+//                 value: () => {
+//                     return ctx.name
+//                 },
+//                 props: ['name']
 //             }
-//         }
-//     }), ,
-// ], {})
+//         },
+//     }), ce('ObjectComponent', [], {}), ], { })
+//     })

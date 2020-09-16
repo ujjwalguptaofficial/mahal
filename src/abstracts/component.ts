@@ -318,20 +318,24 @@ export abstract class Component {
             element.dirId = unique();
             for (const name in dir) {
                 if (dir.hasOwnProperty(name)) {
-
                     const storedDirective = globalDirectives[name]
                     if (storedDirective != null) {
-                        const input = dir[name];
+                        const compiledDir = dir[name];
                         const directive = merge(genericDirective,
                             storedDirective(element, {
                                 args: "",
-                                input: input,
+                                input: compiledDir.input,
                                 modifiers: {},
-                                isComponent: isComponent
+                                isComponent: isComponent,
+                                props: compiledDir.props
                             } as IDirectiveBinding, this));
-                        directive.created(this.resolve_(input));
+                        directive.created(compiledDir.value());
                         nextTick(() => {
-                            this.watch(input, directive.valueUpdated);
+                            compiledDir.props.forEach((prop) => {
+                                this.watch(prop, () => {
+                                    directive.valueUpdated(compiledDir.value())
+                                });
+                            })
                             this.directiveDep_[element.dirId] = element;
                             directive.inserted();
                         })

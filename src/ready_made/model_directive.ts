@@ -1,11 +1,11 @@
 import { IDirectiveBinding } from "../interface";
 import { Component } from "../abstracts";
 export function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding, component) {
+    const key = binding.props[0];
     return {
         created(value) {
             el.value = value;
             if (binding.isComponent === true) {
-                const key = binding.input;
                 (el as any).on("input", (value) => {
                     component[key] = value;
                 })
@@ -16,14 +16,14 @@ export function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding,
             }
             else {
                 el.oninput = (event) => {
-                    component[binding.input] = (event.target as any).value;
+                    component[key] = (event.target as any).value;
                 };
             }
         },
         valueUpdated(newValue) {
             if (el.value !== newValue) {
                 el.value = newValue;
-                if (binding.isComponent) {
+                if (binding.isComponent === true) {
                     (el as any).watchList_["value"].forEach(cb => {
                         cb(newValue);
                     })
