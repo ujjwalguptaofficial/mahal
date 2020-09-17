@@ -1,7 +1,7 @@
 import { createRenderer } from "../compiler";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact } from "../helpers";
-import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem } from "../interface";
+import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFilters, globalComponents, globalDirectives } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute } from "../utils";
 import { genericDirective } from "../generics";
@@ -316,22 +316,31 @@ export abstract class Component {
                     const storedDirective = globalDirectives[name]
                     if (storedDirective != null) {
                         const compiledDir = dir[name];
-                        const directive = merge(genericDirective,
+                        const directive: IDirective = merge(genericDirective,
                             storedDirective(element, {
                                 args: "",
                                 input: compiledDir.input,
                                 modifiers: {},
                                 isComponent: isComponent,
-                                props: compiledDir.props
+                                props: compiledDir.props,
+                                value: compiledDir.value()
                             } as IDirectiveBinding, this));
-                        directive.created(compiledDir.value());
                         nextTick(() => {
+                            const onDestroyed = function () {
+                                directive.destroyed();
+                                element = null;
+                            }.bind(this);
+                            if (isComponent === true) {
+                                (element as Component).on(LIFECYCLE_EVENT.Destroyed, onDestroyed);
+                            }
+                            else {
+                                element.addEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
+                            }
                             compiledDir.props.forEach((prop) => {
                                 this.watch(prop, () => {
                                     directive.valueUpdated(compiledDir.value())
                                 });
                             })
-                            this.directiveDep_[element.dirId] = element;
                             directive.inserted();
                         })
                     }
@@ -503,7 +512,8 @@ export abstract class Component {
     }
 
     private clearAll_() {
-        console.log("clearing component");
+        // need to emit before clearing events
+        this.emit(LIFECYCLE_EVENT.Destroyed);
         this.element.removeEventListener(LIFECYCLE_EVENT.Destroyed, this.destroyed.bind(this));
         this._$storeWatchCb.forEach(item => {
             this.$store.unwatch(item.key, item.cb)
@@ -511,7 +521,6 @@ export abstract class Component {
         this.events_ = {};
         this.watchList_ = {};
         this.directiveDep_ = {};
-        this.emit(LIFECYCLE_EVENT.Destroyed);
     }
 
     private executeRender_() {

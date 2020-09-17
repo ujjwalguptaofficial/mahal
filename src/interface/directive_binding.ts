@@ -3,6 +3,7 @@ export interface IDirectiveBinding {
     args: string;
     modifiers: { [name: string]: Boolean };
     isComponent: Boolean,
-    props: string[]
+    props: string[],
+    value: any
 
 }

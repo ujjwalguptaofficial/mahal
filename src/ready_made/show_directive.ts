@@ -1,12 +1,11 @@
+import { IDirectiveBinding } from "../interface";
 
-export function showDirective(el: HTMLElement, binding, component) {
+export function showDirective(el: HTMLElement, binding: IDirectiveBinding) {
     function setElementShowHide(value) {
         el.style.display = value ? 'unset' : 'none';
     }
+    setElementShowHide(binding.value);
     return {
-        created(value) {
-            setElementShowHide(value);
-        },
         valueUpdated(value) {
             setElementShowHide(value);
         }
