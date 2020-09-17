@@ -2,7 +2,7 @@ import { createRenderer } from "../compiler";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem } from "../interface";
-import { globalFilters, MutationObserver, globalComponents, globalDirectives } from "../constant";
+import { globalFilters, globalComponents, globalDirectives } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute } from "../utils";
 import { genericDirective } from "../generics";
 
@@ -62,12 +62,8 @@ export abstract class Component {
 
     render: () => void;
 
-    private createTextNode_(value, propDependency) {
-        const el = document.createTextNode(value);
-        // if (propDependency) {
-        //     this.storeDependency_(propDependency, el);
-        // }
-        return el;
+    private createTextNode_(value) {
+        return document.createTextNode(value);
     }
 
     private createCommentNode_() {
@@ -253,13 +249,12 @@ export abstract class Component {
                 ref: cmNode,
                 id: id
             });
-            new MutationObserver((mutationsList, observer) => {
-                if (document.body.contains(cmNode) === false) {
-                    observer.disconnect();
-                    const depIndex = this.dependency_[key].findIndex(q => q.id === id);
-                    this.dependency_[key].splice(depIndex, 1);
-                }
-            }).observe(this.element, { childList: true, subtree: true });
+            const onElDestoyed = function () {
+                const depIndex = this.dependency_[key].findIndex(q => q.id === id);
+                this.dependency_[key].splice(depIndex, 1);
+                cmNode.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestoyed);
+            }.bind(this);
+            cmNode.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestoyed);
         });
         return els;
     }

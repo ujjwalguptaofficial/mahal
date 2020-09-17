@@ -1,11 +1,10 @@
 import { Component } from "./abstracts";
 import { globalFilters, globalComponents, plugins, globalDirectives } from "./constant";
-import { isString } from "util";
 import { defaultExport } from "./default";
-import { LogHelper } from "./utils";
+import { LogHelper, getFromWindow, isString } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 
-const destroyedEvent = new CustomEvent(LIFECYCLE_EVENT.Destroyed);
+const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroyed);
 export class App {
     component: typeof Component;
     element: HTMLElement;
