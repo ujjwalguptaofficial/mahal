@@ -62,6 +62,15 @@ describe('IfELSE', function () {
         })
     });
 
+    it("set another state to 2", function (done) {
+        component.anotherState = 2;
+        nextTick(() => {
+            const div = component.find('div');
+            expect(div.innerHTML).equal('5');
+            done();
+        })
+    });
+
     it("set state to 20", function (done) {
         component.state = 20;
         nextTick(() => {

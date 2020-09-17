@@ -16,6 +16,7 @@ export default class extends Component {
     @Reactive
     state;
 
+    @Reactive
     anotherState = 10;
 
     name = "ujjwal"
