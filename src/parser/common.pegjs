@@ -128,11 +128,11 @@ Connector = val:[&\|]+ {
   return val.join("");
 }
 
-Operator = val:[>\=]+ {
+Operator = val:[>\=\<\!]+ {
   return val.join("");
 }
 
-ExpWord "expression" = val:[a-zA-Z0-9\.\$\!\-]+ {
+ExpWord "expression" = val:[a-zA-Z0-9\.\$\-]+ {
 	return val.join("");
 }
 
