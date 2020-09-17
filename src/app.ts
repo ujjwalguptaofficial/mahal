@@ -3,8 +3,9 @@ import { globalFilters, globalComponents, plugins, globalDirectives } from "./co
 import { isString } from "util";
 import { defaultExport } from "./default";
 import { LogHelper } from "./utils";
-import { dir } from "console";
+import { LIFECYCLE_EVENT } from "./enums";
 
+const destroyedEvent = new CustomEvent(LIFECYCLE_EVENT.Destroyed);
 export class App {
     component: typeof Component;
     element: HTMLElement;
@@ -18,6 +19,17 @@ export class App {
                 LogHelper.warn("Provided element or element selector is not valid. Using body as default")
             }
         }
+        new window.MutationObserver((mutations) => {
+            mutations.forEach(mutation => {
+                if (mutation.removedNodes) {
+                    mutation.removedNodes.forEach(removedNode => {
+                        removedNode.dispatchEvent(destroyedEvent);
+                    });
+                }
+            });
+        }).observe(this.element, {
+            childList: true, subtree: true
+        })
     }
 
     create() {

@@ -6,13 +6,13 @@ import ObjectComponent from "./object";
 import IfElse from "./if_else";
 import TextBox from "./text-box";
 
-@Template(`<div>
-
-<Student></Student>
-</div>`)
 // @Template(`<div>
-// <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
+
+// <IfElse></IfElse>
 // </div>`)
+@Template(`<div>
+<HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
+</div>`)
 @Children({
     HelloWorld, Student, ObjectComponent, IfElse, TextBox
 })

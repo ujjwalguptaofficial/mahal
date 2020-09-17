@@ -508,6 +508,8 @@ export abstract class Component {
     }
 
     private clearAll_() {
+        console.log("clearing component");
+        this.element.removeEventListener(LIFECYCLE_EVENT.Destroyed, this.destroyed.bind(this));
         this._$storeWatchCb.forEach(item => {
             this.$store.unwatch(item.key, item.cb)
         });
@@ -528,13 +530,6 @@ export abstract class Component {
             this.handleForExp_.bind(this)
         );
         nextTick(() => {
-            new MutationObserver((mutationsList, observer) => {
-                console.log("mutationsList", mutationsList);
-                if (document.body.contains(this.element) === false) {
-                    observer.disconnect();
-                    this.clearAll_();
-                }
-            }).observe(document.body, { childList: true, subtree: true });
             if ((this as any).$store) {
                 for (let key in this.dependency_) {
                     if (key.indexOf("$store.state") >= 0) {
@@ -549,6 +544,7 @@ export abstract class Component {
                     }
                 }
             }
+            this.element.addEventListener(LIFECYCLE_EVENT.Destroyed, this.clearAll_.bind(this));
             this.emit(LIFECYCLE_EVENT.Rendered);
         })
         return this.element;
