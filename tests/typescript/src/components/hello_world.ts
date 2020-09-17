@@ -2,7 +2,7 @@ import { Component, Template, Prop, Filter, Reactive } from "taj";
 
 @Template(`
 <div>
-    <span  #show(flag) id="testFilter">
+    <span #if(count>0) #show(flag===true) id="testFilter">
         {{"string" | toUpper}}
     </span>
     <span  id="name">{{name | toUpper}}</span>

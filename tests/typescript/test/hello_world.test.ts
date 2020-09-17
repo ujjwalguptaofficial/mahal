@@ -29,8 +29,14 @@ describe('HelloWorld', function () {
         expect(component.find("#name").innerHTML).equal("UJJWAL GUPTA");
     });
 
-    it('check if condition', function () {
-        expect(component.find("#testFilter")).not.equal(null);
+    it('check if condition', function (done) {
+        expect(component.find("#testFilter")).equal(null);
+        component.count = 1;
+        nextTick(() => {
+            expect(component.find("#testFilter")).not.equal(null);
+            component.count = 0;
+            done();
+        })
     });
 
     it('check show condition', function (done) {
