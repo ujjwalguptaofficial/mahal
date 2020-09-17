@@ -1,12 +1,21 @@
-HtmlTag = openTag:HtmlOpen child:(HtmlTag/Html/MustacheExpression)* HtmlClose? {
+HtmlTag = HtmlTagClosing/HtmlTagSelfClosing
+
+HtmlTagClosing = openTag:HtmlOpen EndTag child:(HtmlTag/Html/MustacheExpression)* CloseTag {
   return {
    view:openTag,
-   child:child.filter(item=> {
-      return item!=null && typeof item==='string'?item.trim().length!==0:true}
-   )} 
+   child: child.filter(item=> {
+      return item!=null && typeof item==='string'?item.trim().length!==0:true
+   })
+  }
 }
 
-HtmlOpen = StartOpenTag word: Identifier _* option:(HtmlOpenOption)* EndOpenTag {
+HtmlTagSelfClosing = openTag:HtmlOpen "/" EndTag {
+  return {
+    view:openTag
+  }
+}
+
+HtmlOpen = StartOpenTag word: Identifier _* option:(HtmlOpenOption)* {
   const result = {
      tag:word,
      events:[],
@@ -41,9 +50,10 @@ HtmlOpenOption = value:((If/ElseIf/Else)/For/(Event)/Attribute/InnerHtml/Directi
   }
 }
 
-HtmlClose = StartCloseTag word: Identifier EndTag{
+CloseTag "close tag"= StartCloseTag word: Identifier EndTag{
   return word
 }
+
 
 Ws "Whitespace" = [ \t];
 
@@ -94,7 +104,6 @@ StartCloseTag "</" = [<][/];
 
 EndTag ">" = [>];
 
-EndOpenTag ">" = "/"? [>];
 
 Identifier "identifier"= val:[a-zA-Z\$]+ {
 	return val.join("");
