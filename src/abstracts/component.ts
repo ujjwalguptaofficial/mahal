@@ -119,16 +119,14 @@ export abstract class Component {
                                         this.onObjModified_(key, objectProp, oldValue);
                                     })
                                     let index = 0;
-                                    for (let prop in resolvedValue) {
-                                        if (resolvedValue.hasOwnProperty(prop)) {
-                                            index++;
-                                            this.onObjModified_(key, "push", {
-                                                value: resolvedValue[prop],
-                                                key: prop,
-                                                length: index + 1
-                                            })
-                                        }
-                                    }
+                                    forOwn(resolvedValue, (prop, name) => {
+                                        index++;
+                                        this.onObjModified_(key, "push", {
+                                            value: resolvedValue[prop],
+                                            key: prop,
+                                            length: index + 1
+                                        })
+                                    });
                                 }
                             }
                     }
@@ -365,20 +363,14 @@ export abstract class Component {
             }
 
             if (option.attr) {
-                const attr = option.attr;
-
-                for (const key in attr) {
-                    // key is name of attribute , e.g- type
-                    if (attr.hasOwnProperty(key)) {
-                        const attrItem: IAttrItem = attr[key];
-                        setAttribute(element, key, attrItem.v);
-                        if (attrItem.k != null) {
-                            this.watch(attrItem.k, (newValue) => {
-                                setAttribute(element, key, newValue);
-                            })
-                        }
+                forOwn(option.attr, (key, attrItem) => {
+                    setAttribute(element, key, attrItem.v);
+                    if (attrItem.k != null) {
+                        this.watch(attrItem.k, (newValue) => {
+                            setAttribute(element, key, newValue);
+                        })
                     }
-                }
+                });
             }
 
             if (option.on) {
