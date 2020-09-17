@@ -26,11 +26,14 @@ export abstract class Component {
             this.attachGetterSetter_();
             this.emit(LIFECYCLE_EVENT.Created);
         })
-        if (this.children == null) {
+        if (isNull(this.children)) {
             this.children = {};
         }
-        if (this.filters_ == null) {
+        if (isNull(this.filters_)) {
             this.filters_ = {};
+        }
+        if (isNull(this.directive_)) {
+            this.directive_ = {};
         }
     }
 
@@ -309,7 +312,7 @@ export abstract class Component {
     private handleDirective_(element, dir, isComponent) {
         if (dir) {
             forOwn(dir, (name, compiledDir) => {
-                const storedDirective = globalDirectives[name]
+                const storedDirective = this.directive_[name] || globalDirectives[name]
                 if (storedDirective != null) {
                     const directive: IDirective = merge(genericDirective,
                         storedDirective(element, {
@@ -319,7 +322,7 @@ export abstract class Component {
                             isComponent: isComponent,
                             props: compiledDir.props,
                             value: compiledDir.value()
-                        } as IDirectiveBinding, this));
+                        } as IDirectiveBinding || {}, this));
                     nextTick(() => {
                         const onDestroyed = function () {
                             directive.destroyed();
@@ -544,7 +547,7 @@ export abstract class Component {
         return this.element;
     }
 
-    private directives_;
+    private directive_;
 
     private filters_;
     private props_;

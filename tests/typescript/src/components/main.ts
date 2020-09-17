@@ -5,15 +5,17 @@ import Student from "./array";
 import ObjectComponent from "./object";
 import IfElse from "./if_else";
 import TextBox from "./text-box";
+import DirectiveComp from "./directive";
 
-@Template(`<div>
-<Student></Student>
-</div>`)
 // @Template(`<div>
-// <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
+
+// <DirectiveComp/>
 // </div>`)
+@Template(`<div>
+<HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
+</div>`)
 @Children({
-    HelloWorld, Student, ObjectComponent, IfElse, TextBox
+    HelloWorld, Student, ObjectComponent, IfElse, TextBox, DirectiveComp
 })
 export default class Main extends Component {
     @Reactive
