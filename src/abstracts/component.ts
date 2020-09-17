@@ -3,7 +3,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFilters, globalComponents, globalDirectives } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn } from "../utils";
 import { genericDirective } from "../generics";
 
 let uniqueCounter = 0;
@@ -310,42 +310,41 @@ export abstract class Component {
 
     private handleDirective_(element, dir, isComponent) {
         if (dir) {
-            element.dirId = unique();
-            for (const name in dir) {
-                if (dir.hasOwnProperty(name)) {
-                    const storedDirective = globalDirectives[name]
-                    if (storedDirective != null) {
-                        const compiledDir = dir[name];
-                        const directive: IDirective = merge(genericDirective,
-                            storedDirective(element, {
-                                args: "",
-                                input: compiledDir.input,
-                                modifiers: {},
-                                isComponent: isComponent,
-                                props: compiledDir.props,
-                                value: compiledDir.value()
-                            } as IDirectiveBinding, this));
-                        nextTick(() => {
-                            const onDestroyed = function () {
-                                directive.destroyed();
-                                element = null;
-                            }.bind(this);
-                            if (isComponent === true) {
-                                (element as Component).on(LIFECYCLE_EVENT.Destroyed, onDestroyed);
+            forOwn(dir, (name, compiledDir) => {
+                const storedDirective = globalDirectives[name]
+                if (storedDirective != null) {
+                    const directive: IDirective = merge(genericDirective,
+                        storedDirective(element, {
+                            args: "",
+                            input: compiledDir.input,
+                            modifiers: {},
+                            isComponent: isComponent,
+                            props: compiledDir.props,
+                            value: compiledDir.value()
+                        } as IDirectiveBinding, this));
+                    nextTick(() => {
+                        const onDestroyed = function () {
+                            directive.destroyed();
+                            if (!isComponent) {
+                                element.removeEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
                             }
-                            else {
-                                element.addEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
-                            }
-                            compiledDir.props.forEach((prop) => {
-                                this.watch(prop, () => {
-                                    directive.valueUpdated(compiledDir.value())
-                                });
-                            })
-                            directive.inserted();
+                            element = null;
+                        }.bind(this);
+                        if (isComponent) {
+                            (element as Component).on(LIFECYCLE_EVENT.Destroyed, onDestroyed);
+                        }
+                        else {
+                            element.addEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
+                        }
+                        compiledDir.props.forEach((prop) => {
+                            this.watch(prop, () => {
+                                directive.valueUpdated(compiledDir.value())
+                            });
                         })
-                    }
+                        directive.inserted();
+                    })
                 }
-            }
+            })
         }
     }
 
@@ -520,7 +519,6 @@ export abstract class Component {
         });
         this.events_ = {};
         this.watchList_ = {};
-        this.directiveDep_ = {};
     }
 
     private executeRender_() {
@@ -568,6 +566,5 @@ export abstract class Component {
 
     private _$storeGetters: { prop: string, state: string }[];
 
-    private directiveDep_ = {};
 
 }
