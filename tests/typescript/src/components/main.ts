@@ -8,7 +8,7 @@ import TextBox from "./text-box";
 
 @Template(`<div>
 
-<IfElse></IfElse>
+<Student></Student>
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>

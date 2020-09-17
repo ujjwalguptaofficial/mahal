@@ -30,6 +30,9 @@ export function createRenderer(template: string) {
                     const indexToRemove = [];
                     let isIfCondEndFound = false;
                     const onIfCondEnd = (last: number) => {
+                        if (indexOfIfCond == null) {
+                            return;
+                        }
                         isIfCondEndFound = true;
                         compiled.child[indexOfIfCond].view.ifExpModified = ifModifiedExpression;
                         ifModifiedExpression = null;
@@ -37,10 +40,11 @@ export function createRenderer(template: string) {
                         for (let i = indexOfIfCond + 1; i < last; i++) {
                             indexToRemove.push(i);
                         }
+                        indexOfIfCond = null;
                     }
                     compiled.child.forEach((child, index) => {
                         if (!(child.view && child.view.ifExp)) {
-                            return;
+                            return onIfCondEnd(index);
                         }
                         const ifExp = child.view.ifExp;
                         if (ifExp.ifCond) {

@@ -1,8 +1,9 @@
 HtmlTag = openTag:HtmlOpen child:(HtmlTag/Html/MustacheExpression)* HtmlClose? {
   return {
    view:openTag,
-   child:child
-  } 
+   child:child.filter(item=> {
+      return item!=null && typeof item==='string'?item.trim().length!==0:true}
+   )} 
 }
 
 HtmlOpen = StartOpenTag word: Identifier _* option:(HtmlOpenOption)* EndOpenTag {
