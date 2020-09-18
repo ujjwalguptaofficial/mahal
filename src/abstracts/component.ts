@@ -67,68 +67,66 @@ export abstract class Component {
 
     private updateDOM_(key: string, oldValue) {
 
-        for (const prop in this.dependency_) {
-            if (prop === key) {
-                const depItems = this.dependency_[prop];
-                depItems.forEach(item => {
-                    switch (item.nodeType) {
-                        // Text Node
-                        case 3:
-                            item.nodeValue = this.resolve_(key); break;
-                        // Input node 
-                        case 1:
-                            (item as HTMLInputElement).value = this.resolve_(key)
-                            break;
-                        default:
-                            if (item.ifExp) {
-                                const el = item.method();
-                                (item.el as HTMLElement).parentNode.replaceChild(
-                                    el, item.el
-                                )
-                                item.el = el;
-                            }
-                            else if (item.forExp) {
-                                const resolvedValue = this.resolve_(key);
-                                const ref: HTMLDivElement = item.ref;
-                                const els = this.runForExp_(key, resolvedValue, item.method);
-                                const parent = ref.parentNode;
-                                // remove all nodes
-                                for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
-                                    parent.removeChild(ref.nextSibling);
-                                }
-
-                                if (isArray(resolvedValue)) {
-                                    new Observer(resolvedValue).createForArray((arrayProp, params) => {
-                                        this.onObjModified_(key, arrayProp, params);
-                                    })
-                                    resolvedValue.forEach((value, index) => {
-                                        this.onObjModified_(key, "push", {
-                                            value: value,
-                                            key: index,
-                                            length: index + 1
-                                        })
-                                    })
-                                }
-                                else {
-                                    new Observer(resolvedValue).create((objectProp, oldValue, newValue) => {
-                                        this.onObjModified_(key, objectProp, oldValue);
-                                    })
-                                    let index = 0;
-                                    forOwn(resolvedValue, (prop, name) => {
-                                        index++;
-                                        this.onObjModified_(key, "push", {
-                                            value: resolvedValue[prop],
-                                            key: prop,
-                                            length: index + 1
-                                        })
-                                    });
-                                }
-                            }
-                    }
-                });
-                return;
-            }
+        const depItems = this.dependency_[key];
+        if (depItems == null) {
+            return;
         }
+        depItems.forEach(item => {
+            switch (item.nodeType) {
+                // Text Node
+                case 3:
+                    item.nodeValue = this.resolve_(key); break;
+                // Input node 
+                case 1:
+                    (item as HTMLInputElement).value = this.resolve_(key)
+                    break;
+                default:
+                    if (item.ifExp) {
+                        const el = item.method();
+                        (item.el as HTMLElement).parentNode.replaceChild(
+                            el, item.el
+                        )
+                        item.el = el;
+                    }
+                    else if (item.forExp) {
+                        const resolvedValue = this.resolve_(key);
+                        const ref: HTMLDivElement = item.ref;
+                        const els = this.runForExp_(key, resolvedValue, item.method);
+                        const parent = ref.parentNode;
+                        // remove all nodes
+                        for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
+                            parent.removeChild(ref.nextSibling);
+                        }
+
+                        if (isArray(resolvedValue)) {
+                            new Observer(resolvedValue).createForArray((arrayProp, params) => {
+                                this.onObjModified_(key, arrayProp, params);
+                            })
+                            resolvedValue.forEach((value, index) => {
+                                this.onObjModified_(key, "push", {
+                                    value: value,
+                                    key: index,
+                                    length: index + 1
+                                })
+                            })
+                        }
+                        else {
+                            new Observer(resolvedValue).create((objectProp, oldValue, newValue) => {
+                                this.onObjModified_(key, objectProp, oldValue);
+                            })
+                            let index = 0;
+                            forOwn(resolvedValue, (prop, name) => {
+                                index++;
+                                this.onObjModified_(key, "push", {
+                                    value: resolvedValue[prop],
+                                    key: prop,
+                                    length: index + 1
+                                })
+                            });
+                        }
+                    }
+            }
+        });
     }
 
     private handleExp_(method: Function, keys: string[], id: string) {
@@ -173,7 +171,6 @@ export abstract class Component {
     }
 
     private onObjModified_(key: string, prop, params) {
-        console.log("onObjModified", key, prop, params);
         if (this.dependency_[key]) {
             this.dependency_[key].filter(q => q.forExp === true).forEach(item => {
                 const parent = (item.ref as Comment).parentNode as HTMLElement;
@@ -497,7 +494,8 @@ export abstract class Component {
             this.$store.unwatch(item.key, item.cb)
         });
         this.element = this.events_ =
-            this.dependency_ = this.storeWatchCb_ = null;
+            this.storeWatchCb_ = null;
+        this.dependency_ = {};
         this.watchList_ = {};
     }
 

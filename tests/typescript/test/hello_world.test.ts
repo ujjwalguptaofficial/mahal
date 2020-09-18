@@ -111,7 +111,8 @@ describe('HelloWorld', function () {
             nextTick(() => {
                 expect(component.element).equal(null);
                 expect(component.events_).equal(null);
-                expect(component.dependency_).equal(null);
+                // expect(component.dependency_).equal(null);
+                expect(getObjectLength(component.dependency_)).equal(0);
                 expect(component.storeWatchCb_).equal(null);
                 expect(component.watchList_).to.be.an('object')
                 // expect(getObjectLength(component.watchList_)).equal(0);
