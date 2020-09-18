@@ -34,7 +34,6 @@ describe('HelloWorld', function () {
         component.count = 1;
         nextTick(() => {
             expect(component.find("#testFilter")).not.equal(null);
-            component.count = 0;
             done();
         })
     });
@@ -59,14 +58,14 @@ describe('HelloWorld', function () {
 
     it('value of count button', function (done) {
         const btn = component.find('#count');
-        expect(btn.innerHTML).equal('0');
+        expect(btn.innerHTML).equal('1');
         component.on("click", function () {
             ++component.count;
         });
         btn.click();
-        expect(component.count).equal(1);
+        expect(component.count).equal(2);
         nextTick(() => {
-            expect(btn.innerHTML).equal('1');
+            expect(btn.innerHTML).equal('2');
             done();
         });
         component.off("click");
@@ -96,6 +95,16 @@ describe('HelloWorld', function () {
         })
     });
 
+    it('inner html', () => {
+        expect(component.find('.p-html').innerHTML).equal("<b>BOLD</b>")
+    })
+
+    it('test filter rendering', () => {
+        expect(component.find('#testFilter').innerHTML).equal("STRING");
+        expect(component.dependency_['"ujjwal" ']).equal(undefined);
+        expect(component.dependency_['"ujjwal"']).equal(undefined);
+    })
+
     // it("destroy", function (done) {
     //     component.on("destroyed", () => {
     //         console.log("destroy called");
@@ -103,16 +112,6 @@ describe('HelloWorld', function () {
     //     });
     //     component.destroy();
     // })
-
-    it('inner html', () => {
-        expect(component.find('.p-html').innerHTML).equal("<b>BOLD</b>")
-    })
-
-    it('test filter rendering', () => {
-        console.log("depen", component.dependency_);
-        expect(component.find('#testFilter').innerHTML).equal("STRING");
-        expect(component.dependency_['"ujjwal" ']).equal(undefined);
-    })
 
 });
 
