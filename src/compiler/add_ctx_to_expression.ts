@@ -16,6 +16,8 @@ function replaceWithContext(value: string) {
 export function addCtxToExpression(expressions: IExpression[]) {
     const keys = [];
     let str = "";
+    let raw = "";
+
     function addCtxIfNotString(value: string) {
         if (stringRegex.test(value) === true) {
             str += value;
@@ -25,21 +27,32 @@ export function addCtxToExpression(expressions: IExpression[]) {
             keys.push(value.trim());
         }
     }
-    expressions.forEach(expression => {
-        addCtxIfNotString(expression.exp.left);
-        if (expression.exp.op != null) {
-            str += expression.exp.op;
+    if (expressions != null) {
 
-            if (expression.exp.right != null) {
-                addCtxIfNotString(expression.exp.right);
+        expressions.forEach(expression => {
+            addCtxIfNotString(expression.exp.left);
+            raw += expression.exp.left;
+            if (expression.exp.op != null) {
+                str += expression.exp.op;
+                raw += expression.exp.op;
+                if (expression.exp.right != null) {
+                    addCtxIfNotString(expression.exp.right);
+                    raw += expression.exp.right;
+                }
             }
-        }
-        if (expression.op) {
-            str += expression.op;
-        }
-    })
+            if (expression.op) {
+                str += expression.op;
+                raw += expression.op;
+            }
+        })
+    }
+    else {
+        str = null;
+    }
+
     return {
         expStr: str,
-        keys
+        keys,
+        raw: raw === "" ? null : stringRegex.test(raw) === true ? raw : `'${raw}'`
     }
 }

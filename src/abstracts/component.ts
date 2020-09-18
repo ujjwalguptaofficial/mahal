@@ -316,6 +316,7 @@ export abstract class Component {
                 if (storedDirective != null) {
                     const binding = {
                         input: compiledDir.input,
+                        params: compiledDir.params,
                         isComponent: isComponent,
                         props: compiledDir.props,
                         value: compiledDir.value()

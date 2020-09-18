@@ -126,10 +126,16 @@ export function createRenderer(template: string) {
                 if (compiled.view.dir) {
                     optionStr += `${optionStr.length > 2 ? "," : ''} dir:{`;
                     for (const dirName in compiled.view.dir) {
-                        const expressionEvaluation = addCtxToExpression(compiled.view.dir[dirName]);
-                        optionStr += dirName + ":{ value:()=>{return " + expressionEvaluation.expStr + "},props:" + convertArrayToString(expressionEvaluation.keys) + "}},";
+                        const dirValue = compiled.view.dir[dirName];
+                        const expressionEvaluation = addCtxToExpression(dirValue);
+                        optionStr += `${dirName}:{ 
+                            value:()=>{return ${expressionEvaluation.expStr} },
+                            props:${convertArrayToString(expressionEvaluation.keys)},
+                            params: ${expressionEvaluation.raw}
+                          },
+                        `;
                     }
-                    optionStr = removeCommaFromLast(optionStr);
+                    optionStr = removeCommaFromLast(optionStr) + "}";
                     // optionStr += "}"
                 }
 
