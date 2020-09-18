@@ -100,6 +100,7 @@ describe('HelloWorld', function () {
     })
 
     it('test filter rendering', () => {
+        expect(component.count).gt(0);
         expect(component.find('#testFilter').innerHTML).equal("STRING");
         expect(component.dependency_['"ujjwal" ']).equal(undefined);
         expect(component.dependency_['"ujjwal"']).equal(undefined);

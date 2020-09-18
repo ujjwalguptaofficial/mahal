@@ -21,7 +21,6 @@ export function createRenderer(template: string) {
     const createJsEqFromCompiled = (compiled: ICompiledView) => {
         let str = "";
         if (compiled.view) {
-            const dep = [];
             const handleTag = () => {
                 let tagHtml = `ce('${compiled.view.tag}',`
                 if (compiled.child) {
@@ -111,18 +110,6 @@ export function createRenderer(template: string) {
                     optionStr += `on:{${eventStr}}`;
                 }
 
-                if (compiled.view.model) {
-                    optionStr += `on:{input:(e)=>{
-                        ctx.${compiled.view.model}= e.target.value;
-                    }}`;
-                    compiled.view.attr.push({
-                        isBind: true,
-                        key: 'value',
-                        value: compiled.view.model,
-                    })
-                    dep.push(compiled.view.model);
-                }
-
                 if (compiled.view.dir) {
                     optionStr += `${optionStr.length > 2 ? "," : ''} dir:{`;
                     for (const dirName in compiled.view.dir) {
@@ -173,20 +160,6 @@ export function createRenderer(template: string) {
                     });
 
                     optionStr += `${optionStr.length > 2 ? "," : ''} attr:{${attrString}}`;
-                }
-
-                // handle dep
-                const depLength = dep.length;
-                if (depLength > 0) {
-                    let depString = "["
-                    dep.forEach((item, index) => {
-                        depString += `'${item}'`;
-                        if (index + 1 < depLength) {
-                            depString += ","
-                        }
-                    });
-                    depString += "]"
-                    optionStr += `${optionStr.length > 2 ? "," : ''} dep:${depString}`;
                 }
 
                 optionStr += "})";

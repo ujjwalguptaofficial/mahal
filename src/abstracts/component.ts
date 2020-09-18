@@ -322,7 +322,7 @@ export abstract class Component {
                         value: compiledDir.value()
                     } as IDirectiveBinding;
                     const directive: IDirective = merge(genericDirective,
-                        storedDirective.call(this, element, binding, this));
+                        storedDirective.call(this, element, binding));
                     nextTick(() => {
                         const onDestroyed = function () {
                             directive.destroyed();
