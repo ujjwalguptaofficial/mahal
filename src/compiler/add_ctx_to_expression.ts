@@ -53,6 +53,7 @@ export function addCtxToExpression(expressions: IExpression[]) {
     return {
         expStr: str,
         keys,
-        raw: raw === "" ? null : stringRegex.test(raw) === true ? raw : `'${raw}'`
+        // raw: raw === "" ? null : stringRegex.test(raw) === true ? raw : `'${raw}'`
+        raw: raw === "" ? null : raw
     }
 }

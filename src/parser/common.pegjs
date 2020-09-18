@@ -62,11 +62,16 @@ _ "One or more whitespaces" = space:Ws+ {return null;}
 Directive "directive" = "#" name:Word value:DirectiveValue? {
    return {dir:{
       name,
-      value
+      value: value || []
    }};
 }
 
-DirectiveValue = "(" exp:Expression ")" {
+DirectiveValue = "(" expFirst:Expression _* expRest:DirectiveRestValue* ")" {
+   expRest.unshift(expFirst);
+   return expRest
+}
+
+DirectiveRestValue =  "," exp:Expression _* {
   return exp;
 }
 

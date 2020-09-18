@@ -126,14 +126,26 @@ export function createRenderer(template: string) {
                 if (compiled.view.dir) {
                     optionStr += `${optionStr.length > 2 ? "," : ''} dir:{`;
                     for (const dirName in compiled.view.dir) {
-                        const dirValue = compiled.view.dir[dirName];
-                        const expressionEvaluation = addCtxToExpression(dirValue);
+                        // optionStr += `${dirName}:{ `
+                        const dirBinding = {
+                            value: [],
+                            props: [],
+                            params: []
+                        }
+                        compiled.view.dir[dirName].forEach(dirValue => {
+                            const expressionEvaluation = addCtxToExpression(dirValue);
+                            dirBinding.value.push(expressionEvaluation.expStr)
+                            dirBinding.props = [...dirBinding.props, ...expressionEvaluation.keys]
+                            dirBinding.params.push(expressionEvaluation.raw)
+                        })
+
                         optionStr += `${dirName}:{ 
-                            value:()=>{return ${expressionEvaluation.expStr} },
-                            props:${convertArrayToString(expressionEvaluation.keys)},
-                            params: ${expressionEvaluation.raw}
-                          },
-                        `;
+                                value:()=>{return ${dirBinding.value.length > 1 ? convertArrayToString(dirBinding.value, false) : dirBinding.value} },
+                                props:${convertArrayToString(dirBinding.props)},
+                                params: ${convertArrayToString(dirBinding.params)}
+                              },
+                            `;
+
                     }
                     optionStr = removeCommaFromLast(optionStr) + "}";
                     // optionStr += "}"

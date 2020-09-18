@@ -30,7 +30,7 @@ export interface ICompiledView {
             handler: string;
         }[],
         dir: {
-            [name: string]: IExpression[]
+            [name: string]: IExpression[][]
         }
     },
     mustacheExp: string,
