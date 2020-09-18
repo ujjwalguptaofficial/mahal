@@ -48,10 +48,32 @@ describe('Directive', function () {
         expect(el4.style.color).equal('red');
     });
 
-    it("check data-name on el7", function () {
-        const el4 = component.find("#el7");
-        expect(el4.style.backgroundColor).equal(component.backgroundColor);
-        expect(el4.style.color).equal('yellow');
+    it("check data-name on el7", function (done) {
+        const el7 = component.find("#el7");
+        expect(el7.style.backgroundColor).equal(component.backgroundColor);
+        expect(el7.style.color).equal('yellow');
+        component.backgroundColor = "maroon";
+        setTimeout(() => {
+            expect(el7.style.backgroundColor).equal(component.backgroundColor);
+            component.el7 = false;
+            setTimeout(() => {
+                expect(component.isDirectiveDestoyedCalled).equal(true);
+                done();
+            }, 10);
+        }, 10)
+    });
+
+    it("check data-name on el8", function (done) {
+        const el7 = component.find("#el8");
+        expect(el7.style.backgroundColor).equal(component.backgroundColor);
+        expect(el7.style.color).equal(component.color);
+        component.backgroundColor = "black";
+        component.color = "white";
+        setTimeout(() => {
+            expect(el7.style.backgroundColor).equal(component.backgroundColor);
+            expect(el7.style.color).equal(component.color);
+            done();
+        }, 10)
     });
 
 });
