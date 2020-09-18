@@ -314,15 +314,14 @@ export abstract class Component {
             forOwn(dir, (name, compiledDir) => {
                 const storedDirective = this.directive_[name] || globalDirectives[name]
                 if (storedDirective != null) {
+                    const binding = {
+                        input: compiledDir.input,
+                        isComponent: isComponent,
+                        props: compiledDir.props,
+                        value: compiledDir.value()
+                    } as IDirectiveBinding;
                     const directive: IDirective = merge(genericDirective,
-                        storedDirective(element, {
-                            args: "",
-                            input: compiledDir.input,
-                            modifiers: {},
-                            isComponent: isComponent,
-                            props: compiledDir.props,
-                            value: compiledDir.value()
-                        } as IDirectiveBinding || {}, this));
+                        storedDirective(element, binding, this));
                     nextTick(() => {
                         const onDestroyed = function () {
                             directive.destroyed();
@@ -339,7 +338,8 @@ export abstract class Component {
                         }
                         compiledDir.props.forEach((prop) => {
                             this.watch(prop, () => {
-                                directive.valueUpdated(compiledDir.value())
+                                binding.value = compiledDir.value();
+                                directive.valueUpdated()
                             });
                         })
                         directive.inserted();

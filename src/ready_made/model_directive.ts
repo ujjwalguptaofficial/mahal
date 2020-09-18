@@ -18,7 +18,8 @@ export function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding,
         };
     }
     return {
-        valueUpdated(newValue) {
+        valueUpdated() {
+            const newValue = binding.value;
             if (el.value !== newValue) {
                 el.value = newValue;
                 if (binding.isComponent === true) {

@@ -1,6 +1,5 @@
 export interface IDirective {
-    created: (value) => void;
     inserted: () => void;
-    valueUpdated: (value) => void;
+    valueUpdated: () => void;
     destroyed: () => void;
 }
