@@ -1,6 +1,6 @@
 import HelloWorld from "../src/components/hello_world";
 import { app } from "../src/index";
-import { nextTick } from "taj";
+import { nextTick, getObjectLength } from "taj";
 import { expect } from "chai";
 import { createSandbox } from "sinon";
 
@@ -105,13 +105,20 @@ describe('HelloWorld', function () {
         expect(component.dependency_['"ujjwal"']).equal(undefined);
     })
 
-    // it("destroy", function (done) {
-    //     component.on("destroyed", () => {
-    //         console.log("destroy called");
-    //         done();
-    //     });
-    //     component.destroy();
-    // })
+    it("destroy", function (done) {
+        component.on("destroyed", () => {
+            nextTick(() => {
+                expect(component.element).equal(null);
+                expect(component.events_).equal(null);
+                expect(component.dependency_).equal(null);
+                expect(component.storeWatchCb_).equal(null);
+                expect(component.watchList_).to.be.an('object')
+                // expect(getObjectLength(component.watchList_)).equal(0);
+                done();
+            })
+        });
+        component.destroy();
+    })
 
 });
 

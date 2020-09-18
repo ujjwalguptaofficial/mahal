@@ -34,7 +34,8 @@ export default class HelloWorld extends BaseComponent {
 
 
 
-    onRendered() {
+    rendered() {
+        window['comp'] = this;
         console.log("Hello world rendered", this.name);
     }
 

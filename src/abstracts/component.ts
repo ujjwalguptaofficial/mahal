@@ -452,18 +452,18 @@ export abstract class Component {
 
 
     private initComponent_(component: Component, option) {
-        if (component._$storeGetters) {
+        if (component.storeGetters_) {
             // can not make it async because if item is array then it will break
             // because at that time value will be undefined
             // so set it before rendering
-            component._$storeGetters.forEach(item => {
+            component.storeGetters_.forEach(item => {
                 component[item.prop] = component.$store.state[item.state];
                 const cb = (newValue, oldValue) => {
                     component[item.prop] = newValue;
                     component.updateDOM_(item.prop, oldValue);
                 }
                 component.$store.watch(item.state, cb);
-                component._$storeWatchCb.push({
+                component.storeWatchCb_.push({
                     key: item.state,
                     cb
                 });
@@ -509,10 +509,11 @@ export abstract class Component {
         // need to emit before clearing events
         this.emit(LIFECYCLE_EVENT.Destroyed);
         this.element.removeEventListener(LIFECYCLE_EVENT.Destroyed, this.destroyed.bind(this));
-        this._$storeWatchCb.forEach(item => {
+        this.storeWatchCb_.forEach(item => {
             this.$store.unwatch(item.key, item.cb)
         });
-        this.events_ = {};
+        this.element = this.events_ =
+            this.dependency_ = this.storeWatchCb_ = null;
         this.watchList_ = {};
     }
 
@@ -535,7 +536,7 @@ export abstract class Component {
                         };
                         key = key.replace("$store.state.", '');
                         (this as any).$store.watch(key, cb);
-                        this._$storeWatchCb.push({
+                        this.storeWatchCb_.push({
                             key, cb
                         });
                     }
@@ -557,9 +558,9 @@ export abstract class Component {
         [key: string]: Array<(newValue, oldValue) => void>
     } = {};
 
-    private _$storeWatchCb: { key: string, cb: Function }[] = [];
+    private storeWatchCb_: { key: string, cb: Function }[] = [];
 
-    private _$storeGetters: { prop: string, state: string }[];
+    private storeGetters_: { prop: string, state: string }[];
 
 
 }
