@@ -22,5 +22,6 @@
 * Store
 * Inner Html - done (test added)
 * Filter - Done (test added)
-* directives
+* directives - Done (test added)
 * slots
+* Portal

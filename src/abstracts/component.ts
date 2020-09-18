@@ -1,6 +1,6 @@
 import { createRenderer } from "../compiler";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { setAndReact, Observer, deleteAndReact } from "../helpers";
+import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFilters, globalComponents, globalDirectives } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn } from "../utils";
@@ -64,14 +64,6 @@ export abstract class Component {
     }
 
     render: () => void;
-
-    private createTextNode_(value) {
-        return document.createTextNode(value);
-    }
-
-    private createCommentNode_() {
-        return document.createComment("");
-    }
 
     private updateDOM_(key: string, oldValue) {
 
@@ -237,7 +229,7 @@ export abstract class Component {
     }
 
     private handleForExp_(key, method: Function, id: string) {
-        const cmNode = this.createCommentNode_();
+        const cmNode = createCommentNode();
         let els = [cmNode];
         const resolvedValue = this.resolve_(key);
 
@@ -352,7 +344,7 @@ export abstract class Component {
 
     private createElement_(tag, childs: HTMLElement[], option) {
         if (tag == null) {
-            return this.createCommentNode_();
+            return createCommentNode();
         }
         let element;
         let component: Component;
@@ -408,15 +400,6 @@ export abstract class Component {
             new LogHelper(ERROR_TYPE.InvalidComponent, {
                 tag: tag
             }).throwPlain();
-
-        }
-
-
-
-        if (option.dep) {
-            option.dep.forEach(item => {
-                this.storeDependency_(item, element);
-            });
         }
         return element;
 
@@ -523,7 +506,7 @@ export abstract class Component {
         console.log("renderer", renderFn);
         this.element = renderFn.call(this,
             this.createElement_.bind(this),
-            this.createTextNode_,
+            createTextNode,
             this.filter.bind(this),
             this.handleExp_.bind(this),
             this.handleForExp_.bind(this)
