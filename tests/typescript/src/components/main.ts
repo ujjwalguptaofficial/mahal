@@ -9,7 +9,7 @@ import DirectiveComp from "./directive";
 
 @Template(`<div>
 
-<Student/>
+<DirectiveComp/>
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>

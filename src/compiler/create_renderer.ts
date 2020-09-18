@@ -142,7 +142,7 @@ export function createRenderer(template: string) {
                         optionStr += `${dirName}:{ 
                                 value:()=>{return ${dirBinding.value.length > 1 ? convertArrayToString(dirBinding.value, false) : dirBinding.value} },
                                 props:${convertArrayToString(dirBinding.props)},
-                                params: ${convertArrayToString(dirBinding.params)}
+                                params: ${convertArrayToString(dirBinding.value, false)}
                               },
                             `;
 
