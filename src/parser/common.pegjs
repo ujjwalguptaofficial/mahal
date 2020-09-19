@@ -160,6 +160,6 @@ Html "html"= val:[a-zA-Z0-9\&\ \.\$\n\r\"\']+ {
 
 StringSymbol "string" = ['/"]
 
-Word "word" = val:[a-zA-Z0-9\&\ \|\.\$\!\=\-]+ {
+Word "word" = val:[a-zA-Z0-9\&\ \|\.\$\!\=\-\:\;]+ {
 	return val.join("");
 }
