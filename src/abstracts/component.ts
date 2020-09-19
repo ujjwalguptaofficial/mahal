@@ -53,7 +53,20 @@ export abstract class Component {
             this.watchList_[propName] = [];
         }
         this.watchList_[propName].push(cb);
+        return this;
     }
+
+    unwatch(propName: string, cb: (newValue, oldValue) => void) {
+        if (this.watchList_[propName] != null) {
+            const index = this.watchList_[propName].indexOf(cb);
+            if (index >= 0) {
+                this.watchList_[propName].splice(index, 1);
+            }
+        }
+        return this;
+    }
+
+
 
     set(target, prop, valueToSet) {
         setAndReact(target, prop, valueToSet);
@@ -98,47 +111,62 @@ export abstract class Component {
                             parent.removeChild(ref.nextSibling);
                         }
 
-                        if (isArray(resolvedValue)) {
-                            new Observer(resolvedValue).createForArray((arrayProp, params) => {
-                                this.onObjModified_(key, arrayProp, params);
-                            })
-                            resolvedValue.forEach((value, index) => {
-                                this.onObjModified_(key, "push", {
-                                    value: value,
-                                    key: index,
-                                    length: index + 1
-                                })
-                            })
-                        }
-                        else {
-                            new Observer(resolvedValue).create((objectProp, oldValue, newValue) => {
-                                this.onObjModified_(key, objectProp, oldValue);
-                            })
-                            let index = 0;
-                            forOwn(resolvedValue, (prop, name) => {
-                                index++;
-                                this.onObjModified_(key, "push", {
-                                    value: resolvedValue[prop],
-                                    key: prop,
-                                    length: index + 1
-                                })
-                            });
-                        }
+                        // if (isArray(resolvedValue)) {
+                        //     new Observer(resolvedValue).createForArray((arrayProp, params) => {
+                        //         this.onObjModified_(key, arrayProp, params);
+                        //     })
+                        //     resolvedValue.forEach((value, index) => {
+                        //         this.onObjModified_(key, "push", {
+                        //             value: value,
+                        //             key: index,
+                        //             length: index + 1
+                        //         })
+                        //     })
+                        // }
+                        // else {
+                        //     new Observer(resolvedValue).create((objectProp, oldValue, newValue) => {
+                        //         this.onObjModified_(key, objectProp, oldValue);
+                        //     })
+                        //     let index = 0;
+                        //     forOwn(resolvedValue, (prop, name) => {
+                        //         index++;
+                        //         this.onObjModified_(key, "push", {
+                        //             value: resolvedValue[prop],
+                        //             key: prop,
+                        //             length: index + 1
+                        //         })
+                        //     });
+                        // }
                     }
             }
         });
     }
 
-    private handleExp_(method: Function, keys: string[], id: string) {
+    private handleExp_(method: Function, keys: string[], id?: string) {
         const el = method();
-        const dep = {
-            el: el,
-            method: method,
-            id: id,
-            ifExp: true
-        }
-        keys.forEach(item => {
-            this.storeDependency_(item, dep);
+        // const dep = {
+        //     el: el,
+        //     method: method,
+        //     id: id,
+        //     ifExp: true
+        // }
+        nextTick(() => {
+            const watchCallBack = () => {
+                const newEl = this.handleExp_(method, keys);
+                el.parentNode.replaceChild(
+                    newEl, el
+                )
+            };
+            keys.forEach(item => {
+                this.watch(item, watchCallBack);
+            });
+            const onElDestroyed = function () {
+                el.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+                keys.forEach(item => {
+                    this.unwatch(item, watchCallBack);
+                });
+            }.bind(this);
+            el.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed)
         })
         return el;
     }
@@ -146,61 +174,16 @@ export abstract class Component {
     private dependency_: { [key: string]: any[] } = {};
 
     private attachGetterSetter_() {
-        new Observer(this).create((key, oldValue, newValue) => {
-            if (this.watchList_[key] != null) {
-                this.watchList_[key].forEach(cb => {
-                    cb(newValue, oldValue);
-                })
-            }
-            this.updateDOM_(key, oldValue);
-        }, (key) => {
-            if (isObject(this[key]) === false) {
-                return;
-            }
-            if (isArray(this[key])) {
-                new Observer(this[key]).createForArray((arrayProp, params) => {
-                    this.onObjModified_(key, arrayProp, params);
-                })
-            }
-            else {
-                new Observer(this[key]).create((objectProp, oldValue, newValue) => {
-                    this.onObjModified_(key, objectProp, oldValue);
-                })
-            }
-        }, this.reactives_ || []);
+        const observer = new Observer();
+        observer.onChange = this.onChange_.bind(this);
+        observer.create(this, this.reactives_ || []);
     }
 
-    private onObjModified_(key: string, prop, params) {
-        if (this.dependency_[key]) {
-            this.dependency_[key].filter(q => q.forExp === true).forEach(item => {
-                const parent = (item.ref as Comment).parentNode as HTMLElement;
-                const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, item.ref);
-                switch (prop) {
-                    case 'push':
-                        var newElement = item.method(params.value, params.key);
-                        (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
-                        break;
-                    case 'splice':
-                        for (let i = 1; i <= params[1]; i++) {
-                            parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
-                        }
-                        if (params[2]) {
-                            var newElement = item.method(params[2], params[0]);
-                            (parent as HTMLElement).insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
-                        }
-                        break;
-                    default:
-                        // if(isObject())
-                        const resolvedValue = this.resolve_(key)
-                        const index = Object.keys(resolvedValue).findIndex(q => q === prop);
-                        if (index >= 0) {
-                            var newElement = item.method(resolvedValue[prop], prop);
-                            parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
-                        }
-                }
-            });
-            // console.log("value", values);
-            // return;
+    private onChange_(key, oldValue, newValue) {
+        if (this.watchList_[key] != null) {
+            this.watchList_[key].forEach(cb => {
+                cb(newValue, oldValue);
+            })
         }
     }
 
@@ -233,18 +216,37 @@ export abstract class Component {
         els = els.concat(this.runForExp_(key, resolvedValue, method));
 
         nextTick(() => {
-            this.storeDependency_(key, {
-                forExp: true,
-                method: method,
-                ref: cmNode,
-                id: id
-            });
-            const onElDestoyed = function () {
-                const depIndex = this.dependency_[key].findIndex(q => q.id === id);
-                this.dependency_[key].splice(depIndex, 1);
-                cmNode.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestoyed);
-            }.bind(this);
-            cmNode.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestoyed);
+            const handleChange = (prop, params) => {
+                var parent = cmNode.parentNode;
+                var indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
+                switch (prop) {
+                    case 'push':
+                        var newElement = method(params.value, params.key);
+                        parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
+                        break;
+                    case 'splice':
+                        for (var i = 1; i <= params[1]; i++) {
+                            parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
+                        }
+                        if (params[2]) {
+                            var newElement = method(params[2], params[0]);
+                            parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
+                        }
+                        break;
+                    default:
+                        var resolvedValue = this.resolve_(key);
+                        var index = Object.keys(resolvedValue).findIndex(function (q) { return q === prop; });
+                        if (index >= 0) {
+                            var newElement = method(resolvedValue[prop], prop);
+                            parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
+                        }
+                }
+            }
+            this.watch(`${key}.push`, (newValue, oldValue) => {
+                handleChange("push", oldValue);
+            }).watch(`${key}.splice`, (newValue, oldValue) => {
+                handleChange("splice", oldValue);
+            })
         });
         return els;
     }
@@ -460,7 +462,7 @@ export abstract class Component {
                     component[key] = value.v;
                     this.watch(value.k, (newValue, oldValue) => {
                         component[key] = newValue;
-                        component.updateDOM_(key, oldValue);
+                        component.onChange_(key, oldValue, newValue);
                     });
                 }
                 else {
