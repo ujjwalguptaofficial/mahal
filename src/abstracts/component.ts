@@ -143,19 +143,15 @@ export abstract class Component {
     }
 
     private handleExp_(method: Function, keys: string[], id?: string) {
-        const el = method();
-        // const dep = {
-        //     el: el,
-        //     method: method,
-        //     id: id,
-        //     ifExp: true
-        // }
-        nextTick(() => {
+        let el = method();
+        const handleChange = () => {
             const watchCallBack = () => {
-                const newEl = this.handleExp_(method, keys);
+                const newEl = method();
                 el.parentNode.replaceChild(
                     newEl, el
                 )
+                el = newEl;
+                handleChange();
             };
             keys.forEach(item => {
                 this.watch(item, watchCallBack);
@@ -166,7 +162,10 @@ export abstract class Component {
                     this.unwatch(item, watchCallBack);
                 });
             }.bind(this);
-            el.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed)
+            el.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+        }
+        nextTick(() => {
+            handleChange();
         })
         return el;
     }
