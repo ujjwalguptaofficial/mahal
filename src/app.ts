@@ -5,6 +5,13 @@ import { LogHelper, getFromWindow, isString } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 
 const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroyed);
+
+function dispatchDestroyed(node: Node) {
+    node.dispatchEvent(destroyedEvent);
+    node.childNodes.forEach(item => {
+        dispatchDestroyed(item);
+    });
+}
 export class App {
     component: typeof Component;
     element: HTMLElement;
@@ -22,7 +29,8 @@ export class App {
             mutations.forEach(mutation => {
                 if (mutation.removedNodes) {
                     mutation.removedNodes.forEach(removedNode => {
-                        removedNode.dispatchEvent(destroyedEvent);
+                        // removedNode.dispatchEvent(destroyedEvent);
+                        dispatchDestroyed(removedNode);
                     });
                 }
             });

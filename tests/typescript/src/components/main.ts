@@ -7,12 +7,10 @@ import IfElse from "./if_else";
 import TextBox from "./text-box";
 import DirectiveComp from "./directive";
 
-@Template(`<div>
-<IfElse/>
-</div>`)
-@Template(`<div>
-<HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
-</div>`)
+@Template(`<Student/>`)
+// @Template(`<div>
+// <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
+// </div>`)
 @Children({
     HelloWorld, Student, ObjectComponent, IfElse, TextBox, DirectiveComp
 })

@@ -10,7 +10,7 @@ import { convertArrayToString } from "./convert_array_to_comma_seperated_string"
 var beautify = require('js-beautify');
 export function createRenderer(template: string) {
     const compiledParent = parseview(template);
-    console.log("compiled", compiledParent);
+    // console.log("compiled", compiledParent);
     if (compiledParent.view) {
         if (compiledParent.view.forExp) {
             console.error(`Invalid template ${template}`);
@@ -240,6 +240,6 @@ export function createRenderer(template: string) {
     }
     parentStr += `return ${createJsEqFromCompiled(compiledParent)}`;
     parentStr = beautify(parentStr, { indent_size: 4, space_in_empty_paren: true })
-    console.log("parentstr", parentStr);
+    // console.log("parentstr", parentStr);
     return new Function('ce', 'ct', 'f', 'he', 'hForE', parentStr);
 }

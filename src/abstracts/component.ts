@@ -150,8 +150,10 @@ export abstract class Component {
                 el.parentNode.replaceChild(
                     newEl, el
                 )
-                el = newEl;
-                handleChange();
+                nextTick(() => {
+                    el = newEl;
+                    handleChange();
+                })
             };
             keys.forEach(item => {
                 this.watch(item, watchCallBack);
@@ -172,10 +174,12 @@ export abstract class Component {
 
     private dependency_: { [key: string]: any[] } = {};
 
+    private observer_;
+
     private attachGetterSetter_() {
-        const observer = new Observer();
-        observer.onChange = this.onChange_.bind(this);
-        observer.create(this, this.reactives_ || []);
+        this.observer_ = new Observer();
+        this.observer_.onChange = this.onChange_.bind(this);
+        this.observer_.create(this, this.reactives_ || []);
     }
 
     private onChange_(key, oldValue, newValue) {
@@ -211,9 +215,7 @@ export abstract class Component {
         const cmNode = createCommentNode();
         let els = [cmNode];
         const resolvedValue = this.resolve_(key);
-
         els = els.concat(this.runForExp_(key, resolvedValue, method));
-
         nextTick(() => {
             const handleChange = (prop, params) => {
                 var parent = cmNode.parentNode;
@@ -241,7 +243,35 @@ export abstract class Component {
                         }
                 }
             }
-            this.watch(`${key}.push`, (newValue, oldValue) => {
+            this.watch(key, (newValue, oldValue) => {
+                const els = this.runForExp_(key, newValue, method);
+                const parent = cmNode.parentNode;
+                // remove all nodes
+                for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
+                    parent.removeChild(cmNode.nextSibling);
+                }
+                // add all node
+                if (isArray(newValue)) {
+                    newValue.forEach((item, index) => {
+                        handleChange("push", {
+                            value: item,
+                            key: index,
+                            length: index + 1
+                        })
+                    })
+                }
+                else {
+                    let index = 0;
+                    forOwn(newValue, (prop, value) => {
+                        index++;
+                        handleChange("push", {
+                            value,
+                            key: prop,
+                            length: index + 1
+                        })
+                    });
+                }
+            }).watch(`${key}.push`, (newValue, oldValue) => {
                 handleChange("push", oldValue);
             }).watch(`${key}.splice`, (newValue, oldValue) => {
                 handleChange("splice", oldValue);
@@ -495,6 +525,7 @@ export abstract class Component {
             this.$store.unwatch(item.key, item.cb)
         });
         this.element = this.events_ =
+            this.observer_ =
             this.storeWatchCb_ = null;
         this.dependency_ = {};
         this.watchList_ = {};
