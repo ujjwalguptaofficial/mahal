@@ -212,11 +212,66 @@ export abstract class Component {
     }
 
     private handleForExp_(key, method: Function, id: string) {
-        const cmNode = createCommentNode();
+        let cmNode = createCommentNode();
         let els = [cmNode];
         let resolvedValue = this.resolve_(key);
         els = els.concat(this.runForExp_(key, resolvedValue, method));
         nextTick(() => {
+            const onElDestroyed = () => {
+                cmNode.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+                cmNode = null;
+                for (const ev in callBacks) {
+                    this.unwatch(ev, callBacks[ev]);
+                }
+            }
+            const callBacks = {
+                [key]: (newValue, oldValue) => {
+                    // value resetted
+                    const els = this.runForExp_(key, newValue, method);
+                    const parent = cmNode.parentNode;
+                    // remove all nodes
+                    for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
+                        parent.removeChild(cmNode.nextSibling);
+                    }
+                    // add all node
+                    if (isArray(newValue)) {
+                        newValue.forEach((item, index) => {
+                            handleChange("push", {
+                                value: item,
+                                key: index,
+                                length: index + 1
+                            })
+                        })
+                    }
+                    else {
+                        let index = 0;
+                        forOwn(newValue, (prop, value) => {
+                            index++;
+                            handleChange("push", {
+                                value,
+                                key: prop,
+                                length: index + 1
+                            })
+                        });
+                    }
+                    //add setter
+                    if (isObject(newValue)) {
+                        const observer = new Observer();
+                        observer.onChange = this.onChange_.bind(this);
+                        observer.create(newValue, null, `${key}.`);
+                    }
+                },
+                [`${key}.push`]: (newValue, oldValue) => {
+                    handleChange("push", oldValue);
+                },
+                [`${key}.splice`]: (newValue, oldValue) => {
+                    handleChange("splice", oldValue);
+                },
+                [`${key}.update`]: (newValue, oldValue) => {
+                    handleChange("update", oldValue);
+                }
+            }
+            cmNode.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
             const handleChange = (prop, params) => {
                 var parent = cmNode.parentNode;
                 var indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
@@ -242,57 +297,12 @@ export abstract class Component {
                             parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
                         };
                         break;
-                    default:
-                    // var resolvedValue = this.resolve_(key);
-                    // const index = Object.keys(resolvedValue).findIndex(function (q) { return q === prop; });
-                    // if (index >= 0) {
-                    //     var newElement = method(resolvedValue[prop], prop);
-                    //     parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
-                    // }
                 }
             }
-            this.watch(key, (newValue, oldValue) => {
-                // value resetted
-                const els = this.runForExp_(key, newValue, method);
-                const parent = cmNode.parentNode;
-                // remove all nodes
-                for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
-                    parent.removeChild(cmNode.nextSibling);
-                }
-                // add all node
-                if (isArray(newValue)) {
-                    newValue.forEach((item, index) => {
-                        handleChange("push", {
-                            value: item,
-                            key: index,
-                            length: index + 1
-                        })
-                    })
-                }
-                else {
-                    let index = 0;
-                    forOwn(newValue, (prop, value) => {
-                        index++;
-                        handleChange("push", {
-                            value,
-                            key: prop,
-                            length: index + 1
-                        })
-                    });
-                }
-                //add setter
-                if (isObject(newValue)) {
-                    const observer = new Observer();
-                    observer.onChange = this.onChange_.bind(this);
-                    observer.create(newValue, null, `${key}.`);
-                }
-            }).watch(`${key}.push`, (newValue, oldValue) => {
-                handleChange("push", oldValue);
-            }).watch(`${key}.splice`, (newValue, oldValue) => {
-                handleChange("splice", oldValue);
-            }).watch(`${key}.update`, (newValue, oldValue) => {
-                handleChange("update", oldValue);
-            })
+            this.watch(key, callBacks[key]).
+                watch(`${key}.push`, callBacks[`${key}.push`]).
+                watch(`${key}.splice`, callBacks[`${key}.splice`]).
+                watch(`${key}.update`, callBacks[`${key}.update`])
         });
         return els;
     }
