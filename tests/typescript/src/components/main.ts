@@ -7,7 +7,9 @@ import IfElse from "./if_else";
 import TextBox from "./text-box";
 import DirectiveComp from "./directive";
 
-@Template(`<Student/>`)
+@Template(`<div>
+<ObjectComponent/>
+</div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
 // </div>`)

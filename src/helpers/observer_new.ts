@@ -11,7 +11,6 @@ export class Observer {
         const onChange = this.onChange;
         if (isArray(input)) {
             keys = keys || ["push", "splice"]
-            const cached = {};
             keys.forEach(key => {
                 cached[key] = this[key];
                 Object.defineProperty(input, key, {
@@ -59,7 +58,40 @@ export class Observer {
             if (isObject(input[key])) {
                 this.create(input[key], null, `${key}.`);
             }
-        })
+        });
+
+        (input as any).__proto__.push = (value, keyToAdd) => {
+            input[keyToAdd] = value;
+            const length = Object.keys(input).length;
+            // this.create(input, [keyToAdd], prefix);
+            // Object.defineProperty(input, keyToAdd, {
+            //     set(newValue) {
+            //         const oldValue = value;
+            //         value = newValue;
+            //         nextTick(() => {
+            //             onChange(keyToAdd, oldValue, newValue);
+            //         })
+            //     },
+            //     get() {
+            //         return value;
+            //     }
+            // })
+            onChange(`${prefix}push`, {
+                value: value,
+                key: keyToAdd,
+                length: length
+            }, null);
+            return length;
+        }
+        // splice
+        (input as any).__proto__.splice = (index, noOfItemToDelete) => {
+            onChange(`${prefix}splice`, [index, noOfItemToDelete], null);
+        }
+        //set
+        (input as any).__proto__.update = (prop, value) => {
+            input[prop] = value;
+            onChange(`${prefix}update`, [prop, value], null);
+        }
     }
 }
 

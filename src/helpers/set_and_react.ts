@@ -15,7 +15,7 @@ export function setAndReact(target, prop, valueToSet) {
 
     if (target[prop]) {
         if (target.hasOwnProperty(prop)) {
-            return target[prop] = valueToSet;
+            target.update(prop, valueToSet);
         }
     } else {
         target.push(valueToSet, prop);

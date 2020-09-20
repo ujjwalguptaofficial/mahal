@@ -3,7 +3,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFilters, globalComponents, globalDirectives } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf } from "../utils";
 import { genericDirective } from "../generics";
 
 let uniqueCounter = 0;
@@ -150,10 +150,10 @@ export abstract class Component {
                 el.parentNode.replaceChild(
                     newEl, el
                 )
-                nextTick(() => {
-                    el = newEl;
-                    handleChange();
-                })
+                // nextTick(() => {
+                el = newEl;
+                handleChange();
+                // })
             };
             keys.forEach(item => {
                 this.watch(item, watchCallBack);
@@ -214,7 +214,7 @@ export abstract class Component {
     private handleForExp_(key, method: Function, id: string) {
         const cmNode = createCommentNode();
         let els = [cmNode];
-        const resolvedValue = this.resolve_(key);
+        let resolvedValue = this.resolve_(key);
         els = els.concat(this.runForExp_(key, resolvedValue, method));
         nextTick(() => {
             const handleChange = (prop, params) => {
@@ -234,16 +234,25 @@ export abstract class Component {
                             parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
                         }
                         break;
-                    default:
-                        var resolvedValue = this.resolve_(key);
-                        var index = Object.keys(resolvedValue).findIndex(function (q) { return q === prop; });
+                    case 'update':
+                        resolvedValue = this.resolve_(key);
+                        const index = indexOf(resolvedValue, params[0]);
                         if (index >= 0) {
-                            var newElement = method(resolvedValue[prop], prop);
+                            var newElement = method(params[1], params[0]);
                             parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
-                        }
+                        };
+                        break;
+                    default:
+                    // var resolvedValue = this.resolve_(key);
+                    // const index = Object.keys(resolvedValue).findIndex(function (q) { return q === prop; });
+                    // if (index >= 0) {
+                    //     var newElement = method(resolvedValue[prop], prop);
+                    //     parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
+                    // }
                 }
             }
             this.watch(key, (newValue, oldValue) => {
+                // value resetted
                 const els = this.runForExp_(key, newValue, method);
                 const parent = cmNode.parentNode;
                 // remove all nodes
@@ -271,10 +280,18 @@ export abstract class Component {
                         })
                     });
                 }
+                //add setter
+                if (isObject(newValue)) {
+                    const observer = new Observer();
+                    observer.onChange = this.onChange_.bind(this);
+                    observer.create(newValue, null, `${key}.`);
+                }
             }).watch(`${key}.push`, (newValue, oldValue) => {
                 handleChange("push", oldValue);
             }).watch(`${key}.splice`, (newValue, oldValue) => {
                 handleChange("splice", oldValue);
+            }).watch(`${key}.update`, (newValue, oldValue) => {
+                handleChange("update", oldValue);
             })
         });
         return els;
