@@ -183,25 +183,19 @@ export function createRenderer(template: string) {
             }
             const ifModified = compiled.view.ifExpModified;
             if (ifModified && ifModified.ifExp) {
-                let keysAsString = "[";
+                let allKeys = [];
                 (() => {
                     const { expStr, keys } = addCtxToExpression(ifModified.ifExp);
-                    keys.forEach((key) => {
-                        keysAsString += `'${key}',`
-                    });
+                    allKeys = allKeys.concat(keys);
                     str += `he(()=>{return ${expStr} ? ${handleTag() + handleOption()}`
                 })();
-
                 ifModified.ifElseList.forEach(item => {
                     const { expStr, keys } = addCtxToExpression(item.view.ifExp.elseIfCond);
-                    keys.forEach((key) => {
-                        keysAsString += `'${key}',`
-                    });
+                    allKeys = allKeys.concat(keys);
                     str += `:${expStr} ? ${createJsEqFromCompiled(item)} `
                 });
 
-                removeCommaFromLast(keysAsString);
-                keysAsString += "]"
+                let keysAsString = convertArrayToString(Array.from(new Set(allKeys)));
                 let elseString;
                 if (ifModified.else) {
                     elseString = createJsEqFromCompiled(ifModified.else);
