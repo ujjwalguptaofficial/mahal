@@ -2,13 +2,13 @@
   "name": "taj",
   "version": "1.0.0",
   "description": "",
-  "main": "build/taj.commonjs2.js",
-  "types": "build/ts/src/index.d.ts",
+  "main": "dist/npm.export.js",
+  "types": "dist/ts/src/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:grammar": "node build_helper/grammar.js",
     "build": "npm run build:grammar && npm run webpack:dev",
-    "build:pack": "npm run build && npm pack",
+    "build:pack": "npm run build && npm run webpack:test && npm pack",
     "build:install": "npm run build:pack && node tests/typescript/installer.js",
     "lint": "tslint src/**/*.ts",
     "test:dev": "karma start test/karma.config.dev.js",
@@ -18,6 +18,7 @@
     "build:prod": "npm run webpack:prod && npm run test:prod",
     "build:ci": "npm run build:dev && npm run build:prod",
     "webpack:dev": "webpack --config webpack/webpack.dev.config.js",
+    "webpack:test": "webpack --config webpack/webpack.test.config.js",
     "webpack:prod": "webpack --config webpack/webpack.prod.config.js",
     "move:deploy_file": "node build_helper/deploy_helper.js",
     "deploy": "npm run build:ci && npm run build:node && npm run move:deploy_file"
@@ -34,6 +35,7 @@
   "homepage": "https://github.com/ujjwalguptaofficial/taj#readme",
   "devDependencies": {
     "@types/node": "^14.6.2",
+    "copy-webpack-plugin": "^6.1.1",
     "js-beautify": "^1.13.0",
     "pegjs": "^0.10.0",
     "prettier": "2.0.5",

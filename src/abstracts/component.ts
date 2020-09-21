@@ -516,10 +516,14 @@ export abstract class Component {
                 const value: IAttrItem = attr[key];
                 if (component.props_[key]) {
                     component[key] = value.v;
-                    this.watch(value.k, (newValue, oldValue) => {
-                        component[key] = newValue;
-                        component.onChange_(key, oldValue, newValue);
-                    });
+                    if (process.env.NODE_ENV != "test") {
+                        console.log("watching props");
+                        this.watch(value.k, (newValue, oldValue) => {
+                            console.log("props value changed");
+                            component[key] = newValue;
+                            component.onChange_(key, oldValue, newValue);
+                        });
+                    }
                 }
                 else {
                     htmlAttributes.push({
@@ -560,7 +564,7 @@ export abstract class Component {
 
     private executeRender_() {
         const renderFn = this.render || createRenderer(this.template);
-        console.log("renderer", renderFn);
+        // console.log("renderer", renderFn);
         this.element = renderFn.call(this,
             this.createElement_.bind(this),
             createTextNode,

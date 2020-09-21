@@ -10,7 +10,7 @@
         "target": "es5",
         "preserveConstEnums": true,
         "declaration": true,
-        "declarationDir": "./build/ts",
+        "declarationDir": "./dist/ts",
         "module": "es6",
         "lib": [
             "es2015",
