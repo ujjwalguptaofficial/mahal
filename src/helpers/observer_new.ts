@@ -1,4 +1,4 @@
-import { isArray, isNull, isPrimitive } from "../utils";
+import { isArray, isNull, isPrimitive, getObjectLength } from "../utils";
 import { nextTick } from "../utils";
 import { isObject } from "util";
 export class Observer {
@@ -56,26 +56,15 @@ export class Observer {
             });
 
             if (isObject(input[key])) {
-                this.create(input[key], null, `${prefix}${key}.`);
+                nextTick(() => {
+                    this.create(input[key], null, `${prefix}${key}.`);
+                })
             }
         });
 
         (input as any).__proto__.push = function (value, keyToAdd) {
             this[keyToAdd] = value;
-            const length = Object.keys(this).length;
-            // this.create(input, [keyToAdd], prefix);
-            // Object.defineProperty(input, keyToAdd, {
-            //     set(newValue) {
-            //         const oldValue = value;
-            //         value = newValue;
-            //         nextTick(() => {
-            //             onChange(keyToAdd, oldValue, newValue);
-            //         })
-            //     },
-            //     get() {
-            //         return value;
-            //     }
-            // })
+            const length = getObjectLength(this);
             onChange(`${prefix}push`, {
                 value: value,
                 key: keyToAdd,
