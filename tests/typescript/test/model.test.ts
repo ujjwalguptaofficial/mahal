@@ -2,7 +2,6 @@ import ModelComponent from "../src/components/model";
 import { app } from "../src/index";
 import { nextTick } from "taj";
 import { expect } from "chai";
-import { createSandbox } from "sinon";
 
 describe('MODEL', function () {
 
