@@ -80,6 +80,16 @@ describe('IfELSE', function () {
         })
     });
 
+    it("set nested value to 0", function (done) {
+        component.set(component.nested.nested1.nested2, 'nested3', 0);
+        nextTick(() => {
+            expect(component.nested.nested1.nested2.nested3).equal(0);
+            const div = component.find('div');
+            expect(div.innerHTML).equal('10');
+            done();
+        })
+    });
+
     it("set state to 20", function (done) {
         component.state = 20;
         nextTick(() => {

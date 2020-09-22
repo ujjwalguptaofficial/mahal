@@ -9,7 +9,7 @@ import DirectiveComp from "./directive";
 import Model from "./model";
 
 @Template(`<div>
-<Model/>
+<IfElse/>
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>

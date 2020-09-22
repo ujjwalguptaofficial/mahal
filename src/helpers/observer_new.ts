@@ -56,13 +56,13 @@ export class Observer {
             });
 
             if (isObject(input[key])) {
-                this.create(input[key], null, `${key}.`);
+                this.create(input[key], null, `${prefix}${key}.`);
             }
         });
 
-        (input as any).__proto__.push = (value, keyToAdd) => {
-            input[keyToAdd] = value;
-            const length = Object.keys(input).length;
+        (input as any).__proto__.push = function (value, keyToAdd) {
+            this[keyToAdd] = value;
+            const length = Object.keys(this).length;
             // this.create(input, [keyToAdd], prefix);
             // Object.defineProperty(input, keyToAdd, {
             //     set(newValue) {
@@ -82,16 +82,16 @@ export class Observer {
                 length: length
             }, null);
             return length;
-        }
+        };
         // splice
-        (input as any).__proto__.splice = (index, noOfItemToDelete) => {
+        (input as any).__proto__.splice = function (index, noOfItemToDelete) {
             onChange(`${prefix}splice`, [index, noOfItemToDelete], null);
-        }
+        };
         //set
-        (input as any).__proto__.update = (prop, value) => {
-            input[prop] = value;
+        (input as any).__proto__.update = function (prop, value) {
+            this[prop] = value;
             onChange(`${prefix}update`, [prop, value], null);
-        }
+        };
     }
 }
 
