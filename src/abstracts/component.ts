@@ -174,7 +174,7 @@ export abstract class Component {
 
     private dependency_: { [key: string]: any[] } = {};
 
-    private observer_;
+    private observer_: Observer;
 
     private attachGetterSetter_() {
         this.observer_ = new Observer();
@@ -555,6 +555,7 @@ export abstract class Component {
         this.storeWatchCb_.forEach(item => {
             this.$store.unwatch(item.key, item.cb)
         });
+        this.observer_.onChange = null;
         this.element = this.events_ =
             this.observer_ =
             this.storeWatchCb_ = null;

@@ -1,9 +1,9 @@
 import { Component, Template, Prop, Filter, Reactive } from "taj";
 
 @Template(`
-<div>
+<div class="task">
 {{task}}
-<button on:click="remove" style="margin-left:5px;">Remove</button>
+<button  style="margin-left:5px;">Remove {{task}}</button>
 </div>
 `)
 

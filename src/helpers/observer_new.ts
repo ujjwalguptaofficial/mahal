@@ -3,7 +3,6 @@ import { nextTick } from "../utils";
 import { isObject } from "util";
 export class Observer {
 
-
     onChange: (key: string, oldValue, newValue) => void
 
     create(input: object, keys?: string[], prefix = "") {
