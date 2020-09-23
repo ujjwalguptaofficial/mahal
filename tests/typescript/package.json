@@ -7,6 +7,7 @@
     "build": "webpack",
     "dev": "webpack-dev-server --config webpack.config.js",
     "install:dev": " npm run install:lib && npm run dev",
+    "install:test": " npm run install:lib && npm run test",
     "start": "npm run dev",
     "test:browser": "cross-env NODE_ENV=test karma start karma.conf.js",
     "test": "cross-env NODE_ENV=test mochapack --require ./test/setup.js --webpack-config webpack.config.test.js \"test/**/*.test.ts\""

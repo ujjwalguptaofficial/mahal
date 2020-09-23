@@ -6,11 +6,6 @@ import { globalFilters, globalComponents, globalDirectives } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf } from "../utils";
 import { genericDirective } from "../generics";
 
-let uniqueCounter = 0;
-function unique() {
-    return ++uniqueCounter;
-}
-
 export abstract class Component {
     children: { [key: string]: typeof Component }
     element: HTMLElement;
@@ -254,9 +249,7 @@ export abstract class Component {
                     }
                     //add setter
                     if (isObject(newValue)) {
-                        const observer = new Observer();
-                        observer.onChange = this.onChange_.bind(this);
-                        observer.create(newValue, null, `${key}.`);
+                        this.observer_.create(newValue, null, `${key}.`);
                     }
                 },
                 [`${key}.push`]: (newValue, oldValue) => {
