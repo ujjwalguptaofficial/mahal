@@ -177,9 +177,13 @@ export abstract class Component {
     private observer_: Observer;
 
     private attachGetterSetter_() {
+        this.reactives_ = this.reactives_ || [];
+        if (this.reactives_.length <= 0) {
+            return;
+        }
         this.observer_ = new Observer();
         this.observer_.onChange = this.onChange_.bind(this);
-        this.observer_.create(this, this.reactives_ || []);
+        this.observer_.create(this, this.reactives_);
     }
 
     private onChange_(key, oldValue, newValue) {
@@ -217,14 +221,8 @@ export abstract class Component {
         let resolvedValue = this.resolve_(key);
         els = els.concat(this.runForExp_(key, resolvedValue, method));
         nextTick(() => {
-            const onElDestroyed = () => {
-                cmNode.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
-                cmNode = null;
-                for (const ev in callBacks) {
-                    this.unwatch(ev, callBacks[ev]);
-                }
-            }
-            const callBacks = {
+
+            let callBacks = {
                 [key]: (newValue, oldValue) => {
                     // value resetted
                     const els = this.runForExp_(key, newValue, method);
@@ -271,6 +269,14 @@ export abstract class Component {
                     handleChange("update", oldValue);
                 }
             }
+            const onElDestroyed = () => {
+                cmNode.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+                cmNode = null;
+                for (const ev in callBacks) {
+                    this.unwatch(ev, callBacks[ev]);
+                }
+                callBacks = null;
+            }
             cmNode.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
             const handleChange = (prop, params) => {
                 var parent = cmNode.parentNode;
@@ -310,18 +316,6 @@ export abstract class Component {
     private resolve_(path) {
         var properties = Array.isArray(path) ? path : path.split(".")
         return properties.reduce((prev, curr) => prev && prev[curr], this)
-    }
-
-    private storeDependency_(key: string, value) {
-        // if (this[key] == null) {
-        //     return;
-        // }
-        if (this.dependency_[key] == null) {
-            this.dependency_[key] = [value];
-        }
-        else if (this.dependency_[key].findIndex(q => q.id === value.id) < 0) {
-            this.dependency_[key].push(value);
-        }
     }
 
     private events_: {
@@ -377,7 +371,7 @@ export abstract class Component {
                                 element.removeEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
                             }
                             element = null;
-                        }.bind(this);
+                        }
                         if (isComponent) {
                             (element as Component).on(LIFECYCLE_EVENT.Destroyed, onDestroyed);
                         }
@@ -449,7 +443,7 @@ export abstract class Component {
             element = component.element = component.executeRender_();
             htmlAttributes.forEach(item => {
                 element.setAttribute(item.key, item.value);
-            })
+            });
         }
         else {
             new LogHelper(ERROR_TYPE.InvalidComponent, {
@@ -545,17 +539,20 @@ export abstract class Component {
             }
         }
         this.handleDirective_(component, option.dir, true);
+        component.on(LIFECYCLE_EVENT.Destroyed, function () {
+            component = null;
+        });
         return htmlAttributes;
     }
 
-    private clearAll_() {
+    private clearAll_ = () => {
         // need to emit before clearing events
         this.emit(LIFECYCLE_EVENT.Destroyed);
-        this.element.removeEventListener(LIFECYCLE_EVENT.Destroyed, this.destroyed.bind(this));
+        this.element.removeEventListener(LIFECYCLE_EVENT.Destroyed, this.clearAll_);
         this.storeWatchCb_.forEach(item => {
             this.$store.unwatch(item.key, item.cb)
         });
-        this.observer_.onChange = null;
+        // this.observer_.onChange = null;
         this.element = this.events_ =
             this.observer_ =
             this.storeWatchCb_ = null;
@@ -588,7 +585,7 @@ export abstract class Component {
                     }
                 }
             }
-            this.element.addEventListener(LIFECYCLE_EVENT.Destroyed, this.clearAll_.bind(this));
+            this.element.addEventListener(LIFECYCLE_EVENT.Destroyed, this.clearAll_);
             this.emit(LIFECYCLE_EVENT.Rendered);
         })
         return this.element;

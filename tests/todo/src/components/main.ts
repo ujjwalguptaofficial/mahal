@@ -13,8 +13,8 @@ import Task from "./task";
 })
 export default class Main extends Component {
 
-    @Reactive
-    tasks = [];
+    // @Reactive
+    tasks = ["ujjwal"];
 
     @Reactive
     newTask = "";

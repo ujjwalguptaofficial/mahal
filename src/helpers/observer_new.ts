@@ -37,7 +37,7 @@ export class Observer {
             return;
         }
         keys = keys || Object.keys(input);
-
+        
         keys.forEach(key => {
             cached[key] = input[key];
             Object.defineProperty(input, key, {
