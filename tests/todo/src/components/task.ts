@@ -9,6 +9,9 @@ import { Component, Template, Prop, Filter, Reactive } from "taj";
 
 export default class extends Component {
 
+    @Reactive
+    temp = "ok"
+
     @Prop(String)
     task: string
 

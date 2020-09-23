@@ -5,7 +5,10 @@ export class Observer {
 
     onChange: (key: string, oldValue, newValue) => void
 
+    inputs = [];
+
     create(input: object, keys?: string[], prefix = "") {
+        this.inputs.push(input);
         const cached = {};
         const onChange = this.onChange;
         if (isArray(input)) {
@@ -37,7 +40,7 @@ export class Observer {
             return;
         }
         keys = keys || Object.keys(input);
-        
+
         keys.forEach(key => {
             cached[key] = input[key];
             Object.defineProperty(input, key, {
@@ -80,6 +83,14 @@ export class Observer {
             this[prop] = value;
             onChange(`${prefix}update`, [prop, value], null);
         };
+    }
+
+    destroy() {
+        this.inputs.forEach(obj => {
+            obj.__proto__.push = null;
+            obj.__proto__.update = null;
+            obj.__proto__.splice = null;
+        });
     }
 }
 
