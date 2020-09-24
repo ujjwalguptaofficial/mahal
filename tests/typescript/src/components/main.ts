@@ -8,12 +8,12 @@ import TextBox from "./text-box";
 import DirectiveComp from "./directive";
 import Model from "./model";
 
-@Template(`<div>
-<IfElse/>
-</div>`)
 // @Template(`<div>
-// <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
+// <IfElse/>
 // </div>`)
+@Template(`<div>
+<HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
+</div>`)
 @Children({
     HelloWorld, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Model

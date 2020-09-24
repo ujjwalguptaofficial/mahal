@@ -81,8 +81,7 @@ export function createRenderer(template: string) {
                             child += `${childCompiled},`;
                         }
                     });
-                    removeCommaFromLast(child);
-                    child += "]";
+                    child = removeCommaFromLast(child) + "]"
                     tagHtml += child;
                 }
                 else {

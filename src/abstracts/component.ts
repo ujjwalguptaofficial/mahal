@@ -3,7 +3,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFilters, globalComponents, globalDirectives } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwnAndNotFn, indexOf } from "../utils";
 import { genericDirective } from "../generics";
 
 export abstract class Component {
@@ -172,13 +172,9 @@ export abstract class Component {
     private observer_: Observer;
 
     private attachGetterSetter_() {
-        this.reactives_ = this.reactives_ || [];
-        if (this.reactives_.length <= 0) {
-            return;
-        }
         this.observer_ = new Observer();
         this.observer_.onChange = this.onChange_.bind(this);
-        this.observer_.create(this, this.reactives_);
+        this.observer_.create(this, this.reactives_ || []);
     }
 
     private onChange_(key, oldValue, newValue) {
@@ -223,9 +219,15 @@ export abstract class Component {
                     const els = this.runForExp_(key, newValue, method);
                     const parent = cmNode.parentNode;
                     // remove all nodes
-                    for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
-                        parent.removeChild(cmNode.nextSibling);
+
+                    // for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
+                    //     parent.removeChild(cmNode.nextSibling);
+                    // }
+                    let nextSibling;
+                    while (nextSibling = cmNode.nextSibling) {
+                        parent.removeChild(nextSibling);
                     }
+
                     // add all node
                     if (isArray(newValue)) {
                         newValue.forEach((item, index) => {
@@ -238,7 +240,7 @@ export abstract class Component {
                     }
                     else {
                         let index = 0;
-                        forOwn(newValue, (prop, value) => {
+                        forOwnAndNotFn(newValue, (prop, value) => {
                             index++;
                             handleChange("push", {
                                 value,
@@ -345,7 +347,7 @@ export abstract class Component {
 
     private handleDirective_(element, dir, isComponent) {
         if (dir) {
-            forOwn(dir, (name, compiledDir) => {
+            forOwnAndNotFn(dir, (name, compiledDir) => {
                 const storedDirective = this.directive_[name] || globalDirectives[name]
                 if (storedDirective != null) {
                     const binding = {
@@ -401,7 +403,7 @@ export abstract class Component {
             }
 
             if (option.attr) {
-                forOwn(option.attr, (key, attrItem) => {
+                forOwnAndNotFn(option.attr, (key, attrItem) => {
                     setAttribute(element, key, attrItem.v);
                     if (attrItem.k != null) {
                         this.watch(attrItem.k, (newValue) => {
@@ -505,7 +507,7 @@ export abstract class Component {
                     component[key] = value.v;
                     if (process.env.NODE_ENV != "test") {
                         console.log("watching props");
-                        this.watch(value.k, (newValue, oldValue) => {
+                        this.watch(key, (newValue, oldValue) => {
                             console.log("props value changed");
                             component[key] = newValue;
                             component.onChange_(key, oldValue, newValue);

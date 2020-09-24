@@ -64,33 +64,42 @@ export class Observer {
             }
         });
 
-        (input as any).__proto__.push = function (value, keyToAdd) {
-            this[keyToAdd] = value;
-            const length = getObjectLength(this);
-            onChange(`${prefix}push`, {
-                value: value,
-                key: keyToAdd,
-                length: length
-            }, null);
-            return length;
-        };
-        // splice
-        (input as any).__proto__.splice = function (index, noOfItemToDelete) {
-            onChange(`${prefix}splice`, [index, noOfItemToDelete], null);
-        };
-        //set
-        (input as any).__proto__.update = function (prop, value) {
-            this[prop] = value;
-            onChange(`${prefix}update`, [prop, value], null);
-        };
+        Object.defineProperty(input, "push", {
+            enumerable: false,
+            value: function (value, keyToAdd) {
+                this[keyToAdd] = value;
+                const length = getObjectLength(this);
+                onChange(`${prefix}push`, {
+                    value: value,
+                    key: keyToAdd,
+                    length: length
+                }, null);
+                return length;
+            }
+        });
+
+        Object.defineProperty(input, "splice", {
+            enumerable: false,
+            value: function (index, noOfItemToDelete) {
+                onChange(`${prefix}splice`, [index, noOfItemToDelete], null);
+            }
+        });
+
+        Object.defineProperty(input, "update", {
+            enumerable: false,
+            value: function (prop, value) {
+                this[prop] = value;
+                onChange(`${prefix}update`, [prop, value], null);
+            }
+        });
     }
 
     destroy() {
-        this.inputs.forEach(obj => {
-            obj.__proto__.push = null;
-            obj.__proto__.update = null;
-            obj.__proto__.splice = null;
-        });
+        // this.inputs.forEach(obj => {
+        //     obj.push = null;
+        //     obj.update = null;
+        //     obj.splice = null;
+        // });
     }
 }
 

@@ -82,5 +82,9 @@ export default class extends Component {
             }
         };
     }
+
+    rendered(){
+        window['comp'] = this;
+    }
 }
 

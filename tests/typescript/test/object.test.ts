@@ -49,6 +49,7 @@ describe('Object', function () {
     });
 
     it("add students using btn", function (done) {
+        console.log("object", component.students, "length", getObjectLength(component.students));
         expect(getObjectLength(component.students)).equal(0);
         const newName = "ujjwal gupta";
         component.find('#name').setValue(newName);
