@@ -3,7 +3,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFilters, globalComponents, globalDirectives } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwnAndNotFn, indexOf } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf } from "../utils";
 import { genericDirective } from "../generics";
 
 export abstract class Component {
@@ -240,7 +240,7 @@ export abstract class Component {
                     }
                     else {
                         let index = 0;
-                        forOwnAndNotFn(newValue, (prop, value) => {
+                        forOwn(newValue, (prop, value) => {
                             index++;
                             handleChange("push", {
                                 value,
@@ -347,7 +347,7 @@ export abstract class Component {
 
     private handleDirective_(element, dir, isComponent) {
         if (dir) {
-            forOwnAndNotFn(dir, (name, compiledDir) => {
+            forOwn(dir, (name, compiledDir) => {
                 const storedDirective = this.directive_[name] || globalDirectives[name]
                 if (storedDirective != null) {
                     const binding = {
@@ -403,7 +403,7 @@ export abstract class Component {
             }
 
             if (option.attr) {
-                forOwnAndNotFn(option.attr, (key, attrItem) => {
+                forOwn(option.attr, (key, attrItem) => {
                     setAttribute(element, key, attrItem.v);
                     if (attrItem.k != null) {
                         this.watch(attrItem.k, (newValue) => {
@@ -414,12 +414,14 @@ export abstract class Component {
             }
 
             if (option.on) {
+                const evListener = {};
                 const events = option.on;
                 for (const eventName in events) {
                     if (events[eventName]) {
-                        element['on' + eventName] = (e) => {
+                        evListener[eventName] = (e) => {
                             events[eventName].call(this, e.target.value);
                         };
+                        element.addEventListener(eventName, evListener[eventName]);
                     }
                     else {
                         new LogHelper(ERROR_TYPE.InvalidEventHandler, {
@@ -427,6 +429,14 @@ export abstract class Component {
                         }).logPlainError();
                     }
                 }
+
+                const onElDestroyed = () => {
+                    element.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+                    for (const ev in evListener) {
+                        element.removeEventListener(ev, evListener[ev]);
+                    }
+                }
+                element.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
             }
 
             this.handleDirective_(element, option.dir, false);

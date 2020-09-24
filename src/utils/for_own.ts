@@ -1,6 +1,6 @@
-export function forOwnAndNotFn(obj: Object, cb: (key, value) => void) {
+export function forOwn(obj: Object, cb: (key, value) => void) {
     for (const key in obj) {
-        if (obj.hasOwnProperty(key) && typeof obj[key] !== "function") {
+        if (obj.hasOwnProperty(key)) {
             cb(key, obj[key])
         }
     }
