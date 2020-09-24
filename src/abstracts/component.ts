@@ -548,7 +548,6 @@ export abstract class Component {
             this.$store.unwatch(item.key, item.cb)
         });
         // this.observer_.onChange = null;
-        this.observer_.destroy();
         this.element = this.events_ =
             this.observer_ =
             this.storeWatchCb_ = null;

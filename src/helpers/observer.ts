@@ -1,23 +1,51 @@
-import { isArray, isNull, isPrimitive } from "../utils";
+import { isArray, getObjectLength } from "../utils";
 import { nextTick } from "../utils";
+import { isObject } from "util";
 export class Observer {
-    input;
 
-    constructor(input) {
-        this.input = input;
-    }
+    onChange: (key: string, oldValue, newValue) => void
 
-    create(onSet: (key: string, oldValue, newValue) => void, onAttach?: (key: string) => void, keys?: any[]) {
-        keys = keys || Object.keys(this.input);
+    create(input: object, keys?: string[], prefix = "") {
         const cached = {};
+        const onChange = this.onChange;
+        if (isArray(input)) {
+            keys = keys || ["push", "splice"]
+            keys.forEach(key => {
+                cached[key] = this[key];
+                Object.defineProperty(input, key, {
+                    value: function (...args) {
+                        let result = Array.prototype[key].apply(this, args);
+                        nextTick(() => {
+                            onChange(prefix + key, (() => {
+                                switch (key) {
+                                    case 'push':
+                                        // return args[0];
+                                        return {
+                                            value: args[0],
+                                            key: result - 1,
+                                            length: result
+                                        }
+                                    default:
+                                        return args;
+                                }
+                            })(), null);
+                        });
+                        return result;
+                    }
+                });
+            })
+            return;
+        }
+        keys = keys || Object.keys(input);
+
         keys.forEach(key => {
-            cached[key] = this.input[key];
-            Object.defineProperty(this.input, key, {
+            cached[key] = input[key];
+            Object.defineProperty(input, key, {
                 set(newValue) {
                     const oldValue = cached[key];
                     cached[key] = newValue;
                     nextTick(() => {
-                        onSet(key, oldValue, newValue);
+                        onChange(prefix + key, oldValue, newValue);
                     })
                 },
                 get() {
@@ -25,66 +53,42 @@ export class Observer {
                 }
 
             });
-            if (onAttach) {
-                onAttach(key);
+
+            if (isObject(input[key])) {
+                nextTick(() => {
+                    this.create(input[key], null, `${prefix}${key}.`);
+                })
             }
-        })
+        });
 
-        this.input.__proto__.push = (value, key) => {
-            this.input[key] = value;
-            const length = Object.keys(this.input).length;
-            Object.defineProperty(this.input, key, {
-                set(newValue) {
-                    const oldValue = value;
-                    value = newValue;
-                    nextTick(() => {
-                        onSet(key, oldValue, newValue);
-                    })
-                },
-                get() {
-                    return value;
-                }
-            })
-            onSet("push", {
-                value: value,
-                key: key,
-                length: length
-            }, null);
-            return length;
-        }
-        // splice
-        this.input.__proto__.splice = (index, noOfItemToDelete) => {
-            onSet("splice", [index, noOfItemToDelete], null);
-        }
+        Object.defineProperty(input, "push", {
+            enumerable: false,
+            value: function (value, keyToAdd) {
+                this[keyToAdd] = value;
+                const length = getObjectLength(this);
+                onChange(`${prefix}push`, {
+                    value: value,
+                    key: keyToAdd,
+                    length: length
+                }, null);
+                return length;
+            }
+        });
 
-    }
+        Object.defineProperty(input, "splice", {
+            enumerable: false,
+            value: function (index, noOfItemToDelete) {
+                onChange(`${prefix}splice`, [index, noOfItemToDelete], null);
+            }
+        });
 
-    createForArray(onSet: (arrayProp, payload) => void, keys?: any[]) {
-        keys = keys || ["push", "splice"]
-        const cached = {};
-        keys.forEach(key => {
-            cached[key] = this[key];
-            Object.defineProperty(this.input, key, {
-                value: function (...args) {
-                    let result = Array.prototype[key].apply(this, args);
-                    nextTick(() => {
-                        onSet(key, (() => {
-                            switch (key) {
-                                case 'push':
-                                    // return args[0];
-                                    return {
-                                        value: args[0],
-                                        key: result - 1,
-                                        length: result
-                                    }
-                                default:
-                                    return args;
-                            }
-                        })());
-                    });
-                    return result;
-                }
-            });
-        })
+        Object.defineProperty(input, "update", {
+            enumerable: false,
+            value: function (prop, value) {
+                this[prop] = value;
+                onChange(`${prefix}update`, [prop, value], null);
+            }
+        });
     }
 }
+
