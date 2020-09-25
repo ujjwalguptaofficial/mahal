@@ -101,7 +101,18 @@ export function createRenderer(template: string) {
                     // const identifierRegex = /\b(?!(?:false\b))([\w]+)/g
                     const identifierRegex = /\b(?!(?:false|true\b))([a-zA-Z]+)/g
                     compiled.view.events.forEach((ev, index) => {
-                        eventStr += `${ev.name}:${ev.handler.replace(identifierRegex, 'ctx.$1')}`;
+                        let handlerStr = "[";
+                        ev.handlers.forEach(item => {
+                            handlerStr += item.replace(identifierRegex, 'ctx.$1') + ",";
+                        });
+                        handlerStr = removeCommaFromLast(handlerStr) + "]";
+                        eventStr += `${ev.name}: {
+                            handlers: ${handlerStr},
+                            isNative: ${ev.isNative},
+                            option: ${JSON.stringify(ev.option)},
+                            modifiers: ${convertArrayToString(ev.modifiers)}
+                        }`
+                        
                         if (index + 1 < eventLength) {
                             eventStr += ","
                         }
@@ -239,6 +250,6 @@ export function createRenderer(template: string) {
     }
     parentStr += `return ${createJsEqFromCompiled(compiledParent)}`;
     parentStr = beautify(parentStr, { indent_size: 4, space_in_empty_paren: true })
-    // console.log("parentstr", parentStr);
+    console.log("parentstr", parentStr);
     return new Function('ce', 'ct', 'f', 'he', 'hForE', parentStr);
 }

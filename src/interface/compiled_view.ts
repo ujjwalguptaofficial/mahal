@@ -27,7 +27,10 @@ export interface ICompiledView {
         html: string,
         events: {
             name: string;
-            handler: string;
+            handlers: string[];
+            option: object,
+            isNative: boolean,
+            modifiers: string[]
         }[],
         dir: {
             [name: string]: IExpression[][]

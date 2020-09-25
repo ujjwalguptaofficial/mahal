@@ -122,8 +122,39 @@ Filter "filter" = _* "|" _* val:Identifier {
   return val;
 }
 
-Event "event syntax" = "on:" event:Identifier "=" StringSymbol handler:EventAssignment StringSymbol+ {
-	return {event: {name:event, handler:handler}};
+Event "event syntax" = "on:" event:Identifier modifier:EventModifier* "=" handlers:EventHandlers {
+	 let isNative=false;
+     const option = {};
+     const modifierFiltered = [];
+     modifier.forEach(item=>{
+       if(["capture","once","passive"].includes(item)){
+         option[item]=true
+       }
+       else if(item==="native"){
+         isNative=true
+       }
+       else {
+         modifierFiltered.push(item)
+       }
+     });
+    return {event: {name:event, handlers,option, isNative,modifiers:modifierFiltered }};
+}
+
+EventHandlers = ev1:EventHandler evRest:EventHandlerWithPipe*{
+   evRest.unshift(ev1);
+   return evRest;
+}
+
+EventHandlerWithPipe = _* "|" _* ev: EventHandler{
+  return ev;
+}
+
+EventHandler = StringSymbol handler:EventAssignment StringSymbol {
+  return handler
+}
+
+EventModifier "event modifier" = "."  value:Identifier {
+  return value;
 }
 
 Expression = ExpressionWithConnector*

@@ -25,4 +25,8 @@ export default class extends Component {
     destroyed() {
         console.log("destroyed");
     }
+
+    rendered() {
+        console.log("index", this.index);
+    }
 }

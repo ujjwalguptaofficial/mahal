@@ -3,7 +3,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFilters, globalComponents, globalDirectives } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist } from "../utils";
 import { genericDirective } from "../generics";
 
 export abstract class Component {
@@ -417,17 +417,51 @@ export abstract class Component {
                 const evListener = {};
                 const events = option.on;
                 for (const eventName in events) {
-                    if (events[eventName]) {
-                        evListener[eventName] = (e) => {
-                            events[eventName].call(this, e.target.value);
-                        };
-                        element.addEventListener(eventName, evListener[eventName]);
+                    const ev = events[eventName];
+                    const methods = [];
+                    ev.modifiers.forEach(item => {
+                        switch (item) {
+                            case 'prevent':
+                                methods.push((e) => {
+                                    e.preventDefault();
+                                    return e;
+                                }); break;
+                            case 'stop':
+                                methods.push((e) => {
+                                    e.stopPropagation();
+                                    return e;
+                                }); break;
+                        }
+                    });
+                    ev.handlers.forEach(item => {
+                        if (item != null) {
+                            methods.push(item);
+                        }
+                        else {
+                            new LogHelper(ERROR_TYPE.InvalidEventHandler, {
+                                eventName,
+                            }).logPlainError();
+                        }
+                    })
+                    if (eventName === "input" && ev.isNative === false) {
+                        ev.handlers.push((e) => {
+                            return e.target.value;
+                        })
                     }
-                    else {
-                        new LogHelper(ERROR_TYPE.InvalidEventHandler, {
-                            eventName,
-                        }).logPlainError();
-                    }
+                    evListener[eventName] = (e) => {
+                        methods.reduce((p, method) => {
+                            return p.then((result) => method.call(this, result));
+                        }, Promise.resolve(e));
+                    };
+
+                    (element as HTMLDivElement).addEventListener(
+                        eventName, evListener[eventName],
+                        {
+                            capture: isKeyExist(ev.option, 'capture'),
+                            once: isKeyExist(ev.option, 'once'),
+                            passive: isKeyExist(ev.option, 'passive'),
+                        }
+                    );
                 }
 
                 const onElDestroyed = () => {
@@ -535,8 +569,24 @@ export abstract class Component {
         if (option.on) {
             const events = option.on;
             for (const eventName in events) {
+                const ev = events[eventName];
+                const methods = [];
+                ev.handlers.forEach(item => {
+                    if (item != null) {
+                        methods.push(item.bind(this));
+                    }
+                    else {
+                        new LogHelper(ERROR_TYPE.InvalidEventHandler, {
+                            eventName,
+                        }).logPlainError();
+                    }
+                })
                 if (events[eventName]) {
-                    component.on(eventName, events[eventName].bind(this));
+                    component.on(eventName, (args) => {
+                        return methods.reduce((p, method) => {
+                            return p.then((res) => method(res));
+                        }, Promise.resolve(args));
+                    });
                 }
                 else {
                     throw `Invalid event handler for event ${eventName}, Handler does not exist`;
