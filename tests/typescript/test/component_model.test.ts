@@ -21,10 +21,13 @@ describe('Component MODEL', function () {
         })
     });
 
-    it("from element to component", function () {
+    it("from element to component", function (done) {
         const input = component.find('input');
         input.setValue("random");
-        expect(component.text).equal('random');
+        nextTick(() => {
+            expect(component.text).equal('random');
+            done();
+        })
     });
 
     it("from component to element once again", function (done) {

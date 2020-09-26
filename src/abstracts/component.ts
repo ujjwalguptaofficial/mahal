@@ -444,15 +444,19 @@ export abstract class Component {
                         }
                     })
                     if (eventName === "input" && ev.isNative === false) {
-                        ev.handlers.push((e) => {
+                        methods.unshift((e) => {
                             return e.target.value;
                         })
                     }
-                    evListener[eventName] = (e) => {
-                        methods.reduce((p, method) => {
-                            return p.then((result) => method.call(this, result));
-                        }, Promise.resolve(e));
-                    };
+                    evListener[eventName] = methods.length > 1 ?
+                        (e) => {
+                            methods.reduce((p, method) => {
+                                return p.then((result) => method.call(this, result));
+                            }, Promise.resolve(e));
+                        } :
+                        (e) => {
+                            methods[0].call(this, e);
+                        };
 
                     (element as HTMLDivElement).addEventListener(
                         eventName, evListener[eventName],
@@ -551,7 +555,7 @@ export abstract class Component {
                     component[key] = value.v;
                     if (process.env.NODE_ENV != "test") {
                         console.log("watching props");
-                        this.watch(key, (newValue, oldValue) => {
+                        this.watch(value.k, (newValue, oldValue) => {
                             console.log("props value changed");
                             component[key] = newValue;
                             component.onChange_(key, oldValue, newValue);
@@ -581,16 +585,11 @@ export abstract class Component {
                         }).logPlainError();
                     }
                 })
-                if (events[eventName]) {
-                    component.on(eventName, (args) => {
-                        return methods.reduce((p, method) => {
-                            return p.then((res) => method(res));
-                        }, Promise.resolve(args));
-                    });
-                }
-                else {
-                    throw `Invalid event handler for event ${eventName}, Handler does not exist`;
-                }
+                component.on(eventName, (args) => {
+                    return methods.reduce((p, method) => {
+                        return p.then((res) => method(res));
+                    }, Promise.resolve(args));
+                });
             }
         }
         this.handleDirective_(component, option.dir, true);

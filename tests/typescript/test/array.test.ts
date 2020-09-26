@@ -54,10 +54,11 @@ describe('Array', function () {
         component.find('#name').setValue(newName);
         expect(component.name).equal(newName);
         component.find("#btnAdd").click();
-        expect(component.students).length(1);
-        expect(component.students[0].name).equal(newName);
         nextTick(() => {
+            expect(component.students).length(1);
+            expect(component.students[0].name).equal(newName);
             expect(component.find("#name").value).equal('');
+            console.log("html", component.element);
             expect(component.findAll(".tr-list")).length(1);
             done();
         })

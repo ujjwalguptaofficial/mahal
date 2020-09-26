@@ -68,5 +68,9 @@ export default class extends Component {
         this.students.splice(index, 1);
     }
 
+    rendered() {
+        window["comp"] = this;
+    }
+
 }
 

@@ -1,4 +1,5 @@
 import { Component, Template, Children, Reactive } from "taj";
+import ModelComponent from "./component_model";
 
 import HelloWorld from "./hello_world";
 import Student from "./array";
@@ -8,14 +9,14 @@ import TextBox from "./text-box";
 import DirectiveComp from "./directive";
 import Model from "./model";
 
-// @Template(`<div>
-// <IfElse/>
-// </div>`)
 @Template(`<div>
-<HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
+<ModelComponent/>
 </div>`)
+// @Template(`<div>
+// <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
+// </div>`)
 @Children({
-    HelloWorld, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
+    HelloWorld, ModelComponent,Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Model
 })
 export default class Main extends Component {
