@@ -1,6 +1,6 @@
 import { createRenderer } from "../compiler";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode } from "../helpers";
+import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode, runPromisesInSequence } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFilters, globalComponents, globalDirectives } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist } from "../utils";
@@ -435,7 +435,7 @@ export abstract class Component {
                     });
                     ev.handlers.forEach(item => {
                         if (item != null) {
-                            methods.push(item);
+                            methods.push(item.bind(this));
                         }
                         else {
                             new LogHelper(ERROR_TYPE.InvalidEventHandler, {
@@ -450,9 +450,7 @@ export abstract class Component {
                     }
                     evListener[eventName] = methods.length > 1 ?
                         (e) => {
-                            methods.reduce((p, method) => {
-                                return p.then((result) => method.call(this, result));
-                            }, Promise.resolve(e));
+                            runPromisesInSequence(methods, e);
                         } :
                         (e) => {
                             methods[0].call(this, e);
@@ -586,9 +584,7 @@ export abstract class Component {
                     }
                 })
                 component.on(eventName, (args) => {
-                    return methods.reduce((p, method) => {
-                        return p.then((res) => method(res));
-                    }, Promise.resolve(args));
+                    runPromisesInSequence(methods, args);
                 });
             }
         }
