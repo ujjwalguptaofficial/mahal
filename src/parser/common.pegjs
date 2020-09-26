@@ -140,7 +140,11 @@ Event "event syntax" = "on:" event:Identifier modifier:EventModifier* "=" handle
     return {event: {name:event, handlers,option, isNative,modifiers:modifierFiltered }};
 }
 
-EventHandlers = ev1:EventHandler evRest:EventHandlerWithPipe*{
+EventHandlers = ev:(EventHandler/EventHandlersChanined){
+  return Array.isArray(ev)? ev: [ev]
+}
+
+EventHandlersChanined = "{" _* ev1:EventHandler evRest:EventHandlerWithPipe* _* "}" {
    evRest.unshift(ev1);
    return evRest;
 }
