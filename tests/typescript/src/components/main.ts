@@ -8,16 +8,17 @@ import IfElse from "./if_else";
 import TextBox from "./text-box";
 import DirectiveComp from "./directive";
 import Model from "./model";
+import Form from "./form";
 
 @Template(`<div>
-<ModelComponent/>
+<Form/>
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
 // </div>`)
 @Children({
-    HelloWorld, ModelComponent,Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
-    Model
+    HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
+    Model, Form
 })
 export default class Main extends Component {
     @Reactive
