@@ -173,7 +173,9 @@ SingleExpression = _* left:ExpWord _* op:Operator? _* right:ExpWord? _* {
   }
 }
 
-Connector = val:[&\|]+ {
+SingleObjExpression = ""
+
+Connector = val:[&\|\:]+ {
   return val.join("");
 }
 
@@ -181,7 +183,7 @@ Operator = val:[>\=\<\!]+ {
   return val.join("");
 }
 
-ExpWord "expression" = val:[a-zA-Z0-9\.\$\-\'\"]+ {
+ExpWord "expression" = val:[a-zA-Z0-9\.\$\-\'\"\{\}]+ {
 	return val.join("");
 }
 

@@ -11,7 +11,7 @@ import Model from "./model";
 import Form from "./form";
 
 @Template(`<div>
-<Form/>
+<IfElse/>
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
