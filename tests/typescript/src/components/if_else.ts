@@ -1,7 +1,7 @@
 import { Component, Template, Prop, Filter, Reactive } from "taj";
 
 @Template(`
-<div #addClass({'state-0':state===0,'state-1':state===0})>
+<div #addClass({'state-0':state===0,'state-1':state===1,'state-gt-10':state>10})>
    <div #if(state==0)>0th{{state}}</div>
    <div #else-if(state==1)>1st{{state}}</div>
    <div #else-if(state===2)>{{state | dollar}}</div>

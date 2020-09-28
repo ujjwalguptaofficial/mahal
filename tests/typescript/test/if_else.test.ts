@@ -14,6 +14,7 @@ describe('IfELSE', function () {
     it("check initial state", function () {
         const div = component.findAll('div');
         expect(div).length(1);
+        expect(div[0].classList).length(0);
         expect(div[0].innerHTML).equal('undefined');
     });
 
@@ -22,6 +23,8 @@ describe('IfELSE', function () {
         nextTick(() => {
             const div = component.find('div');
             expect(div.innerHTML).equal('0th0');
+            expect(component.element.classList).length(1);
+            expect(component.element.className).equal('state-0');
             done();
         })
     });
@@ -31,6 +34,8 @@ describe('IfELSE', function () {
         nextTick(() => {
             const div = component.find('div');
             expect(div.innerHTML).equal('1st1');
+            expect(component.element.classList).length(1);
+            expect(component.element.className).equal('state-1');
             done();
         })
     });
@@ -86,6 +91,8 @@ describe('IfELSE', function () {
             expect(component.nested.nested1.nested2.nested3).equal(0);
             const div = component.find('div');
             expect(div.innerHTML).equal('10');
+            // expect(component.element.classList).length(1);
+            // expect(component.element.className).equal('nested-3');
             done();
         })
     });
@@ -95,6 +102,8 @@ describe('IfELSE', function () {
         nextTick(() => {
             const div = component.find('div');
             expect(div.innerHTML).equal('20');
+            expect(component.element.classList).length(1);
+            expect(component.element.className).equal('state-gt-10');
             done();
         })
     });

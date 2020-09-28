@@ -161,7 +161,24 @@ EventModifier "event modifier" = "."  value:Identifier {
   return value;
 }
 
-Expression = ExpressionWithConnector*
+Expression = ObjectExpression/(ExpressionWithConnector)*
+
+ObjectExpression = "{" exp:ExpressionWithConnector* expRest:ObjectExpressionRest* "}" {
+   expRest.forEach(item=>{
+     exp = exp.concat(item)
+   });
+   const lastIndex = exp.length -1;
+   exp[0].exp.left = '{' + exp[0].exp.left;
+   const lastRight = exp[lastIndex].exp.right;
+   exp[lastIndex].exp.right =   (lastRight==null?'':lastRight) + '}';
+   //console.log("exp",exp);
+   return exp;
+}
+
+ObjectExpressionRest = "," exp:ExpressionWithConnector* {
+  exp[0].exp.left= "," + exp[0].exp.left;
+  return exp;
+}
 
 ExpressionWithConnector = exp:SingleExpression op:Connector? {
  return {exp,op}
@@ -173,8 +190,6 @@ SingleExpression = _* left:ExpWord _* op:Operator? _* right:ExpWord? _* {
   }
 }
 
-SingleObjExpression = ""
-
 Connector = val:[&\|\:]+ {
   return val.join("");
 }
@@ -183,7 +198,7 @@ Operator = val:[>\=\<\!]+ {
   return val.join("");
 }
 
-ExpWord "expression" = val:[a-zA-Z0-9\.\$\-\'\"\{\}]+ {
+ExpWord "expression" = val:[a-zA-Z0-9\.\$\-\'\"]+ {
 	return val.join("");
 }
 

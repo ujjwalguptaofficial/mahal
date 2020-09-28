@@ -15,7 +15,7 @@ export function classDirective(el: HTMLElement, binding: IDirectiveBinding) {
                 const classes = binding.value;
                 for (const name in classes) {
                     if (classes[name]) {
-                        el.classList.add(classes[name]);
+                        el.classList.add(name);
                     }
                 }
             }
@@ -30,7 +30,7 @@ export function classDirective(el: HTMLElement, binding: IDirectiveBinding) {
             if (isValueObject) {
                 const classes = binding.value;
                 for (const name in classes) {
-                    el.classList.remove(classes[name]);
+                    el.classList.remove(name);
                 }
             }
             addClass();
