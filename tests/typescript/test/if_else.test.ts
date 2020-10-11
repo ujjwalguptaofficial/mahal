@@ -25,6 +25,9 @@ describe('IfELSE', function () {
             expect(div.innerHTML).equal('0th0');
             expect(component.element.classList).length(1);
             expect(component.element.className).equal('state-0');
+            expect(component.element.getAttribute('stateattr')).equal('0');
+            expect(div.classList).length(2);
+            expect(div.className).equal('state--0 state--01');
             done();
         })
     });
