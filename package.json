@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/npm.export.js",
-  "types": "dist/ts/src/index.d.ts",
+  "types": "dist/ts/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "install:compiler": "node build_helper/compiler_installer.js",
@@ -13,7 +13,7 @@
     "lint": "tslint src/**/*.ts",
     "test:general": "cd tests/typescript && npm run install:test",
     "test:todo": "cd tests/todo && npm run install:test",
-    "test:dev": "npm run build && npm run test:general && npm run test:todo",
+    "test:dev": "npm run build && npm run test:general",
     "test:prod": "karma start test/karma.config.prod.js",
     "build:dev": "npm run lint && npm run build && npm run test:dev",
     "build:node": "webpack --config webpack/webpack.node.config.js",

@@ -1,7 +1,9 @@
 const { readFileSync } = require('fs');
 const { execSync } = require('child_process');
+const path = require('path');
 
-const folderLocation = "../taj-html-compiler";
+const folderLocation = path.join(__dirname, "../../taj-html-compiler");
+console.log("folderLocation", folderLocation);
 const content = readFileSync(`${folderLocation}/package.json`);
 
 const packageInfo = JSON.parse(content);
