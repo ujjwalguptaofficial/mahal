@@ -15,7 +15,7 @@
 * Events from child to parent - done (test added)
 * model - Done (test added)
 * Attributes - done
-* Dynamic class 
+* Dynamic class - done (test added)
 * Dom Reference - done (test added) using find
 * Watch - Done
 * Router
