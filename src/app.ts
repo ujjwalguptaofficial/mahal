@@ -1,7 +1,7 @@
 import { Component } from "./abstracts";
 import { globalFormatter, globalComponents, plugins, globalDirectives } from "./constant";
 import { defaultExport } from "./default";
-import { LogHelper, getFromWindow, isString } from "./utils";
+import { LogHelper, isString } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 
 const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroyed);
@@ -29,7 +29,6 @@ export class App {
             mutations.forEach(mutation => {
                 if (mutation.removedNodes) {
                     mutation.removedNodes.forEach(removedNode => {
-                        // removedNode.dispatchEvent(destroyedEvent);
                         dispatchDestroyed(removedNode);
                     });
                 }
