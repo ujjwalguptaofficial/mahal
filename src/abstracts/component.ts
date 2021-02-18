@@ -14,10 +14,6 @@ export abstract class Component {
 
     constructor() {
         nextTick(() => {
-            this.on(LIFECYCLE_EVENT.Rendered, this.rendered.bind(this));
-            this.on(LIFECYCLE_EVENT.Created, this.created.bind(this));
-            this.on(LIFECYCLE_EVENT.Destroyed, this.destroyed.bind(this));
-
             this.attachGetterSetter_();
             this.emit(LIFECYCLE_EVENT.Created);
         })
@@ -501,15 +497,6 @@ export abstract class Component {
 
     findAll(selector: string) {
         return this.element.querySelectorAll(selector);
-    }
-
-    rendered() {
-    }
-
-    created() {
-    }
-
-    destroyed() {
     }
 
     filter(name: string, value) {
