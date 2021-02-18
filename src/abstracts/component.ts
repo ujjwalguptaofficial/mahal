@@ -2,7 +2,7 @@ import { createRenderer } from "taj-html-compiler";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode, runPromisesInSequence } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
-import { globalFilters, globalComponents, globalDirectives, defaultSlotName } from "../constant";
+import { globalFormatter, globalComponents, globalDirectives, defaultSlotName } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist, getDataype, EventBus } from "../utils";
 import { genericDirective } from "../generics";
 
@@ -20,8 +20,8 @@ export abstract class Component {
         if (isNull(this.children)) {
             this.children = {};
         }
-        if (isNull(this.filters_)) {
-            this.filters_ = {};
+        if (isNull(this.formatters_)) {
+            this.formatters_ = {};
         }
         if (isNull(this.directive_)) {
             this.directive_ = {};
@@ -91,15 +91,15 @@ export abstract class Component {
         return this.element.querySelectorAll(selector);
     }
 
-    filter(name: string, value) {
-        if (globalFilters[name]) {
-            return globalFilters[name](value);
+    format(formatterName: string, value) {
+        if (globalFormatter[formatterName]) {
+            return globalFormatter[formatterName](value);
         }
-        else if (this.filters_[name]) {
-            return this.filters_[name](value);
+        else if (this.formatters_[formatterName]) {
+            return this.formatters_[formatterName](value);
         }
-        new LogHelper(ERROR_TYPE.InvalidFilter, {
-            filter: name
+        new LogHelper(ERROR_TYPE.InvalidFormatter, {
+            formatter: formatterName
         }).throwPlain();
     }
 
@@ -605,7 +605,7 @@ export abstract class Component {
         this.element = renderFn.call(this,
             this.createElement_.bind(this),
             createTextNode,
-            this.filter.bind(this),
+            this.format.bind(this),
             this.handleExp_.bind(this),
             this.handleForExp_.bind(this)
         );
@@ -632,7 +632,7 @@ export abstract class Component {
 
     private directive_;
 
-    private filters_;
+    private formatters_;
     private props_;
     private reactives_;
 

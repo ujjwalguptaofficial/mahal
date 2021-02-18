@@ -4,6 +4,6 @@ export enum ERROR_TYPE {
     ForExpAsRoot = "for_exp_as_root",
     ForOnPrimitiveOrNull = "for_on_primitive|null",
     InvalidEventHandler = "invalid_event_handler",
-    InvalidFilter = "invalid_filter",
+    InvalidFormatter = "invalid_formatter",
     PropDataTypeMismatch = "prop_data_type_mismatch"
 }

@@ -1,4 +1,4 @@
-import { Component, Template, Prop, Filter, Reactive } from "taj";
+import { Component, Template, Reactive } from "taj";
 
 @Template(`
 <div>
@@ -11,7 +11,7 @@ export default class extends Component {
     @Reactive
     text;
 
-    rendered(){
+    rendered() {
         window["comp"] = this;
     }
 }

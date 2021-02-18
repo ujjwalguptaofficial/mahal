@@ -64,8 +64,8 @@ export class LogHelper implements IError {
                 return `Invalid event handler for event "${this.info_.eventName}", Handler does not exist in component.`
             case ERROR_TYPE.InvalidComponent:
                 return `Component "${this.info_.tag}" is not registered. Make sure you have registered component either in parent component or globally.`;
-            case ERROR_TYPE.InvalidFilter:
-                return `Can not find Filter "${this.info_.filter}". Make sure you have registered filter either in component or globally.`;
+            case ERROR_TYPE.InvalidFormatter:
+                return `Can not find Formatter "${this.info_.formatter}". Make sure you have registered formatter either in component or globally.`;
             default:
                 return this.message;
                 break;

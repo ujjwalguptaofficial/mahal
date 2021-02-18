@@ -1,5 +1,5 @@
 import { Component } from "./abstracts";
-import { globalFilters, globalComponents, plugins, globalDirectives } from "./constant";
+import { globalFormatter, globalComponents, plugins, globalDirectives } from "./constant";
 import { defaultExport } from "./default";
 import { LogHelper, getFromWindow, isString } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
@@ -47,24 +47,21 @@ export class App {
         return componentInstance;
     }
 
-    static addPlugin(plugin, options) {
-        const pluginInstane = new plugin();
-        pluginInstane.setup(defaultExport, options);
-        plugins.push(plugin);
+    static extend = {
+        plugin(plugin, options) {
+            const pluginInstane = new plugin();
+            pluginInstane.setup(defaultExport, options);
+            plugins.push(plugin);
+        },
+        component(name, component) {
+            globalComponents[name] = component;
+        },
+        formatter(name: string, cb) {
+            globalFormatter[name] = cb;
+        },
+        directive(name: string, directive) {
+            globalDirectives[name] = directive;
+        }
     }
-
-    static addComponent(name, component) {
-        globalComponents[name] = component;
-    }
-
-    static addFilter(name: string, cb) {
-        globalFilters[name] = cb;
-    }
-
-    static addDirective(name: string, directive) {
-        globalDirectives[name] = directive;
-    }
-
-
 
 }

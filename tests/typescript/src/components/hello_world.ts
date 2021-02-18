@@ -1,4 +1,4 @@
-import { Component, Template, Prop, Filter, Reactive } from "taj";
+import { Component, Template, Prop, Formatter, Reactive } from "taj";
 
 @Template(`
 <div>
@@ -51,7 +51,7 @@ export default class HelloWorld extends BaseComponent {
         this.emit("click");
     }
 
-    @Filter("toUpper")
+    @Formatter("toUpper")
     upperCase(value: string) {
         return value.toUpperCase();
     }

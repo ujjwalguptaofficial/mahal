@@ -7,9 +7,9 @@ export * from "./decorators"
 export * from "./utils";
 export * from "./app";
 
-App.addDirective("model", modelDirective);
-App.addDirective("show", showDirective);
-App.addDirective("addClass", classDirective);
+App.extend.directive("model", modelDirective);
+App.extend.directive("show", showDirective);
+App.extend.directive("addClass", classDirective);
 
 export default defaultExport;
 

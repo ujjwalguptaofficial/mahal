@@ -1,4 +1,4 @@
-import { Component, Template, Prop, Filter, Reactive, Children } from "taj";
+import { Component, Template, Prop, Children } from "taj";
 import User from "./user";
 
 @Template(`

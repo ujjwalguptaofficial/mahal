@@ -1,4 +1,4 @@
-import { Component, Template, Prop, Filter, Reactive } from "taj";
+import { Component, Template, Prop, Formatter, Reactive } from "taj";
 
 @Template(`
 <div :stateAttr="state" #addClass({'state-0':state===0,'state-1':state===1,'state-gt-10':state>10,'nested-3':nested.nested1.nested2.nested3==0})>

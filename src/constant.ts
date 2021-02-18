@@ -1,6 +1,6 @@
 import { getFromWindow } from "./utils";
 
-export const globalFilters = {
+export const globalFormatter = {
     toS: function (value) {
         switch (typeof value) {
             case 'string':
