@@ -3,7 +3,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode, runPromisesInSequence } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFilters, globalComponents, globalDirectives, defaultSlotName } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist, getDataype } from "../utils";
 import { genericDirective } from "../generics";
 
 export abstract class Component {
@@ -29,6 +29,7 @@ export abstract class Component {
         if (isNull(this.props_)) {
             this.props_ = {};
         }
+        console.log("file name", __filename);
     }
 
     destroy() {
@@ -102,33 +103,6 @@ export abstract class Component {
                         for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
                             parent.removeChild(ref.nextSibling);
                         }
-
-                        // if (isArray(resolvedValue)) {
-                        //     new Observer(resolvedValue).createForArray((arrayProp, params) => {
-                        //         this.onObjModified_(key, arrayProp, params);
-                        //     })
-                        //     resolvedValue.forEach((value, index) => {
-                        //         this.onObjModified_(key, "push", {
-                        //             value: value,
-                        //             key: index,
-                        //             length: index + 1
-                        //         })
-                        //     })
-                        // }
-                        // else {
-                        //     new Observer(resolvedValue).create((objectProp, oldValue, newValue) => {
-                        //         this.onObjModified_(key, objectProp, oldValue);
-                        //     })
-                        //     let index = 0;
-                        //     forOwn(resolvedValue, (prop, name) => {
-                        //         index++;
-                        //         this.onObjModified_(key, "push", {
-                        //             value: resolvedValue[prop],
-                        //             key: prop,
-                        //             length: index + 1
-                        //         })
-                        //     });
-                        // }
                     }
             }
         });
@@ -504,8 +478,8 @@ export abstract class Component {
                         targetSlot.parentElement.removeChild(targetSlot);
                     }
                 }
-            })
-            htmlAttributes.forEach(item => {
+            });
+            (htmlAttributes || []).forEach(item => {
                 element.setAttribute(item.key, item.value);
             });
         }
@@ -564,14 +538,34 @@ export abstract class Component {
             for (const key in attr) {
                 const value: IAttrItem = attr[key];
                 if (component.props_[key]) {
-                    component[key] = value.v;
-                    if (process.env.NODE_ENV != "test") {
-                        console.log("watching props");
-                        this.watch(value.k, (newValue, oldValue) => {
-                            console.log("props value changed");
-                            component[key] = newValue;
-                            component.onChange_(key, oldValue, newValue);
-                        });
+                    const setPropValue = () => {
+                        component[key] = value.v;
+                        if (process.env.NODE_ENV != "test") {
+                            this.watch(value.k, (newValue, oldValue) => {
+                                component[key] = newValue;
+                                component.onChange_(key, oldValue, newValue);
+                            });
+                        }
+                    }
+                    if (component.props_[key].type) {
+                        const expected = component.props_[key].type;
+                        const received = getDataype(value.v);
+                        if (expected === received) {
+                            setPropValue();
+                        }
+                        else {
+                            new LogHelper(ERROR_TYPE.PropDataTypeMismatch,
+                                {
+                                    prop: key,
+                                    exp: expected,
+                                    got: received,
+                                    template: this.template,
+                                    file: this.file_
+                                }).throwPlain();
+                        }
+                    }
+                    else {
+                        setPropValue();
                     }
                 }
                 else {
@@ -669,5 +663,5 @@ export abstract class Component {
 
     private storeGetters_: { prop: string, state: string }[];
 
-
+    private file_;
 }

@@ -42,31 +42,34 @@ export class LogHelper implements IError {
     }
 
     private getMsg_() {
-        let errMsg: string;
         switch (this.type) {
+            case ERROR_TYPE.PropDataTypeMismatch:
+                let str = `Expected Data type of property ${this.info_.prop} is ${this.info_.exp} but received ${this.info_.got},`;
+                if (this.info_.template) {
+                    str += `in template - 
+                    ${this.info_.template} 
+                    `
+                }
+                if (this.info_.file) {
+                    str += `in file - ${this.info_.file} `
+                }
+                return str;
             case ERROR_TYPE.SynTaxError:
-                errMsg = this.info_;
-                break;
+                return this.info_;
             case ERROR_TYPE.ForExpAsRoot:
-                errMsg = `For is not allowed in root element. Create a child element instead.`
-                break;
+                return `For is not allowed in root element. Create a child element instead.`
             case ERROR_TYPE.ForOnPrimitiveOrNull:
-                errMsg = `For expression can not be run on null or primitive datatype. Initiate variable ${this.info_} as array or object.`
-                break;
+                return `For expression can not be run on null or primitive datatype. Initiate variable ${this.info_} as array or object.`
             case ERROR_TYPE.InvalidEventHandler:
-                errMsg = `Invalid event handler for event "${this.info_.eventName}", Handler does not exist in component.`
-                break;
+                return `Invalid event handler for event "${this.info_.eventName}", Handler does not exist in component.`
             case ERROR_TYPE.InvalidComponent:
-                errMsg = `Component "${this.info_.tag}" is not registered. Make sure you have registered component either in parent component or globally.`;
-                break;
+                return `Component "${this.info_.tag}" is not registered. Make sure you have registered component either in parent component or globally.`;
             case ERROR_TYPE.InvalidFilter:
-                errMsg = `Can not find Filter "${this.info_.filter}". Make sure you have registered filter either in component or globally.`;
-                break;
+                return `Can not find Filter "${this.info_.filter}". Make sure you have registered filter either in component or globally.`;
             default:
-                errMsg = this.message;
+                return this.message;
                 break;
         }
-        return errMsg;
     }
 
     static warn(...args) {

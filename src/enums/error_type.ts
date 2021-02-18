@@ -5,4 +5,5 @@ export enum ERROR_TYPE {
     ForOnPrimitiveOrNull = "for_on_primitive|null",
     InvalidEventHandler = "invalid_event_handler",
     InvalidFilter = "invalid_filter",
+    PropDataTypeMismatch = "prop_data_type_mismatch"
 }

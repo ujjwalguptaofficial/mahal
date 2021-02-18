@@ -15,7 +15,7 @@ import User from "./user";
 
 export default class extends Component {
 
-    @Prop()
+    @Prop(Array)
     users = [{
         name: "Ujjwal",
         gender: "Male"

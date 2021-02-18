@@ -13,6 +13,7 @@ import Users from "./users";
 
 @Template(`<div>
 <Users :users="users"/>
+<Btn :label="flag"/>
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
