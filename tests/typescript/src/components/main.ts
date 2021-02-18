@@ -9,16 +9,20 @@ import TextBox from "./text-box";
 import DirectiveComp from "./directive";
 import Model from "./model";
 import Form from "./form";
+import User from "./user";
 
 @Template(`<div>
-<IfElse/>
+<User>
+    <target>Ujjwal</target>
+    <target name="gender">Male</target>
+</User>
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
 // </div>`)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
-    Model, Form
+    Model, Form, User
 })
 export default class Main extends Component {
     @Reactive

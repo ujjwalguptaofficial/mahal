@@ -2,7 +2,7 @@ import { createRenderer } from "taj-html-compiler";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode, runPromisesInSequence } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
-import { globalFilters, globalComponents, globalDirectives } from "../constant";
+import { globalFilters, globalComponents, globalDirectives, defaultSlotName } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist } from "../utils";
 import { genericDirective } from "../generics";
 
@@ -56,8 +56,6 @@ export abstract class Component {
         }
         return this;
     }
-
-
 
     set(target, prop, valueToSet) {
         setAndReact(target, prop, valueToSet);
@@ -389,6 +387,19 @@ export abstract class Component {
         let element;
         let component: Component;
         if (HTML_TAG[tag]) {
+            switch (tag) {
+                case "slot":
+                case "target":
+                    if (!option.attr) {
+                        option.attr = {};
+                    }
+                    if (!option.attr.name) {
+                        option.attr.name = {
+                            v: defaultSlotName
+                        }
+                    }
+            }
+
             element = document.createElement(tag) as HTMLElement;
             childs.forEach((item) => {
                 element.appendChild(item);
@@ -478,6 +489,19 @@ export abstract class Component {
             component = new (this.children[tag] || globalComponents[tag] as any)();
             const htmlAttributes = this.initComponent_(component as any, option);
             element = component.element = component.executeRender_();
+            childs.forEach(item => {
+                if (item.tagName === "TARGET") {
+                    const targetSlot =
+                        component.find(`slot[name='${item.getAttribute("name")}']`);
+                    if (targetSlot) {
+                        const targetSlotParent = targetSlot.parentElement;
+                        item.childNodes.forEach(child => {
+                            targetSlotParent.insertBefore(child, targetSlot.nextSibling)
+                        });
+                        targetSlot.parentElement.removeChild(targetSlot);
+                    }
+                }
+            })
             htmlAttributes.forEach(item => {
                 element.setAttribute(item.key, item.value);
             });
