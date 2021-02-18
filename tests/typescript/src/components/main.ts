@@ -12,7 +12,7 @@ import Form from "./form";
 import Users from "./users";
 
 @Template(`<div>
-<Users/>
+<Users :users="users"/>
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
@@ -22,6 +22,12 @@ import Users from "./users";
     Model, Form, Users
 })
 export default class Main extends Component {
+
+    users = [{
+        name: "Ujjwal kumar",
+        gender: "Male"
+    }]
+
     @Reactive
     flag = false;
 

@@ -5,6 +5,6 @@ export function Prop(options?: IPropOption | any) {
         if (!target.props_) {
             target.props_ = {};
         }
-        target.props_[key] = options;
+        target.props_[key] = options || {};
     }
 }

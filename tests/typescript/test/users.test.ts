@@ -25,7 +25,7 @@ describe('User slot test', function () {
 
     it("check user rendered", function (done) {
         const firstUser = component.find('.users');
-        expect(firstUser.querySelector('.name').textContent.trim()).equal("My name is Ujjwal.");
+        expect(firstUser.querySelector('.name').textContent.trim()).equal("My name is Ujjwal kumar.");
         expect(firstUser.querySelector('.gender').textContent.trim()).equal("I am Male.");
         done();
     });
