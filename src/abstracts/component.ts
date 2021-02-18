@@ -3,7 +3,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode, runPromisesInSequence } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFilters, globalComponents, globalDirectives, defaultSlotName } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist, getDataype } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist, getDataype, EventBus } from "../utils";
 import { genericDirective } from "../generics";
 
 export abstract class Component {
@@ -70,110 +70,37 @@ export abstract class Component {
 
     render: () => void;
 
-    private updateDOM_(key: string, oldValue) {
-
-        const depItems = this.dependency_[key];
-        if (depItems == null) {
-            return;
-        }
-        depItems.forEach(item => {
-            switch (item.nodeType) {
-                // Text Node
-                case 3:
-                    item.nodeValue = this.resolve_(key); break;
-                // Input node 
-                case 1:
-                    (item as HTMLInputElement).value = this.resolve_(key)
-                    break;
-                default:
-                    if (item.ifExp) {
-                        const el = item.method();
-                        (item.el as HTMLElement).parentNode.replaceChild(
-                            el, item.el
-                        )
-                        item.el = el;
-                    }
-                    else if (item.forExp) {
-                        const resolvedValue = this.resolve_(key);
-                        const ref: HTMLDivElement = item.ref;
-                        const els = this.runForExp_(key, resolvedValue, item.method);
-                        const parent = ref.parentNode;
-                        // remove all nodes
-                        for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
-                            parent.removeChild(ref.nextSibling);
-                        }
-                    }
-            }
-        });
+    on(event: string, cb: Function) {
+        this.eventBus_.on(event, cb);
+        return this;
     }
 
-    private handleExp_(method: Function, keys: string[], id?: string) {
-        let el = method();
-        const handleChange = () => {
-            const watchCallBack = () => {
-                const newEl = method();
-                el.parentNode.replaceChild(
-                    newEl, el
-                )
-                // nextTick(() => {
-                el = newEl;
-                handleChange();
-                // })
-            };
-            keys.forEach(item => {
-                this.watch(item, watchCallBack);
-            });
-            const onElDestroyed = function () {
-                el.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
-                keys.forEach(item => {
-                    this.unwatch(item, watchCallBack);
-                });
-            }.bind(this);
-            el.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
-        }
-        nextTick(() => {
-            handleChange();
-        })
-        return el;
+    off(event: string, cb: Function) {
+        this.eventBus_.off(event, cb);
     }
 
-    private dependency_: { [key: string]: any[] } = {};
-
-    private observer_: Observer;
-
-    private attachGetterSetter_() {
-        this.observer_ = new Observer();
-        this.observer_.onChange = this.onChange_.bind(this);
-        this.observer_.create(this, this.reactives_ || []);
+    emit(event: string, data?: any) {
+        this.eventBus_.emit(event, data);
     }
 
-    private onChange_(key, oldValue, newValue) {
-        if (this.watchList_[key] != null) {
-            this.watchList_[key].forEach(cb => {
-                cb(newValue, oldValue);
-            })
-        }
+    find(selector: string) {
+        return this.element.querySelector(selector);
     }
 
-    private runForExp_(key, value, method) {
-        const els: any[] = [];
-        if (process.env.NODE_ENV !== 'production') {
-            if (isPrimitive(value) || isNull(value)) {
-                new LogHelper(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
-            }
-        }
+    findAll(selector: string) {
+        return this.element.querySelectorAll(selector);
+    }
 
-        if (isArray(value)) {
-            value.map((item, i) => {
-                els.push(method(item, i));
-            });
+    filter(name: string, value) {
+        if (globalFilters[name]) {
+            return globalFilters[name](value);
         }
-        else if (isObject(value)) {
-            for (let prop in value) {
-                els.push(method(value[prop], prop));
-            }
+        else if (this.filters_[name]) {
+            return this.filters_[name](value);
         }
-        return els;
+        new LogHelper(ERROR_TYPE.InvalidFilter, {
+            filter: name
+        }).throwPlain();
     }
 
     private handleForExp_(key, method: Function, id: string) {
@@ -283,37 +210,7 @@ export abstract class Component {
         return properties.reduce((prev, curr) => prev && prev[curr], this)
     }
 
-    private events_: {
-        [key: string]: Function[]
-    } = {};
-
-    on(event: string, cb: Function) {
-        if (this.events_[event] == null) {
-            this.events_[event] = [];
-        }
-        this.events_[event].push(cb);
-        return this;
-    }
-
-    off(event: string, cb: Function) {
-        if (this.events_[event]) {
-            if (cb) {
-                const index = this.events_[event].indexOf(cb);
-                this.events_[event].splice(index, 1);
-            }
-            else {
-                this.events_[event] = [];
-            }
-        }
-    }
-
-    emit(event: string, data?: any) {
-        if (this.events_[event]) {
-            this.events_[event].forEach(cb => {
-                cb(data);
-            })
-        }
-    }
+    private eventBus_ = new EventBus();
 
     private handleDirective_(element, dir, isComponent) {
         if (dir) {
@@ -491,26 +388,112 @@ export abstract class Component {
 
     }
 
-    find(selector: string) {
-        return this.element.querySelector(selector);
-    }
 
-    findAll(selector: string) {
-        return this.element.querySelectorAll(selector);
-    }
+    private updateDOM_(key: string, oldValue) {
 
-    filter(name: string, value) {
-        if (globalFilters[name]) {
-            return globalFilters[name](value);
+        const depItems = this.dependency_[key];
+        if (depItems == null) {
+            return;
         }
-        else if (this.filters_[name]) {
-            return this.filters_[name](value);
-        }
-        new LogHelper(ERROR_TYPE.InvalidFilter, {
-            filter: name
-        }).throwPlain();
+        depItems.forEach(item => {
+            switch (item.nodeType) {
+                // Text Node
+                case 3:
+                    item.nodeValue = this.resolve_(key); break;
+                // Input node 
+                case 1:
+                    (item as HTMLInputElement).value = this.resolve_(key)
+                    break;
+                default:
+                    if (item.ifExp) {
+                        const el = item.method();
+                        (item.el as HTMLElement).parentNode.replaceChild(
+                            el, item.el
+                        )
+                        item.el = el;
+                    }
+                    else if (item.forExp) {
+                        const resolvedValue = this.resolve_(key);
+                        const ref: HTMLDivElement = item.ref;
+                        const els = this.runForExp_(key, resolvedValue, item.method);
+                        const parent = ref.parentNode;
+                        // remove all nodes
+                        for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
+                            parent.removeChild(ref.nextSibling);
+                        }
+                    }
+            }
+        });
     }
 
+    private handleExp_(method: Function, keys: string[], id?: string) {
+        let el = method();
+        const handleChange = () => {
+            const watchCallBack = () => {
+                const newEl = method();
+                el.parentNode.replaceChild(
+                    newEl, el
+                )
+                // nextTick(() => {
+                el = newEl;
+                handleChange();
+                // })
+            };
+            keys.forEach(item => {
+                this.watch(item, watchCallBack);
+            });
+            const onElDestroyed = function () {
+                el.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+                keys.forEach(item => {
+                    this.unwatch(item, watchCallBack);
+                });
+            }.bind(this);
+            el.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+        }
+        nextTick(() => {
+            handleChange();
+        })
+        return el;
+    }
+
+    private dependency_: { [key: string]: any[] } = {};
+
+    private observer_: Observer;
+
+    private attachGetterSetter_() {
+        this.observer_ = new Observer();
+        this.observer_.onChange = this.onChange_.bind(this);
+        this.observer_.create(this, this.reactives_ || []);
+    }
+
+    private onChange_(key, oldValue, newValue) {
+        if (this.watchList_[key] != null) {
+            this.watchList_[key].forEach(cb => {
+                cb(newValue, oldValue);
+            })
+        }
+    }
+
+    private runForExp_(key, value, method) {
+        const els: any[] = [];
+        if (process.env.NODE_ENV !== 'production') {
+            if (isPrimitive(value) || isNull(value)) {
+                new LogHelper(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
+            }
+        }
+
+        if (isArray(value)) {
+            value.map((item, i) => {
+                els.push(method(item, i));
+            });
+        }
+        else if (isObject(value)) {
+            for (let prop in value) {
+                els.push(method(value[prop], prop));
+            }
+        }
+        return els;
+    }
 
     private initComponent_(component: Component, option) {
         if (component.storeGetters_) {
@@ -609,7 +592,8 @@ export abstract class Component {
         this.storeWatchCb_.forEach(item => {
             this.$store.unwatch(item.key, item.cb)
         });
-        this.element = this.events_ =
+        this.eventBus_.destroy();
+        this.element = this.eventBus_ =
             this.observer_ =
             this.storeWatchCb_ = null;
         this.dependency_ = {};

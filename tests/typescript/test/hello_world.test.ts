@@ -110,7 +110,7 @@ describe('HelloWorld', function () {
         component.on("destroyed", () => {
             nextTick(() => {
                 expect(component.element).equal(null);
-                expect(component.events_).equal(null);
+                expect(component.eventBus_).equal(null);
                 // expect(component.dependency_).equal(null);
                 expect(getObjectLength(component.dependency_)).equal(0);
                 expect(component.storeWatchCb_).equal(null);
