@@ -3,7 +3,7 @@ import { app } from "../src/index";
 import { nextTick } from "taj";
 import { expect } from "chai";
 
-describe('User slot test', function () {
+describe('Btn prop test', function () {
 
     let component;
 
@@ -15,7 +15,7 @@ describe('User slot test', function () {
                 }
             });
         } catch (error) {
-            expect(error).equal("{Taj throw}: Expected Data type of property label is string but received boolean,\n                    template - \n<button class=\"btn\" on:click=\"handleClick\">{{label | toUpper}}</button>\n \n\n        type : prop_data_type_mismatch\n        ");
+            expect(error).equal('{Taj throw}: Expected Data type of property label is string but received boolean,in template - \n                    \n<button class="btn" on:click="handleClick">{{label | toUpper}}</button>\n \n                    \n\n        type : prop_data_type_mismatch\n        ');
         }
     });
 

@@ -23,5 +23,5 @@
 * Inner Html - done (test added)
 * Filter - Done (test added)
 * directives - Done (test added)
-* slots
-* Portal
+* slots - Done (test added)
+* Props type check - done (test added)

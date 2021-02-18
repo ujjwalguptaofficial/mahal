@@ -29,7 +29,6 @@ export abstract class Component {
         if (isNull(this.props_)) {
             this.props_ = {};
         }
-        console.log("file name", __filename);
     }
 
     destroy() {
@@ -610,7 +609,6 @@ export abstract class Component {
         this.storeWatchCb_.forEach(item => {
             this.$store.unwatch(item.key, item.cb)
         });
-        // this.observer_.onChange = null;
         this.element = this.events_ =
             this.observer_ =
             this.storeWatchCb_ = null;
@@ -620,7 +618,6 @@ export abstract class Component {
 
     private executeRender_() {
         const renderFn = this.render || createRenderer(this.template);
-        // console.log("renderer", renderFn);
         this.element = renderFn.call(this,
             this.createElement_.bind(this),
             createTextNode,
