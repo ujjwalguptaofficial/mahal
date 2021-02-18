@@ -26,6 +26,9 @@ export abstract class Component {
         if (isNull(this.directive_)) {
             this.directive_ = {};
         }
+        if (isNull(this.props_)) {
+            this.props_ = {};
+        }
     }
 
     destroy() {

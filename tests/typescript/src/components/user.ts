@@ -3,11 +3,11 @@ import { Component, Template, Prop, Filter, Reactive } from "taj";
 @Template(`
 <div>
     User info
-    <div>
-        <slot></slot>
+    <div class="name">
+        My name is <slot></slot>.
     </div>
-    <div>
-        <slot name="gender"></slot>
+    <div class="gender">
+        I am <slot name="gender"></slot>.
     </div>
 </div>
 `)
