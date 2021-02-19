@@ -30,5 +30,36 @@ describe('User slot test', function () {
         done();
     });
 
+    it("check user rendered in reactive", function (done) {
+        const firstUser = component.find('.reactive-users');
+        expect(firstUser.querySelector('.name').textContent.trim()).equal("My name is Ujjwal.");
+        expect(firstUser.querySelector('.gender').textContent.trim()).equal("I am Male.");
+        done();
+    });
+
+    it("reset reactive users ", function (done) {
+        component.reactiveUsers = [{
+            name: "prince",
+            gender: "male"
+        }]
+        nextTick(() => {
+            const firstUser = component.find('.reactive-users');
+            expect(firstUser.querySelector('.name').textContent.trim()).equal("My name is prince.");
+            expect(firstUser.querySelector('.gender').textContent.trim()).equal("I am male.");
+            done();
+        })
+    });
+
+    it("check reactive users length after adding more user", function (done) {
+        component.reactiveUsers.push({
+            name: "prince",
+            gender: "male"
+        })
+        nextTick(() => {
+            expect(component.findAll(".reactive-users")).length(2);
+            done();
+        })
+    });
+
 });
 
