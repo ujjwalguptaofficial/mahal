@@ -1,4 +1,4 @@
-import { Component, Template, Prop, Children } from "taj";
+import { Component, Template, Prop, Children } from "mahal";
 import User from "./user";
 
 @Template(`

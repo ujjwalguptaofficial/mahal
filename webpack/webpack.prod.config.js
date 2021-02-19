@@ -1,11 +1,36 @@
 const path = require('path');
 const baseConfig = require('./webpack.base.config');
-const merge = require('webpack-merge');
-module.exports = [merge(baseConfig[0], {
-    output: {
-        path: path.join(__dirname, "../build"),
-        filename: "sqlweb.min.js",
-        library: 'SqlWeb'
-    },
-    mode: 'production'
-})]
+const { merge } = require('webpack-merge');
+const webpack = require("webpack");
+
+const libraryTarget = [{
+    type: "var",
+    name: 'mahal.min.js'
+}];
+
+function getConfigForTaget(target) {
+    return {
+        mode: 'production',
+        output: {
+            path: path.join(__dirname, "../dist"),
+            filename: target.name,
+            library: 'mahal',
+            libraryTarget: target.type
+        },
+        plugins: [
+            new webpack.DefinePlugin({
+                'process.env.NODE_ENV': "'production'",
+            })
+        ]
+    }
+}
+
+function createConfigsForAllLibraryTarget() {
+    var configs = [];
+    libraryTarget.forEach(function (target) {
+        configs.push(merge(baseConfig[0], getConfigForTaget(target)));
+    })
+    return configs;
+}
+
+module.exports = [...createConfigsForAllLibraryTarget()]

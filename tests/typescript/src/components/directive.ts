@@ -1,4 +1,4 @@
-import { Component, Template, Directive, Reactive } from "taj";
+import { Component, Template, Directive, Reactive } from "mahal";
 
 @Template(`
 <div>

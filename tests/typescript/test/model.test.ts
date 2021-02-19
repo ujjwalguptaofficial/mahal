@@ -1,6 +1,6 @@
 import ModelComponent from "../src/components/model";
 import { app } from "../src/index";
-import { nextTick } from "taj";
+import { nextTick } from "mahal";
 import { expect } from "chai";
 
 describe('MODEL', function () {

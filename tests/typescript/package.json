@@ -18,10 +18,10 @@
     "jsdom": "^16.4.0",
     "jsstore": "^3.6.1",
     "karma-typescript": "^5.1.0",
+    "mahal": "file:../../mahal-0.1.0.tgz",
     "mocha": "^8.1.3",
     "mochapack": "^2.0.3",
     "sinon": "^9.0.3",
-    "taj": "file:../../taj-1.0.0.tgz",
     "taj-html-compiler": "file:../../../taj-html-compiler/taj-html-compiler-1.0.0.tgz"
   },
   "devDependencies": {

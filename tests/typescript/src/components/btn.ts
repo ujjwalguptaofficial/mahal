@@ -1,4 +1,4 @@
-import { Component, Template, Prop, Formatter, Reactive } from "taj";
+import { Component, Template, Prop, Formatter, Reactive } from "mahal";
 
 @Template(`
 <button class="btn" on:click="handleClick">{{label | toUpper}}</button>

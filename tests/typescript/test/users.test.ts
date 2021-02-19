@@ -1,6 +1,6 @@
 import UsersComponent from "../src/components/users";
 import { app } from "../src/index";
-import { nextTick } from "taj";
+import { nextTick } from "mahal";
 import { expect } from "chai";
 
 describe('User slot test', function () {

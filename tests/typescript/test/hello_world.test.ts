@@ -1,6 +1,6 @@
 import HelloWorld from "../src/components/hello_world";
 import { app } from "../src/index";
-import { nextTick, getObjectLength } from "taj";
+import { nextTick, getObjectLength } from "mahal";
 import { expect } from "chai";
 import { createSandbox } from "sinon";
 

@@ -1,4 +1,4 @@
-import { Component, Template, Reactive, Children } from "taj";
+import { Component, Template, Reactive, Children } from "mahal";
 import TextBox from "./text-box";
 
 @Template(`

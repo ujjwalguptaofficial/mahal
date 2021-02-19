@@ -5,10 +5,10 @@ const webpack = require("webpack");
 
 const libraryTarget = [{
     type: "var",
-    name: 'taj.js'
+    name: 'mahal.js'
 }, {
     type: "commonjs2",
-    name: 'taj.commonjs2.js'
+    name: 'mahal.commonjs2.js'
 }];
 
 function getConfigForTaget(target) {
@@ -17,7 +17,7 @@ function getConfigForTaget(target) {
         output: {
             path: path.join(__dirname, "../dist"),
             filename: target.name,
-            library: 'taj',
+            library: 'mahal',
             libraryTarget: target.type
         },
         plugins: [

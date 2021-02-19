@@ -4,7 +4,7 @@ const banner = require('../build_helper/licence');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = [{
-    name: "taj",
+    name: "mahal",
     entry: "./src/index.ts",
     externals: {
         'taj-html-compiler': 'taj-html-compiler',

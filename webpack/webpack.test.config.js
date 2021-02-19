@@ -6,8 +6,8 @@ const webpack = require("webpack");
 module.exports = [merge(baseConfig[0], {
     output: {
         path: path.join(__dirname, "../dist"),
-        filename: "taj.commonjs2.test.js",
-        library: 'taj',
+        filename: "mahal.commonjs2.test.js",
+        library: 'mahal',
         libraryTarget: "commonjs2"
     },
     plugins: [

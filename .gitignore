@@ -4,3 +4,4 @@ build
 *.tgz
 
 dist
+package-lock.json

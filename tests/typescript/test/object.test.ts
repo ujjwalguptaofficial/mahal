@@ -1,6 +1,6 @@
 import ObjectComponent from "../src/components/object";
 import { app } from "../src/index";
-import { nextTick, getObjectLength } from "taj";
+import { nextTick, getObjectLength } from "mahal";
 import { expect } from "chai";
 
 describe('Object', function () {

@@ -1,6 +1,6 @@
 import FormComponent from "../src/components/form";
 import { app } from "../src/index";
-import { nextTick } from "taj";
+import { nextTick } from "mahal";
 import { expect } from "chai";
 import { createSandbox } from "sinon";
 
