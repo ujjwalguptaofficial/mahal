@@ -1,6 +1,6 @@
 {
-  "name": "taj",
-  "version": "1.0.0",
+  "name": "mahal",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/npm.export.js",
   "types": "dist/ts/index.d.ts",
@@ -30,7 +30,7 @@
     "url": "git+https://github.com/ujjwalguptaofficial/taj.git"
   },
   "author": "Ujjwal Gupta",
-  "license": "ISC",
+  "license": "APACHE 2.0",
   "bugs": {
     "url": "https://github.com/ujjwalguptaofficial/taj/issues"
   },
@@ -42,9 +42,8 @@
     "ts-loader": "^8.0.2",
     "typescript": "^3.9.7",
     "webpack": "^4.44.1",
-    "webpack-merge": "^5.1.1"
-  },
-  "dependencies": {
+    "webpack-merge": "^5.1.1",
     "webpack-cli": "^3.3.12"
-  }
+  },
+  "dependencies": {}
 }

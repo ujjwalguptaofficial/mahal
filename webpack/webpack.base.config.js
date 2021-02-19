@@ -6,6 +6,9 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = [{
     name: "taj",
     entry: "./src/index.ts",
+    externals: {
+        'taj-html-compiler': 'taj-html-compiler',
+    },
     module: {
         rules: [{
             test: /\.ts$/,
