@@ -172,19 +172,20 @@ export abstract class Component {
             };
             cmNode.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
             const handleChange = (prop, params) => {
-                let parent = cmNode.parentNode;
-                let indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
+                const parent = cmNode.parentNode;
+                const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
+                let newElement;
                 switch (prop) {
                     case 'push':
-                        const newElement = method(params.value, params.key);
+                        newElement = method(params.value, params.key);
                         parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
                         break;
                     case 'splice':
-                        for (var i = 1; i <= params[1]; i++) {
+                        for (let i = 1; i <= params[1]; i++) {
                             parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
                         }
                         if (params[2]) {
-                            const newElement = method(params[2], params[0]);
+                            newElement = method(params[2], params[0]);
                             parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
                         }
                         break;
@@ -192,7 +193,7 @@ export abstract class Component {
                         resolvedValue = this.resolve_(key);
                         const index = indexOf(resolvedValue, params[0]);
                         if (index >= 0) {
-                            const newElement = method(params[1], params[0]);
+                            newElement = method(params[1], params[0]);
                             parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
                         }
                         break;
@@ -201,13 +202,13 @@ export abstract class Component {
             this.watch(key, callBacks[key]).
                 watch(`${key}.push`, callBacks[`${key}.push`]).
                 watch(`${key}.splice`, callBacks[`${key}.splice`]).
-                watch(`${key}.update`, callBacks[`${key}.update`])
+                watch(`${key}.update`, callBacks[`${key}.update`]);
         });
         return els;
     }
 
     private resolve_(path) {
-        var properties = Array.isArray(path) ? path : path.split(".");
+        const properties = Array.isArray(path) ? path : path.split(".");
         return properties.reduce((prev, curr) => prev && prev[curr], this);
     }
 
@@ -216,7 +217,7 @@ export abstract class Component {
     private handleDirective_(element, dir, isComponent) {
         if (dir) {
             forOwn(dir, (name, compiledDir) => {
-                const storedDirective = this.directive_[name] || globalDirectives[name]
+                const storedDirective = this.directive_[name] || globalDirectives[name];
                 if (storedDirective != null) {
                     const binding = {
                         input: compiledDir.input,
@@ -228,13 +229,13 @@ export abstract class Component {
                     const directive: IDirective = merge(genericDirective,
                         storedDirective.call(this, element, binding));
                     nextTick(() => {
-                        const onDestroyed = function () {
+                        const onDestroyed = () => {
                             directive.destroyed();
                             if (!isComponent) {
                                 element.removeEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
                             }
                             element = null;
-                        }
+                        };
                         if (isComponent) {
                             (element as Component).on(LIFECYCLE_EVENT.Destroyed, onDestroyed);
                         }
@@ -244,13 +245,13 @@ export abstract class Component {
                         compiledDir.props.forEach((prop) => {
                             this.watch(prop, () => {
                                 binding.value = compiledDir.value();
-                                directive.valueUpdated()
+                                directive.valueUpdated();
                             });
-                        })
+                        });
                         directive.inserted();
-                    })
+                    });
                 }
-            })
+            });
         }
     }
 
@@ -270,7 +271,7 @@ export abstract class Component {
                     if (!option.attr.name) {
                         option.attr.name = {
                             v: defaultSlotName
-                        }
+                        };
                     }
             }
 
@@ -289,7 +290,7 @@ export abstract class Component {
                     if (attrItem.k != null) {
                         this.watch(attrItem.k, (newValue) => {
                             setAttribute(element, key, newValue);
-                        })
+                        });
                     }
                 });
             }
@@ -323,11 +324,11 @@ export abstract class Component {
                                 eventName,
                             }).logPlainError();
                         }
-                    })
+                    });
                     if (eventName === "input" && ev.isNative === false) {
                         methods.unshift((e) => {
                             return e.target.value;
-                        })
+                        });
                     }
                     evListener[eventName] = methods.length > 1 ?
                         (e) => {
@@ -352,7 +353,7 @@ export abstract class Component {
                     for (const ev in evListener) {
                         element.removeEventListener(ev, evListener[ev]);
                     }
-                }
+                };
                 element.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
             }
 
@@ -370,7 +371,7 @@ export abstract class Component {
                     if (targetSlot) {
                         const targetSlotParent = targetSlot.parentElement;
                         item.childNodes.forEach(child => {
-                            targetSlotParent.insertBefore(child, targetSlot.nextSibling)
+                            targetSlotParent.insertBefore(child, targetSlot.nextSibling);
                         });
                         targetSlot.parentElement.removeChild(targetSlot);
                     }
@@ -403,14 +404,14 @@ export abstract class Component {
                     item.nodeValue = this.resolve_(key); break;
                 // Input node 
                 case 1:
-                    (item as HTMLInputElement).value = this.resolve_(key)
+                    (item as HTMLInputElement).value = this.resolve_(key);
                     break;
                 default:
                     if (item.ifExp) {
                         const el = item.method();
                         (item.el as HTMLElement).parentNode.replaceChild(
                             el, item.el
-                        )
+                        );
                         item.el = el;
                     }
                     else if (item.forExp) {
@@ -434,7 +435,7 @@ export abstract class Component {
                 const newEl = method();
                 el.parentNode.replaceChild(
                     newEl, el
-                )
+                );
                 // nextTick(() => {
                 el = newEl;
                 handleChange();
@@ -450,10 +451,10 @@ export abstract class Component {
                 });
             }.bind(this);
             el.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
-        }
+        };
         nextTick(() => {
             handleChange();
-        })
+        });
         return el;
     }
 
@@ -471,7 +472,7 @@ export abstract class Component {
         if (this.watchList_[key] != null) {
             this.watchList_[key].forEach(cb => {
                 cb(newValue, oldValue);
-            })
+            });
         }
     }
 
@@ -489,7 +490,7 @@ export abstract class Component {
             });
         }
         else if (isObject(value)) {
-            for (let prop in value) {
+            for (const prop in value) {
                 els.push(method(value[prop], prop));
             }
         }
@@ -506,7 +507,7 @@ export abstract class Component {
                 const cb = (newValue, oldValue) => {
                     component[item.prop] = newValue;
                     component.updateDOM_(item.prop, oldValue);
-                }
+                };
                 component.$store.watch(item.state, cb);
                 component.storeWatchCb_.push({
                     key: item.state,
@@ -523,13 +524,13 @@ export abstract class Component {
                 if (component.props_[key]) {
                     const setPropValue = () => {
                         component[key] = value.v;
-                        if (process.env.NODE_ENV != "test") {
+                        if (process.env.NODE_ENV !== "test") {
                             this.watch(value.k, (newValue, oldValue) => {
                                 component[key] = newValue;
                                 component.onChange_(key, oldValue, newValue);
                             });
                         }
-                    }
+                    };
                     if (component.props_[key].type) {
                         const expected = component.props_[key].type;
                         const received = getDataype(value.v);
@@ -555,7 +556,7 @@ export abstract class Component {
                     htmlAttributes.push({
                         key,
                         value: value.v
-                    })
+                    });
                 }
             }
         }
@@ -573,14 +574,14 @@ export abstract class Component {
                             eventName,
                         }).logPlainError();
                     }
-                })
+                });
                 component.on(eventName, (args) => {
                     runPromisesInSequence(methods, args);
                 });
             }
         }
         this.handleDirective_(component, option.dir, true);
-        component.on(LIFECYCLE_EVENT.Destroyed, function () {
+        component.on(LIFECYCLE_EVENT.Destroyed, () => {
             component = null;
         });
         return htmlAttributes;
@@ -591,7 +592,7 @@ export abstract class Component {
         this.emit(LIFECYCLE_EVENT.Destroyed);
         this.element.removeEventListener(LIFECYCLE_EVENT.Destroyed, this.clearAll_);
         this.storeWatchCb_.forEach(item => {
-            this.$store.unwatch(item.key, item.cb)
+            this.$store.unwatch(item.key, item.cb);
         });
         this.eventBus_.destroy();
         this.element = this.eventBus_ =
@@ -627,7 +628,7 @@ export abstract class Component {
             }
             this.element.addEventListener(LIFECYCLE_EVENT.Destroyed, this.clearAll_);
             this.emit(LIFECYCLE_EVENT.Rendered);
-        })
+        });
         return this.element;
     }
 
@@ -641,9 +642,9 @@ export abstract class Component {
         [key: string]: Array<(newValue, oldValue) => void>
     } = {};
 
-    private storeWatchCb_: { key: string, cb: Function }[] = [];
+    private storeWatchCb_: Array<{ key: string, cb: Function }> = [];
 
-    private storeGetters_: { prop: string, state: string }[];
+    private storeGetters_: Array<{ prop: string, state: string }>;
 
     private file_;
 }

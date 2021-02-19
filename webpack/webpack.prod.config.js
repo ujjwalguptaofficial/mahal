@@ -6,6 +6,9 @@ const webpack = require("webpack");
 const libraryTarget = [{
     type: "var",
     name: 'mahal.min.js'
+}, {
+    type: "commonjs2",
+    name: 'mahal.min.commonjs2.js'
 }];
 
 function getConfigForTaget(target) {

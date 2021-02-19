@@ -15,14 +15,15 @@
     "test:todo": "cd tests/todo && npm run install:test",
     "test:dev": "npm run build && npm run test:general",
     "test:prod": "karma start test/karma.config.prod.js",
-    "build:dev": "npm run lint && npm run build && npm run test:dev",
-    "build:prod": "npm run webpack:prod && npm run test:prod",
-    "build:ci": "npm run build:dev && npm run build:prod",
+    "build:dev": "npm run lint && npm run build",
+    "build:prod": "npm run webpack:prod",
+    "pack:test": "npm run build:pack && npm run test:dev",
+    "build:ci": "npm run build:dev && npm run build:prod && npm run pack:test",
     "webpack:dev": "webpack --config webpack/webpack.dev.config.js",
     "webpack:test": "webpack --config webpack/webpack.test.config.js",
     "webpack:prod": "webpack --config webpack/webpack.prod.config.js",
     "move:deploy_file": "node build_helper/deploy_helper.js",
-    "deploy": "npm run build:ci && npm run move:deploy_file"
+    "deploy": "npm run build:ci"
   },
   "repository": {
     "type": "git",
