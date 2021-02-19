@@ -4,4 +4,4 @@ export const genericDirective = {
     inserted: doNothing,
     valueUpdated: doNothing,
     destroyed: doNothing
-}
+};

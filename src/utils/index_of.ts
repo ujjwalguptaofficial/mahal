@@ -1,10 +1,10 @@
-export function indexOf(value, key) {
+export const indexOf = (value, key) => {
     let index = -1;
-    for (let item in value) {
+    for (const item in value) {
         ++index;
         if (item === key) {
             return index;
         }
     }
     return -1;
-}
+};

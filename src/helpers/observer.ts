@@ -3,18 +3,18 @@ import { nextTick } from "../utils";
 import { isObject } from "util";
 export class Observer {
 
-    onChange: (key: string, oldValue, newValue) => void
+    onChange: (key: string, oldValue, newValue) => void;
 
     create(input: object, keys?: string[], prefix = "") {
         const cached = {};
         const onChange = this.onChange;
         if (isArray(input)) {
-            keys = keys || ["push", "splice"]
+            keys = keys || ["push", "splice"];
             keys.forEach(key => {
                 cached[key] = this[key];
                 Object.defineProperty(input, key, {
                     value: function (...args) {
-                        let result = Array.prototype[key].apply(this, args);
+                        const result = Array.prototype[key].apply(this, args);
                         nextTick(() => {
                             onChange(prefix + key, (() => {
                                 switch (key) {
@@ -24,7 +24,7 @@ export class Observer {
                                             value: args[0],
                                             key: result - 1,
                                             length: result
-                                        }
+                                        };
                                     default:
                                         return args;
                                 }
@@ -33,7 +33,7 @@ export class Observer {
                         return result;
                     }
                 });
-            })
+            });
             return;
         }
         keys = keys || Object.keys(input);
@@ -46,7 +46,7 @@ export class Observer {
                     cached[key] = newValue;
                     nextTick(() => {
                         onChange(prefix + key, oldValue, newValue);
-                    })
+                    });
                 },
                 get() {
                     return cached[key];
@@ -57,7 +57,7 @@ export class Observer {
             if (isObject(input[key])) {
                 nextTick(() => {
                     this.create(input[key], null, `${prefix}${key}.`);
-                })
+                });
             }
         });
 
@@ -77,7 +77,7 @@ export class Observer {
 
         Object.defineProperty(input, "splice", {
             enumerable: false,
-            value: function (index, noOfItemToDelete) {
+            value: (index, noOfItemToDelete) => {
                 onChange(`${prefix}splice`, [index, noOfItemToDelete], null);
             }
         });

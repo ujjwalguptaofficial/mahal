@@ -1,3 +1,3 @@
-export function isKeyExist(obj, key) {
+export const isKeyExist = (obj, key) => {
     return obj[key] != null;
-}
+};

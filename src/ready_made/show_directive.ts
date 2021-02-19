@@ -1,13 +1,13 @@
 import { IDirectiveBinding } from "../interface";
 
-export function showDirective(el: HTMLElement, binding: IDirectiveBinding) {
-    function setElementShowHide() {
+export const showDirective = (el: HTMLElement, binding: IDirectiveBinding) => {
+    const setElementShowHide = () => {
         el.style.display = binding.value ? 'unset' : 'none';
-    }
+    };
     setElementShowHide();
     return {
         valueUpdated() {
             setElementShowHide();
         }
-    }
-}
+    };
+};

@@ -1,3 +1,3 @@
-export function isArray(value) {
+export const isArray = (value) => {
     return Array.isArray(value);
-}
+};

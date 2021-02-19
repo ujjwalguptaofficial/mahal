@@ -5,7 +5,7 @@ export function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding)
     if (binding.isComponent === true) {
         (el as any).on("input", (value) => {
             this[key] = value;
-        })
+        });
     }
     else {
         el.oninput = (event) => {
@@ -20,9 +20,9 @@ export function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding)
                 if (binding.isComponent === true) {
                     (el as any).watchList_["value"].forEach(cb => {
                         cb(newValue);
-                    })
+                    });
                 }
             }
         }
-    }
+    };
 }

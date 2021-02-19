@@ -1,3 +1,3 @@
-export function getObjectLength(value) {
+export const getObjectLength = (value) => {
     return value.length || Object.keys(value).length;
-}
+};

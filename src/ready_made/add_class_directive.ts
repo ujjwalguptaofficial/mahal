@@ -1,14 +1,14 @@
 import { IDirectiveBinding } from "../interface";
 import { isObject } from "util";
 
-export function classDirective(el: HTMLElement, binding: IDirectiveBinding) {
+export const classDirective = (el: HTMLElement, binding: IDirectiveBinding) => {
     const isValueObject = isObject(binding.value);
 
-    function addClass() {
+    const addClass = () => {
         if (binding.params.length > 1) {
             binding.value.forEach(value => {
                 el.classList.add(value);
-            })
+            });
         }
         else {
             if (isValueObject) {
@@ -20,10 +20,10 @@ export function classDirective(el: HTMLElement, binding: IDirectiveBinding) {
                 }
             }
             else {
-                el.className += ` ${binding.value}`
+                el.className += ` ${binding.value}`;
             }
         }
-    }
+    };
     addClass();
     return {
         valueUpdated() {
@@ -35,5 +35,5 @@ export function classDirective(el: HTMLElement, binding: IDirectiveBinding) {
             }
             addClass();
         }
-    }
-}
+    };
+};

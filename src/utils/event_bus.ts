@@ -27,7 +27,7 @@ export class EventBus {
         if (this.events_[event]) {
             this.events_[event].forEach(cb => {
                 cb(data);
-            })
+            });
         }
     }
 

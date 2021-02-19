@@ -1,3 +1,3 @@
-export function isNull(value) {
+export const isNull = (value) => {
     return value == null;
-}
+};

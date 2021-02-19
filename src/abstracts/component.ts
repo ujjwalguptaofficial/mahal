@@ -7,7 +7,7 @@ import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectL
 import { genericDirective } from "../generics";
 
 export abstract class Component {
-    children: { [key: string]: typeof Component }
+    children: { [key: string]: typeof Component };
     element: HTMLElement;
     template: string;
     $store: ITajStore;
@@ -16,7 +16,7 @@ export abstract class Component {
         nextTick(() => {
             this.attachGetterSetter_();
             this.emit(LIFECYCLE_EVENT.Created);
-        })
+        });
         if (isNull(this.children)) {
             this.children = {};
         }
@@ -113,16 +113,17 @@ export abstract class Component {
             let callBacks = {
                 [key]: (newValue, oldValue) => {
                     // value resetted
-                    const els = this.runForExp_(key, newValue, method);
+                    this.runForExp_(key, newValue, method);
                     const parent = cmNode.parentNode;
                     // remove all nodes
 
                     // for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
                     //     parent.removeChild(cmNode.nextSibling);
                     // }
-                    let nextSibling;
-                    while (nextSibling = cmNode.nextSibling) {
+                    let nextSibling = cmNode.nextSibling;
+                    while (nextSibling != null) {
                         parent.removeChild(nextSibling);
+                        nextSibling = cmNode.nextSibling;
                     }
 
                     // add all node
@@ -132,8 +133,8 @@ export abstract class Component {
                                 value: item,
                                 key: index,
                                 length: index + 1
-                            })
-                        })
+                            });
+                        });
                     }
                     else {
                         let index = 0;
@@ -143,7 +144,7 @@ export abstract class Component {
                                 value,
                                 key: prop,
                                 length: index + 1
-                            })
+                            });
                         });
                     }
                     //add setter
@@ -160,7 +161,7 @@ export abstract class Component {
                 [`${key}.update`]: (newValue, oldValue) => {
                     handleChange("update", oldValue);
                 }
-            }
+            };
             const onElDestroyed = () => {
                 cmNode.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
                 cmNode = null;
@@ -168,14 +169,14 @@ export abstract class Component {
                     this.unwatch(ev, callBacks[ev]);
                 }
                 callBacks = null;
-            }
+            };
             cmNode.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
             const handleChange = (prop, params) => {
-                var parent = cmNode.parentNode;
-                var indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
+                let parent = cmNode.parentNode;
+                let indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
                 switch (prop) {
                     case 'push':
-                        var newElement = method(params.value, params.key);
+                        const newElement = method(params.value, params.key);
                         parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
                         break;
                     case 'splice':
@@ -183,7 +184,7 @@ export abstract class Component {
                             parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
                         }
                         if (params[2]) {
-                            var newElement = method(params[2], params[0]);
+                            const newElement = method(params[2], params[0]);
                             parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
                         }
                         break;
@@ -191,12 +192,12 @@ export abstract class Component {
                         resolvedValue = this.resolve_(key);
                         const index = indexOf(resolvedValue, params[0]);
                         if (index >= 0) {
-                            var newElement = method(params[1], params[0]);
+                            const newElement = method(params[1], params[0]);
                             parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
-                        };
+                        }
                         break;
                 }
-            }
+            };
             this.watch(key, callBacks[key]).
                 watch(`${key}.push`, callBacks[`${key}.push`]).
                 watch(`${key}.splice`, callBacks[`${key}.splice`]).
@@ -206,8 +207,8 @@ export abstract class Component {
     }
 
     private resolve_(path) {
-        var properties = Array.isArray(path) ? path : path.split(".")
-        return properties.reduce((prev, curr) => prev && prev[curr], this)
+        var properties = Array.isArray(path) ? path : path.split(".");
+        return properties.reduce((prev, curr) => prev && prev[curr], this);
     }
 
     private eventBus_ = new EventBus();

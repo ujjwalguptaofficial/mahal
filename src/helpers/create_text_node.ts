@@ -1,7 +1,7 @@
-export function createTextNode(value) {
+export const createTextNode = (value) => {
     return document.createTextNode(value);
-}
+};
 
-export function createCommentNode() {
+export const createCommentNode = () => {
     return document.createComment("");
-}
+};

@@ -33,11 +33,11 @@ export class LogHelper implements IError {
     }
 
     getPlain() {
-        var err = this.get();
+        const err = this.get();
         return ` ${err.message}
 
         type : ${err.type}
-        `
+        `;
 
     }
 
@@ -48,20 +48,20 @@ export class LogHelper implements IError {
                 if (this.info_.template) {
                     str += `in template - 
                     ${this.info_.template} 
-                    `
+                    `;
                 }
                 if (this.info_.file) {
-                    str += `in file - ${this.info_.file} `
+                    str += `in file - ${this.info_.file} `;
                 }
                 return str;
             case ERROR_TYPE.SynTaxError:
                 return this.info_;
             case ERROR_TYPE.ForExpAsRoot:
-                return `For is not allowed in root element. Create a child element instead.`
+                return `For is not allowed in root element. Create a child element instead.`;
             case ERROR_TYPE.ForOnPrimitiveOrNull:
-                return `For expression can not be run on null or primitive datatype. Initiate variable ${this.info_} as array or object.`
+                return `For expression can not be run on null or primitive datatype. Initiate variable ${this.info_} as array or object.`;
             case ERROR_TYPE.InvalidEventHandler:
-                return `Invalid event handler for event "${this.info_.eventName}", Handler does not exist in component.`
+                return `Invalid event handler for event "${this.info_.eventName}", Handler does not exist in component.`;
             case ERROR_TYPE.InvalidComponent:
                 return `Component "${this.info_.tag}" is not registered. Make sure you have registered component either in parent component or globally.`;
             case ERROR_TYPE.InvalidFormatter:

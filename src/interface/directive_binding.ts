@@ -1,10 +1,10 @@
 export interface IDirectiveBinding {
     input: string;
-    isComponent: Boolean,
+    isComponent: boolean;
     // list of dependencies 
-    props: string[],
+    props: string[];
     value: any;
     // raw param provided
-    params: string[]
+    params: string[];
 
 }

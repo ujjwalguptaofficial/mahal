@@ -1,7 +1,8 @@
 import { IPropOption } from "../interface";
 import { DATA_TYPE } from "../enums";
 
-export function Prop(options?: IPropOption | any) {
+// tslint:disable-next-line
+export const Prop = (options?: IPropOption | any) => {
     return (target, key: string) => {
         if (!target.props_) {
             target.props_ = {};
@@ -9,14 +10,14 @@ export function Prop(options?: IPropOption | any) {
         if (typeof options === DATA_TYPE.Function) {
             const name = options.name;
             if (DATA_TYPE[name]) {
-                options = name.toLowerCase()
+                options = name.toLowerCase();
             }
         }
         if (options && !options.type) {
             options = {
                 type: options
-            }
+            };
         }
         target.props_[key] = options || {};
-    }
-}
+    };
+};

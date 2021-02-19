@@ -1,4 +1,4 @@
-export function getDataype(value) {
+export const getDataype = (value) => {
     if (value == null) {
         return "null";
     }
@@ -11,4 +11,4 @@ export function getDataype(value) {
         default:
             return type;
     }
-}
+};

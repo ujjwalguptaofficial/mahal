@@ -1,6 +1,6 @@
 import { isNull, isPrimitive, LogHelper, isArray, isArrayIndex, indexOf } from "../utils";
 
-export function setAndReact(target, prop, valueToSet) {
+export const setAndReact = (target, prop, valueToSet) => {
     if (isNull(target)) {
         return LogHelper.warn("Can not set reactivity on null or undefined");
     }
@@ -20,9 +20,9 @@ export function setAndReact(target, prop, valueToSet) {
     } else {
         target.push(valueToSet, prop);
     }
-}
+};
 
-export function deleteAndReact(target, prop) {
+export const deleteAndReact = (target, prop) => {
     if (isNull(target)) {
         return LogHelper.warn("Can not set reactivity on null or undefined");
     }
@@ -44,4 +44,4 @@ export function deleteAndReact(target, prop) {
     } else {
         return LogHelper.warn(`Can not delete - property ${prop} does not exist in target object ${target}`);
     }
-}
+};
