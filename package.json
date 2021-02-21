@@ -1,6 +1,6 @@
 {
   "name": "mahal",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "main": "dist/npm.export.js",
   "types": "dist/ts/index.d.ts",
@@ -27,14 +27,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ujjwalguptaofficial/taj.git"
+    "url": "git+https://github.com/ujjwalguptaofficial/mahal.git"
   },
   "author": "Ujjwal Gupta",
   "license": "APACHE 2.0",
   "bugs": {
-    "url": "https://github.com/ujjwalguptaofficial/taj/issues"
+    "url": "https://github.com/ujjwalguptaofficial/mahal/issues"
   },
-  "homepage": "https://github.com/ujjwalguptaofficial/taj#readme",
+  "homepage": "https://github.com/ujjwalguptaofficial/mahal#readme",
   "devDependencies": {
     "@types/node": "^14.6.2",
     "copy-webpack-plugin": "^6.1.1",
