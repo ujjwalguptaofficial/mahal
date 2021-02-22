@@ -321,8 +321,8 @@ export abstract class Component {
                         }
                         else {
                             new Logger(ERROR_TYPE.InvalidEventHandler, {
-                                eventName,
-                            }).logPlainError();
+                                ev: eventName,
+                            }).throwPlain();
                         }
                     });
                     if (eventName === "input" && ev.isNative === false) {

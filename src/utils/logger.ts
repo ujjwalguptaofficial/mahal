@@ -63,7 +63,7 @@ export class Logger implements IError {
             case ERROR_TYPE.ForOnPrimitiveOrNull:
                 return `For expression can not be run on null or primitive datatype. Initiate variable ${this.info_} as array or object.`;
             case ERROR_TYPE.InvalidEventHandler:
-                return `Invalid event handler for event "${this.info_.eventName}", Handler does not exist in component.`;
+                return `Invalid event handler for event "${this.info_.ev}", Handler does not exist in component.`;
             case ERROR_TYPE.InvalidComponent:
                 return `Component "${this.info_.tag}" is not registered. Make sure you have registered component either in parent component or globally.`;
             case ERROR_TYPE.InvalidFormatter:
