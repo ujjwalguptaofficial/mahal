@@ -11,7 +11,7 @@ describe('Invalid Formatter', function () {
         try {
             component = (app as any).initiate(InvalidFilter);
         } catch (error) {
-            expect(error).equal("{Taj throw}: Can not find Formatter \"invalid\". Make sure you have registered formatter either in component or globally.\n\n        type : invalid_formatter\n        ")
+            expect(error).equal("{Palace throw}: Can not find Formatter \"invalid\". Make sure you have registered formatter either in component or globally.\n\n        type : invalid_formatter\n        ")
         }
     });
 });

@@ -2,7 +2,9 @@ import { IError } from "../interface";
 import { ERROR_TYPE } from "../enums";
 import { Config } from "../config";
 
-export class LogHelper implements IError {
+const libName = "Palace";
+
+export class Logger implements IError {
     type: ERROR_TYPE;
     message: string;
     private info_: any;
@@ -14,15 +16,15 @@ export class LogHelper implements IError {
     }
 
     logError() {
-        console.error("{Taj error}:", this.get());
+        Logger.error(this.get());
     }
 
     logPlainError() {
-        console.error("{Taj error}:", this.getPlain());
+        Logger.error(this.getPlain());
     }
 
     logWarning() {
-        console.warn("{Taj warn}:", this.get());
+        Logger.warn(this.get());
     }
 
     get() {
@@ -68,15 +70,18 @@ export class LogHelper implements IError {
                 return `Can not find Formatter "${this.info_.formatter}". Make sure you have registered formatter either in component or globally.`;
             default:
                 return this.message;
-                break;
         }
     }
 
     static warn(...args) {
-        console.warn("{Taj warn}:", ...args);
+        console.warn(`{${libName} warn}:`, ...args);
+    }
+
+    static error(...args) {
+        console.error(`{${libName} error}:`, ...args);
     }
 
     throwPlain() {
-        throw "{Taj throw}:" + this.getPlain();
+        throw `{${libName} throw}:` + this.getPlain();
     }
 }

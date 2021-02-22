@@ -1,7 +1,7 @@
 import { Component } from "./abstracts";
 import { globalFormatter, globalComponents, plugins, globalDirectives } from "./constant";
 import { defaultExport } from "./default";
-import { LogHelper, isString } from "./utils";
+import { Logger, isString } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 
 const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroyed);
@@ -22,7 +22,7 @@ export class App {
         if (this.element == null) {
             this.element = document.body;
             if (process.env.NODE_ENV != 'production') {
-                LogHelper.warn("Provided element or element selector is not valid. Using body as default")
+                Logger.warn("Provided element or element selector is not valid. Using body as default")
             }
         }
         new window.MutationObserver((mutations) => {

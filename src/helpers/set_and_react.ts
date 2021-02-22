@@ -1,12 +1,12 @@
-import { isNull, isPrimitive, LogHelper, isArray, isArrayIndex, indexOf } from "../utils";
+import { isNull, isPrimitive, Logger, isArray, isArrayIndex, indexOf } from "../utils";
 
 export const setAndReact = (target, prop, valueToSet) => {
     if (isNull(target)) {
-        return LogHelper.warn("Can not set reactivity on null or undefined");
+        return Logger.warn("Can not set reactivity on null or undefined");
     }
 
     if (isPrimitive(target)) {
-        return LogHelper.warn(`Can not set reactivity on primitive value ${target}`);
+        return Logger.warn(`Can not set reactivity on primitive value ${target}`);
     }
 
     if (isArray(target) && isArrayIndex(prop)) {
@@ -24,11 +24,11 @@ export const setAndReact = (target, prop, valueToSet) => {
 
 export const deleteAndReact = (target, prop) => {
     if (isNull(target)) {
-        return LogHelper.warn("Can not set reactivity on null or undefined");
+        return Logger.warn("Can not set reactivity on null or undefined");
     }
 
     if (isPrimitive(target)) {
-        return LogHelper.warn(`Can not set reactivity on primitive value ${target}`);
+        return Logger.warn(`Can not set reactivity on primitive value ${target}`);
     }
 
     if (isArray(target) && isArrayIndex(prop)) {
@@ -42,6 +42,6 @@ export const deleteAndReact = (target, prop) => {
             return target.splice(index, 1);
         }
     } else {
-        return LogHelper.warn(`Can not delete - property ${prop} does not exist in target object ${target}`);
+        return Logger.warn(`Can not delete - property ${prop} does not exist in target object ${target}`);
     }
 };

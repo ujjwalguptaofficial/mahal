@@ -2,7 +2,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode, runPromisesInSequence } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFormatter, globalComponents, globalDirectives, defaultSlotName } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist, getDataype, EventBus, getAttribute } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, Logger, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist, getDataype, EventBus, getAttribute } from "../utils";
 import { genericDirective } from "../generics";
 import { App } from "../app";
 
@@ -98,7 +98,7 @@ export abstract class Component {
         else if (this.formatters_[formatterName]) {
             return this.formatters_[formatterName](value);
         }
-        new LogHelper(ERROR_TYPE.InvalidFormatter, {
+        new Logger(ERROR_TYPE.InvalidFormatter, {
             formatter: formatterName
         }).throwPlain();
     }
@@ -320,7 +320,7 @@ export abstract class Component {
                             methods.push(item.bind(this));
                         }
                         else {
-                            new LogHelper(ERROR_TYPE.InvalidEventHandler, {
+                            new Logger(ERROR_TYPE.InvalidEventHandler, {
                                 eventName,
                             }).logPlainError();
                         }
@@ -389,7 +389,7 @@ export abstract class Component {
             });
         }
         else {
-            new LogHelper(ERROR_TYPE.InvalidComponent, {
+            new Logger(ERROR_TYPE.InvalidComponent, {
                 tag: tag
             }).throwPlain();
         }
@@ -487,7 +487,7 @@ export abstract class Component {
         const els: any[] = [];
         if (process.env.NODE_ENV !== 'production') {
             if (isPrimitive(value) || isNull(value)) {
-                new LogHelper(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
+                new Logger(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
             }
         }
 
@@ -545,7 +545,7 @@ export abstract class Component {
                             setPropValue();
                         }
                         else {
-                            new LogHelper(ERROR_TYPE.PropDataTypeMismatch,
+                            new Logger(ERROR_TYPE.PropDataTypeMismatch,
                                 {
                                     prop: key,
                                     exp: expected,
@@ -577,7 +577,7 @@ export abstract class Component {
                         methods.push(item.bind(this));
                     }
                     else {
-                        new LogHelper(ERROR_TYPE.InvalidEventHandler, {
+                        new Logger(ERROR_TYPE.InvalidEventHandler, {
                             eventName,
                         }).logPlainError();
                     }
@@ -613,7 +613,7 @@ export abstract class Component {
         const renderFn = this.render || (() => {
             if (process.env.NODE_ENV !== "prodution") {
                 if (!(App as any).createRenderer) {
-                    new LogHelper(ERROR_TYPE.RendererNotFound).throwPlain();
+                    new Logger(ERROR_TYPE.RendererNotFound).throwPlain();
                 }
             }
             return (App as any).createRenderer(this.template);
