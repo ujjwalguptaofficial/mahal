@@ -2,6 +2,7 @@ import { App } from "mahal";
 import Main from "./components/main";
 import Btn from "./components/btn";
 import MahalTest from "mahal-test-utils";
+import { createRenderer } from "mahal-html-compiler";
 
 export const app = new App(Main, document.querySelector('#app'));
 App.extend.formatter("dollar", (value: string) => {
@@ -15,3 +16,5 @@ if (process.env.NODE_ENV !== "test") {
 else {
     App.extend.plugin(MahalTest, app);
 }
+
+(App as any).createRenderer = createRenderer;

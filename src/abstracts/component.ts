@@ -1,10 +1,10 @@
-import { createRenderer } from "../helpers";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode, runPromisesInSequence } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFormatter, globalComponents, globalDirectives, defaultSlotName } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist, getDataype, EventBus } from "../utils";
 import { genericDirective } from "../generics";
+import { App } from "../app";
 
 export abstract class Component {
     children: { [key: string]: typeof Component };
@@ -603,7 +603,14 @@ export abstract class Component {
     }
 
     private executeRender_() {
-        const renderFn = this.render || createRenderer(this.template);
+        const renderFn = this.render || (() => {
+            if (process.env.NODE_ENV !== "prodution") {
+                if (!(App as any).createRenderer) {
+                    new LogHelper(ERROR_TYPE.RendererNotFound).throwPlain();
+                }
+            }
+            return (App as any).createRenderer(this.template);
+        })();
         this.element = renderFn.call(this,
             this.createElement_.bind(this),
             createTextNode,
