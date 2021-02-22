@@ -18,7 +18,7 @@
     "jsdom": "^16.4.0",
     "jsstore": "^3.6.1",
     "karma-typescript": "^5.1.0",
-    "mahal": "file:../../mahal-0.3.0.tgz",
+    "mahal": "file:../../mahal-0.4.0.tgz",
     "mahal-html-compiler": "file:../../../mahal-html-compiler/mahal-html-compiler-0.2.0.tgz",
     "mocha": "^8.1.3",
     "mochapack": "^2.0.3",
