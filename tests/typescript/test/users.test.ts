@@ -20,6 +20,7 @@ describe('User slot test', function () {
 
     it("check users length", function () {
         expect(component.findAll(".users")).length(1);
+        expect(component.findAll(".user-comp")).length(2);
     });
 
 

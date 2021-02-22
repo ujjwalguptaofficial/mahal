@@ -2,7 +2,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode, runPromisesInSequence } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFormatter, globalComponents, globalDirectives, defaultSlotName } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist, getDataype, EventBus } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, LogHelper, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist, getDataype, EventBus, getAttribute } from "../utils";
 import { genericDirective } from "../generics";
 import { App } from "../app";
 
@@ -378,7 +378,14 @@ export abstract class Component {
                 }
             });
             (htmlAttributes || []).forEach(item => {
-                element.setAttribute(item.key, item.value);
+                switch (item.key) {
+                    case 'class':
+                        item.value = (getAttribute(element, item.key) || '') + ' ' + item.value;
+                        break;
+                    case 'style':
+                        item.value = (getAttribute(element, item.key) || '') + item.value;
+                }
+                setAttribute(element, item.key, item.value);
             });
         }
         else {

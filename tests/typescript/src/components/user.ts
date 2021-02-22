@@ -1,7 +1,7 @@
 import { Component, Template, Reactive } from "mahal";
 
 @Template(`
-<div>
+<div class="user-comp">
     User info
     <div class="name">
         My name is <slot></slot>.

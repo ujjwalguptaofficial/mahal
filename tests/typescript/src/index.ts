@@ -9,12 +9,11 @@ App.extend.formatter("dollar", (value: string) => {
     return "$" + value;
 });
 App.extend.component("Btn", Btn);
-console.log("env", process.env.NODE_ENV)
+console.log("env", process.env.NODE_ENV);
+(App as any).createRenderer = createRenderer;
 if (process.env.NODE_ENV !== "test") {
     app.create();
 }
 else {
     App.extend.plugin(MahalTest, app);
 }
-
-(App as any).createRenderer = createRenderer;
