@@ -55,9 +55,7 @@ export class Observer {
             });
 
             if (isObject(input[key])) {
-                nextTick(() => {
-                    this.create(input[key], null, `${prefix}${key}.`);
-                });
+                this.create(input[key], null, `${prefix}${key}.`);
             }
         });
 
