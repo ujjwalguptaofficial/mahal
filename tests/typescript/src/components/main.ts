@@ -6,21 +6,23 @@ import Student from "./array";
 import ObjectComponent from "./object";
 import IfElse from "./if_else";
 import TextBox from "./text-box";
+import TextAreaBox from "./textarea_box";
 import DirectiveComp from "./directive";
 import Model from "./model";
 import Form from "./form";
 import Users from "./users";
+import TabRender from "./tab_render";
 
 @Template(`<div>
-<Users :users="users"/>
-<Btn :label="name"/>
+<TextAreaBox #model(name)/>
+{{name}}
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
 // </div>`)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
-    Model, Form, Users
+    Model, Form, Users, TabRender,TextAreaBox
 })
 export default class Main extends Component {
 
@@ -71,6 +73,7 @@ export default class Main extends Component {
 
     constructor() {
         super();
+        window['comp'] = this;
         // setTimeout(() => {
         //     // alert("name changed");
         //     this.name = "ujjwal gupta";

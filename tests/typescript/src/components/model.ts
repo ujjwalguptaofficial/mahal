@@ -11,7 +11,4 @@ export default class extends Component {
     @Reactive
     text;
 
-    rendered() {
-        window["comp"] = this;
-    }
 }

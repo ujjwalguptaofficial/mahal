@@ -1,9 +1,9 @@
-import { Component, Template, Prop, Reactive } from "mahal";
+import { Component, Template, Prop, } from "mahal";
 
 @Template(`
 <div>
-Standard Text box
-   <input type="text" :value="value" on:input="onInput" />
+Standard Text Area box
+   <input type="text" #model(value) />
 </div>
 `)
 

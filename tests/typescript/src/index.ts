@@ -3,6 +3,10 @@ import Main from "./components/main";
 import Btn from "./components/btn";
 import MahalTest from "mahal-test-utils";
 import { createRenderer } from "mahal-html-compiler";
+if (process.env.NODE_ENV != "test") {
+    require("flexboot");
+}
+
 
 export const app = new App(Main, document.querySelector('#app'));
 App.extend.formatter("dollar", (value: string) => {

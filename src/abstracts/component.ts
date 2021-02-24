@@ -215,44 +215,43 @@ export abstract class Component {
     private eventBus_ = new EventBus();
 
     private handleDirective_(element, dir, isComponent) {
-        if (dir) {
-            forOwn(dir, (name, compiledDir) => {
-                const storedDirective = this.directive_[name] || globalDirectives[name];
-                if (storedDirective != null) {
-                    const binding = {
-                        input: compiledDir.input,
-                        params: compiledDir.params,
-                        isComponent: isComponent,
-                        props: compiledDir.props,
-                        value: compiledDir.value()
-                    } as IDirectiveBinding;
-                    const directive: IDirective = merge(genericDirective,
-                        storedDirective.call(this, element, binding));
-                    nextTick(() => {
-                        const onDestroyed = () => {
-                            directive.destroyed();
-                            if (!isComponent) {
-                                element.removeEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
-                            }
-                            element = null;
-                        };
-                        if (isComponent) {
-                            (element as Component).on(LIFECYCLE_EVENT.Destroyed, onDestroyed);
+        if (!dir) return;
+        forOwn(dir, (name, compiledDir) => {
+            const storedDirective = this.directive_[name] || globalDirectives[name];
+            if (storedDirective != null) {
+                const binding = {
+                    input: compiledDir.input,
+                    params: compiledDir.params,
+                    isComponent: isComponent,
+                    props: compiledDir.props,
+                    value: compiledDir.value()
+                } as IDirectiveBinding;
+                const directive: IDirective = merge(genericDirective,
+                    storedDirective.call(this, element, binding));
+                nextTick(() => {
+                    const onDestroyed = () => {
+                        directive.destroyed();
+                        if (!isComponent) {
+                            element.removeEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
                         }
-                        else {
-                            element.addEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
-                        }
-                        compiledDir.props.forEach((prop) => {
-                            this.watch(prop, () => {
-                                binding.value = compiledDir.value();
-                                directive.valueUpdated();
-                            });
+                        element = null;
+                    };
+                    if (isComponent) {
+                        (element as Component).on(LIFECYCLE_EVENT.Destroyed, onDestroyed);
+                    }
+                    else {
+                        element.addEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
+                    }
+                    compiledDir.props.forEach((prop) => {
+                        this.watch(prop, () => {
+                            binding.value = compiledDir.value();
+                            directive.valueUpdated();
                         });
-                        directive.inserted();
                     });
-                }
-            });
-        }
+                    directive.inserted();
+                });
+            }
+        });
     }
 
     private createElement_(tag, childs: HTMLElement[], option) {
@@ -261,13 +260,13 @@ export abstract class Component {
         }
         let element;
         let component: Component;
+        if (!option.attr) {
+            option.attr = {};
+        }
         if (HTML_TAG[tag]) {
             switch (tag) {
                 case "slot":
                 case "target":
-                    if (!option.attr) {
-                        option.attr = {};
-                    }
                     if (!option.attr.name) {
                         option.attr.name = {
                             v: defaultSlotName
@@ -284,16 +283,14 @@ export abstract class Component {
                 (element as HTMLElement).innerHTML = option.html;
             }
 
-            if (option.attr) {
-                forOwn(option.attr, (key, attrItem) => {
-                    setAttribute(element, key, attrItem.v);
-                    if (attrItem.k != null) {
-                        this.watch(attrItem.k, (newValue) => {
-                            setAttribute(element, key, newValue);
-                        });
-                    }
-                });
-            }
+            forOwn(option.attr, (key, attrItem) => {
+                setAttribute(element, key, attrItem.v);
+                if (attrItem.k) {
+                    this.watch(attrItem.k, (newValue) => {
+                        setAttribute(element, key, newValue);
+                    });
+                }
+            });
 
             if (option.on) {
                 const evListener = {};
@@ -325,7 +322,7 @@ export abstract class Component {
                             }).throwPlain();
                         }
                     });
-                    if (eventName === "input" && ev.isNative === false) {
+                    if (eventName === "input" && !ev.isNative) {
                         methods.unshift((e) => {
                             return e.target.value;
                         });
@@ -387,6 +384,13 @@ export abstract class Component {
                 }
                 setAttribute(element, item.key, item.value);
             });
+        }
+        else if (tag === "in-place") {
+            const attr = option.attr.of;
+            if (attr) {
+                delete option.attr.of;
+                return this.createElement_(attr.v || attr.k, childs, option);
+            }
         }
         else {
             new Logger(ERROR_TYPE.InvalidComponent, {
@@ -504,6 +508,52 @@ export abstract class Component {
         return els;
     }
 
+    private handleAttribute_(component: Component, attr) {
+        const htmlAttributes = [];
+        if (!attr) return htmlAttributes;
+        for (const key in attr) {
+            const value: IAttrItem = attr[key];
+            if (component.props_[key]) {
+                const setPropValue = () => {
+                    component[key] = value.v;
+                    if (process.env.NODE_ENV !== "test") {
+                        this.watch(value.k, (newValue, oldValue) => {
+                            component[key] = newValue;
+                            component.onChange_(key, oldValue, newValue);
+                        });
+                    }
+                };
+                if (component.props_[key].type) {
+                    const expected = component.props_[key].type;
+                    const received = getDataype(value.v);
+                    if (expected === received) {
+                        setPropValue();
+                    }
+                    else {
+                        new Logger(ERROR_TYPE.PropDataTypeMismatch,
+                            {
+                                prop: key,
+                                exp: expected,
+                                got: received,
+                                template: this.template,
+                                file: this.file_
+                            }).throwPlain();
+                    }
+                }
+                else if (value.k) {
+                    setPropValue();
+                }
+            }
+            else {
+                htmlAttributes.push({
+                    key,
+                    value: value.v
+                });
+            }
+        }
+        return htmlAttributes;
+    }
+
     private initComponent_(component: Component, option) {
         if (component.storeGetters_) {
             // can not make it async because if item is array then it will break
@@ -523,50 +573,7 @@ export abstract class Component {
             });
         }
 
-        const htmlAttributes = [];
-        if (option.attr) {
-            const attr = option.attr;
-            for (const key in attr) {
-                const value: IAttrItem = attr[key];
-                if (component.props_[key]) {
-                    const setPropValue = () => {
-                        component[key] = value.v;
-                        if (process.env.NODE_ENV !== "test") {
-                            this.watch(value.k, (newValue, oldValue) => {
-                                component[key] = newValue;
-                                component.onChange_(key, oldValue, newValue);
-                            });
-                        }
-                    };
-                    if (component.props_[key].type) {
-                        const expected = component.props_[key].type;
-                        const received = getDataype(value.v);
-                        if (expected === received) {
-                            setPropValue();
-                        }
-                        else {
-                            new Logger(ERROR_TYPE.PropDataTypeMismatch,
-                                {
-                                    prop: key,
-                                    exp: expected,
-                                    got: received,
-                                    template: this.template,
-                                    file: this.file_
-                                }).throwPlain();
-                        }
-                    }
-                    else {
-                        setPropValue();
-                    }
-                }
-                else {
-                    htmlAttributes.push({
-                        key,
-                        value: value.v
-                    });
-                }
-            }
-        }
+        const htmlAttributes = this.handleAttribute_(component, option.attr);
         if (option.on) {
             const events = option.on;
             for (const eventName in events) {
