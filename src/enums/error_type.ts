@@ -6,5 +6,6 @@ export enum ERROR_TYPE {
     InvalidEventHandler = "invalid_event_handler",
     InvalidFormatter = "invalid_formatter",
     PropDataTypeMismatch = "prop_data_type_mismatch",
-    RendererNotFound = "createRenderer_not_found"
+    RendererNotFound = "createRenderer_not_found",
+    MutatingProp = "mutating_prop"
 }

@@ -218,6 +218,14 @@ export abstract class Component {
         if (!dir) return;
         forOwn(dir, (name, compiledDir) => {
             const storedDirective = this.directive_[name] || globalDirectives[name];
+            // if (name === "model") {
+            //     this.handleAttribute_(element, {
+            //         value: {
+            //             k: compiledDir.props[0],
+            //             v: compiledDir.value()
+            //         } as IAttrItem
+            //     });
+            // }
             if (storedDirective != null) {
                 const binding = {
                     input: compiledDir.input,
@@ -226,6 +234,7 @@ export abstract class Component {
                     props: compiledDir.props,
                     value: compiledDir.value()
                 } as IDirectiveBinding;
+
                 const directive: IDirective = merge(genericDirective,
                     storedDirective.call(this, element, binding));
                 nextTick(() => {
@@ -283,14 +292,9 @@ export abstract class Component {
                 (element as HTMLElement).innerHTML = option.html;
             }
 
-            forOwn(option.attr, (key, attrItem) => {
-                setAttribute(element, key, attrItem.v);
-                if (attrItem.k) {
-                    this.watch(attrItem.k, (newValue) => {
-                        setAttribute(element, key, newValue);
-                    });
-                }
-            });
+            this.handleAttribute_(element, option.attr, false);
+
+
 
             if (option.on) {
                 const evListener = {};
@@ -476,7 +480,7 @@ export abstract class Component {
     private attachGetterSetter_() {
         this.observer_ = new Observer();
         this.observer_.onChange = this.onChange_.bind(this);
-        this.observer_.create(this, this.reactives_ || []);
+        this.observer_.create(this, Object.keys(this.props_).concat(this.reactives_ || []));
     }
 
     private onChange_(key, oldValue, newValue) {
@@ -508,7 +512,18 @@ export abstract class Component {
         return els;
     }
 
-    private handleAttribute_(component: Component, attr) {
+    private handleAttribute_(component, attr, isComponent) {
+        if (!isComponent) {
+            forOwn(attr, (key, attrItem) => {
+                setAttribute(component, key, attrItem.v);
+                if (attrItem.k) {
+                    this.watch(attrItem.k, (newValue) => {
+                        setAttribute(component, key, newValue);
+                    });
+                }
+            });
+            return;
+        }
         const htmlAttributes = [];
         if (!attr) return htmlAttributes;
         for (const key in attr) {
@@ -518,7 +533,9 @@ export abstract class Component {
                     component[key] = value.v;
                     if (process.env.NODE_ENV !== "test") {
                         this.watch(value.k, (newValue, oldValue) => {
+                            Observer.shouldCheckProp = false;
                             component[key] = newValue;
+                            Observer.shouldCheckProp = true;
                             component.onChange_(key, oldValue, newValue);
                         });
                     }
@@ -573,7 +590,7 @@ export abstract class Component {
             });
         }
 
-        const htmlAttributes = this.handleAttribute_(component, option.attr);
+        const htmlAttributes = this.handleAttribute_(component, option.attr, true);
         if (option.on) {
             const events = option.on;
             for (const eventName in events) {

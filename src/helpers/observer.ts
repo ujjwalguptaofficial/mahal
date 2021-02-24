@@ -1,7 +1,11 @@
-import { isArray, getObjectLength } from "../utils";
+import { isArray, getObjectLength, Logger } from "../utils";
 import { nextTick } from "../utils";
 import { isObject } from "util";
+import { ERROR_TYPE } from "../enums";
+
 export class Observer {
+
+    static shouldCheckProp = true;
 
     onChange: (key: string, oldValue, newValue) => void;
 
@@ -42,6 +46,14 @@ export class Observer {
             cached[key] = input[key];
             Object.defineProperty(input, key, {
                 set(newValue) {
+                    if (process.env.NODE_ENV !== "production") {
+                        if (Observer.shouldCheckProp && (input as any).props_[key]) {
+                            new Logger(ERROR_TYPE.MutatingProp, {
+                                el: (input as any).element,
+                                key: key
+                            }).logPlainError();
+                        }
+                    }
                     const oldValue = cached[key];
                     cached[key] = newValue;
                     nextTick(() => {

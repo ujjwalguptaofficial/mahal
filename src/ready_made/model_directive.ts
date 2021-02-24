@@ -1,31 +1,39 @@
-import { IDirectiveBinding } from "../interface";
+import { IDirectiveBinding, IAttrItem } from "../interface";
 
-const inputEvent = "input";
+const INPUT = "input";
+const VALUE = "value";
+
 export function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding) {
     const key = binding.props[0];
-    el.value = binding.value;
+    this.handleAttribute_(el, {
+        value: {
+            k: key,
+            v: binding[VALUE]
+        } as IAttrItem
+    }, binding.isComponent);
     if (binding.isComponent === true) {
-        (el as any).on(inputEvent, (value) => {
-            this[key] = value;
+        (el as any).on(INPUT, (val) => {
+            this[key] = val;
         });
     }
     else {
+        el[VALUE] = binding[VALUE];
         el.oninput = (event) => {
-            this[key] = (event.target as any).value;
-            this.emit(inputEvent, this[key]);
+            this[key] = (event.target as any)[VALUE];
+            // this.emit(INPUT, (event.target as any)[VALUE]);
         };
     }
     return {
         valueUpdated() {
-            const newValue = binding.value;
-            if (el.value !== newValue) {
-                el.value = newValue;
-                if (binding.isComponent === true) {
-                    (el as any).watchList_["value"].forEach(cb => {
-                        cb(newValue);
-                    });
-                }
-            }
+            const newValue = binding[VALUE];
+            // if (el[VALUE] !== newValue) {
+            //     el[VALUE] = newValue;
+            //     // if (binding.isComponent) {
+            //     //     ((el as any).watchList_[VALUE] || []).forEach(cb => {
+            //     //         cb(newValue);
+            //     //     });
+            //     // }
+            // }
         }
     };
 }

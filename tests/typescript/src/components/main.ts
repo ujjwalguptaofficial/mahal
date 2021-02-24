@@ -22,7 +22,7 @@ import TabRender from "./tab_render";
 // </div>`)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
-    Model, Form, Users, TabRender,TextAreaBox
+    Model, Form, Users, TabRender, TextAreaBox
 })
 export default class Main extends Component {
 
@@ -74,10 +74,10 @@ export default class Main extends Component {
     constructor() {
         super();
         window['comp'] = this;
-        // setTimeout(() => {
-        //     // alert("name changed");
-        //     this.name = "ujjwal gupta";
-        // }, 1000);
+        setTimeout(() => {
+            // alert("name changed");
+            this.name = "ujjwal gupta";
+        }, 5000);
     }
 
     onHelloWordClick() {

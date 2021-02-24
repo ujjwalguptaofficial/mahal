@@ -4,6 +4,8 @@ import { Config } from "../config";
 
 const libName = "Palace";
 
+const newLine = "\n\n";
+
 export class Logger implements IError {
     type: ERROR_TYPE;
     message: string;
@@ -68,6 +70,10 @@ export class Logger implements IError {
                 return `Component "${this.info_.tag}" is not registered. Make sure you have registered component either in parent component or globally.`;
             case ERROR_TYPE.InvalidFormatter:
                 return `Can not find Formatter "${this.info_.formatter}". Make sure you have registered formatter either in component or globally.`;
+            case ERROR_TYPE.MutatingProp:
+                return `Do not mutate prop "${this.info_.key}" directly. Instead use a reactive property.`
+                    + newLine + `found in -` + newLine +
+                    `${this.info_.el.outerHTML}`;
             default:
                 return this.message;
         }
