@@ -531,14 +531,14 @@ export abstract class Component {
             if (component.props_[key]) {
                 const setPropValue = () => {
                     component[key] = value.v;
-                    if (process.env.NODE_ENV !== "test") {
-                        this.watch(value.k, (newValue, oldValue) => {
-                            Observer.shouldCheckProp = false;
-                            component[key] = newValue;
-                            Observer.shouldCheckProp = true;
-                            // component.onChange_(key, oldValue, newValue);
-                        });
-                    }
+                    // if (process.env.NODE_ENV !== "test") {
+                    this.watch(value.k, (newValue, oldValue) => {
+                        Observer.shouldCheckProp = false;
+                        component[key] = newValue;
+                        Observer.shouldCheckProp = true;
+                        // component.onChange_(key, oldValue, newValue);
+                    });
+                    // }
                 };
                 if (component.props_[key].type) {
                     const expected = component.props_[key].type;
