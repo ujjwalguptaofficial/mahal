@@ -46,6 +46,9 @@ export class Observer {
             cached[key] = input[key];
             Object.defineProperty(input, key, {
                 set(newValue) {
+                    const oldValue = cached[key];
+                    if (oldValue === newValue) return;
+                    cached[key] = newValue;
                     if (process.env.NODE_ENV !== "production") {
                         if (Observer.shouldCheckProp && (input as any).props_[key]) {
                             new Logger(ERROR_TYPE.MutatingProp, {
@@ -54,8 +57,7 @@ export class Observer {
                             }).logPlainError();
                         }
                     }
-                    const oldValue = cached[key];
-                    cached[key] = newValue;
+
                     nextTick(() => {
                         onChange(prefix + key, oldValue, newValue);
                     });

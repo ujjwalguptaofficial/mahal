@@ -536,7 +536,7 @@ export abstract class Component {
                             Observer.shouldCheckProp = false;
                             component[key] = newValue;
                             Observer.shouldCheckProp = true;
-                            component.onChange_(key, oldValue, newValue);
+                            // component.onChange_(key, oldValue, newValue);
                         });
                     }
                 };

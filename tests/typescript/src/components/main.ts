@@ -1,4 +1,4 @@
-import { Component, Template, Children, Reactive } from "mahal";
+import { Component, Template, Children, Reactive, nextTick } from "mahal";
 import ModelComponent from "./component_model";
 
 import HelloWorld from "./hello_world";
@@ -77,7 +77,10 @@ export default class Main extends Component {
         setTimeout(() => {
             // alert("name changed");
             this.name = "ujjwal gupta";
-        }, 5000);
+        }, 1000);
+        // nextTick(() => {
+        //     this.name = "kujjwal gupta";
+        // })
     }
 
     onHelloWordClick() {
