@@ -95,9 +95,13 @@ describe('IfELSE', function () {
             const div = component.find('div');
             expect(div.innerHTML).equal('10');
             expect(component.element.classList).length(1);
-            component.set(component.nested.nested1.nested2, 'nested3', null);
             expect(component.element.className).equal('nested-3');
-            done();
+            component.set(component.nested.nested1.nested2, 'nested3', null);
+            nextTick(() => {
+                expect(component.element.className).equal('');
+                done();
+            })
+
         })
     });
 

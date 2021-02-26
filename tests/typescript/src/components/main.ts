@@ -14,8 +14,7 @@ import Users from "./users";
 import TabRender from "./tab_render";
 
 @Template(`<div>
-<TextAreaBox #model(name)/>
-{{name}}
+<IfElse/>
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
@@ -73,8 +72,8 @@ export default class Main extends Component {
 
     constructor() {
         super();
-        window['comp'] = this;
-        window['nextTick'] = nextTick;
+        // window['comp'] = this;
+        // window['nextTick'] = nextTick;
         setTimeout(() => {
             // alert("name changed");
             this.name = "ujjwal gupta";

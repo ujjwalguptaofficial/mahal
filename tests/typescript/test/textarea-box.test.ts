@@ -27,7 +27,6 @@ describe('MODEL TextAreabox', function () {
 
     it("from component to element", function (done) {
         nextTick(() => {
-
             const input = component.find('input');
             expect(input.value).equal('');
             const nameDiv = component.find('div.name');
