@@ -14,13 +14,17 @@ export default class extends Component {
     value;
 
     @Reactive
-    text;
+    text = "";
 
     constructor() {
         super();
+        this.on("created", () => {
+            this.text = this.value;
+        })
         this.watch("value", this.onValueChange.bind(this));
         this.watch("text", this.onInput.bind(this));
     }
+
 
     onInput(value) {
         this.emit("input", value);
