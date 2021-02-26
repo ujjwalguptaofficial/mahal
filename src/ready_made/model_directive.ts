@@ -17,23 +17,8 @@ export function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding)
         });
     }
     else {
-        el[VALUE] = binding[VALUE];
         el.oninput = (event) => {
             this[key] = (event.target as any)[VALUE];
-            // this.emit(INPUT, (event.target as any)[VALUE]);
         };
     }
-    return {
-        valueUpdated() {
-            const newValue = binding[VALUE];
-            // if (el[VALUE] !== newValue) {
-            //     el[VALUE] = newValue;
-            //     // if (binding.isComponent) {
-            //     //     ((el as any).watchList_[VALUE] || []).forEach(cb => {
-            //     //         cb(newValue);
-            //     //     });
-            //     // }
-            // }
-        }
-    };
 }

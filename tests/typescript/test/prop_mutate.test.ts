@@ -74,12 +74,10 @@ describe('Mutate prop in custom TextBox', function () {
     it('assert prop check error', function (done) {
 
         const consoleSpy = spy(console, "error");
-        // var event = document.createEvent('Event');
-        // event.initEvent('input', true, true);
+
         const el = (component.find('input'));
         const value = "jee";
         el.setValue(value);
-        // el.dispatchEvent(event);
 
         nextTick(() => {
             const args = consoleSpy.args[0];
