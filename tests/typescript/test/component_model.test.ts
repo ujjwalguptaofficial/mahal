@@ -16,7 +16,7 @@ describe('Component MODEL', function () {
         expect(input.value).equal('initial');
         component.text = "ujjwal";
         nextTick(() => {
-            expect(input.value).equal('ujjwal');
+            expect(input.value).equal(component.text);
             done();
         })
     });

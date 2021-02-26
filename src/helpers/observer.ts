@@ -1,5 +1,4 @@
 import { isArray, getObjectLength, Logger } from "../utils";
-import { nextTick } from "../utils";
 import { isObject } from "util";
 import { ERROR_TYPE } from "../enums";
 
@@ -19,21 +18,19 @@ export class Observer {
                 Object.defineProperty(input, key, {
                     value: function (...args) {
                         const result = Array.prototype[key].apply(this, args);
-                        nextTick(() => {
-                            onChange(prefix + key, (() => {
-                                switch (key) {
-                                    case 'push':
-                                        // return args[0];
-                                        return {
-                                            value: args[0],
-                                            key: result - 1,
-                                            length: result
-                                        };
-                                    default:
-                                        return args;
-                                }
-                            })(), null);
-                        });
+                        onChange(prefix + key, (() => {
+                            switch (key) {
+                                case 'push':
+                                    // return args[0];
+                                    return {
+                                        value: args[0],
+                                        key: result - 1,
+                                        length: result
+                                    };
+                                default:
+                                    return args;
+                            }
+                        })(), null);
                         return result;
                     }
                 });
@@ -57,9 +54,7 @@ export class Observer {
                         }
                     }
 
-                    nextTick(() => {
-                        onChange(prefix + key, oldValue, newValue);
-                    });
+                    onChange(prefix + key, oldValue, newValue);
                 },
                 get() {
                     return cached[key];

@@ -74,6 +74,7 @@ export default class Main extends Component {
     constructor() {
         super();
         window['comp'] = this;
+        window['nextTick'] = nextTick;
         setTimeout(() => {
             // alert("name changed");
             this.name = "ujjwal gupta";
