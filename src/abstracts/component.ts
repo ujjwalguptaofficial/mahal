@@ -2,7 +2,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode, runPromisesInSequence } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFormatter, globalComponents, globalDirectives, defaultSlotName } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, Logger, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist, getDataype, EventBus, getAttribute } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, Logger, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist, getDataype, EventBus, getAttribute, replaceEl } from "../utils";
 import { genericDirective } from "../generics";
 import { App } from "../app";
 
@@ -382,11 +382,7 @@ export abstract class Component {
             });
         }
         else if (tag === "in-place") {
-            const attr = option.attr.of;
-            if (attr) {
-                delete option.attr.of;
-                return this.createElement_(attr.v || attr.k, childs, option);
-            }
+            return this.handleInPlace_(childs, option);
         }
         else {
             new Logger(ERROR_TYPE.InvalidComponent, {
@@ -395,6 +391,21 @@ export abstract class Component {
         }
         return element;
 
+    }
+
+    private handleInPlace_(childs, option) {
+        const attr = option.attr.of;
+        if (!attr) return createCommentNode();
+        delete option.attr.of;
+        let el = this.createElement_(attr.v || attr.k, childs, option);
+        if (attr.k) {
+            this.watch(attr.k, (val) => {
+                const newEl = this.createElement_(val, childs, option);
+                replaceEl(el, newEl);
+                el = newEl;
+            });
+        }
+        return el;
     }
 
 
@@ -524,7 +535,7 @@ export abstract class Component {
                 const setPropValue = () => {
                     component[key] = value.v;
                     // if (process.env.NODE_ENV !== "test") {
-                    this.watch(value.k, (newValue, oldValue) => {
+                    this.watch(value.k, (newValue) => {
                         Observer.shouldCheckProp = false;
                         component[key] = newValue;
                         Observer.shouldCheckProp = true;

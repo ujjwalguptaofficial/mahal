@@ -14,8 +14,7 @@ import Users from "./users";
 import TabRender from "./tab_render";
 
 @Template(`<div>
-<Btn :label="flag"/>
-{{name}}
+<TabRender/>
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>

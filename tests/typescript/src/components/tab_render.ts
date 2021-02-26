@@ -3,6 +3,7 @@ import Users from "./users";
 import Tabs from "./tabs";
 
 @Template(`<div>
+{{activeTab}}
 <Tabs :tabs="tabs" #model(activeTab) >
     <target>
         <in-place :of="activeTab" :users="users" label="name"/>
