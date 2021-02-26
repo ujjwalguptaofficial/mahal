@@ -8,13 +8,13 @@ const newLine = "\n\n";
 
 export class Logger implements IError {
     type: ERROR_TYPE;
-    message: string;
+    msg: string;
     private info_: any;
 
     constructor(type: ERROR_TYPE, info?: any) {
         this.type = type;
         this.info_ = info;
-        this.message = this.getMsg_();
+        this.msg = this.getMsg_();
     }
 
     logError() {
@@ -31,14 +31,14 @@ export class Logger implements IError {
 
     get() {
         return {
-            message: this.message,
+            msg: this.msg,
             type: this.type
         } as IError;
     }
 
     getPlain() {
         const err = this.get();
-        return ` ${err.message}${newLine}type : ${err.type}`
+        return ` ${err.msg}${newLine}type : ${err.type}`
     }
 
     private getMsg_() {
@@ -69,7 +69,7 @@ export class Logger implements IError {
                     + newLine + `found in -` + newLine +
                     `${this.info_.html}`;
             default:
-                return this.message;
+                return this.msg;
         }
     }
 

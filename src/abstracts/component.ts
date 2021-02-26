@@ -115,7 +115,7 @@ export abstract class Component {
         nextTick(() => {
 
             let callBacks = {
-                [key]: (newValue, oldValue) => {
+                [key]: (newValue) => {
                     // value resetted
                     this.runForExp_(key, newValue, method);
                     const parent = cmNode.parentNode;
@@ -156,13 +156,13 @@ export abstract class Component {
                         this.observer_.create(newValue, null, `${key}.`);
                     }
                 },
-                [`${key}.push`]: (newValue, oldValue) => {
+                [`${key}.push`]: (_, oldValue) => {
                     handleChange("push", oldValue);
                 },
-                [`${key}.splice`]: (newValue, oldValue) => {
+                [`${key}.splice`]: (_, oldValue) => {
                     handleChange("splice", oldValue);
                 },
-                [`${key}.update`]: (newValue, oldValue) => {
+                [`${key}.update`]: (_, oldValue) => {
                     handleChange("update", oldValue);
                 }
             };
@@ -212,7 +212,7 @@ export abstract class Component {
     }
 
     private resolve_(path) {
-        const properties = Array.isArray(path) ? path : path.split(".");
+        const properties = isArray(path) ? path : path.split(".");
         return properties.reduce((prev, curr) => prev && prev[curr], this);
     }
 
@@ -222,15 +222,7 @@ export abstract class Component {
         if (!dir) return;
         forOwn(dir, (name, compiledDir) => {
             const storedDirective = this.directive_[name] || globalDirectives[name];
-            // if (name === "model") {
-            //     this.handleAttribute_(element, {
-            //         value: {
-            //             k: compiledDir.props[0],
-            //             v: compiledDir.value()
-            //         } as IAttrItem
-            //     });
-            // }
-            if (storedDirective != null) {
+            if (storedDirective) {
                 const binding = {
                     input: compiledDir.input,
                     params: compiledDir.params,
@@ -268,9 +260,7 @@ export abstract class Component {
     }
 
     private createElement_(tag, childs: HTMLElement[], option) {
-        if (tag == null) {
-            return createCommentNode();
-        }
+        if (tag == null) return createCommentNode();
         let element;
         let component: Component;
         if (!option.attr) {
@@ -297,8 +287,6 @@ export abstract class Component {
             }
 
             this.handleAttribute_(element, option.attr, false);
-
-
 
             if (option.on) {
                 const evListener = {};
