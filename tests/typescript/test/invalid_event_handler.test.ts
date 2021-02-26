@@ -3,15 +3,15 @@ import { app } from "../src/index";
 import { expect } from "chai";
 
 
-describe('Invalid Formatter', function () {
+describe('Invalid Event Handler', function () {
 
     let component;
 
-    it("initiate invalid formatter", function () {
+    it("initiate event handler", function () {
         try {
             component = (app as any).initiate(Component);
         } catch (error) {
-            expect(error.trim()).equal(`{Palace throw}: Invalid event handler for event "click", Handler does not exist in component.\n\n        type : invalid_event_handler\n`.trim())
+            expect(error).equal(`{Palace throw}: Invalid event handler for event "click", Handler does not exist in component.\n\ntype : invalid_event_handler`);
         }
     });
 });

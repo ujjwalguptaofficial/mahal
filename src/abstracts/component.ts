@@ -91,6 +91,10 @@ export abstract class Component {
         return this.element.querySelectorAll(selector);
     }
 
+    get outerHTML() {
+        return this.element.outerHTML;
+    }
+
     format(formatterName: string, value) {
         if (globalFormatter[formatterName]) {
             return globalFormatter[formatterName](value);
@@ -543,19 +547,20 @@ export abstract class Component {
                 if (component.props_[key].type) {
                     const expected = component.props_[key].type;
                     const received = getDataype(value.v);
-                    if (expected === received) {
-                        setPropValue();
+                    if (expected !== received) {
+                        nextTick(() => {
+                            new Logger(ERROR_TYPE.PropDataTypeMismatch,
+                                {
+                                    prop: key,
+                                    exp: expected,
+                                    got: received,
+                                    html: this.outerHTML,
+                                    file: this.file_
+                                }).logPlainError();
+                        })
+
                     }
-                    else {
-                        new Logger(ERROR_TYPE.PropDataTypeMismatch,
-                            {
-                                prop: key,
-                                exp: expected,
-                                got: received,
-                                template: this.template,
-                                file: this.file_
-                            }).throwPlain();
-                    }
+                    setPropValue();
                 }
                 else if (value.k) {
                     setPropValue();

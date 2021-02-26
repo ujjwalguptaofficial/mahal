@@ -48,7 +48,7 @@ export class Observer {
                     if (process.env.NODE_ENV !== "production") {
                         if (Observer.shouldCheckProp && (input as any).props_ && (input as any).props_[key]) {
                             new Logger(ERROR_TYPE.MutatingProp, {
-                                el: (input as any).element,
+                                html: (input as any).outerHTML,
                                 key: key
                             }).logPlainError();
                         }

@@ -11,7 +11,7 @@ describe('Invalid Component', function () {
         try {
             component = (app as any).initiate(InvalidComponent);
         } catch (error) {
-            expect(error).equal("{Palace throw}: Component \"IfElse\" is not registered. Make sure you have registered component either in parent component or globally.\n\n        type : invalid_component\n        ")
+            expect(error).equal('{Palace throw}: Component "IfElse" is not registered. Make sure you have registered component either in parent component or globally.\n\ntype : invalid_component')
         }
     });
 });

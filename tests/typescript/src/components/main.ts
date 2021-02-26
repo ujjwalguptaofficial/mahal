@@ -14,7 +14,7 @@ import Users from "./users";
 import TabRender from "./tab_render";
 
 @Template(`<div>
-<TextBox #model(name)/>
+<Btn :label="flag"/>
 {{name}}
 </div>`)
 // @Template(`<div>

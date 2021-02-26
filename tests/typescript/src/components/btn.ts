@@ -15,6 +15,15 @@ export default class extends Component {
 
     @Formatter('toUpper')
     toUpper(value) {
-        return value.toUpperCase();
+        return (() => {
+            switch (typeof value) {
+                case 'string':
+                    return value;
+                case 'number':
+                    return (value as number).toString();
+                default:
+                    return JSON.stringify(value);
+            }
+        })().toUpperCase();
     }
 }

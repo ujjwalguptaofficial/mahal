@@ -2,23 +2,27 @@ import Btn from "../src/components/btn";
 import { app } from "../src/index";
 import { nextTick } from "mahal";
 import { expect } from "chai";
+import { spy } from "sinon";
 
 describe('Btn prop test', function () {
 
     let component;
 
     it("initiate btn with wrong data type", function (done) {
-        try {
-            component = (app as any).initiate(Btn, {
-                props: {
-                    label: false
-                }
-            });
-            done("expected error")
-        } catch (error) {
-            expect(error).equal('{Palace throw}: Expected Data type of property label is string but received boolean,in template - \n                    \n<button class="btn" on:click="handleClick">{{label | toUpper}}</button>\n \n                    \n\n        type : prop_data_type_mismatch\n        ');
+        const consoleSpy = spy(console, "error");
+        component = (app as any).initiate(Btn, {
+            props: {
+                label: false
+            }
+        });
+        nextTick(() => {
+            const args = consoleSpy.args[0];
+            expect(args).length(2);
+            expect(args[0]).to.equal("{Palace error}:");
+            expect(args[1]).to.equal(' Expected Data type of property label is string but received boolean.\n\n\n\ntype : prop_data_type_mismatch');
+            consoleSpy.restore();
             done();
-        }
+        })
     });
 
 

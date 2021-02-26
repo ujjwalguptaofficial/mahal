@@ -11,7 +11,7 @@ export function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding)
             v: binding[VALUE]
         } as IAttrItem
     }, binding.isComponent);
-    if (binding.isComponent === true) {
+    if (binding.isComponent) {
         (el as any).on(INPUT, (val) => {
             this[key] = val;
         });

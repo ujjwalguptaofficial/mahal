@@ -38,21 +38,15 @@ export class Logger implements IError {
 
     getPlain() {
         const err = this.get();
-        return ` ${err.message}
-
-        type : ${err.type}
-        `;
-
+        return ` ${err.message}${newLine}type : ${err.type}`
     }
 
     private getMsg_() {
         switch (this.type) {
             case ERROR_TYPE.PropDataTypeMismatch:
-                let str = `Expected Data type of property ${this.info_.prop} is ${this.info_.exp} but received ${this.info_.got},`;
+                let str = `Expected Data type of property ${this.info_.prop} is ${this.info_.exp} but received ${this.info_.got}.${newLine}`;
                 if (this.info_.template) {
-                    str += `in template - 
-                    ${this.info_.template} 
-                    `;
+                    str += `in template -${newLine}"${this.info_.html}"${newLine}`;
                 }
                 if (this.info_.file) {
                     str += `in file - ${this.info_.file} `;
@@ -73,7 +67,7 @@ export class Logger implements IError {
             case ERROR_TYPE.MutatingProp:
                 return `Do not mutate prop "${this.info_.key}" directly. Instead use a reactive property.`
                     + newLine + `found in -` + newLine +
-                    `${this.info_.el.outerHTML}`;
+                    `${this.info_.html}`;
             default:
                 return this.message;
         }
