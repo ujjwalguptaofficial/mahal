@@ -19,4 +19,4 @@ export const nextTick = (cb: Function) => {
         isExecuting = true;
         flushCallbacks();
     }
-}
+};

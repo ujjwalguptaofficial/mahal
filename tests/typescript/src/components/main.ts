@@ -14,7 +14,7 @@ import Users from "./users";
 import TabRender from "./tab_render";
 
 @Template(`<div>
-<TextAreaBox #model(name)/>
+<TextBox #model(name)/>
 {{name}}
 </div>`)
 // @Template(`<div>
