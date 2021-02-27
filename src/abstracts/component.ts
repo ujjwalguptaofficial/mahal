@@ -533,7 +533,7 @@ export abstract class Component {
             const value: IAttrItem = attr[key];
             if (component.props_[key]) {
                 const setPropValue = () => {
-                    component[key] = value.v;
+                    component[key] = isObject(value.v) ? merge(value.v) : value.v;
                     // if (process.env.NODE_ENV !== "test") {
                     this.watch(value.k, (newValue) => {
                         Observer.shouldCheckProp = false;

@@ -13,8 +13,8 @@ import Form from "./form";
 import Users from "./users";
 import TabRender from "./tab_render";
 
-@Template(`<div>
-<TabRender/>
+@Template(`<div >
+<TabRender #if(flag)/>
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
@@ -31,7 +31,7 @@ export default class Main extends Component {
     }]
 
     @Reactive
-    flag = false;
+    flag = true;
 
     @Reactive
     name = "ujjwal"
@@ -72,7 +72,7 @@ export default class Main extends Component {
 
     constructor() {
         super();
-        // window['comp'] = this;
+        window['comp'] = this;
         // window['nextTick'] = nextTick;
         // setTimeout(() => {
         //     // alert("name changed");
