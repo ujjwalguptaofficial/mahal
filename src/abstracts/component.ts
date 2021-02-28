@@ -35,13 +35,6 @@ export abstract class Component {
         this.element.parentNode.removeChild(this.element);
     }
 
-    addProp(name: string, option: IPropOption | any) {
-        if ((this as any).prototype.props_ == null) {
-            (this as any).prototype.props_ = {};
-        }
-        (this as any).prototype.props_ = option;
-    }
-
     watch(propName: string, cb: (newValue, oldValue) => void) {
         if (this.watchList_[propName] == null) {
             this.watchList_[propName] = [];
@@ -463,10 +456,8 @@ export abstract class Component {
                 el.parentNode.replaceChild(
                     newEl, el
                 );
-                // nextTick(() => {
                 el = newEl;
                 handleChange();
-                // })
             };
             keys.forEach(item => {
                 this.watch(item, watchCallBack);
