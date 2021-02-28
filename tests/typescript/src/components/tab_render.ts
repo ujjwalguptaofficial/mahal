@@ -3,7 +3,7 @@ import Users from "./users";
 import Tabs from "./tabs";
 
 @Template(`<div>
-{{activeTab}}
+<div class="tab-name">{{activeTab}}</div>
 <Tabs :tabs="tabs" #model(activeTab) >
     <target>
         <in-place :of="activeTab" :users="users" label="name"/>
@@ -13,7 +13,7 @@ import Tabs from "./tabs";
 @Children({
     Users, Tabs
 })
-export default class Main extends Component {
+export default class extends Component {
 
     tabs = ["Users", "Btn"];
 
