@@ -38,7 +38,7 @@ export class Logger implements IError {
 
     getPlain() {
         const err = this.get();
-        return ` ${err.msg}${newLine}type : ${err.type}`
+        return ` ${err.msg}${newLine}type : ${err.type}`;
     }
 
     private getMsg_() {

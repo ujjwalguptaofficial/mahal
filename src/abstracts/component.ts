@@ -543,7 +543,7 @@ export abstract class Component {
                                         html: this.outerHTML,
                                         file: this.file_
                                     }).logPlainError();
-                            })
+                            });
 
                         }
                         setPropValue();

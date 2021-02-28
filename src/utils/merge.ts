@@ -1,3 +1,3 @@
-export const merge = function (...obj) {
+export const merge = (...obj) => {
     return Object.assign({}, ...obj);
 };

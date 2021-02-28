@@ -4,4 +4,4 @@
 
 export const replaceEl = (oldEl: HTMLElement, newEl: HTMLElement) => {
     oldEl.parentNode.replaceChild(newEl, oldEl);
-}
+};
