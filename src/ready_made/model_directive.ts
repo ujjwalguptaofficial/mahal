@@ -5,7 +5,7 @@ const VALUE = "value";
 
 export function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding) {
     const key = binding.props[0];
-    this.handleAttribute_(el, {
+    this.handleAttr_(el, {
         value: {
             k: key,
             v: binding[VALUE]

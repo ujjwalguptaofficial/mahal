@@ -279,7 +279,7 @@ export abstract class Component {
                 (element as HTMLElement).innerHTML = option.html;
             }
 
-            this.handleAttribute_(element, option.attr, false);
+            this.handleAttr_(element, option.attr, false);
 
             if (option.on) {
                 const evListener = {};
@@ -515,7 +515,7 @@ export abstract class Component {
         return els;
     }
 
-    private handleAttribute_(component, attr, isComponent) {
+    private handleAttr_(component, attr, isComponent) {
         if (isComponent) {
             const htmlAttributes = [];
             if (!attr) return htmlAttributes;
@@ -591,7 +591,7 @@ export abstract class Component {
             });
         }
 
-        const htmlAttributes = this.handleAttribute_(component, option.attr, true);
+        const htmlAttributes = this.handleAttr_(component, option.attr, true);
         if (option.on) {
             const events = option.on;
             for (const eventName in events) {
