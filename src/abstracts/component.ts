@@ -357,19 +357,28 @@ export abstract class Component {
             component = new (this.children[tag] || globalComponents[tag] as any)();
             const htmlAttributes = this.initComponent_(component as any, option);
             element = component.element = component.executeRender_();
-            childs.forEach(item => {
-                if (item.tagName === "TARGET") {
-                    const targetSlot =
-                        component.find(`slot[name='${item.getAttribute("name")}']`);
-                    if (targetSlot) {
-                        const targetSlotParent = targetSlot.parentElement;
+            let targetSlot = component.find(`slot[name='default']`);
+            if (targetSlot) {
+                childs.forEach(item => {
+                    if (item.tagName === "TARGET") {
+                        const namedSlot = component.find(`slot[name='${item.getAttribute("name")}']`);
+                        if (namedSlot) {
+                            targetSlot = namedSlot;
+                        }
+                    }
+                    const targetSlotParent = targetSlot.parentElement;
+                    if (item.nodeType === 3) {
+                        targetSlotParent.insertBefore(item, targetSlot.nextSibling);
+                    }
+                    else {
                         item.childNodes.forEach(child => {
                             targetSlotParent.insertBefore(child, targetSlot.nextSibling);
                         });
-                        targetSlot.parentElement.removeChild(targetSlot);
                     }
-                }
-            });
+                    targetSlotParent.removeChild(targetSlot);
+                });
+            }
+
             (htmlAttributes || []).forEach(item => {
                 switch (item.key) {
                     case 'class':
@@ -528,7 +537,6 @@ export abstract class Component {
                             Observer.shouldCheckProp = false;
                             component[key] = newValue;
                             Observer.shouldCheckProp = true;
-
                         });
                     };
                     if (component.props_[key].type) {
