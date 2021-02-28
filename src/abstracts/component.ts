@@ -2,7 +2,7 @@ import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode, runPromisesInSequence } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFormatter, globalComponents, globalDirectives, defaultSlotName } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, Logger, isNull, getObjectLength, merge, setAttribute, forOwn, indexOf, isKeyExist, getDataype, EventBus, getAttribute, replaceEl } from "../utils";
+import { isArray, isObject, isPrimitive, nextTick, Logger, isNull, getObjectLength, merge, clone, setAttribute, forOwn, indexOf, isKeyExist, getDataype, EventBus, getAttribute, replaceEl } from "../utils";
 import { genericDirective } from "../generics";
 import { App } from "../app";
 
@@ -533,7 +533,7 @@ export abstract class Component {
             const value: IAttrItem = attr[key];
             if (component.props_[key]) {
                 const setPropValue = () => {
-                    component[key] = isObject(value.v) ? merge(value.v) : value.v;
+                    component[key] = clone(value.v); //isObject(value.v) ? merge(value.v) : value.v;
                     // if (process.env.NODE_ENV !== "test") {
                     this.watch(value.k, (newValue) => {
                         Observer.shouldCheckProp = false;
