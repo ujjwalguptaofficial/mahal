@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const webpack = require("webpack");
 module.exports = {
-  entry: './src/index.ts',
+  entry: path.join(__dirname, './src/index.ts'),
   devtool: 'inline-source-map',
   module: {
     rules: [{
@@ -11,8 +11,8 @@ module.exports = {
       exclude: /node_modules/
     }, {
       test: /\.css?$/,
-      use: 'css-loader',
-      exclude: /node_modules/
+      use: ['style-loader', 'css-loader'],
+      // exclude: /node_modules/
     }]
   },
   resolve: {
@@ -29,7 +29,7 @@ module.exports = {
     new HtmlWebPackPlugin({
       cache: true,
       hash: true,
-      template: './src/index.html',
+      template: path.join(__dirname, './src/index.html'),
       minify: {
         collapseWhitespace: true,
         removeComments: true,

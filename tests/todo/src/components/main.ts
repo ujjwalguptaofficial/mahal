@@ -1,29 +1,46 @@
-import { Component, Template, Children, Reactive } from "taj";
-import Task from "./task";
+import { Component, Template, Children, Reactive } from "mahal";
+import Todo from "./todo";
+import NewTodo from "./new_todo";
 
 
-@Template(`<div style="display:flex;flex-direction:column;">
-<div>
-    <input #model(newTask) type="text"/> <button on:click="addTask">Add</button>
+@Template(`
+<div class="column center container">
+    <new-todo class="margin-bottom-20px" on:newTask="addTask" />
+    <todo on:remove="removeTask" class="margin-top-20px" #for(task in tasks) :task="task" />
 </div>
-<Task on:remove="removeTask" #for(item,i in tasks) :task="item" :index="i"/> 
-</div>`)
+`)
 @Children({
-    Task
+    todo: Todo,
+    'new-todo': NewTodo
 })
 export default class Main extends Component {
 
-    @Reactive
-    tasks = ["ujjwal"];
+    uniqueId = 0;
 
     @Reactive
-    newTask = "";
+    tasks = [];
 
-    addTask() {
-        this.tasks.push(this.newTask);
+    constructor() {
+        super();
+        this.on("rendered", this.onRendered.bind(this))
     }
 
-    removeTask(index) {
-        this.tasks.splice(index, 1);
+    onRendered() {
+        this.addTask({
+            title: "Buy shoe",
+            description: "Buy a canvas shoe from Myntra"
+        })
+    }
+
+    addTask(task) {
+        task.id = ++this.uniqueId;
+        this.tasks.push(task);
+    }
+
+    removeTask(id) {
+        const index = this.tasks.findIndex(q => q.id === id);
+        if (index >= 0) {
+            this.tasks.splice(index, 1);
+        }
     }
 }
