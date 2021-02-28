@@ -13,6 +13,8 @@ describe('TAB RENDER', function () {
 
     const testBtn = (done) => {
         const tabNameDiv = component.find('.tab-name');
+        const activeDiv = component.find('.tab.active');
+        expect(activeDiv.innerHTML).equal(component.activeTab);
         expect(tabNameDiv.innerHTML).equal(component.activeTab);
         expect(component.find('.btn')).to.not.equal(null);
         expect(component.findAll('.tab')).length(component.tabs.length);
@@ -21,6 +23,8 @@ describe('TAB RENDER', function () {
 
     const testUser = (done) => {
         const tabNameDiv = component.find('.tab-name');
+        const activeDiv = component.find('.tab.active');
+        expect(activeDiv.innerHTML).equal(component.activeTab);
         expect(tabNameDiv.innerHTML).equal(component.activeTab);
         expect(component.findAll('.user-comp')).length(2);
         expect(component.findAll('.users')).length(1);
