@@ -516,63 +516,61 @@ export abstract class Component {
     }
 
     private handleAttribute_(component, attr, isComponent) {
-        if (!isComponent) {
-            forOwn(attr, (key, attrItem) => {
-                setAttribute(component, key, attrItem.v);
-                if (attrItem.k) {
-                    this.watch(attrItem.k, (newValue) => {
-                        setAttribute(component, key, newValue);
-                    });
-                }
-            });
-            return;
-        }
-        const htmlAttributes = [];
-        if (!attr) return htmlAttributes;
-        for (const key in attr) {
-            const value: IAttrItem = attr[key];
-            if (component.props_[key]) {
-                const setPropValue = () => {
-                    component[key] = clone(value.v); //isObject(value.v) ? merge(value.v) : value.v;
-                    // if (process.env.NODE_ENV !== "test") {
-                    this.watch(value.k, (newValue) => {
-                        Observer.shouldCheckProp = false;
-                        component[key] = newValue;
-                        Observer.shouldCheckProp = true;
-                        // component.onChange_(key, oldValue, newValue);
-                    });
-                    // }
-                };
-                if (component.props_[key].type) {
-                    const expected = component.props_[key].type;
-                    const received = getDataype(value.v);
-                    if (expected !== received) {
-                        nextTick(() => {
-                            new Logger(ERROR_TYPE.PropDataTypeMismatch,
-                                {
-                                    prop: key,
-                                    exp: expected,
-                                    got: received,
-                                    html: this.outerHTML,
-                                    file: this.file_
-                                }).logPlainError();
-                        })
+        if (isComponent) {
+            const htmlAttributes = [];
+            if (!attr) return htmlAttributes;
+            for (const key in attr) {
+                const value: IAttrItem = attr[key];
+                if (component.props_[key]) {
+                    const setPropValue = () => {
+                        component[key] = clone(value.v);
+                        this.watch(value.k, (newValue) => {
+                            Observer.shouldCheckProp = false;
+                            component[key] = newValue;
+                            Observer.shouldCheckProp = true;
 
+                        });
+                    };
+                    if (component.props_[key].type) {
+                        const expected = component.props_[key].type;
+                        const received = getDataype(value.v);
+                        if (expected !== received) {
+                            nextTick(() => {
+                                new Logger(ERROR_TYPE.PropDataTypeMismatch,
+                                    {
+                                        prop: key,
+                                        exp: expected,
+                                        got: received,
+                                        html: this.outerHTML,
+                                        file: this.file_
+                                    }).logPlainError();
+                            })
+
+                        }
+                        setPropValue();
                     }
-                    setPropValue();
+                    else if (value.k) {
+                        setPropValue();
+                    }
                 }
-                else if (value.k) {
-                    setPropValue();
+                else {
+                    htmlAttributes.push({
+                        key,
+                        value: value.v
+                    });
                 }
             }
-            else {
-                htmlAttributes.push({
-                    key,
-                    value: value.v
+            return htmlAttributes;
+        }
+
+        forOwn(attr, (key, attrItem) => {
+            setAttribute(component, key, attrItem.v);
+            if (attrItem.k) {
+                this.watch(attrItem.k, (newValue) => {
+                    setAttribute(component, key, newValue);
                 });
             }
-        }
-        return htmlAttributes;
+        });
     }
 
     private initComponent_(component: Component, option) {
