@@ -1,7 +1,7 @@
 import { Component, Template, Prop, Formatter, Reactive } from "mahal";
 
 @Template(`
-<button class="btn" on:click="handleClick">{{label | toUpper}}</button>
+<button class="btn" on:click="handleClick">{{label | toS | toUpper}}</button>
 `)
 
 export default class extends Component {
@@ -15,15 +15,6 @@ export default class extends Component {
 
     @Formatter('toUpper')
     toUpper(value) {
-        return (() => {
-            switch (typeof value) {
-                case 'string':
-                    return value;
-                case 'number':
-                    return (value as number).toString();
-                default:
-                    return JSON.stringify(value);
-            }
-        })().toUpperCase();
+        return value.toUpperCase();
     }
 }
