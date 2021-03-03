@@ -1,7 +1,7 @@
 import { Component } from "./abstracts";
 import { globalFormatter, globalComponents, plugins, globalDirectives } from "./constant";
 import { defaultExport } from "./default";
-import { Logger, isString } from "./utils";
+import { Logger, isString, isObject } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 
 const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroyed);
@@ -47,9 +47,14 @@ export class App {
     }
 
     static extend = {
-        plugin(plugin, options) {
+        plugin(plugin, options?) {
             const pluginInstane = new plugin();
-            pluginInstane.setup(defaultExport, options);
+            const apis = pluginInstane.setup(defaultExport, options);
+            if (apis && isObject(apis)) {
+                for (const api in apis) {
+                    Component.prototype['$' + api] = apis[api];
+                }
+            }
             plugins.push(plugin);
         },
         component(name, component) {

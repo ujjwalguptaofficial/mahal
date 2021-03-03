@@ -61,7 +61,7 @@ export abstract class Component {
         deleteAndReact(target, prop);
     }
 
-    render: () => void;
+    render: () => HTMLElement;
 
     on(event: string, cb: Function) {
         this.eventBus_.on(event, cb);

@@ -21,3 +21,5 @@ if (process.env.NODE_ENV !== "test") {
 else {
     App.extend.plugin(MahalTest, app);
 }
+
+
