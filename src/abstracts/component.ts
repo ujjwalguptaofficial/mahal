@@ -15,7 +15,6 @@ export abstract class Component {
     constructor() {
         nextTick(() => {
             this.attachGetterSetter_();
-            this.emit(LIFECYCLE_EVENT.Created);
         });
         if (isNull(this.children)) {
             this.children = {};
@@ -209,7 +208,7 @@ export abstract class Component {
         return properties.reduce((prev, curr) => prev && prev[curr], this);
     }
 
-    private eventBus_ = new EventBus();
+    private eventBus_ = new EventBus(this);
 
     private handleDirective_(element, dir, isComponent) {
         if (!dir) return;
@@ -489,7 +488,7 @@ export abstract class Component {
     private onChange_(key, oldValue, newValue) {
         if (this.watchList_[key] != null) {
             this.watchList_[key].forEach(cb => {
-                cb(newValue, oldValue);
+                cb.call(this, newValue, oldValue);
             });
         }
     }
@@ -616,6 +615,7 @@ export abstract class Component {
         component.on(LIFECYCLE_EVENT.Destroyed, () => {
             component = null;
         });
+        component.emit(LIFECYCLE_EVENT.Created);
         return htmlAttributes;
     }
 

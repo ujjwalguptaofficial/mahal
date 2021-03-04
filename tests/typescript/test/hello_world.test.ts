@@ -2,7 +2,7 @@ import HelloWorld from "../src/components/hello_world";
 import { app } from "../src/index";
 import { nextTick, getObjectLength } from "mahal";
 import { expect } from "chai";
-import { createSandbox } from "sinon";
+import { createSandbox, spy } from "sinon";
 
 describe('HelloWorld', function () {
 
@@ -13,16 +13,34 @@ describe('HelloWorld', function () {
     });
 
     it("initiate component", function (done) {
+        const consoleSpy = spy(console, "log");
+
         component = (app as any).initiate(HelloWorld, {
             props: {
                 count: 0
             }
         });
-        component.on("created", () => {
-            component.on("rendered", () => {
-                done();
-            });
-        });
+        nextTick(() => {
+            expect(consoleSpy.args).length(3);
+            const args1 = consoleSpy.args[0];
+            expect(args1).length(3);
+            expect(args1[0]).to.equal("constructor");
+            expect(args1[1]).to.equal(component.name);
+            expect(args1[2]).to.equal(undefined);
+
+            const args2 = consoleSpy.args[1];
+            expect(args2).length(2);
+            expect(args2[0]).to.equal("created");
+            expect(args2[1]).to.equal(component.name);
+
+            const args3 = consoleSpy.args[2];
+            expect(args3).length(3);
+            expect(args3[0]).to.equal("rendered");
+            expect(args3[1]).to.equal(component.name);
+            expect(args3[2]).to.equal(0);
+            consoleSpy.restore();
+            done();
+        })
     });
 
     it('id=name inner html should equal ujjwal gupta', function () {

@@ -32,15 +32,20 @@ export default class HelloWorld extends BaseComponent {
     @Reactive
     flag = false;
 
-
+    constructor() {
+        super();
+        this.on("created", this.onCreated);
+        this.on("rendered", this.rendered);
+        console.log("constructor", this.name, this.count);
+    }
 
     rendered() {
         window['comp'] = this;
-        console.log("Hello world rendered", this.name);
+        console.log("rendered", this.name, this.count);
     }
 
     onCreated() {
-        console.log("Hello world created", this.name);
+        console.log("created", this.name);
     }
 
     onDestroyed() {

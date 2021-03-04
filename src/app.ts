@@ -40,6 +40,7 @@ export class App {
 
     create() {
         const componentInstance: Component = new (this as any).component();
+        (componentInstance as any).initComponent_(componentInstance, {});
         this.element.appendChild(
             (componentInstance as any).executeRender_()
         );
@@ -65,7 +66,9 @@ export class App {
         },
         directive(name: string, directive) {
             globalDirectives[name] = directive;
+        },
+        set renderer(val) {
+            (App as any).createRenderer = val;
         }
     }
-
 }

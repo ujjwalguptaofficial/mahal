@@ -1,4 +1,11 @@
 export class EventBus {
+
+    constructor(ctx?) {
+        this.ctx_ = ctx;
+    }
+
+    private ctx_;
+
     private events_: {
         [key: string]: Function[]
     } = {};
@@ -26,7 +33,7 @@ export class EventBus {
     emit(event: string, data?: any) {
         if (this.events_[event]) {
             this.events_[event].forEach(cb => {
-                cb(data);
+                cb.call(this.ctx_, data);
             });
         }
     }
