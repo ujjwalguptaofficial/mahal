@@ -634,8 +634,8 @@ export abstract class Component {
         this.watchList_ = {};
     }
 
-    private executeRender_() {
-        const renderFn = this.render || (() => {
+    private getRender_() {
+        return this.render || (() => {
             if (process.env.NODE_ENV !== "prodution") {
                 if (!(App as any).createRenderer) {
                     new Logger(ERROR_TYPE.RendererNotFound).throwPlain();
@@ -643,6 +643,10 @@ export abstract class Component {
             }
             return (App as any).createRenderer(this.template);
         })();
+    }
+
+    private executeRender_() {
+        const renderFn = this.getRender_();
         this.element = renderFn.call(this,
             this.createElement_.bind(this),
             createTextNode,
