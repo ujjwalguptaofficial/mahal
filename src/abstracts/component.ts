@@ -451,12 +451,14 @@ export abstract class Component {
         let el = method();
         const handleChange = () => {
             const watchCallBack = () => {
-                const newEl = method();
-                el.parentNode.replaceChild(
-                    newEl, el
-                );
-                el = newEl;
-                handleChange();
+                nextTick(() => {
+                    const newEl = method();
+                    el.parentNode.replaceChild(
+                        newEl, el
+                    );
+                    el = newEl;
+                    handleChange();
+                })
             };
             keys.forEach(item => {
                 this.watch(item, watchCallBack);
