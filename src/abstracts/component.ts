@@ -254,7 +254,6 @@ export abstract class Component {
     private createElement_(tag, childs: HTMLElement[], option) {
         if (tag == null) return createCommentNode();
         let element;
-        let component: Component;
         if (!option.attr) {
             option.attr = {};
         }
@@ -343,10 +342,11 @@ export abstract class Component {
             }
 
             this.handleDirective_(element, option.dir, false);
-
+            return element;
         }
-        else if (this.children[tag] || globalComponents[tag]) {
-            component = new (this.children[tag] || globalComponents[tag] as any)();
+        const savedComponent = this.children[tag] || globalComponents[tag];
+        if (savedComponent) {
+            const component: Component = new savedComponent();
             const htmlAttributes = this.initComponent_(component as any, option);
             element = component.element = component.executeRender_();
             let targetSlot = component.find(`slot[name='default']`);
@@ -391,7 +391,6 @@ export abstract class Component {
             }).throwPlain();
         }
         return element;
-
     }
 
     private handleInPlace_(childs, option) {
