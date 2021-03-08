@@ -38,11 +38,11 @@ export class App {
         })
     }
 
-    create() {
+    async create() {
         const componentInstance: Component = new (this as any).component();
         (componentInstance as any).initComponent_(componentInstance, {});
         this.element.appendChild(
-            (componentInstance as any).executeRender_()
+            await (componentInstance as any).executeRender_()
         );
         return componentInstance;
     }

@@ -54,20 +54,20 @@ describe('IfELSE', function () {
 
     it("set state to 3", function (done) {
         component.state = 3;
-        nextTick(() => {
+        setTimeout(() => {
             const div = component.find('button.btn');
             expect(div.innerHTML).equal('OK');
             done();
-        })
+        }, 50)
     });
 
     it("set state to 5", function (done) {
         component.state = 5;
-        nextTick(() => {
+        setTimeout(() => {
             const div = component.find('button.btn');
             expect(div.innerHTML).equal('HELLO');
             done();
-        })
+        }, 50)
     });
 
     it("set another state to 2", function (done) {

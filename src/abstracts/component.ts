@@ -251,12 +251,56 @@ export abstract class Component {
         });
     }
 
-    private createElement_(tag, childs: HTMLElement[], option) {
-        if (tag == null) return createCommentNode();
+    private onComponentLoad(comp: any, childs, option) {
+        return new Promise((res) => {
+            const component: Component = new comp();
+            const htmlAttributes = this.initComponent_(component as any, option);
+            component.executeRender_().then((element) => {
+                component.element = element;
+                let targetSlot = component.find(`slot[name='default']`);
+                if (targetSlot) {
+                    childs.forEach(item => {
+                        if (item.tagName === "TARGET") {
+                            const namedSlot = component.find(`slot[name='${item.getAttribute("name")}']`);
+                            if (namedSlot) {
+                                targetSlot = namedSlot;
+                            }
+                        }
+                        const targetSlotParent = targetSlot.parentElement;
+                        if (item.nodeType === 3) {
+                            targetSlotParent.insertBefore(item, targetSlot.nextSibling);
+                        }
+                        else {
+                            item.childNodes.forEach(child => {
+                                targetSlotParent.insertBefore(child, targetSlot.nextSibling);
+                            });
+                        }
+                        targetSlotParent.removeChild(targetSlot);
+                    });
+                }
+
+                (htmlAttributes || []).forEach(item => {
+                    switch (item.key) {
+                        case 'class':
+                            item.value = (getAttribute(element, item.key) || '') + ' ' + item.value;
+                            break;
+                        case 'style':
+                            item.value = (getAttribute(element, item.key) || '') + item.value;
+                    }
+                    setAttribute(element, item.key, item.value);
+                });
+                res(element);
+            })
+        });
+    };
+
+    private async createElement_(tag, childss: HTMLElement[], option): Promise<Element | Comment> {
+        if (tag == null) return Promise.resolve(createCommentNode());
         let element;
         if (!option.attr) {
             option.attr = {};
         }
+        const childs = await Promise.all(childss);
         if (HTML_TAG[tag]) {
             switch (tag) {
                 case "slot":
@@ -342,45 +386,20 @@ export abstract class Component {
             }
 
             this.handleDirective_(element, option.dir, false);
-            return element;
+            return Promise.resolve(element);
         }
         const savedComponent = this.children[tag] || globalComponents[tag];
         if (savedComponent) {
-            const component: Component = new savedComponent();
-            const htmlAttributes = this.initComponent_(component as any, option);
-            element = component.element = component.executeRender_();
-            let targetSlot = component.find(`slot[name='default']`);
-            if (targetSlot) {
-                childs.forEach(item => {
-                    if (item.tagName === "TARGET") {
-                        const namedSlot = component.find(`slot[name='${item.getAttribute("name")}']`);
-                        if (namedSlot) {
-                            targetSlot = namedSlot;
-                        }
-                    }
-                    const targetSlotParent = targetSlot.parentElement;
-                    if (item.nodeType === 3) {
-                        targetSlotParent.insertBefore(item, targetSlot.nextSibling);
-                    }
-                    else {
-                        item.childNodes.forEach(child => {
-                            targetSlotParent.insertBefore(child, targetSlot.nextSibling);
-                        });
-                    }
-                    targetSlotParent.removeChild(targetSlot);
-                });
-            }
-
-            (htmlAttributes || []).forEach(item => {
-                switch (item.key) {
-                    case 'class':
-                        item.value = (getAttribute(element, item.key) || '') + ' ' + item.value;
-                        break;
-                    case 'style':
-                        item.value = (getAttribute(element, item.key) || '') + item.value;
+            return new Promise((res) => {
+                if (savedComponent instanceof Promise) {
+                    savedComponent.then(comp => {
+                        this.onComponentLoad(comp.default, childs, option).then(res);
+                    })
                 }
-                setAttribute(element, item.key, item.value);
-            });
+                else {
+                    this.onComponentLoad(savedComponent, childs, option).then(res);
+                }
+            })
         }
         else if (tag === "in-place") {
             return this.handleInPlace_(childs, option);
@@ -390,18 +409,17 @@ export abstract class Component {
                 tag: tag
             }).throwPlain();
         }
-        return element;
     }
 
-    private handleInPlace_(childs, option) {
+    private async handleInPlace_(childs, option) {
         const attr = option.attr.of;
         if (!attr) return createCommentNode();
         delete option.attr.of;
-        let el = this.createElement_(attr.v || attr.k, childs, option);
+        let el = await this.createElement_(attr.v || attr.k, childs, option);
         if (attr.k) {
-            this.watch(attr.k, (val) => {
-                const newEl = this.createElement_(val, childs, option);
-                replaceEl(el, newEl);
+            this.watch(attr.k, async (val) => {
+                const newEl = await this.createElement_(val, childs, option);
+                replaceEl(el as any, newEl as any);
                 el = newEl;
             });
         }
@@ -446,12 +464,12 @@ export abstract class Component {
         });
     }
 
-    private handleExp_(method: Function, keys: string[], id?: string) {
-        let el = method();
+    private async handleExp_(method: Function, keys: string[], id?: string) {
+        let el = await method();
         const handleChange = () => {
             const watchCallBack = () => {
-                nextTick(() => {
-                    const newEl = method();
+                nextTick(async () => {
+                    const newEl = await method();
                     el.parentNode.replaceChild(
                         newEl, el
                     );
@@ -617,6 +635,9 @@ export abstract class Component {
             component = null;
         });
         component.emit(LIFECYCLE_EVENT.Created);
+        nextTick(() => {
+            component.emit(LIFECYCLE_EVENT.Rendered);
+        })
         return htmlAttributes;
     }
 
@@ -646,9 +667,9 @@ export abstract class Component {
         })();
     }
 
-    private executeRender_() {
+    private async executeRender_() {
         const renderFn = this.getRender_();
-        this.element = renderFn.call(this,
+        this.element = await renderFn.call(this,
             this.createElement_.bind(this),
             createTextNode,
             this.format.bind(this),
@@ -671,7 +692,6 @@ export abstract class Component {
                 }
             }
             this.element.addEventListener(LIFECYCLE_EVENT.Destroyed, this.clearAll_);
-            this.emit(LIFECYCLE_EVENT.Rendered);
         });
         return this.element;
     }
