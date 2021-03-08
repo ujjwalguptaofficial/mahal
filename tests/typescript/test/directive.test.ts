@@ -7,8 +7,8 @@ describe('Directive', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(DirectiveComponent);
+    before(async function () {
+        component = await (app as any).initiate(DirectiveComponent);
     });
 
     it("check data-name on el1", function () {

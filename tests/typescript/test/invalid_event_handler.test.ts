@@ -7,9 +7,9 @@ describe('Invalid Event Handler', function () {
 
     let component;
 
-    it("initiate event handler", function () {
+    it("initiate event handler", async function () {
         try {
-            component = (app as any).initiate(Component);
+            component = await (app as any).initiate(Component);
         } catch (error) {
             expect(error).equal(`{Palace throw}: Invalid event handler for event "click", Handler does not exist in component.\n\ntype : invalid_event_handler`);
         }

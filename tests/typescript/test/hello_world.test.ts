@@ -12,10 +12,10 @@ describe('HelloWorld', function () {
 
     });
 
-    it("initiate component", function (done) {
+    it("initiate component", async function (done) {
         const consoleSpy = spy(console, "log");
 
-        component = (app as any).initiate(HelloWorld, {
+        component = await (app as any).initiate(HelloWorld, {
             props: {
                 count: 0
             }

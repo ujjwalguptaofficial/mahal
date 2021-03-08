@@ -45,8 +45,8 @@ describe('Mutate prop in custom TextBox', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(Temp);
+    before(async function () {
+        component = await (app as any).initiate(Temp);
     });
 
     it("from component to element", function (done) {

@@ -8,8 +8,8 @@ describe('MODEL', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(FormComponent);
+    before(async function () {
+        component = await (app as any).initiate(FormComponent);
     });
 
     it("set email value from comp", function (done) {

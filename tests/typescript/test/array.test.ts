@@ -7,12 +7,15 @@ describe('Array', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(ArrayComponent);
+    before(async function () {
+        component = await (app as any).initiate(ArrayComponent);
     });
 
-    it("check list", function () {
-        expect(component.findAll(".tr-list")).length(0);
+    it("check list", function (done) {
+        setTimeout(() => {
+            expect(component.findAll(".tr-list")).length(0);
+            done();
+        }, 100);
     });
 
     it("add students using push", function (done) {

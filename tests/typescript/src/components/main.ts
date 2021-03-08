@@ -12,16 +12,20 @@ import Model from "./model";
 import Form from "./form";
 import Users from "./users";
 import TabRender from "./tab_render";
+import Btn from "./btn";
 
 @Template(`<div >
-<IfElse/>
+<Student/>
 </div>`)
+// @Template(`<div >
+// <Btn :label="flag"/>
+// </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
 // </div>`)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
-    Model, Form, Users, TabRender, TextAreaBox
+    Model, Form, Users, TabRender, TextAreaBox, Btn
 })
 export default class Main extends Component {
 

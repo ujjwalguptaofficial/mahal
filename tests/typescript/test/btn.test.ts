@@ -8,9 +8,9 @@ describe('Btn prop test', function () {
 
     let component;
 
-    it("initiate btn with wrong data type", function (done) {
+    it("initiate btn with wrong data type", async function (done) {
         const consoleSpy = spy(console, "error");
-        component = (app as any).initiate(Btn, {
+        component = await (app as any).initiate(Btn, {
             props: {
                 label: false
             }
@@ -26,8 +26,8 @@ describe('Btn prop test', function () {
     });
 
 
-    it("initiate  with right data type", function (done) {
-        component = (app as any).initiate(Btn, {
+    it("initiate  with right data type", async function (done) {
+        component = await (app as any).initiate(Btn, {
             props: {
                 label: "ujjwal"
             }

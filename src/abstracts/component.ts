@@ -173,8 +173,10 @@ export abstract class Component {
                 let newElement;
                 switch (prop) {
                     case 'push':
-                        newElement = method(params.value, params.key);
-                        parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
+                        newElement = method(params.value, params.key).then((el) => {
+                            newElement = el;
+                            parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
+                        })
                         break;
                     case 'splice':
                         for (let i = 1; i <= params[1]; i++) {
@@ -256,7 +258,7 @@ export abstract class Component {
             const component: Component = new comp();
             const htmlAttributes = this.initComponent_(component as any, option);
             component.executeRender_().then((element) => {
-                component.element = element;
+                // component.element = element;
                 let targetSlot = component.find(`slot[name='default']`);
                 if (targetSlot) {
                     childs.forEach(item => {
@@ -290,6 +292,7 @@ export abstract class Component {
                     setAttribute(element, item.key, item.value);
                 });
                 res(element);
+
             })
         });
     };
@@ -552,7 +555,7 @@ export abstract class Component {
                         const expected = component.props_[key].type;
                         const received = getDataype(value.v);
                         if (expected !== received) {
-                            nextTick(() => {
+                            this.on(LIFECYCLE_EVENT.Rendered, () => {
                                 new Logger(ERROR_TYPE.PropDataTypeMismatch,
                                     {
                                         prop: key,
@@ -635,9 +638,6 @@ export abstract class Component {
             component = null;
         });
         component.emit(LIFECYCLE_EVENT.Created);
-        nextTick(() => {
-            component.emit(LIFECYCLE_EVENT.Rendered);
-        })
         return htmlAttributes;
     }
 
@@ -669,31 +669,36 @@ export abstract class Component {
 
     private async executeRender_() {
         const renderFn = this.getRender_();
-        this.element = await renderFn.call(this,
-            this.createElement_.bind(this),
-            createTextNode,
-            this.format.bind(this),
-            this.handleExp_.bind(this),
-            this.handleForExp_.bind(this)
-        );
-        nextTick(() => {
-            if ((this as any).$store) {
-                for (let key in this.dependency_) {
-                    if (key.indexOf("$store.state") >= 0) {
-                        const cb = (newValue, oldValue) => {
-                            this.updateDOM_(key, oldValue);
-                        };
-                        key = key.replace("$store.state.", '');
-                        (this as any).$store.watch(key, cb);
-                        this.storeWatchCb_.push({
-                            key, cb
-                        });
+        return new Promise<HTMLElement>(res => {
+            renderFn.call(this,
+                this.createElement_.bind(this),
+                createTextNode,
+                this.format.bind(this),
+                this.handleExp_.bind(this),
+                this.handleForExp_.bind(this)
+            ).then(el => {
+                this.element = el;
+                if ((this as any).$store) {
+                    for (let key in this.dependency_) {
+                        if (key.indexOf("$store.state") >= 0) {
+                            const cb = (newValue, oldValue) => {
+                                this.updateDOM_(key, oldValue);
+                            };
+                            key = key.replace("$store.state.", '');
+                            (this as any).$store.watch(key, cb);
+                            this.storeWatchCb_.push({
+                                key, cb
+                            });
+                        }
                     }
                 }
-            }
-            this.element.addEventListener(LIFECYCLE_EVENT.Destroyed, this.clearAll_);
-        });
-        return this.element;
+                el.addEventListener(LIFECYCLE_EVENT.Destroyed, this.clearAll_);
+                res(el);
+                nextTick(() => {
+                    this.emit(LIFECYCLE_EVENT.Rendered);
+                })
+            })
+        })
     }
 
     private directive_;

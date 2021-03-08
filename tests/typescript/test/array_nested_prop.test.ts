@@ -40,8 +40,8 @@ describe('Array Nested Object Prop', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(Temp);
+    before(async function () {
+        component = await(app as any).initiate(Temp);
     });
 
     const testRendering = (done) => {

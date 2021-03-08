@@ -7,8 +7,8 @@ describe('TAB RENDER', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(TabRender);
+    before(async function () {
+        component = await (app as any).initiate(TabRender);
     });
 
     const testBtn = (done) => {

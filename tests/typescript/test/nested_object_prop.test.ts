@@ -25,7 +25,7 @@ class User extends Component {
 class Temp extends Component {
     @Reactive
     user = {
-        info:{name: "ujjwal"}
+        info: { name: "ujjwal" }
     };
 
     @Reactive
@@ -36,8 +36,8 @@ describe('Nested Object Prop', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(Temp);
+    before(async function () {
+        component = await (app as any).initiate(Temp);
     });
 
     const testRendering = (done) => {
