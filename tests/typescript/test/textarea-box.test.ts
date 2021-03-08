@@ -32,11 +32,11 @@ describe('MODEL TextAreabox', function () {
             const nameDiv = component.find('div.name');
             expect(nameDiv.innerHTML).equal('');
             component.name = "ujjwal";
-            nextTick(() => {
+            setTimeout(() => {
                 expect(nameDiv.innerHTML).to.equal(component.name);
                 expect(input.value).equal(component.name);
                 done();
-            })
+            }, 50)
         })
 
     });

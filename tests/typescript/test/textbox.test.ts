@@ -26,7 +26,7 @@ describe('MODEL TextBox', function () {
     });
 
     it("from component to element", function (done) {
-        nextTick(() => {
+        setTimeout(() => {
 
             const input = component.find('input');
             expect(input.value).equal('');
@@ -38,8 +38,7 @@ describe('MODEL TextBox', function () {
                 expect(input.value).equal(component.name);
                 done();
             })
-        })
-
+        }, 50)
     });
 
     it("from element to component", function (done) {
