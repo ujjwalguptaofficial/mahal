@@ -173,7 +173,7 @@ export abstract class Component {
                 let newElement;
                 switch (prop) {
                     case 'push':
-                        newElement = method(params.value, params.key).then((el) => {
+                        method(params.value, params.key).then((el) => {
                             newElement = el;
                             parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
                         })
@@ -183,16 +183,20 @@ export abstract class Component {
                             parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
                         }
                         if (params[2]) {
-                            newElement = method(params[2], params[0]);
-                            parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
+                            method(params[2], params[0]).then(el => {
+                                newElement = el;
+                                parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
+                            })
                         }
                         break;
                     case 'update':
                         resolvedValue = this.resolve_(key);
                         const index = indexOf(resolvedValue, params[0]);
                         if (index >= 0) {
-                            newElement = method(params[1], params[0]);
-                            parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
+                            method(params[1], params[0]).then(el => {
+                                newElement = el;
+                                parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
+                            })
                         }
                         break;
                 }
