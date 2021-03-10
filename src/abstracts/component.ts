@@ -498,12 +498,8 @@ export abstract class Component {
     private handleExp_(method: Function, keys: string[], id?: string) {
         let el = method();
         const handleChange = function () {
-            if (el.replacedBy) {
-                const replacedBy = el.replacedBy;
-                el.replacedBy = null;
-                el = replacedBy;
-            }
             el.removeEventListener(LIFECYCLE_EVENT.Rendered, handleChange);
+            el = getReplacedBy(el)
             const watchCallBack = () => {
                 nextTick(() => {
                     const newEl = method();
