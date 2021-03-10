@@ -6,6 +6,8 @@ import { isArray, isObject, isPrimitive, nextTick, Logger, isNull, getObjectLeng
 import { genericDirective } from "../generics";
 import { App } from "../app";
 
+const renderEvent = new window.CustomEvent(LIFECYCLE_EVENT.Rendered);
+
 export abstract class Component {
     children: { [key: string]: typeof Component };
     element: HTMLElement;
@@ -251,9 +253,9 @@ export abstract class Component {
         });
     }
 
-    private emitRender_() {
+    private emitRender_(element: HTMLElement) {
         nextTick(() => {
-            this.emit(LIFECYCLE_EVENT.Rendered);
+            element.dispatchEvent(renderEvent);
         })
     }
 
@@ -348,7 +350,7 @@ export abstract class Component {
             }
 
             this.handleDirective_(element, option.dir, false);
-            this.emitRender_();
+            this.emitRender_(element);
             return element;
         }
         const savedComponent = this.children[tag] || globalComponents[tag];
@@ -368,6 +370,7 @@ export abstract class Component {
                 const htmlAttributes = this.initComponent_(component as any, option);
                 component.element = component.executeRender_();
                 replaceEl(element, component.element);
+                const cm = element;
                 element = component.element;
                 let targetSlot = component.find(`slot[name='default']`);
                 if (targetSlot) {
@@ -401,7 +404,11 @@ export abstract class Component {
                     }
                     setAttribute(element, item.key, item.value);
                 });
-                this.emitRender_();
+                nextTick(() => {
+                    cm.replacedBy = element;
+                    this.emitRender_(cm);
+                    component.emit(LIFECYCLE_EVENT.Rendered);
+                })
             })
             return element;
         }
@@ -471,15 +478,19 @@ export abstract class Component {
 
     private handleExp_(method: Function, keys: string[], id?: string) {
         let el = method();
-        const handleChange = () => {
+        const handleChange = function () {
+            if (el.replacedBy) {
+                const replacedBy = el.replacedBy;
+                el.replacedBy = null;
+                el = replacedBy;
+            }
+            el.removeEventListener(LIFECYCLE_EVENT.Rendered, handleChange);
             const watchCallBack = () => {
                 nextTick(() => {
                     const newEl = method();
-                    el.parentNode.replaceChild(
-                        newEl, el
-                    );
+                    replaceEl(el, newEl);
                     el = newEl;
-                    handleChange();
+                    el.addEventListener(LIFECYCLE_EVENT.Rendered, handleChange);
                 })
             };
             keys.forEach(item => {
@@ -492,10 +503,8 @@ export abstract class Component {
                 });
             }.bind(this);
             el.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
-        };
-        this.on(LIFECYCLE_EVENT.Rendered, () => {
-            handleChange();
-        });
+        }.bind(this);
+        el.addEventListener(LIFECYCLE_EVENT.Rendered, handleChange);
         return el;
     }
 
