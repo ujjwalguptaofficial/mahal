@@ -259,9 +259,19 @@ export abstract class Component {
         })
     }
 
+    private createTextNode(val) {
+        var el = createTextNode(val);
+        this.emitRender_(el as any);
+        return el;
+    }
+
     private createElement_(tag, childs: HTMLElement[], option) {
-        if (tag == null) return createCommentNode();
         let element;
+        if (tag == null) {
+            element = createCommentNode();
+            this.emitRender_(element);
+            return element;
+        }
         if (!option.attr) {
             option.attr = {};
         }
@@ -649,6 +659,9 @@ export abstract class Component {
             component = null;
         });
         component.emit(LIFECYCLE_EVENT.Created);
+        nextTick(() => {
+            component.emit(LIFECYCLE_EVENT.Rendered);
+        })
         return htmlAttributes;
     }
 
@@ -682,7 +695,7 @@ export abstract class Component {
         const renderFn = this.getRender_();
         this.element = renderFn.call(this,
             this.createElement_.bind(this),
-            createTextNode,
+            this.createTextNode.bind(this),
             this.format.bind(this),
             this.handleExp_.bind(this),
             this.handleForExp_.bind(this)
