@@ -643,6 +643,8 @@ export abstract class Component {
         }
 
         const htmlAttributes = this.handleAttr_(component, option.attr, true);
+        this.handleDirective_(component, option.dir, true);
+        component.emit(LIFECYCLE_EVENT.Created);
         if (option.on) {
             const events = option.on;
             for (const eventName in events) {
@@ -663,11 +665,9 @@ export abstract class Component {
                 });
             }
         }
-        this.handleDirective_(component, option.dir, true);
         component.on(LIFECYCLE_EVENT.Destroyed, () => {
             component = null;
         });
-        component.emit(LIFECYCLE_EVENT.Created);
         nextTick(() => {
             component.emit(LIFECYCLE_EVENT.Rendered);
         })
