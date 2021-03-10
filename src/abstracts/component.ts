@@ -251,6 +251,12 @@ export abstract class Component {
         });
     }
 
+    private emitRender_() {
+        nextTick(() => {
+            this.emit(LIFECYCLE_EVENT.Rendered);
+        })
+    }
+
     private createElement_(tag, childs: HTMLElement[], option) {
         if (tag == null) return createCommentNode();
         let element;
@@ -342,45 +348,62 @@ export abstract class Component {
             }
 
             this.handleDirective_(element, option.dir, false);
+            this.emitRender_();
             return element;
         }
         const savedComponent = this.children[tag] || globalComponents[tag];
         if (savedComponent) {
-            const component: Component = new savedComponent();
-            const htmlAttributes = this.initComponent_(component as any, option);
-            element = component.element = component.executeRender_();
-            let targetSlot = component.find(`slot[name='default']`);
-            if (targetSlot) {
-                childs.forEach(item => {
-                    if (item.tagName === "TARGET") {
-                        const namedSlot = component.find(`slot[name='${item.getAttribute("name")}']`);
-                        if (namedSlot) {
-                            targetSlot = namedSlot;
-                        }
-                    }
-                    const targetSlotParent = targetSlot.parentElement;
-                    if (item.nodeType === 3) {
-                        targetSlotParent.insertBefore(item, targetSlot.nextSibling);
-                    }
-                    else {
-                        item.childNodes.forEach(child => {
-                            targetSlotParent.insertBefore(child, targetSlot.nextSibling);
-                        });
-                    }
-                    targetSlotParent.removeChild(targetSlot);
-                });
-            }
-
-            (htmlAttributes || []).forEach(item => {
-                switch (item.key) {
-                    case 'class':
-                        item.value = (getAttribute(element, item.key) || '') + ' ' + item.value;
-                        break;
-                    case 'style':
-                        item.value = (getAttribute(element, item.key) || '') + item.value;
+            element = createCommentNode();
+            new Promise(res => {
+                if (savedComponent instanceof Promise) {
+                    savedComponent.then(comp => {
+                        res(comp.default);
+                    })
                 }
-                setAttribute(element, item.key, item.value);
-            });
+                else {
+                    res(savedComponent);
+                }
+            }).then((comp: any) => {
+                const component: Component = new comp();
+                const htmlAttributes = this.initComponent_(component as any, option);
+                component.element = component.executeRender_();
+                replaceEl(element, component.element);
+                element = component.element;
+                let targetSlot = component.find(`slot[name='default']`);
+                if (targetSlot) {
+                    childs.forEach(item => {
+                        if (item.tagName === "TARGET") {
+                            const namedSlot = component.find(`slot[name='${item.getAttribute("name")}']`);
+                            if (namedSlot) {
+                                targetSlot = namedSlot;
+                            }
+                        }
+                        const targetSlotParent = targetSlot.parentElement;
+                        if (item.nodeType === 3) {
+                            targetSlotParent.insertBefore(item, targetSlot.nextSibling);
+                        }
+                        else {
+                            item.childNodes.forEach(child => {
+                                targetSlotParent.insertBefore(child, targetSlot.nextSibling);
+                            });
+                        }
+                        targetSlotParent.removeChild(targetSlot);
+                    });
+                }
+
+                (htmlAttributes || []).forEach(item => {
+                    switch (item.key) {
+                        case 'class':
+                            item.value = (getAttribute(element, item.key) || '') + ' ' + item.value;
+                            break;
+                        case 'style':
+                            item.value = (getAttribute(element, item.key) || '') + item.value;
+                    }
+                    setAttribute(element, item.key, item.value);
+                });
+                this.emitRender_();
+            })
+            return element;
         }
         else if (tag === "in-place") {
             return this.handleInPlace_(childs, option);
@@ -470,7 +493,7 @@ export abstract class Component {
             }.bind(this);
             el.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
         };
-        nextTick(() => {
+        this.on(LIFECYCLE_EVENT.Rendered, () => {
             handleChange();
         });
         return el;
@@ -671,7 +694,6 @@ export abstract class Component {
                 }
             }
             this.element.addEventListener(LIFECYCLE_EVENT.Destroyed, this.clearAll_);
-            this.emit(LIFECYCLE_EVENT.Rendered);
         });
         return this.element;
     }
