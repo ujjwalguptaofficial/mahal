@@ -11,7 +11,7 @@ class User extends Component {
 
     @Prop()
     value;
-    
+
     get name() {
         return this.value[0].info.name;
     }
@@ -45,13 +45,13 @@ describe('Array Nested Object Prop', function () {
     });
 
     const testRendering = (done) => {
-        nextTick(() => {
+        setTimeout(() => {
             const nameDiv = component.find('.user .name');
             expect(nameDiv.innerHTML).equal(component.user[0].info.name);
             const flagDiv = component.find('.flag');
             expect(flagDiv.innerHTML).equal(component.flag.toString());
             done();
-        })
+        }, 50)
     }
 
     it("test for rendering user", function (done) {

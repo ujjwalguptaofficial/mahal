@@ -25,7 +25,7 @@ class User extends Component {
 class Temp extends Component {
     @Reactive
     user = {
-        info:{name: "ujjwal"}
+        info: { name: "ujjwal" }
     };
 
     @Reactive
@@ -41,13 +41,13 @@ describe('Nested Object Prop', function () {
     });
 
     const testRendering = (done) => {
-        nextTick(() => {
+        setTimeout(() => {
             const nameDiv = component.find('.user .name');
             expect(nameDiv.innerHTML).equal(component.user.info.name);
             const flagDiv = component.find('.flag');
             expect(flagDiv.innerHTML).equal(component.flag.toString());
             done();
-        })
+        }, 50)
     }
 
     it("test for rendering user", function (done) {

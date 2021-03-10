@@ -41,13 +41,13 @@ describe('Object Prop', function () {
     });
 
     const testRendering = (done) => {
-        nextTick(() => {
+        setTimeout(() => {
             const nameDiv = component.find('.user .name');
             expect(nameDiv.innerHTML).equal(component.user.name);
             const flagDiv = component.find('.flag');
             expect(flagDiv.innerHTML).equal(component.flag.toString());
             done();
-        })
+        }, 10)
     }
 
     it("test for rendering user", function (done) {

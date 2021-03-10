@@ -58,34 +58,34 @@ describe('IfELSE', function () {
             const div = component.find('button.btn');
             expect(div.innerHTML).equal('OK');
             done();
-        }, 100)
+        }, 50)
     });
 
     it("set state to 5", function (done) {
         component.state = 5;
-        nextTick(() => {
+        setTimeout(() => {
             const div = component.find('button.btn');
             expect(div.innerHTML).equal('HELLO');
             done();
-        })
+        }, 50)
     });
 
     it("set another state to 2", function (done) {
         component.anotherState = 2;
-        nextTick(() => {
+        setTimeout(() => {
             const div = component.find('div');
             expect(div.innerHTML).equal('5');
             done();
-        })
+        }, 50)
     });
 
     it("set state to 10", function (done) {
         component.state = 10;
-        nextTick(() => {
+        setTimeout(() => {
             const div = component.find('button.btn');
             expect(div.innerHTML).equal('10');
             done();
-        })
+        },50)
     });
 
     it("set nested value to 0", function (done) {
