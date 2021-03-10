@@ -101,21 +101,73 @@ export abstract class Component {
 
     private handleForExp_(key, method: Function, id: string) {
         let cmNode = createCommentNode();
-        let els = [cmNode];
         let resolvedValue = this.resolve_(key);
-        els = els.concat(this.runForExp_(key, resolvedValue, method));
-        nextTick(() => {
+        const handleChange = (prop, params) => {
+            const parent = cmNode.parentNode;
+            const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
+            let newElement;
+            switch (prop) {
+                case 'push':
+                    method(params.value, params.key).then((el) => {
+                        newElement = el;
+                        parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
+                    })
+                    break;
+                case 'splice':
+                    for (let i = 1; i <= params[1]; i++) {
+                        parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
+                    }
+                    if (params[2]) {
+                        method(params[2], params[0]).then(el => {
+                            newElement = el;
+                            parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
+                        })
+                    }
+                    break;
+                case 'update':
+                    resolvedValue = this.resolve_(key);
+                    const index = indexOf(resolvedValue, params[0]);
+                    if (index >= 0) {
+                        method(params[1], params[0]).then(el => {
+                            newElement = el;
+                            parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
+                        })
+                    }
+                    break;
+            }
+        };
+
+        const insertDOMFromValues = (newValue) => {
+            if (isArray(newValue)) {
+                newValue.forEach((item, index) => {
+                    handleChange("push", {
+                        value: item,
+                        key: index,
+                        length: index + 1
+                    });
+                });
+            }
+            else {
+                let index = 0;
+                forOwn(newValue, (prop, value) => {
+                    index++;
+                    handleChange("push", {
+                        value,
+                        key: prop,
+                        length: index + 1
+                    });
+                });
+            }
+        }
+        nextTick(_ => {
+
 
             let callBacks = {
                 [key]: (newValue) => {
                     // value resetted
-                    this.runForExp_(key, newValue, method);
                     const parent = cmNode.parentNode;
                     // remove all nodes
 
-                    // for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
-                    //     parent.removeChild(cmNode.nextSibling);
-                    // }
                     let nextSibling = cmNode.nextSibling;
                     while (nextSibling != null) {
                         parent.removeChild(nextSibling);
@@ -123,26 +175,8 @@ export abstract class Component {
                     }
 
                     // add all node
-                    if (isArray(newValue)) {
-                        newValue.forEach((item, index) => {
-                            handleChange("push", {
-                                value: item,
-                                key: index,
-                                length: index + 1
-                            });
-                        });
-                    }
-                    else {
-                        let index = 0;
-                        forOwn(newValue, (prop, value) => {
-                            index++;
-                            handleChange("push", {
-                                value,
-                                key: prop,
-                                length: index + 1
-                            });
-                        });
-                    }
+                    insertDOMFromValues(newValue);
+
                     //add setter
                     if (isObject(newValue)) {
                         this.observer_.create(newValue, null, `${key}.`);
@@ -167,46 +201,14 @@ export abstract class Component {
                 callBacks = null;
             };
             cmNode.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
-            const handleChange = (prop, params) => {
-                const parent = cmNode.parentNode;
-                const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
-                let newElement;
-                switch (prop) {
-                    case 'push':
-                        method(params.value, params.key).then((el) => {
-                            newElement = el;
-                            parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
-                        })
-                        break;
-                    case 'splice':
-                        for (let i = 1; i <= params[1]; i++) {
-                            parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
-                        }
-                        if (params[2]) {
-                            method(params[2], params[0]).then(el => {
-                                newElement = el;
-                                parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
-                            })
-                        }
-                        break;
-                    case 'update':
-                        resolvedValue = this.resolve_(key);
-                        const index = indexOf(resolvedValue, params[0]);
-                        if (index >= 0) {
-                            method(params[1], params[0]).then(el => {
-                                newElement = el;
-                                parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
-                            })
-                        }
-                        break;
-                }
-            };
+
             this.watch(key, callBacks[key]).
                 watch(`${key}.push`, callBacks[`${key}.push`]).
                 watch(`${key}.splice`, callBacks[`${key}.splice`]).
                 watch(`${key}.update`, callBacks[`${key}.update`]);
+            insertDOMFromValues(this[key]);
         });
-        return els;
+        return [cmNode as any];
     }
 
     private resolve_(path) {
@@ -460,7 +462,7 @@ export abstract class Component {
                     else if (item.forExp) {
                         const resolvedValue = this.resolve_(key);
                         const ref: HTMLDivElement = item.ref;
-                        const els = this.runForExp_(key, resolvedValue, item.method);
+                        const els = this.getElsFromForExp_(key, resolvedValue, item.method);
                         const parent = ref.parentNode;
                         // remove all nodes
                         for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
@@ -519,8 +521,8 @@ export abstract class Component {
         }
     }
 
-    private runForExp_(key, value, method) {
-        const els: any[] = [];
+    private getElsFromForExp_(key, value, method): Promise<HTMLElement[]> {
+        const els: Promise<HTMLElement>[] = [];
         if (process.env.NODE_ENV !== 'production') {
             if (isPrimitive(value) || isNull(value)) {
                 new Logger(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
@@ -528,16 +530,16 @@ export abstract class Component {
         }
 
         if (isArray(value)) {
-            value.map((item, i) => {
+            (value as Array<any>).forEach((item, i) => {
                 els.push(method(item, i));
             });
         }
         else if (isObject(value)) {
-            for (const prop in value) {
+            for (const prop in value as {}) {
                 els.push(method(value[prop], prop));
             }
         }
-        return els;
+        return Promise.all(els);
     }
 
     private handleAttr_(component, attr, isComponent) {
