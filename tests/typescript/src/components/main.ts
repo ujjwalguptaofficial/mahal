@@ -13,12 +13,12 @@ import Form from "./form";
 import Users from "./users";
 import TabRender from "./tab_render";
 
-// @Template(`<div >
-// <IfElse/>
-// </div>`)
-@Template(`<div>
-<HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
+@Template(`<div >
+<TabRender/>
 </div>`)
+// @Template(`<div>
+// <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>
+// </div>`)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Model, Form, Users, TabRender, TextAreaBox

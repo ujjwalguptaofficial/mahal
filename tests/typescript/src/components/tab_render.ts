@@ -29,6 +29,7 @@ export default class extends Component {
 
     constructor() {
         super();
+        window['comp'] = this;
         this.watch("activeTab", (value) => {
             console.log(value);
         })

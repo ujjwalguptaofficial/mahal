@@ -1,5 +1,5 @@
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode, runPromisesInSequence } from "../helpers";
+import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode, runPromisesInSequence, getReplacedBy } from "../helpers";
 import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
 import { globalFormatter, globalComponents, globalDirectives, defaultSlotName } from "../constant";
 import { isArray, isObject, isPrimitive, nextTick, Logger, isNull, getObjectLength, merge, clone, setAttribute, forOwn, indexOf, isKeyExist, getDataype, EventBus, getAttribute, replaceEl } from "../utils";
@@ -437,12 +437,21 @@ export abstract class Component {
         const attr = option.attr.of;
         if (!attr) return createCommentNode();
         delete option.attr.of;
-        let el = this.createElement_(attr.v || attr.k, childs, option);
+        let el: HTMLElement = this.createElement_(attr.v || attr.k, childs, option);
         if (attr.k) {
+            const checkForRendered = () => {
+                const onElementRendered = () => {
+                    el.removeEventListener(LIFECYCLE_EVENT.Rendered, onElementRendered);
+                    el = getReplacedBy(el);
+                }
+                el.addEventListener(LIFECYCLE_EVENT.Rendered, onElementRendered);
+            };
+            checkForRendered();
             this.watch(attr.k, (val) => {
                 const newEl = this.createElement_(val, childs, option);
                 replaceEl(el, newEl);
                 el = newEl;
+                checkForRendered();
             });
         }
         return el;
