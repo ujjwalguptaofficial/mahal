@@ -32,9 +32,12 @@ export class EventBus {
 
     emit(event: string, data?: any) {
         if (this.events_[event]) {
-            this.events_[event].forEach(cb => {
-                cb.call(this.ctx_, data);
-            });
+            return Promise.all(
+                this.events_[event].map(cb => {
+                    const result = cb.call(this.ctx_, data);
+                    return result && result.then ? result : Promise.resolve(result);
+                })
+            );
         }
     }
 
