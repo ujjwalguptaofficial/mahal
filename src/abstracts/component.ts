@@ -74,7 +74,7 @@ export abstract class Component {
     }
 
     emit(event: string, data?: any) {
-        this.eventBus_.emit(event, data);
+        return this.eventBus_.emit(event, data);
     }
 
     find(selector: string) {
@@ -640,7 +640,6 @@ export abstract class Component {
 
         const htmlAttributes = this.handleAttr_(component, option.attr, true);
         this.handleDirective_(component, option.dir, true);
-        component.emit(LIFECYCLE_EVENT.Created);
         if (option.on) {
             const events = option.on;
             for (const eventName in events) {
@@ -661,6 +660,7 @@ export abstract class Component {
                 });
             }
         }
+        component.emit(LIFECYCLE_EVENT.Created);
         component.on(LIFECYCLE_EVENT.Destroyed, () => {
             component = null;
         });

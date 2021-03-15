@@ -39,6 +39,7 @@ export class EventBus {
                 })
             );
         }
+        return Promise.resolve([]);
     }
 
     destroy() {
