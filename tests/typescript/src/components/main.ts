@@ -14,7 +14,7 @@ import Users from "./users";
 import TabRender from "./tab_render";
 
 @Template(`<div >
-<TabRender/>
+<in-place :of="name" #if(flag) label="as"/>
 </div>`)
 // @Template(`<div>
 // <HelloWorld :count="counter" on:click="incrementCounter"></HelloWorld>

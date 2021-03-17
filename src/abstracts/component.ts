@@ -581,14 +581,6 @@ export abstract class Component {
             for (const key in attr) {
                 const value: IAttrItem = attr[key];
                 if (component.props_[key]) {
-                    const setPropValue = () => {
-                        component[key] = clone(value.v);
-                        this.watch(value.k, (newValue) => {
-                            Observer.shouldCheckProp = false;
-                            component[key] = newValue;
-                            Observer.shouldCheckProp = true;
-                        });
-                    };
                     if (component.props_[key].type) {
                         const expected = component.props_[key].type;
                         const received = getDataype(value.v);
@@ -603,13 +595,18 @@ export abstract class Component {
                                         file: this.file_
                                     }).logPlainError();
                             });
-
                         }
-                        setPropValue();
                     }
-                    else if (value.k) {
-                        setPropValue();
+
+                    component[key] = clone(value.v);
+                    if (value.k) {
+                        this.watch(value.k, (newValue) => {
+                            Observer.shouldCheckProp = false;
+                            component[key] = newValue;
+                            Observer.shouldCheckProp = true;
+                        });
                     }
+
                 }
                 else {
                     htmlAttributes.push({
