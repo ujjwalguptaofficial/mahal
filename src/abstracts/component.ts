@@ -44,14 +44,6 @@ export abstract class Component {
         return this;
     }
 
-    isWatching(propName: string, cb: any) {
-        if (this.watchList_[propName]) {
-            const index = this.watchList_[propName].indexOf(cb);
-            return index >= 0;
-        }
-        return false;
-    }
-
     unwatch(propName: string, cb: (newValue, oldValue) => void) {
         if (this.watchList_[propName] != null) {
             const index = this.watchList_[propName].indexOf(cb);
@@ -441,6 +433,8 @@ export abstract class Component {
         return element;
     }
 
+    private inPlaceWatchers = {};
+
     private handleInPlace_(childs, option) {
         const attr = option.attr.of;
         if (!attr) return createCommentNode();
@@ -462,8 +456,9 @@ export abstract class Component {
                 el.addEventListener(LIFECYCLE_EVENT.Rendered, onElementRendered);
             };
             checkForRendered();
-            if (!this.isWatching(key, watchCallBack)) {
+            if (!this.inPlaceWatchers[key]) {
                 this.watch(key, watchCallBack);
+                this.inPlaceWatchers[key] = true;
             }
         }
         return el;

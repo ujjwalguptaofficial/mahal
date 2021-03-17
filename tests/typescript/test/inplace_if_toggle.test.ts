@@ -17,6 +17,7 @@ class Temp extends Component {
     @Reactive
     flag = false;
 
+    @Reactive
     name = "Btn"
 }
 
@@ -41,19 +42,28 @@ describe('InPlace if toggle', function () {
         testNotExist(done);
     });
 
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 3; i++) {
         it(`turn on - ${i}`, function (done) {
-            component.flag = true;
             setTimeout(() => {
-                testExist(done);
-            }, 100);
+                component.flag = true;
+                setTimeout(() => {
+                    testExist(done);
+                }, 10);
+            }, 10)
+
         });
         it(`turn off - ${i}`, function (done) {
-            component.flag = false;
             setTimeout(() => {
-                testNotExist(done);
-            }, 100);
+                component.flag = false;
+                setTimeout(() => {
+                    testNotExist(done);
+                }, 10);
+            }, 10)
         });
     }
+
+    it("check watchlist length", function () {
+        expect(component.watchList_["name"]).length(1);
+    });
 });
 
