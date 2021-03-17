@@ -265,7 +265,7 @@ export abstract class Component {
         return el;
     }
 
-    private createElement_(tag, childs: HTMLElement[], option) {
+    private createElement_(tag: string, childs: HTMLElement[], option) {
         let element;
         if (tag == null) {
             element = createCommentNode();
@@ -365,7 +365,7 @@ export abstract class Component {
         }
         const savedComponent = this.children[tag] || globalComponents[tag];
         if (savedComponent) {
-            element = createCommentNode();
+            element = createCommentNode(tag);
             new Promise(res => {
                 if (savedComponent instanceof Promise) {
                     savedComponent.then(comp => {
@@ -439,20 +439,26 @@ export abstract class Component {
         delete option.attr.of;
         let el: HTMLElement = this.createElement_(attr.v || attr.k, childs, option);
         if (attr.k) {
-            const checkForRendered = () => {
-                const onElementRendered = () => {
-                    el.removeEventListener(LIFECYCLE_EVENT.Rendered, onElementRendered);
-                    el = getReplacedBy(el);
-                }
-                el.addEventListener(LIFECYCLE_EVENT.Rendered, onElementRendered);
-            };
-            checkForRendered();
-            this.watch(attr.k, (val) => {
+            const watchCallBack = (val) => {
                 const newEl = this.createElement_(val, childs, option);
                 replaceEl(el, newEl);
                 el = newEl;
                 checkForRendered();
-            });
+            };
+            const checkForRendered = () => {
+                const onElementRendered = () => {
+                    el.removeEventListener(LIFECYCLE_EVENT.Rendered, onElementRendered);
+                    el = getReplacedBy(el);
+                    // const onElDestroyed = () => {
+                    //     el.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+                    //     this.unwatch(attr.k, watchCallBack);
+                    // }
+                    // el.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+                }
+                el.addEventListener(LIFECYCLE_EVENT.Rendered, onElementRendered);
+            };
+            checkForRendered();
+            this.watch(attr.k, watchCallBack);
         }
         return el;
     }

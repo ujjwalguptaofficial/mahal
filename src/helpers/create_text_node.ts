@@ -2,6 +2,6 @@ export const createTextNode = (value) => {
     return document.createTextNode(value);
 };
 
-export const createCommentNode = () => {
-    return document.createComment("");
+export const createCommentNode = (text?: string) => {
+    return document.createComment(text || "");
 };

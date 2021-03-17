@@ -34,7 +34,7 @@ export default class Main extends Component {
     flag = true;
 
     @Reactive
-    name = "ujjwal"
+    name = "Btn"
 
     flagOne = false
     flagTwo = true
@@ -72,7 +72,7 @@ export default class Main extends Component {
 
     constructor() {
         super();
-        // window['comp'] = this;
+        window['comp'] = this;
         // window['nextTick'] = nextTick;
         // setTimeout(() => {
         //     // alert("name changed");
