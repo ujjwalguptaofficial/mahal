@@ -44,6 +44,14 @@ export abstract class Component {
         return this;
     }
 
+    isWatching(propName: string, cb: any) {
+        if (this.watchList_[propName]) {
+            const index = this.watchList_[propName].indexOf(cb);
+            return index >= 0;
+        }
+        return false;
+    }
+
     unwatch(propName: string, cb: (newValue, oldValue) => void) {
         if (this.watchList_[propName] != null) {
             const index = this.watchList_[propName].indexOf(cb);
@@ -438,7 +446,8 @@ export abstract class Component {
         if (!attr) return createCommentNode();
         delete option.attr.of;
         let el: HTMLElement = this.createElement_(attr.v || attr.k, childs, option);
-        if (attr.k) {
+        const key = attr.k;
+        if (key) {
             const watchCallBack = (val) => {
                 const newEl = this.createElement_(val, childs, option);
                 replaceEl(el, newEl);
@@ -449,16 +458,13 @@ export abstract class Component {
                 const onElementRendered = () => {
                     el.removeEventListener(LIFECYCLE_EVENT.Rendered, onElementRendered);
                     el = getReplacedBy(el);
-                    // const onElDestroyed = () => {
-                    //     el.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
-                    //     this.unwatch(attr.k, watchCallBack);
-                    // }
-                    // el.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
                 }
                 el.addEventListener(LIFECYCLE_EVENT.Rendered, onElementRendered);
             };
             checkForRendered();
-            this.watch(attr.k, watchCallBack);
+            if (!this.isWatching(key, watchCallBack)) {
+                this.watch(key, watchCallBack);
+            }
         }
         return el;
     }
