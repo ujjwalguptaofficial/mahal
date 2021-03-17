@@ -8,14 +8,17 @@ import Btn from "../src/components/btn";
 })
 @Template(`
 <div>
-    <in-place :of="name" #if(flag) label="as"/>
+    <in-place :of="name" #if(flag1 && flag2) label="as"/>
 </div>
 `)
 class Temp extends Component {
     content = "Button"
 
     @Reactive
-    flag = false;
+    flag1 = false;
+
+    @Reactive
+    flag2 = false;
 
     @Reactive
     name = "Btn"
@@ -45,7 +48,8 @@ describe('InPlace if toggle', function () {
     for (let i = 0; i < 3; i++) {
         it(`turn on - ${i}`, function (done) {
             setTimeout(() => {
-                component.flag = true;
+                component.flag1 = true;
+                component.flag2 = true;
                 setTimeout(() => {
                     testExist(done);
                 }, 10);
@@ -54,7 +58,8 @@ describe('InPlace if toggle', function () {
         });
         it(`turn off - ${i}`, function (done) {
             setTimeout(() => {
-                component.flag = false;
+                component.flag1 = false;
+                component.flag2 = false;
                 setTimeout(() => {
                     testNotExist(done);
                 }, 10);
@@ -64,6 +69,7 @@ describe('InPlace if toggle', function () {
 
     it("check watchlist length", function () {
         expect(component.watchList_["name"]).length(1);
+        expect(window['error']).to.equal(undefined);
     });
 });
 

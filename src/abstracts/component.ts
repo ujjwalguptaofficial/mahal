@@ -417,7 +417,6 @@ export abstract class Component {
                 nextTick(() => {
                     cm.replacedBy = element;
                     this.emitRender_(cm);
-                    component.emit(LIFECYCLE_EVENT.Rendered);
                 })
             })
             return element;
@@ -504,16 +503,24 @@ export abstract class Component {
 
     private handleExp_(method: Function, keys: string[], id?: string) {
         let el = method();
+        let changesQueue = [];
         const handleChange = function () {
             el.removeEventListener(LIFECYCLE_EVENT.Rendered, handleChange);
-            el = getReplacedBy(el)
-            const watchCallBack = () => {
+            el = getReplacedBy(el);
+            changesQueue.shift();
+            const onChange = () => {
                 nextTick(() => {
                     const newEl = method();
                     replaceEl(el, newEl);
                     el = newEl;
                     el.addEventListener(LIFECYCLE_EVENT.Rendered, handleChange);
                 })
+            };
+            const watchCallBack = () => {
+                changesQueue.push(1);
+                if (changesQueue.length === 1) {
+                    onChange();
+                }
             };
             keys.forEach(item => {
                 this.watch(item, watchCallBack);
@@ -525,6 +532,9 @@ export abstract class Component {
                 });
             }.bind(this);
             el.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+            if (changesQueue.length > 0) {
+                onChange();
+            }
         }.bind(this);
         el.addEventListener(LIFECYCLE_EVENT.Rendered, handleChange);
         return el;

@@ -19,3 +19,12 @@ Object.keys(document.defaultView).forEach((property) => {
 global.navigator = {
     userAgent: 'node.js'
 };
+
+
+window.onerror = function (message, source, lineno, colno, error) {
+    window.error = message;
+};
+
+window.onunhandledrejection = function (message) {
+    window.error = message;
+};

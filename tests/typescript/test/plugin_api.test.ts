@@ -8,7 +8,7 @@ class TextPlugin extends Plugin {
                 var div = document.createElement('div');
                 div.innerHTML = text;
                 div.className = "plugin-text";
-                console.log("this", this);
+                // console.log("this", this);
                 this.element.appendChild(div);
             }
         }
