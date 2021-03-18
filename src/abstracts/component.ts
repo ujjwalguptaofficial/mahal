@@ -438,7 +438,7 @@ export abstract class Component {
         const attr = option.attr.of;
         if (!attr) return createCommentNode();
         delete option.attr.of;
-        let el: HTMLElement = this.createElement_(attr.v || attr.k, childs, option);
+        let el: HTMLElement = this.createElement_(attr.v, childs, option);
         const key = attr.k;
         if (key) {
             const watchCallBack = (val) => {
