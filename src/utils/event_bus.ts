@@ -30,11 +30,11 @@ export class EventBus {
         }
     }
 
-    emit(event: string, data?: any) {
+    emit(event: string, ...args) {
         if (this.events_[event]) {
             return Promise.all(
                 this.events_[event].map(cb => {
-                    const result = cb.call(this.ctx_, data);
+                    const result = cb.call(this.ctx_, ...args);
                     return result && result.then ? result : Promise.resolve(result);
                 })
             );
