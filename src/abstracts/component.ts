@@ -8,6 +8,9 @@ import { App } from "../app";
 
 const renderEvent = new window.CustomEvent(LIFECYCLE_EVENT.Rendered);
 
+export interface Component {
+    render?(createElement, createTextNode, format, handleExpression, handleForExp): HTMLElement;
+}
 export abstract class Component {
     children: { [key: string]: typeof Component };
     element: HTMLElement;
@@ -61,8 +64,6 @@ export abstract class Component {
     delete(target, prop) {
         deleteAndReact(target, prop);
     }
-
-    render: () => HTMLElement;
 
     on(event: string, cb: Function) {
         this.eventBus_.on(event, cb);
