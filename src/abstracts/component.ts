@@ -1,10 +1,8 @@
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { setAndReact, Observer, deleteAndReact, createTextNode, createCommentNode, runPromisesInSequence, getReplacedBy } from "../helpers";
-import { IPropOption, ITajStore, IDirectiveBinding, IAttrItem, IDirective } from "../interface";
-import { globalFormatter, globalComponents, globalDirectives, defaultSlotName } from "../constant";
-import { isArray, isObject, isPrimitive, nextTick, Logger, isNull, getObjectLength, merge, clone, setAttribute, forOwn, indexOf, isKeyExist, getDataype, EventBus, getAttribute, replaceEl } from "../utils";
-import { genericDirective } from "../generics";
-import { App } from "../app";
+import { setAndReact, Observer, deleteAndReact, createCommentNode, runPromisesInSequence, getReplacedBy, handleAttribute, handleDirective } from "../helpers";
+import { IPropOption, ITajStore, } from "../interface";
+import { globalFormatter, globalComponents, defaultSlotName } from "../constant";
+import { isArray, nextTick, Logger, isNull, initComponent, setAttribute, isKeyExist, EventBus, getAttribute, replaceEl, executeRender } from "../utils";
 
 const renderEvent = new window.CustomEvent(LIFECYCLE_EVENT.Rendered);
 
@@ -102,168 +100,19 @@ export abstract class Component {
         }).throwPlain();
     }
 
-    private handleForExp_(key: string, method: Function) {
-        let cmNode = createCommentNode();
-        let els = [cmNode];
-        let resolvedValue = this.resolve_(key);
-        els = els.concat(this.runForExp_(key, resolvedValue, method));
-        nextTick(() => {
-
-            let callBacks = {
-                [key]: (newValue) => {
-                    // value resetted
-                    this.runForExp_(key, newValue, method);
-                    const parent = cmNode.parentNode;
-                    // remove all nodes
-
-                    // for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
-                    //     parent.removeChild(cmNode.nextSibling);
-                    // }
-                    let nextSibling = cmNode.nextSibling;
-                    while (nextSibling != null) {
-                        parent.removeChild(nextSibling);
-                        nextSibling = cmNode.nextSibling;
-                    }
-
-                    // add all node
-                    if (isArray(newValue)) {
-                        newValue.forEach((item, index) => {
-                            handleChange("push", {
-                                value: item,
-                                key: index,
-                                length: index + 1
-                            });
-                        });
-                    }
-                    else {
-                        let index = 0;
-                        forOwn(newValue, (prop, value) => {
-                            index++;
-                            handleChange("push", {
-                                value,
-                                key: prop,
-                                length: index + 1
-                            });
-                        });
-                    }
-                    //add setter
-                    if (isObject(newValue)) {
-                        this.observer_.create(newValue, null, `${key}.`);
-                    }
-                },
-                [`${key}.push`]: (_, oldValue) => {
-                    handleChange("push", oldValue);
-                },
-                [`${key}.splice`]: (_, oldValue) => {
-                    handleChange("splice", oldValue);
-                },
-                [`${key}.update`]: (_, oldValue) => {
-                    handleChange("update", oldValue);
-                }
-            };
-            const onElDestroyed = () => {
-                cmNode.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
-                cmNode = null;
-                for (const ev in callBacks) {
-                    this.unwatch(ev, callBacks[ev]);
-                }
-                callBacks = null;
-            };
-            cmNode.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
-            const handleChange = (prop, params) => {
-                const parent = cmNode.parentNode;
-                const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
-                let newElement;
-                switch (prop) {
-                    case 'push':
-                        newElement = method(params.value, params.key);
-                        parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
-                        break;
-                    case 'splice':
-                        for (let i = 1; i <= params[1]; i++) {
-                            parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
-                        }
-                        if (params[2]) {
-                            newElement = method(params[2], params[0]);
-                            parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
-                        }
-                        break;
-                    case 'update':
-                        resolvedValue = this.resolve_(key);
-                        const index = indexOf(resolvedValue, params[0]);
-                        if (index >= 0) {
-                            newElement = method(params[1], params[0]);
-                            parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
-                        }
-                        break;
-                }
-            };
-            this.watch(key, callBacks[key]).
-                watch(`${key}.push`, callBacks[`${key}.push`]).
-                watch(`${key}.splice`, callBacks[`${key}.splice`]).
-                watch(`${key}.update`, callBacks[`${key}.update`]);
-        });
-        return els;
-    }
-
-    private resolve_(path) {
+    resolve(path) {
         const properties = isArray(path) ? path : path.split(".");
         return properties.reduce((prev, curr) => prev && prev[curr], this);
     }
 
     private eventBus_ = new EventBus(this);
 
-    private handleDirective_(element, dir, isComponent) {
-        if (!dir) return;
-        forOwn(dir, (name, compiledDir) => {
-            const storedDirective = this.directive_[name] || globalDirectives[name];
-            if (storedDirective) {
-                const binding = {
-                    input: compiledDir.input,
-                    params: compiledDir.params,
-                    isComponent: isComponent,
-                    props: compiledDir.props,
-                    value: compiledDir.value()
-                } as IDirectiveBinding;
 
-                const directive: IDirective = merge(genericDirective,
-                    storedDirective.call(this, element, binding));
-                nextTick(() => {
-                    const onDestroyed = () => {
-                        directive.destroyed();
-                        if (!isComponent) {
-                            element.removeEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
-                        }
-                        element = null;
-                    };
-                    if (isComponent) {
-                        (element as Component).on(LIFECYCLE_EVENT.Destroyed, onDestroyed);
-                    }
-                    else {
-                        element.addEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
-                    }
-                    compiledDir.props.forEach((prop) => {
-                        this.watch(prop, () => {
-                            binding.value = compiledDir.value();
-                            directive.valueUpdated();
-                        });
-                    });
-                    directive.inserted();
-                });
-            }
-        });
-    }
 
-    private emitRender_(element: HTMLElement) {
+    emitRender_(element: HTMLElement) {
         nextTick(() => {
             element.dispatchEvent(renderEvent);
         })
-    }
-
-    private createTextNode(val) {
-        var el = createTextNode(val);
-        this.emitRender_(el as any);
-        return el;
     }
 
     private createElement_(tag: string, childs: HTMLElement[], option) {
@@ -296,7 +145,7 @@ export abstract class Component {
                 (element as HTMLElement).innerHTML = option.html;
             }
 
-            this.handleAttr_(element, option.attr, false);
+            handleAttribute.call(this, element, option.attr, false);
 
             if (option.on) {
                 const evListener = {};
@@ -360,7 +209,7 @@ export abstract class Component {
                 element.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
             }
 
-            this.handleDirective_(element, option.dir, false);
+            handleDirective.call(this, element, option.dir, false);
             this.emitRender_(element);
             return element;
         }
@@ -378,8 +227,8 @@ export abstract class Component {
                 }
             }).then((comp: any) => {
                 const component: Component = new comp();
-                const htmlAttributes = this.initComponent_(component as any, option);
-                component.element = component.executeRender_(childs);
+                const htmlAttributes = initComponent.call(this, component as any, option);
+                component.element = executeRender.call(component, childs);
                 replaceEl(element, component.element);
                 const cm = element;
                 element = component.element;
@@ -465,84 +314,43 @@ export abstract class Component {
     }
 
 
-    private updateDOM_(key: string, oldValue) {
+    // private updateDOM_(key: string, oldValue) {
 
-        const depItems = this.dependency_[key];
-        if (depItems == null) {
-            return;
-        }
-        depItems.forEach(item => {
-            switch (item.nodeType) {
-                // Text Node
-                case 3:
-                    item.nodeValue = this.resolve_(key); break;
-                // Input node 
-                case 1:
-                    (item as HTMLInputElement).value = this.resolve_(key);
-                    break;
-                default:
-                    if (item.ifExp) {
-                        const el = item.method();
-                        (item.el as HTMLElement).parentNode.replaceChild(
-                            el, item.el
-                        );
-                        item.el = el;
-                    }
-                    else if (item.forExp) {
-                        const resolvedValue = this.resolve_(key);
-                        const ref: HTMLDivElement = item.ref;
-                        const els = this.runForExp_(key, resolvedValue, item.method);
-                        const parent = ref.parentNode;
-                        // remove all nodes
-                        for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
-                            parent.removeChild(ref.nextSibling);
-                        }
-                    }
-            }
-        });
-    }
+    //     const depItems = this.dependency_[key];
+    //     if (depItems == null) {
+    //         return;
+    //     }
+    //     depItems.forEach(item => {
+    //         switch (item.nodeType) {
+    //             // Text Node
+    //             case 3:
+    //                 item.nodeValue = this.resolve(key); break;
+    //             // Input node 
+    //             case 1:
+    //                 (item as HTMLInputElement).value = this.resolve(key);
+    //                 break;
+    //             default:
+    //                 if (item.ifExp) {
+    //                     const el = item.method();
+    //                     (item.el as HTMLElement).parentNode.replaceChild(
+    //                         el, item.el
+    //                     );
+    //                     item.el = el;
+    //                 }
+    //                 else if (item.forExp) {
+    //                     const resolvedValue = this.resolve(key);
+    //                     const ref: HTMLDivElement = item.ref;
+    //                     const els = this.runForExp_(key, resolvedValue, item.method);
+    //                     const parent = ref.parentNode;
+    //                     // remove all nodes
+    //                     for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
+    //                         parent.removeChild(ref.nextSibling);
+    //                     }
+    //                 }
+    //         }
+    //     });
+    // }
 
-    private handleExp_(method: Function, keys: string[], type?: string) {
-        if (type === "for") {
-            return this.handleForExp_(keys[0], method);
-        }
-        let el = method();
-        let changesQueue = [];
-        const handleChange = function () {
-            el.removeEventListener(LIFECYCLE_EVENT.Rendered, handleChange);
-            el = getReplacedBy(el);
-            changesQueue.shift();
-            const onChange = () => {
-                nextTick(() => {
-                    const newEl = method();
-                    replaceEl(el, newEl);
-                    el = newEl;
-                    el.addEventListener(LIFECYCLE_EVENT.Rendered, handleChange);
-                })
-            };
-            const watchCallBack = () => {
-                changesQueue.push(1);
-                if (changesQueue.length === 1) {
-                    onChange();
-                }
-            };
-            keys.forEach(item => {
-                this.watch(item, watchCallBack);
-            });
-            const onElDestroyed = function () {
-                el.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
-                keys.forEach(item => {
-                    this.unwatch(item, watchCallBack);
-                });
-            }.bind(this);
-            el.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
-            if (changesQueue.length > 0) {
-                onChange();
-            }
-        }.bind(this);
-        el.addEventListener(LIFECYCLE_EVENT.Rendered, handleChange);
-        return el;
-    }
 
     private dependency_: { [key: string]: any[] } = {};
 
@@ -562,131 +370,9 @@ export abstract class Component {
         }
     }
 
-    private runForExp_(key, value, method) {
-        const els: any[] = [];
-        if (process.env.NODE_ENV !== 'production') {
-            if (isPrimitive(value) || isNull(value)) {
-                new Logger(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
-            }
-        }
 
-        if (isArray(value)) {
-            value.map((item, i) => {
-                els.push(method(item, i));
-            });
-        }
-        else if (isObject(value)) {
-            for (const prop in value) {
-                els.push(method(value[prop], prop));
-            }
-        }
-        return els;
-    }
 
-    private handleAttr_(component, attr, isComponent) {
-        if (isComponent) {
-            const htmlAttributes = [];
-            if (!attr) return htmlAttributes;
-            for (const key in attr) {
-                const value: IAttrItem = attr[key];
-                if (component.props_[key]) {
-                    if (component.props_[key].type) {
-                        const expected = component.props_[key].type;
-                        const received = getDataype(value.v);
-                        if (expected !== received) {
-                            nextTick(() => {
-                                new Logger(ERROR_TYPE.PropDataTypeMismatch,
-                                    {
-                                        prop: key,
-                                        exp: expected,
-                                        got: received,
-                                        html: this.outerHTML,
-                                        file: this.file_
-                                    }).logPlainError();
-                            });
-                        }
-                    }
 
-                    component[key] = clone(value.v);
-                    if (value.k) {
-                        this.watch(value.k, (newValue) => {
-                            Observer.shouldCheckProp = false;
-                            component[key] = newValue;
-                            Observer.shouldCheckProp = true;
-                        });
-                    }
-
-                }
-                else {
-                    htmlAttributes.push({
-                        key,
-                        value: value.v
-                    });
-                }
-            }
-            return htmlAttributes;
-        }
-
-        forOwn(attr, (key, attrItem) => {
-            setAttribute(component, key, attrItem.v);
-            if (attrItem.k) {
-                this.watch(attrItem.k, (newValue) => {
-                    setAttribute(component, key, newValue);
-                });
-            }
-        });
-    }
-
-    private initComponent_(component: Component, option) {
-        if (component.storeGetters_) {
-            // can not make it async because if item is array then it will break
-            // because at that time value will be undefined
-            // so set it before rendering
-            component.storeGetters_.forEach(item => {
-                component[item.prop] = component.$store.state[item.state];
-                const cb = (newValue, oldValue) => {
-                    component[item.prop] = newValue;
-                    component.updateDOM_(item.prop, oldValue);
-                };
-                component.$store.watch(item.state, cb);
-                component.storeWatchCb_.push({
-                    key: item.state,
-                    cb
-                });
-            });
-        }
-
-        const htmlAttributes = this.handleAttr_(component, option.attr, true);
-        this.handleDirective_(component, option.dir, true);
-        if (option.on) {
-            const events = option.on;
-            for (const eventName in events) {
-                const ev = events[eventName];
-                const methods = [];
-                ev.handlers.forEach(item => {
-                    if (item != null) {
-                        methods.push(item.bind(this));
-                    }
-                    else {
-                        new Logger(ERROR_TYPE.InvalidEventHandler, {
-                            eventName,
-                        }).logPlainError();
-                    }
-                });
-                component.on(eventName, (args) => {
-                    runPromisesInSequence(methods, args);
-                });
-            }
-        }
-        component.emit(LIFECYCLE_EVENT.Created);
-        component.on(LIFECYCLE_EVENT.Destroyed, () => {
-            component = null;
-        });
-        nextTick(() => {
-            component.emit(LIFECYCLE_EVENT.Rendered);
-        })
-        return htmlAttributes;
-    }
 
     private clearAll_ = () => {
         // need to emit before clearing events
@@ -701,48 +387,6 @@ export abstract class Component {
             this.storeWatchCb_ = null;
         this.dependency_ = {};
         this.watchList_ = {};
-    }
-
-    private getRender_() {
-        return this.render || (() => {
-            if (process.env.NODE_ENV !== "prodution") {
-                if (!(App as any).createRenderer) {
-                    new Logger(ERROR_TYPE.RendererNotFound).throwPlain();
-                }
-            }
-            return (App as any).createRenderer(this.template);
-        })();
-    }
-
-    private executeRender_(children) {
-        const renderFn = this.getRender_();
-        this.element = renderFn.call(this, {
-            createElement: this.createElement_.bind(this),
-            createTextNode: this.createTextNode.bind(this),
-            format: this.format.bind(this),
-            runExp: this.handleExp_.bind(this),
-            children: children || []
-            // runForExp: this.handleForExp_.bind(this)
-        }
-        );
-        nextTick(() => {
-            if ((this as any).$store) {
-                for (let key in this.dependency_) {
-                    if (key.indexOf("$store.state") >= 0) {
-                        const cb = (newValue, oldValue) => {
-                            this.updateDOM_(key, oldValue);
-                        };
-                        key = key.replace("$store.state.", '');
-                        (this as any).$store.watch(key, cb);
-                        this.storeWatchCb_.push({
-                            key, cb
-                        });
-                    }
-                }
-            }
-            this.element.addEventListener(LIFECYCLE_EVENT.Destroyed, this.clearAll_);
-        });
-        return this.element;
     }
 
     private directive_;

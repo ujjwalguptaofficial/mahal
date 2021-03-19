@@ -1,7 +1,7 @@
 import { Component } from "./abstracts";
 import { globalFormatter, globalComponents, plugins, globalDirectives } from "./constant";
 import { defaultExport } from "./default";
-import { Logger, isString, isObject } from "./utils";
+import { Logger, isString, initComponent, isObject, executeRender } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 
 const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroyed);
@@ -40,9 +40,9 @@ export class App {
 
     create() {
         const componentInstance: Component = new (this as any).component();
-        (componentInstance as any).initComponent_(componentInstance, {});
+        initComponent.call(this, componentInstance, {});
         this.element.appendChild(
-            (componentInstance as any).executeRender_()
+            executeRender.call(componentInstance)
         );
         return componentInstance;
     }

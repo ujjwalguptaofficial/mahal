@@ -1,11 +1,12 @@
 import { IDirectiveBinding, IAttrItem } from "../interface";
+import { handleAttribute } from "../helpers";
 
 const INPUT = "input";
 const VALUE = "value";
 
 export function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding) {
     const key = binding.props[0];
-    this.handleAttr_(el, {
+    handleAttribute.call(this, el, {
         value: {
             k: key,
             v: binding[VALUE]

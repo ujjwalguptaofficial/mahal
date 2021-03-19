@@ -1,7 +1,7 @@
-export const createTextNode = (value) => {
-    return document.createTextNode(value);
-};
+import { Component } from "../abstracts";
 
-export const createCommentNode = (text?: string) => {
-    return document.createComment(text || "");
-};
+export function createTextNode(this: Component, val) {
+    var el = document.createTextNode(val);
+    this.emitRender_(el as any);
+    return el;
+}

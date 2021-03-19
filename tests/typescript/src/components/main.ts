@@ -17,7 +17,7 @@ import TabRender from "./tab_render";
 // <in-place :of="name" #if(flag) label="as"/>
 // </div>`)
 @Template(`
-    <Student/>
+    <HelloWorld :count="counter"/>
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
