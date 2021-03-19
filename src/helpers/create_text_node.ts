@@ -1,7 +1,8 @@
 import { Component } from "../abstracts";
+import { emitRender } from "./emit_render";
 
 export function createTextNode(this: Component, val) {
     var el = document.createTextNode(val);
-    this.emitRender_(el as any);
+    emitRender(el as any);
     return el;
 }

@@ -9,5 +9,7 @@ export * from "./handle_expression";
 export * from "./handle_for_expression";
 export * from "./handle_attribute";
 export * from "./handle_directive";
-
-// export * from "./execute_render";
+export * from "./emit_render";
+export * from "./attach_getter_setter";
+export * from "./handle_in_place";
+export * from "./create_element";

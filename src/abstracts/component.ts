@@ -1,10 +1,11 @@
-import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { setAndReact, Observer, deleteAndReact, createCommentNode, runPromisesInSequence, getReplacedBy, handleAttribute, handleDirective } from "../helpers";
+import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
+import {
+    setAndReact, Observer, deleteAndReact, attachGetterSetter
+} from "../helpers";
 import { IPropOption, ITajStore, } from "../interface";
-import { globalFormatter, globalComponents, defaultSlotName } from "../constant";
-import { isArray, nextTick, Logger, isNull, initComponent, setAttribute, isKeyExist, EventBus, getAttribute, replaceEl, executeRender } from "../utils";
+import { globalFormatter } from "../constant";
+import { isArray, nextTick, Logger, isNull, EventBus, } from "../utils";
 
-const renderEvent = new window.CustomEvent(LIFECYCLE_EVENT.Rendered);
 
 export interface Component {
     render?(createElement, createTextNode, format, handleExpression, handleForExp): HTMLElement;
@@ -17,7 +18,7 @@ export abstract class Component {
 
     constructor() {
         nextTick(() => {
-            this.attachGetterSetter_();
+            attachGetterSetter.call(this);
         });
         if (isNull(this.children)) {
             this.children = {};
@@ -107,211 +108,7 @@ export abstract class Component {
 
     private eventBus_ = new EventBus(this);
 
-
-
-    emitRender_(element: HTMLElement) {
-        nextTick(() => {
-            element.dispatchEvent(renderEvent);
-        })
-    }
-
-    private createElement_(tag: string, childs: HTMLElement[], option) {
-        let element;
-        if (tag == null) {
-            element = createCommentNode();
-            this.emitRender_(element);
-            return element;
-        }
-        if (!option.attr) {
-            option.attr = {};
-        }
-        if (HTML_TAG[tag]) {
-            switch (tag) {
-                case "slot":
-                case "target":
-                    if (!option.attr.name) {
-                        option.attr.name = {
-                            v: defaultSlotName
-                        };
-                    }
-            }
-
-            element = document.createElement(tag) as HTMLElement;
-            childs.forEach((item) => {
-                element.appendChild(item);
-            });
-
-            if (option.html) {
-                (element as HTMLElement).innerHTML = option.html;
-            }
-
-            handleAttribute.call(this, element, option.attr, false);
-
-            if (option.on) {
-                const evListener = {};
-                const events = option.on;
-                for (const eventName in events) {
-                    const ev = events[eventName];
-                    const methods = [];
-                    ev.modifiers.forEach(item => {
-                        switch (item) {
-                            case 'prevent':
-                                methods.push((e) => {
-                                    e.preventDefault();
-                                    return e;
-                                }); break;
-                            case 'stop':
-                                methods.push((e) => {
-                                    e.stopPropagation();
-                                    return e;
-                                }); break;
-                        }
-                    });
-                    ev.handlers.forEach(item => {
-                        if (item != null) {
-                            methods.push(item.bind(this));
-                        }
-                        else {
-                            new Logger(ERROR_TYPE.InvalidEventHandler, {
-                                ev: eventName,
-                            }).throwPlain();
-                        }
-                    });
-                    if (eventName === "input" && !ev.isNative) {
-                        methods.unshift((e) => {
-                            return e.target.value;
-                        });
-                    }
-                    evListener[eventName] = methods.length > 1 ?
-                        (e) => {
-                            runPromisesInSequence(methods, e);
-                        } :
-                        (e) => {
-                            methods[0].call(this, e);
-                        };
-
-                    (element as HTMLDivElement).addEventListener(
-                        eventName, evListener[eventName],
-                        {
-                            capture: isKeyExist(ev.option, 'capture'),
-                            once: isKeyExist(ev.option, 'once'),
-                            passive: isKeyExist(ev.option, 'passive'),
-                        }
-                    );
-                }
-
-                const onElDestroyed = () => {
-                    element.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
-                    for (const ev in evListener) {
-                        element.removeEventListener(ev, evListener[ev]);
-                    }
-                };
-                element.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
-            }
-
-            handleDirective.call(this, element, option.dir, false);
-            this.emitRender_(element);
-            return element;
-        }
-        const savedComponent = this.children[tag] || globalComponents[tag];
-        if (savedComponent) {
-            element = createCommentNode(tag);
-            new Promise(res => {
-                if (savedComponent instanceof Promise) {
-                    savedComponent.then(comp => {
-                        res(comp.default);
-                    })
-                }
-                else {
-                    res(savedComponent);
-                }
-            }).then((comp: any) => {
-                const component: Component = new comp();
-                const htmlAttributes = initComponent.call(this, component as any, option);
-                component.element = executeRender.call(component, childs);
-                replaceEl(element, component.element);
-                const cm = element;
-                element = component.element;
-                let targetSlot = component.find(`slot[name='default']`);
-                if (targetSlot) {
-                    childs.forEach(item => {
-                        if (item.tagName === "TARGET") {
-                            const namedSlot = component.find(`slot[name='${item.getAttribute("name")}']`);
-                            if (namedSlot) {
-                                targetSlot = namedSlot;
-                            }
-                        }
-                        const targetSlotParent = targetSlot.parentElement;
-                        if (item.nodeType === 3) {
-                            targetSlotParent.insertBefore(item, targetSlot.nextSibling);
-                        }
-                        else {
-                            item.childNodes.forEach(child => {
-                                targetSlotParent.insertBefore(child, targetSlot.nextSibling);
-                            });
-                        }
-                        targetSlotParent.removeChild(targetSlot);
-                    });
-                }
-
-                (htmlAttributes || []).forEach(item => {
-                    switch (item.key) {
-                        case 'class':
-                            item.value = (getAttribute(element, item.key) || '') + ' ' + item.value;
-                            break;
-                        case 'style':
-                            item.value = (getAttribute(element, item.key) || '') + item.value;
-                    }
-                    setAttribute(element, item.key, item.value);
-                });
-                nextTick(() => {
-                    cm.replacedBy = element;
-                    this.emitRender_(cm);
-                })
-            })
-            return element;
-        }
-        else if (tag === "in-place") {
-            return this.handleInPlace_(childs, option);
-        }
-        else {
-            new Logger(ERROR_TYPE.InvalidComponent, {
-                tag: tag
-            }).throwPlain();
-        }
-        return element;
-    }
-
     private inPlaceWatchers = {};
-
-    private handleInPlace_(childs, option) {
-        const attr = option.attr.of;
-        if (!attr) return createCommentNode();
-        delete option.attr.of;
-        let el: HTMLElement = this.createElement_(attr.v, childs, option);
-        const key = attr.k;
-        if (key) {
-            const watchCallBack = (val) => {
-                const newEl = this.createElement_(val, childs, option);
-                replaceEl(el, newEl);
-                el = newEl;
-                checkForRendered();
-            };
-            const checkForRendered = () => {
-                const onElementRendered = () => {
-                    el.removeEventListener(LIFECYCLE_EVENT.Rendered, onElementRendered);
-                    el = getReplacedBy(el);
-                }
-                el.addEventListener(LIFECYCLE_EVENT.Rendered, onElementRendered);
-            };
-            checkForRendered();
-            if (!this.inPlaceWatchers[key]) {
-                this.watch(key, watchCallBack);
-                this.inPlaceWatchers[key] = true;
-            }
-        }
-        return el;
-    }
 
 
     // private updateDOM_(key: string, oldValue) {
@@ -355,12 +152,6 @@ export abstract class Component {
     private dependency_: { [key: string]: any[] } = {};
 
     private observer_: Observer;
-
-    private attachGetterSetter_() {
-        this.observer_ = new Observer();
-        this.observer_.onChange = this.onChange_.bind(this);
-        this.observer_.create(this, Object.keys(this.props_).concat(this.reactives_ || []));
-    }
 
     private onChange_(key, oldValue, newValue) {
         if (this.watchList_[key] != null) {

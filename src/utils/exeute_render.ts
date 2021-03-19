@@ -1,4 +1,4 @@
-import { createTextNode, handleExpression } from "../helpers";
+import { createTextNode, handleExpression, createElement } from "../helpers";
 import { Component } from "../abstracts";
 import { App } from "../app";
 import { Logger, nextTick } from "../utils";
@@ -18,8 +18,8 @@ function getRender(this: Component) {
 export function executeRender(this: Component, children?) {
     const renderFn = getRender.call(this);
     this.element = renderFn.call(this, {
-        createElement: (this as any).createElement_.bind(this),
-        createTextNode: createTextNode.bind(this),
+        createElement: createElement.bind(this),
+        createTextNode: createTextNode,
         format: this.format.bind(this),
         runExp: handleExpression.bind(this),
         children: children || []
