@@ -25,4 +25,4 @@
 * directives - Done (test added)
 * slots - Done (test added)
 * Props type check - done (test added)
-* Dynamic component
+* Dynamic component - done (test added)

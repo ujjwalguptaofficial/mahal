@@ -15,5 +15,6 @@ export enum HTML_TAG {
     tfoot = exist,
     strong = exist,
     slot = exist,
-    target = exist
+    target = exist,
+    a = exist
 }

@@ -102,7 +102,7 @@ export abstract class Component {
         }).throwPlain();
     }
 
-    private handleForExp_(key, method: Function, id: string) {
+    private handleForExp_(key: string, method: Function) {
         let cmNode = createCommentNode();
         let els = [cmNode];
         let resolvedValue = this.resolve_(key);
@@ -379,7 +379,7 @@ export abstract class Component {
             }).then((comp: any) => {
                 const component: Component = new comp();
                 const htmlAttributes = this.initComponent_(component as any, option);
-                component.element = component.executeRender_();
+                component.element = component.executeRender_(childs);
                 replaceEl(element, component.element);
                 const cm = element;
                 element = component.element;
@@ -502,7 +502,10 @@ export abstract class Component {
         });
     }
 
-    private handleExp_(method: Function, keys: string[], id?: string) {
+    private handleExp_(method: Function, keys: string[], type?: string) {
+        if (type === "for") {
+            return this.handleForExp_(keys[0], method);
+        }
         let el = method();
         let changesQueue = [];
         const handleChange = function () {
@@ -711,14 +714,16 @@ export abstract class Component {
         })();
     }
 
-    private executeRender_() {
+    private executeRender_(children) {
         const renderFn = this.getRender_();
-        this.element = renderFn.call(this,
-            this.createElement_.bind(this),
-            this.createTextNode.bind(this),
-            this.format.bind(this),
-            this.handleExp_.bind(this),
-            this.handleForExp_.bind(this)
+        this.element = renderFn.call(this, {
+            createElement: this.createElement_.bind(this),
+            createTextNode: this.createTextNode.bind(this),
+            format: this.format.bind(this),
+            runExp: this.handleExp_.bind(this),
+            children: children || []
+            // runForExp: this.handleForExp_.bind(this)
+        }
         );
         nextTick(() => {
             if ((this as any).$store) {
