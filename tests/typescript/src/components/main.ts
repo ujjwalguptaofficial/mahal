@@ -12,16 +12,17 @@ import Model from "./model";
 import Form from "./form";
 import Users from "./users";
 import TabRender from "./tab_render";
+import ObjectProp from "./object_prop";
 
 // @Template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
 // </div>`)
 @Template(`
-    <HelloWorld :count="counter"/>
+    <ObjectProp />
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
-    Model, Form, Users, TabRender, TextAreaBox
+    Model, Form, Users, TabRender, TextAreaBox, ObjectProp
 })
 export default class Main extends Component {
 
