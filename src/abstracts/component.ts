@@ -18,6 +18,16 @@ export abstract class Component {
 
     constructor() {
         nextTick(() => {
+            const computed = this.computed_;
+            for (const key in computed) {
+                const data = computed[key];
+                this.reactives_.push(key);
+                data.args.forEach(arg => {
+                    this.watch(arg, () => {
+                        this[key] = data.fn.call(this);
+                    });
+                })
+            }
             attachGetterSetter.call(this);
         });
         if (isNull(this.children)) {
@@ -31,6 +41,9 @@ export abstract class Component {
         }
         if (isNull(this.props_)) {
             this.props_ = {};
+        }
+        if (isNull(this.computed_)) {
+            this.computed_ = {};
         }
     }
 
@@ -195,4 +208,5 @@ export abstract class Component {
     private storeGetters_: Array<{ prop: string, state: string }>;
 
     private file_;
+    private computed_;
 }
