@@ -1,7 +1,8 @@
 import DirectiveComponent from "../src/components/directive";
 import { app } from "../src/index";
 import { expect } from "chai";
-import { nextTick } from "process";
+import { nextTick } from "mahal";
+import { createSandbox } from "sinon";
 
 describe('Directive', function () {
 
@@ -74,6 +75,24 @@ describe('Directive', function () {
             expect(el7.style.color).equal(component.color);
             done();
         }, 10)
+    });
+
+    it("check counter flag", function (done) {
+        expect(component.counter).equal(1);
+        component.counterFlag = false;
+        let sandbox = createSandbox();
+        const stubbed = sandbox.stub(component, "onValueUpdated");
+        setTimeout(() => {
+            component.counterParam = 10;
+            expect(component.find("#counterFlag")).to.equal(null);
+            component.counterFlag = true;
+        }, 5)
+        setTimeout(() => {
+            sandbox.assert.callCount(stubbed, 0);
+            sandbox.restore();
+            expect(component.counter).equal(2);
+            done();
+        }, 20)
     });
 
 });

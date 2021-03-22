@@ -18,7 +18,7 @@ import ObjectProp from "./object_prop";
 // <in-place :of="name" #if(flag) label="as"/>
 // </div>`)
 @Template(`
-    <ObjectProp />
+    <DirectiveComp />
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,

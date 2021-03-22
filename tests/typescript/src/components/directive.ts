@@ -1,4 +1,5 @@
 import { Component, Template, Directive, Reactive } from "mahal";
+import { IDirective } from "mahal/dist/ts/interface";
 
 @Template(`
 <div>
@@ -10,9 +11,21 @@ import { Component, Template, Directive, Reactive } from "mahal";
   <div id="el6" #highlight('blue','red')>Hey</div>
   <div #if(el7) id="el7" #highlight(backgroundColor , 'yellow')>Hey</div>
   <div  id="el8" #highlight(backgroundColor , color )>Hey</div>
+  <div id="counterFlag" #if(counterFlag) #logCount(counterParam)>{{counter}}</div>
 </div>
 `)
 export default class extends Component {
+
+    counter = 0;
+
+    @Reactive
+    counterFlag = true;
+
+    @Reactive
+    counterParam = 0;
+
+    // @Reactive
+    // counterDirectiveOutput = 0;
 
     @Reactive name = 'hello';
 
@@ -27,6 +40,11 @@ export default class extends Component {
 
     isDirectiveDestoyedCalled;
 
+    constructor() {
+        super();
+        window['comp'] = this;
+    }
+
     @Directive('name')
     nameDirective(el, binding) {
         el.setAttribute('data-name', binding.value || 'taj');
@@ -34,7 +52,6 @@ export default class extends Component {
 
     @Directive('highlight')
     highlightDirective(el, binding, component) {
-        console.log("comp", component)
         function handle() {
             if (binding.params.length > 1) {
                 el.style.backgroundColor = binding.value[0];
@@ -54,7 +71,22 @@ export default class extends Component {
         }
     }
 
+    @Directive()
+    logCount(): IDirective {
+        ++this.counter;
+
+        return {
+            valueUpdated: () => {
+                this.onValueUpdated();
+            }
+        }
+    }
+
     rendered() {
         window['comp'] = this;
+    }
+
+    onValueUpdated() {
+        console.log("onValueUpdated called");
     }
 }

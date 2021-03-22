@@ -21,11 +21,18 @@ export function handleDirective(this: Component, element, dir, isComponent) {
             const directive: IDirective = merge(genericDirective,
                 storedDirective.call(this, element, binding));
             nextTick(() => {
+                const onValueUpdated = () => {
+                    binding.value = compiledDir.value();
+                    directive.valueUpdated();
+                };
                 const onDestroyed = () => {
                     directive.destroyed();
                     if (!isComponent) {
                         element.removeEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
                     }
+                    compiledDir.props.forEach((prop) => {
+                        this.unwatch(prop, onValueUpdated);
+                    });
                     element = null;
                 };
                 if (isComponent) {
@@ -35,10 +42,7 @@ export function handleDirective(this: Component, element, dir, isComponent) {
                     element.addEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
                 }
                 compiledDir.props.forEach((prop) => {
-                    this.watch(prop, () => {
-                        binding.value = compiledDir.value();
-                        directive.valueUpdated();
-                    });
+                    this.watch(prop, onValueUpdated);
                 });
                 directive.inserted();
             });
