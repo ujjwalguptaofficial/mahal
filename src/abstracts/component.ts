@@ -45,6 +45,9 @@ export abstract class Component {
         if (isNull(this.computed_)) {
             this.computed_ = {};
         }
+        if (isNull(this.watchList_)) {
+            this.watchList_ = {};
+        }
     }
 
     destroy() {
@@ -201,7 +204,7 @@ export abstract class Component {
 
     private watchList_: {
         [key: string]: Array<(newValue, oldValue) => void>
-    } = {};
+    };
 
     private storeWatchCb_: Array<{ key: string, cb: Function }> = [];
 
