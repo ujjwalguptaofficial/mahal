@@ -13,16 +13,17 @@ import Form from "./form";
 import Users from "./users";
 import TabRender from "./tab_render";
 import ObjectProp from "./object_prop";
+import Computed from "./computed";
 
 // @Template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
 // </div>`)
 @Template(`
-    <DirectiveComp />
+    <Computed />
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
-    Model, Form, Users, TabRender, TextAreaBox, ObjectProp
+    Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed
 })
 export default class Main extends Component {
 

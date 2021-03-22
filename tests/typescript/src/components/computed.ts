@@ -1,13 +1,10 @@
 import { Component, Template, Computed, Reactive } from "mahal";
-
-
-
 @Template(`
-    <div>
+    <div #ref(el)>
         {{fullName}}
     </div>
 `)
-export default class Main extends Component {
+export default class extends Component {
 
     @Reactive
     firstName = "ujjwal";
@@ -18,5 +15,10 @@ export default class Main extends Component {
     @Computed("firstName", "lastName")
     get fullName() {
         return this.firstName + " " + this.lastName;
+    }
+
+    constructor() {
+        super();
+        window['comp'] = this;
     }
 }
