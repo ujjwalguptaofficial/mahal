@@ -42,6 +42,7 @@ export function handleExpression(this: Component, method: Function, keys: string
         if (changesQueue.length > 0) {
             onChange();
         }
+        this.emit(LIFECYCLE_EVENT.Update);
     }.bind(this);
     el.addEventListener(replacedBy, handleChange);
     return el;
