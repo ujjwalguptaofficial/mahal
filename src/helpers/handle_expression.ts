@@ -3,6 +3,7 @@ import { getReplacedBy } from "./get_replaced_by";
 import { nextTick, replaceEl } from "../utils";
 import { Component } from "../abstracts";
 import { handleForExp } from "./handle_for_expression";
+import { replacedBy } from "../constant";
 
 export function handleExpression(this: Component, method: Function, keys: string[], type?: string) {
     if (type === "for") {
@@ -11,7 +12,7 @@ export function handleExpression(this: Component, method: Function, keys: string
     let el = method();
     let changesQueue = [];
     const handleChange = function () {
-        el.removeEventListener(LIFECYCLE_EVENT.Rendered, handleChange);
+        el.removeEventListener(replacedBy, handleChange);
         el = getReplacedBy(el);
         changesQueue.shift();
         const onChange = () => {
@@ -19,7 +20,7 @@ export function handleExpression(this: Component, method: Function, keys: string
                 const newEl = method();
                 replaceEl(el, newEl);
                 el = newEl;
-                el.addEventListener(LIFECYCLE_EVENT.Rendered, handleChange);
+                el.addEventListener(replacedBy, handleChange);
             })
         };
         const watchCallBack = () => {
@@ -42,6 +43,6 @@ export function handleExpression(this: Component, method: Function, keys: string
             onChange();
         }
     }.bind(this);
-    el.addEventListener(LIFECYCLE_EVENT.Rendered, handleChange);
+    el.addEventListener(replacedBy, handleChange);
     return el;
 }

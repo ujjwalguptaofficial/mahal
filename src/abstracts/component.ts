@@ -90,6 +90,12 @@ export abstract class Component {
         this.eventBus_.off(event, cb);
     }
 
+    waitFor<T>(eventName: string) {
+        return new Promise<T>((res) => {
+            this.on(eventName, res);
+        });
+    }
+
     emit(event: string, ...args) {
         return this.eventBus_.emit(event, ...args);
     }
@@ -177,10 +183,6 @@ export abstract class Component {
             });
         }
     }
-
-
-
-
 
     private clearAll_ = () => {
         // need to emit before clearing events

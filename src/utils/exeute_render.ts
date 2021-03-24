@@ -20,7 +20,7 @@ export function executeRender(this: Component, children?) {
     const renderFn = getRender.call(this);
     this.element = renderFn.call(this, {
         createElement: createElement.bind(this),
-        createTextNode: createTextNode,
+        createTextNode: createTextNode.bind(this),
         format: this.format.bind(this),
         runExp: handleExpression.bind(this),
         children: children || []

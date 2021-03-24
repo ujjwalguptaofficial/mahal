@@ -4,6 +4,7 @@ import { replaceEl } from "../utils";
 import { LIFECYCLE_EVENT } from "../enums";
 import { getReplacedBy } from "./get_replaced_by";
 import { createElement } from "./create_element";
+import { replacedBy } from "../constant";
 
 export function handleInPlace(this: Component, childs, option) {
     const attr = option.attr.of;
@@ -20,10 +21,10 @@ export function handleInPlace(this: Component, childs, option) {
         };
         const checkForRendered = () => {
             const onElementRendered = () => {
-                el.removeEventListener(LIFECYCLE_EVENT.Rendered, onElementRendered);
+                el.removeEventListener(replacedBy, onElementRendered);
                 el = getReplacedBy(el);
             }
-            el.addEventListener(LIFECYCLE_EVENT.Rendered, onElementRendered);
+            el.addEventListener(replacedBy, onElementRendered);
         };
         checkForRendered();
         if (!(this as any).inPlaceWatchers[key]) {

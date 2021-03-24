@@ -16,3 +16,4 @@ export const globalComponents = {}
 export const globalDirectives = {}
 export const plugins = [];
 export const defaultSlotName = "default"
+export const replacedBy = "replacedBy"

@@ -1,5 +1,5 @@
 import { createCommentNode } from "./create_coment_node";
-import { emitRender } from "./emit_render";
+import { emitReplacedBy } from "./emit_render";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { defaultSlotName, globalComponents } from "../constant";
 import { handleAttribute } from "./handle_attribute";
@@ -13,7 +13,7 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
     let element;
     if (tag == null) {
         element = createCommentNode();
-        emitRender(element);
+        emitReplacedBy.call(this, element);
         return element;
     }
     if (!option.attr) {
@@ -104,7 +104,7 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
         }
 
         handleDirective.call(this, element, option.dir, false);
-        emitRender(element);
+        emitReplacedBy.call(this, element);
         return element;
     }
     const savedComponent = this.children[tag] || globalComponents[tag];
@@ -160,7 +160,7 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
             });
             nextTick(() => {
                 cm.replacedBy = element;
-                emitRender(cm);
+                emitReplacedBy.call(this, cm);
             })
         })
         return element;
