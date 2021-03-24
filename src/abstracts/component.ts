@@ -94,7 +94,11 @@ export abstract class Component {
 
     waitFor<T>(eventName: string) {
         return new Promise<T>((res) => {
-            this.on(eventName, res);
+            const eventCallback = () => {
+                this.off(eventName, eventCallback);
+                res();
+            }
+            this.on(eventName, eventCallback);
         });
     }
 

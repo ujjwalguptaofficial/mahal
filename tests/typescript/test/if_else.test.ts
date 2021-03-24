@@ -107,13 +107,13 @@ describe('IfELSE', function () {
 
     it("set state to 20", function (done) {
         component.state = 20;
-        setTimeout(() => {
+        component.waitFor("update").then(() => {
             const div = component.find('div');
             expect(div.innerHTML).equal('20');
             expect(component.element.classList).length(1);
             expect(component.element.className).equal('state-gt-10');
             done();
-        }, 1)
+        })
     });
 
 });

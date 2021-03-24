@@ -19,7 +19,7 @@ import Computed from "./computed";
 // <in-place :of="name" #if(flag) label="as"/>
 // </div>`)
 @Template(`
-    <HelloWorld :count="counter" on:click="incrementCounter" />
+    <IfElse :count="counter" on:click="incrementCounter" />
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
