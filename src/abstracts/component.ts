@@ -2,14 +2,15 @@ import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import {
     setAndReact, Observer, deleteAndReact, attachGetterSetter
 } from "../helpers";
-import { IPropOption, ITajStore, } from "../interface";
+import { IPropOption, ITajStore, IRenderContext, } from "../interface";
 import { globalFormatter } from "../constant";
 import { isArray, nextTick, Logger, isNull, EventBus, } from "../utils";
 
-
+// do not rename this, this has been done to merge Component
 export interface Component {
-    render?(createElement, createTextNode, format, handleExpression, handleForExp): HTMLElement;
+    render?(context: IRenderContext): HTMLElement;
 }
+
 export abstract class Component {
     children: { [key: string]: typeof Component };
     element: HTMLElement;

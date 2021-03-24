@@ -5,3 +5,4 @@ export * from "./component_option";
 export * from "./directive_binding";
 export * from "./attr_item";
 export * from "./directive";
+export * from "./render_context";

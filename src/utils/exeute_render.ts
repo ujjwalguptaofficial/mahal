@@ -3,6 +3,7 @@ import { Component } from "../abstracts";
 import { App } from "../app";
 import { Logger, nextTick } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
+import { IRenderContext } from "../interface";
 
 function getRender(this: Component) {
     return this.render || (() => {
@@ -24,7 +25,7 @@ export function executeRender(this: Component, children?) {
         runExp: handleExpression.bind(this),
         children: children || []
         // runForExp: this.handleForExp_.bind(this)
-    }
+    } as IRenderContext
     );
     nextTick(() => {
         // if ((this as any).$store) {

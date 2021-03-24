@@ -1,4 +1,4 @@
-# Taj
+# Mahal
 
 # TODO 
 
@@ -26,3 +26,5 @@
 * slots - Done (test added)
 * Props type check - done (test added)
 * Dynamic component - done (test added)
+* Computed - done (test added)
+* Ref - done

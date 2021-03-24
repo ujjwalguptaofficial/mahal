@@ -85,7 +85,7 @@ describe('IfELSE', function () {
             const div = component.find('button.btn');
             expect(div.innerHTML).equal('10');
             done();
-        },50)
+        }, 50)
     });
 
     it("set nested value to 0", function (done) {
@@ -107,13 +107,13 @@ describe('IfELSE', function () {
 
     it("set state to 20", function (done) {
         component.state = 20;
-        nextTick(() => {
+        setTimeout(() => {
             const div = component.find('div');
             expect(div.innerHTML).equal('20');
             expect(component.element.classList).length(1);
             expect(component.element.className).equal('state-gt-10');
             done();
-        })
+        }, 1)
     });
 
 });
