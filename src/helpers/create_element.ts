@@ -12,9 +12,7 @@ import { handleInPlace } from "./handle_in_place";
 export function createElement(this: Component, tag: string, childs: HTMLElement[], option) {
     let element;
     if (tag == null) {
-        element = createCommentNode();
-        emitReplacedBy.call(this, element);
-        return element;
+        return createCommentNode();
     }
     if (!option.attr) {
         option.attr = {};
@@ -104,7 +102,6 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
         }
 
         handleDirective.call(this, element, option.dir, false);
-        emitReplacedBy.call(this, element);
         return element;
     }
     const savedComponent = this.children[tag] || globalComponents[tag];
@@ -163,6 +160,7 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
                 emitReplacedBy.call(this, cm);
             })
         })
+        element.isComponent = true;
         return element;
     }
     else if (tag === "in-place") {

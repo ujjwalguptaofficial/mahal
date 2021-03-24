@@ -38,7 +38,7 @@ describe('TAB RENDER', function () {
             component.activeTab = "Btn";
             setTimeout(() => {
                 testBtn(done);
-            }, i == 0 ? 0 : 100);
+            }, 100);
         });
 
         it(`change activeTab & check - index - ${i}`, function (done) {
@@ -47,7 +47,7 @@ describe('TAB RENDER', function () {
                 nextTick(() => {
                     testUser(done);
                 })
-            }, i == 0 ? 0 : 100);
+            }, 100);
         });
     }
 });

@@ -17,6 +17,8 @@ export abstract class Component {
     template: string;
     $store: ITajStore;
 
+    isMounted = false;
+
     constructor() {
         nextTick(() => {
             const computed = this.computed_;

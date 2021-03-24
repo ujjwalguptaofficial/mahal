@@ -11,7 +11,7 @@ export function handleExpression(this: Component, method: Function, keys: string
     }
     let el = method();
     let changesQueue = [];
-    const handleChange = function () {
+    const handleChange = () => {
         el.removeEventListener(replacedBy, handleChange);
         el = getReplacedBy(el);
         changesQueue.shift();
@@ -20,7 +20,12 @@ export function handleExpression(this: Component, method: Function, keys: string
                 const newEl = method();
                 replaceEl(el, newEl);
                 el = newEl;
-                el.addEventListener(replacedBy, handleChange);
+                if (el.isComponent) {
+                    el.addEventListener(replacedBy, handleChange);
+                }
+                else {
+                    handleChange();
+                }
             })
         };
         const watchCallBack = () => {
@@ -42,8 +47,15 @@ export function handleExpression(this: Component, method: Function, keys: string
         if (changesQueue.length > 0) {
             onChange();
         }
-        this.emit(LIFECYCLE_EVENT.Update);
-    }.bind(this);
-    el.addEventListener(replacedBy, handleChange);
+        if (this.isMounted) {
+            this.emit(LIFECYCLE_EVENT.Update);
+        }
+    };
+    if (el.isComponent) {
+        el.addEventListener(replacedBy, handleChange);
+    }
+    else {
+        handleChange();
+    }
     return el;
 }

@@ -51,6 +51,7 @@ export function initComponent(this: Component, component: Component, option) {
     });
     nextTick(() => {
         component.emit(LIFECYCLE_EVENT.Rendered);
+        component.isMounted = true;
     })
     return htmlAttributes;
 }

@@ -36,6 +36,7 @@ export default class HelloWorld extends BaseComponent {
         super();
         this.on("created", this.onCreated);
         this.on("rendered", this.rendered);
+        this.on("update", this.updated);
         console.log("constructor", this.name, this.count);
     }
 
@@ -61,5 +62,8 @@ export default class HelloWorld extends BaseComponent {
         return value.toUpperCase();
     }
 
+    updated() {
+        console.log("updated");
+    }
 
 }
