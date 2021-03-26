@@ -2,6 +2,7 @@ import IfElseComponent from "../src/components/if_else";
 import { app } from "../src/index";
 import { nextTick } from "mahal";
 import { expect } from "chai";
+import { createSandbox } from "sinon";
 
 describe('IfELSE', function () {
 
@@ -19,6 +20,8 @@ describe('IfELSE', function () {
     });
 
     it("set state to 0", function (done) {
+        let sandbox = createSandbox();
+        const stub = sandbox.stub(component, "updated");
         component.state = 0;
         nextTick(() => {
             const div = component.find('div');
@@ -28,6 +31,8 @@ describe('IfELSE', function () {
             expect(component.element.getAttribute('stateattr')).equal('0');
             expect(div.classList).length(2);
             expect(div.className).equal('state--0 state--01');
+            sandbox.assert.calledOnce(stub);
+            sandbox.restore();
             done();
         })
     });

@@ -4,7 +4,7 @@ import {
 } from "../helpers";
 import { IPropOption, ITajStore, IRenderContext, } from "../interface";
 import { globalFormatter } from "../constant";
-import { isArray, nextTick, Logger, isNull, EventBus, } from "../utils";
+import { isArray, nextTick, Logger, isNull, EventBus, Timer, } from "../utils";
 
 // do not rename this, this has been done to merge Component
 export interface Component {
@@ -221,4 +221,5 @@ export abstract class Component {
 
     private file_;
     private computed_;
+    _timer_ = new Timer()
 }

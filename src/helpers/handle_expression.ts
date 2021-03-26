@@ -1,6 +1,6 @@
 import { LIFECYCLE_EVENT } from "../enums";
 import { getReplacedBy } from "./get_replaced_by";
-import { nextTick, replaceEl } from "../utils";
+import { nextTick, replaceEl, Timer } from "../utils";
 import { Component } from "../abstracts";
 import { handleForExp } from "./handle_for_expression";
 import { replacedBy } from "../constant";
@@ -48,7 +48,9 @@ export function handleExpression(this: Component, method: Function, keys: string
             onChange();
         }
         if (this.isMounted) {
-            this.emit(LIFECYCLE_EVENT.Update);
+            this._timer_.debounce(() => {
+                this.emit(LIFECYCLE_EVENT.Update);
+            })
         }
     };
     if (el.isComponent) {

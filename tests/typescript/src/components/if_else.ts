@@ -34,5 +34,11 @@ export default class extends Component {
     constructor() {
         super();
         window["comp"] = this;
+
+        this.on("update", this.updated);
+    }
+
+    updated() {
+        console.log("updated");
     }
 }
