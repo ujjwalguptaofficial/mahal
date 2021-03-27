@@ -13,10 +13,19 @@ const flushCallbacks = () => {
         });
     });
 };
-export const nextTick = (cb: Function) => {
+export const nextTick = (cb?: Function): Promise<void> | void => {
+    let promise: Promise<void>;
+    if (cb == null) {
+        promise = new Promise((res) => {
+            cb = res;
+        })
+    }
     callbacks.push(cb);
     if (!isExecuting) {
         isExecuting = true;
         flushCallbacks();
+    };
+    if (promise) {
+        return promise;
     }
 };

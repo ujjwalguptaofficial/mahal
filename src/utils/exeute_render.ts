@@ -18,31 +18,38 @@ function getRender(this: Component): () => Promise<HTMLElement> {
 
 export function executeRender(this: Component, children?) {
     const renderFn = getRender.call(this);
-    return renderFn.call(this, {
-        createElement: createElement.bind(this),
-        createTextNode: createTextNode.bind(this),
-        format: this.format.bind(this),
-        runExp: handleExpression.bind(this),
-        children: children || []
-        // runForExp: this.handleForExp_.bind(this)
-    } as IRenderContext
-    );
-    nextTick(() => {
-        // if ((this as any).$store) {
-        //     for (let key in this.dependency_) {
-        //         if (key.indexOf("$store.state") >= 0) {
-        //             const cb = (newValue, oldValue) => {
-        //                 this.updateDOM_(key, oldValue);
-        //             };
-        //             key = key.replace("$store.state.", '');
-        //             (this as any).$store.watch(key, cb);
-        //             this.storeWatchCb_.push({
-        //                 key, cb
-        //             });
-        //         }
-        //     }
-        // }
-        this.element.addEventListener(LIFECYCLE_EVENT.Destroyed, (this as any).clearAll_);
-    });
-    return this.element;
+    return new Promise((res) => {
+        renderFn.call(this, {
+            createElement: createElement.bind(this),
+            createTextNode: createTextNode.bind(this),
+            format: this.format.bind(this),
+            runExp: handleExpression.bind(this),
+            children: children || []
+            // runForExp: this.handleForExp_.bind(this)
+        } as IRenderContext).then(el => {
+            this.element = el;
+            res(el);
+            nextTick(() => {
+                // if ((this as any).$store) {
+                //     for (let key in this.dependency_) {
+                //         if (key.indexOf("$store.state") >= 0) {
+                //             const cb = (newValue, oldValue) => {
+                //                 this.updateDOM_(key, oldValue);
+                //             };
+                //             key = key.replace("$store.state.", '');
+                //             (this as any).$store.watch(key, cb);
+                //             this.storeWatchCb_.push({
+                //                 key, cb
+                //             });
+                //         }
+                //     }
+                // }
+                el.addEventListener(LIFECYCLE_EVENT.Destroyed, (this as any).clearAll_);
+                this.emit(LIFECYCLE_EVENT.Rendered);
+                this.isMounted = true;
+            });
+        })
+
+    })
+
 }

@@ -49,9 +49,5 @@ export function initComponent(this: Component, component: Component, option) {
     component.on(LIFECYCLE_EVENT.Destroyed, () => {
         component = null;
     });
-    nextTick(() => {
-        component.emit(LIFECYCLE_EVENT.Rendered);
-        component.isMounted = true;
-    })
     return htmlAttributes;
 }

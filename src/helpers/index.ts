@@ -13,3 +13,4 @@ export * from "./emit_render";
 export * from "./attach_getter_setter";
 export * from "./handle_in_place";
 export * from "./create_element";
+export * from "./emit_comp_render";

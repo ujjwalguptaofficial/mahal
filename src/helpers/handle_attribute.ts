@@ -1,7 +1,7 @@
 import { Component } from "../abstracts";
 import { IAttrItem } from "../interface";
 import { getDataype, nextTick, Logger, clone, forOwn, setAttribute } from "../utils";
-import { ERROR_TYPE } from "../enums";
+import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { Observer } from "./observer";
 
 export function handleAttribute(this: Component, component, attr, isComponent) {
@@ -15,7 +15,7 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                     const expected = component.props_[key].type;
                     const received = getDataype(value.v);
                     if (expected !== received) {
-                        nextTick(() => {
+                        this.waitFor(LIFECYCLE_EVENT.Rendered).then(_ => {
                             new Logger(ERROR_TYPE.PropDataTypeMismatch,
                                 {
                                     prop: key,
