@@ -25,12 +25,12 @@ function runForExp(key, value, method) {
     return els;
 }
 
-export async function handleForExp(this: Component, key: string, method: Function) {
-    let cmNode = await createCommentNode();
-    let els = [cmNode];
+export function handleForExp(this: Component, key: string, method: (...args) => Promise<HTMLElement>) {
+    let node = createCommentNode();
+    let els = [node];
     let resolvedValue = this.resolve(key);
     els = els.concat(runForExp(key, resolvedValue, method));
-    nextTick(() => {
+    node.then((cmNode) => {
         let callBacks = {
             [key]: (newValue) => {
                 // value resetted
@@ -95,27 +95,29 @@ export async function handleForExp(this: Component, key: string, method: Functio
         const handleChange = (prop, params) => {
             const parent = cmNode.parentNode;
             const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
-            let newElement;
             switch (prop) {
                 case 'push':
-                    newElement = method(params.value, params.key);
-                    parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
+                    method(params.value, params.key).then(newElement => {
+                        parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
+                    })
                     break;
                 case 'splice':
                     for (let i = 1; i <= params[1]; i++) {
                         parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
                     }
                     if (params[2]) {
-                        newElement = method(params[2], params[0]);
-                        parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
+                        method(params[2], params[0]).then(newElement => {
+                            parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
+                        })
                     }
                     break;
                 case 'update':
                     resolvedValue = this.resolve(key);
                     const index = indexOf(resolvedValue, params[0]);
                     if (index >= 0) {
-                        newElement = method(params[1], params[0]);
-                        parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
+                        method(params[1], params[0]).then(newElement => {
+                            parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
+                        })
                     }
                     break;
             }
