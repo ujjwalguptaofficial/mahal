@@ -103,7 +103,9 @@ export abstract class Component {
     }
 
     emit(event: string, ...args) {
-        return this.eventBus_.emit(event, ...args);
+        if (this.eventBus_) {
+            return this.eventBus_.emit(event, ...args);
+        }
     }
 
     find(selector: string) {

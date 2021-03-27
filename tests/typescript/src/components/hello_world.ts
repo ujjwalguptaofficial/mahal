@@ -37,6 +37,7 @@ export default class HelloWorld extends BaseComponent {
         this.on("created", this.onCreated);
         this.on("rendered", this.rendered);
         this.on("update", this.updated);
+        // this.on("destroyed", this.onDestroyed);
         console.log("constructor", this.name, this.count);
     }
 

@@ -42,7 +42,6 @@ export function executeRender(this: Component, children?) {
         //         }
         //     }
         // }
-        this.element.addEventListener(LIFECYCLE_EVENT.Destroyed, (this as any).clearAll_);
     });
     return this.element;
 }

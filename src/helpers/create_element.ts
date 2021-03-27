@@ -155,6 +155,7 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
                 }
                 setAttribute(element, item.key, item.value);
             });
+            element.addEventListener(LIFECYCLE_EVENT.Destroyed, component['clearAll_']);
             nextTick(() => {
                 cm.replacedBy = element;
                 emitReplacedBy.call(this, cm);
