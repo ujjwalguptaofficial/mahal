@@ -40,8 +40,8 @@ describe('InPlace if toggle', function () {
         done();
     }
 
-    it("initiate btn", function (done) {
-        component = (app as any).initiate(Temp);
+    it("initiate btn", async function (done) {
+        component = await (app as any).initiate(Temp);
         testNotExist(done);
     });
 

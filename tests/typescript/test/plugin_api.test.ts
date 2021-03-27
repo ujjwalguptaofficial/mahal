@@ -31,8 +31,8 @@ describe('Plugin api test', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(Temp);
+    before(async function () {
+        component = await (app as any).initiate(Temp);
     });
 
     it("add text to dom", function (done) {

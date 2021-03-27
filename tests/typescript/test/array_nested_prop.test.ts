@@ -40,8 +40,8 @@ describe('Array Nested Object Prop', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(Temp);
+    before(async function () {
+        component = await (app as any).initiate(Temp);
     });
 
     const testRendering = (done) => {
@@ -58,15 +58,14 @@ describe('Array Nested Object Prop', function () {
         testRendering(done);
     });
 
-    it("unmount user and then check", function (done) {
+    it("unmount user and then check", async function () {
         component.flag = false;
-        nextTick(() => {
-            const nameDiv = component.find('.user');
-            expect(nameDiv).equal(null);
-            const flagDiv = component.find('.flag');
-            expect(flagDiv.innerHTML).equal(component.flag.toString());
-            done();
-        })
+        await component.waitFor("update");
+
+        const nameDiv = component.find('.user');
+        expect(nameDiv).equal(null);
+        const flagDiv = component.find('.flag');
+        expect(flagDiv.innerHTML).equal(component.flag.toString());
     });
 
     it("mount user and then check", function (done) {

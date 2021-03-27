@@ -28,13 +28,11 @@ describe('Btn slot test', function () {
 
     let component;
 
-    it("initiate btn", function (done) {
-        component = (app as any).initiate(Temp);
-        nextTick(() => {
-            const btn = component.find('button');
-            expect(btn.innerHTML).equal(component.content);
-            done();
-        })
+    it("initiate btn", async function () {
+        component = await (app as any).initiate(Temp);
+        await nextTick();
+        const btn = component.find('button');
+        expect(btn.innerHTML).equal(component.content);
     });
 });
 

@@ -7,8 +7,8 @@ describe('Object', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(ObjectComponent);
+    before(async function () {
+        component = await (app as any).initiate(ObjectComponent);
     });
 
     it("check list", function () {

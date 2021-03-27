@@ -7,8 +7,8 @@ describe('Computed', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(Computed);
+    before(async function () {
+        component = await (app as any).initiate(Computed);
     });
 
     it("check for render", function (done) {

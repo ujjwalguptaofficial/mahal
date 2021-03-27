@@ -7,22 +7,20 @@ describe('Array', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(ArrayComponent);
+    before(async function () {
+        component = await (app as any).initiate(ArrayComponent);
     });
 
     it("check list", function () {
         expect(component.findAll(".tr-list")).length(0);
     });
 
-    it("add students using push", function (done) {
+    it("add students using push", async function () {
         component.students.push({
             name: 'ujjwal'
         })
-        nextTick(() => {
-            expect(component.findAll(".tr-list")).length(1);
-            done();
-        })
+        await component.waitFor("update");
+        expect(component.findAll(".tr-list")).length(1);
     });
 
     it("set students value directly", function (done) {

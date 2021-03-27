@@ -7,8 +7,8 @@ describe('Component MODEL', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(ModelComponent);
+    before(async function () {
+        component = await (app as any).initiate(ModelComponent);
     });
 
     it("from component to element", function (done) {

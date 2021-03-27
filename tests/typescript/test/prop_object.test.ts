@@ -7,8 +7,8 @@ describe('Object prop', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(ObjectProp);
+    before(async function () {
+        component = await (app as any).initiate(ObjectProp);
     });
 
     it("check for rendering", function (done) {

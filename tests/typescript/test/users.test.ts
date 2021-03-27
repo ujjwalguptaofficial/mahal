@@ -7,8 +7,8 @@ describe('User slot test', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(UsersComponent, {
+    before(async function () {
+        component = await (app as any).initiate(UsersComponent, {
             props: {
                 users: [{
                     name: "Ujjwal kumar",

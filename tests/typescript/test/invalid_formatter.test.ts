@@ -7,9 +7,9 @@ describe('Invalid Formatter', function () {
 
     let component;
 
-    it("initiate invalid formatter", function () {
+    it("initiate invalid formatter", async function () {
         try {
-            component = (app as any).initiate(InvalidFilter);
+            component = await (app as any).initiate(InvalidFilter);
         } catch (error) {
             expect(error).equal(`{Palace throw}: Can not find Formatter "invalid". Make sure you have registered formatter either in component or globally.\n\ntype : invalid_formatter`)
         }

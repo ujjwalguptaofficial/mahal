@@ -8,8 +8,8 @@ describe('IfELSE', function () {
 
     let component;
 
-    before(function () {
-        component = (app as any).initiate(IfElseComponent);
+    before(async function () {
+        component = await (app as any).initiate(IfElseComponent);
     });
 
     it("check initial state", function () {
