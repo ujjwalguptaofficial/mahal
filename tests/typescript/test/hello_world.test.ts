@@ -12,7 +12,7 @@ describe('HelloWorld', function () {
 
     });
 
-    it("initiate component", async function (done) {
+    it("initiate component", async function () {
         const consoleSpy = spy(console, "log");
 
         component = await (app as any).initiate(HelloWorld, {
@@ -20,40 +20,37 @@ describe('HelloWorld', function () {
                 count: 0
             }
         });
-        nextTick(() => {
-            expect(consoleSpy.args).length(3);
-            const args1 = consoleSpy.args[0];
-            expect(args1).length(3);
-            expect(args1[0]).to.equal("constructor");
-            expect(args1[1]).to.equal(component.name);
-            expect(args1[2]).to.equal(undefined);
+        await nextTick();
+        expect(consoleSpy.args).length(3);
+        const args1 = consoleSpy.args[0];
+        expect(args1).length(3);
+        expect(args1[0]).to.equal("constructor");
+        expect(args1[1]).to.equal(component.name);
+        expect(args1[2]).to.equal(undefined);
 
-            const args2 = consoleSpy.args[1];
-            expect(args2).length(2);
-            expect(args2[0]).to.equal("created");
-            expect(args2[1]).to.equal(component.name);
+        const args2 = consoleSpy.args[1];
+        expect(args2).length(2);
+        expect(args2[0]).to.equal("created");
+        expect(args2[1]).to.equal(component.name);
 
-            const args3 = consoleSpy.args[2];
-            expect(args3).length(3);
-            expect(args3[0]).to.equal("rendered");
-            expect(args3[1]).to.equal(component.name);
-            expect(args3[2]).to.equal(0);
-            consoleSpy.restore();
-            done();
-        })
+        const args3 = consoleSpy.args[2];
+        expect(args3).length(3);
+        expect(args3[0]).to.equal("rendered");
+        expect(args3[1]).to.equal(component.name);
+        expect(args3[2]).to.equal(0);
+        consoleSpy.restore();
+
     });
 
     it('id=name inner html should equal ujjwal gupta', function () {
         expect(component.find("#name").innerHTML).equal("UJJWAL GUPTA");
     });
 
-    it('check if condition', function (done) {
+    it('check if condition', async function () {
         expect(component.find("#testFilter")).equal(null);
         component.count = 1;
-        nextTick(() => {
-            expect(component.find("#testFilter")).not.equal(null);
-            done();
-        })
+        await component.waitFor("update");
+        expect(component.find("#testFilter")).not.equal(null);
     });
 
     it('check show condition', function (done) {
@@ -66,15 +63,14 @@ describe('HelloWorld', function () {
         })
     });
 
-    it('change name', function (done) {
+    it('change name', async function () {
         component.name = "hello!";
-        nextTick(() => {
-            expect(component.find("#name").innerHTML).equal("HELLO!");
-            done();
-        })
+        await component.waitFor("update");
+        expect(component.find("#name").innerHTML).equal("HELLO!");
+
     });
 
-    it('value of count button', function (done) {
+    it('value of count button', async function () {
         const btn = component.find('#count');
         expect(btn.innerHTML).equal('1');
         component.on("click", function () {
@@ -82,10 +78,8 @@ describe('HelloWorld', function () {
         });
         btn.click();
         expect(component.count).equal(2);
-        nextTick(() => {
-            expect(btn.innerHTML).equal('2');
-            done();
-        });
+        await component.waitFor("update");
+        expect(btn.innerHTML).equal('2');
         component.off("click");
     });
 
@@ -97,7 +91,7 @@ describe('HelloWorld', function () {
         sandbox.restore();
     });
 
-    it('click count button 5 times', function (done) {
+    it('click count button 5 times', async function () {
         component.count = 0;
         const btn = component.find('#count');
         component.on("click", function () {
@@ -106,11 +100,9 @@ describe('HelloWorld', function () {
         for (let i = 0; i < 5; i++) {
             component.find('#count').click();
         }
+        await component.waitFor("update");
         expect(component.count).equal(5);
-        nextTick(() => {
-            expect(btn.innerHTML).equal('5');
-            done();
-        })
+        expect(btn.innerHTML).equal('5');
     });
 
     it('inner html', () => {
