@@ -4,28 +4,24 @@ import { nextTick, replaceEl, Timer } from "../utils";
 import { Component } from "../abstracts";
 import { handleForExp } from "./handle_for_expression";
 import { replacedBy } from "../constant";
+import { createElement } from "./create_element";
 
-export function handleExpression(this: Component, method: Function, keys: string[], type?: string) {
+export async function handleExpression(this: Component, method: () => Promise<HTMLElement>, keys: string[], type?: string) {
     if (type === "for") {
         return handleForExp.call(this, keys[0], method);
     }
-    let el = method();
+    let el = await method();
     let changesQueue = [];
     const handleChange = () => {
         el.removeEventListener(replacedBy, handleChange);
         el = getReplacedBy(el);
         changesQueue.shift();
         const onChange = () => {
-            nextTick(() => {
-                const newEl = method();
+            nextTick(async () => {
+                const newEl = await method();
                 replaceEl(el, newEl);
                 el = newEl;
-                if (el.isComponent) {
-                    el.addEventListener(replacedBy, handleChange);
-                }
-                else {
-                    handleChange();
-                }
+                handleChange();
             })
         };
         const watchCallBack = () => {
@@ -53,11 +49,6 @@ export function handleExpression(this: Component, method: Function, keys: string
             })
         }
     };
-    if (el.isComponent) {
-        el.addEventListener(replacedBy, handleChange);
-    }
-    else {
-        handleChange();
-    }
+    handleChange();
     return el;
 }

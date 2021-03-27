@@ -1,3 +1,5 @@
 export const createCommentNode = (text?: string) => {
-    return document.createComment(text || "");
+    return Promise.resolve(
+        document.createComment(text || "")
+    );
 };

@@ -41,9 +41,12 @@ export class App {
     create() {
         const componentInstance: Component = new (this as any).component();
         initComponent.call(this, componentInstance, {});
-        this.element.appendChild(
-            executeRender.call(componentInstance)
-        );
+        executeRender.call(componentInstance).then(el => {
+            this.element.appendChild(
+                el
+            )
+        })
+
         return componentInstance;
     }
 

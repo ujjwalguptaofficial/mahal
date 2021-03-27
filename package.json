@@ -12,6 +12,7 @@
     "build:install": "npm run build:pack && node tests/installer.js",
     "lint": "tslint src/**/*.ts",
     "test:general": "cd tests && npm run install:test",
+    "install:general": "npm run build:pack && cd tests && npm run install:lib",
     "test:todo": "cd tests/todo && npm run install:test",
     "test:dev": "npm run build && npm run test:general",
     "test:prod": "karma start test/karma.config.prod.js",

@@ -25,8 +25,8 @@ function runForExp(key, value, method) {
     return els;
 }
 
-export function handleForExp(this: Component, key: string, method: Function) {
-    let cmNode = createCommentNode();
+export async function handleForExp(this: Component, key: string, method: Function) {
+    let cmNode = await createCommentNode();
     let els = [cmNode];
     let resolvedValue = this.resolve(key);
     els = els.concat(runForExp(key, resolvedValue, method));

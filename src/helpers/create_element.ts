@@ -9,14 +9,15 @@ import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
 
-export function createElement(this: Component, tag: string, childs: HTMLElement[], option) {
-    let element;
+export async function createElement(this: Component, tag: string, childs: Promise<HTMLElement>[], option): Promise<HTMLElement | Comment> {
+    let element: HTMLElement;
     if (tag == null) {
         return createCommentNode();
     }
     if (!option.attr) {
         option.attr = {};
     }
+    const htmlChilds = await Promise.all(childs);
     if (HTML_TAG[tag]) {
         switch (tag) {
             case "slot":
@@ -29,7 +30,7 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
         }
 
         element = document.createElement(tag) as HTMLElement;
-        childs.forEach((item) => {
+        htmlChilds.forEach((item) => {
             element.appendChild(item);
         });
 
@@ -102,30 +103,20 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
         }
 
         handleDirective.call(this, element, option.dir, false);
-        return element;
+        return Promise.resolve(element);
     }
     const savedComponent = this.children[tag] || globalComponents[tag];
     if (savedComponent) {
-        element = createCommentNode(tag);
-        new Promise(res => {
-            if (savedComponent instanceof Promise) {
-                savedComponent.then(comp => {
-                    res(comp.default);
-                })
-            }
-            else {
-                res(savedComponent);
-            }
-        }).then((comp: any) => {
+        const onCompDownload = async (comp: any) => {
             const component: Component = new comp();
             const htmlAttributes = initComponent.call(this, component as any, option);
-            component.element = executeRender.call(component, childs);
-            replaceEl(element, component.element);
-            const cm = element;
+            component.element = await executeRender.call(component, childs);
+            // replaceEl(element, component.element);
+            // const cm = element;
             element = component.element;
             let targetSlot = component.find(`slot[name='default']`);
             if (targetSlot) {
-                childs.forEach(item => {
+                htmlChilds.forEach(item => {
                     if (item.tagName === "TARGET") {
                         const namedSlot = component.find(`slot[name='${item.getAttribute("name")}']`);
                         if (namedSlot) {
@@ -155,13 +146,23 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
                 }
                 setAttribute(element, item.key, item.value);
             });
-            nextTick(() => {
-                cm.replacedBy = element;
-                emitReplacedBy.call(this, cm);
-            })
+            element.addEventListener(LIFECYCLE_EVENT.Destroyed, component['clearAll_']);
+        }
+        return new Promise(res => {
+            if (savedComponent instanceof Promise) {
+                savedComponent.then(comp => {
+                    onCompDownload(comp.default).then(() => {
+                        res(element);
+                    })
+                })
+            }
+            else {
+                onCompDownload(savedComponent).then(() => {
+                    res(element);
+                });
+            }
         })
-        element.isComponent = true;
-        return element;
+
     }
     else if (tag === "in-place") {
         return handleInPlace.call(this, childs, option);
@@ -171,5 +172,4 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
             tag: tag
         }).throwPlain();
     }
-    return element;
 }

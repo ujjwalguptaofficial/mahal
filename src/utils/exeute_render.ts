@@ -5,7 +5,7 @@ import { Logger, nextTick } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { IRenderContext } from "../interface";
 
-function getRender(this: Component) {
+function getRender(this: Component): () => Promise<HTMLElement> {
     return this.render || (() => {
         if (process.env.NODE_ENV !== "prodution") {
             if (!(App as any).createRenderer) {
@@ -18,7 +18,7 @@ function getRender(this: Component) {
 
 export function executeRender(this: Component, children?) {
     const renderFn = getRender.call(this);
-    this.element = renderFn.call(this, {
+    return renderFn.call(this, {
         createElement: createElement.bind(this),
         createTextNode: createTextNode.bind(this),
         format: this.format.bind(this),
