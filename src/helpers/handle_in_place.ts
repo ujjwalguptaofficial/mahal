@@ -10,27 +10,22 @@ export function handleInPlace(this: Component, childs, option) {
     const attr = option.attr.of;
     if (!attr) return createCommentNode();
     delete option.attr.of;
-    let el: HTMLElement = createElement.call(this, attr.v, childs, option);
+    let elPromise: Promise<HTMLElement> = createElement.call(this, attr.v, childs, option);
     const key = attr.k;
     if (key) {
-        const watchCallBack = (val) => {
-            const newEl = createElement.call(this, val, childs, option);
-            replaceEl(el, newEl);
-            el = newEl;
-            checkForRendered();
-        };
-        const checkForRendered = () => {
-            const onElementRendered = () => {
-                el.removeEventListener(replacedBy, onElementRendered);
-                el = getReplacedBy(el);
+        elPromise.then(el => {
+            const watchCallBack = (val) => {
+                createElement.call(this, val, childs, option).then(newEl => {
+                    replaceEl(el, newEl);
+                    el = newEl;
+                })
+            };
+
+            if (!(this as any).inPlaceWatchers[key]) {
+                this.watch(key, watchCallBack);
+                this['inPlaceWatchers'][key] = true;
             }
-            el.addEventListener(replacedBy, onElementRendered);
-        };
-        checkForRendered();
-        if (!(this as any).inPlaceWatchers[key]) {
-            this.watch(key, watchCallBack);
-            (this as any).inPlaceWatchers[key] = true;
-        }
+        })
     }
-    return el;
+    return elPromise;
 }
