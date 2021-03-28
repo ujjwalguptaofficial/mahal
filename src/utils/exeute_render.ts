@@ -16,18 +16,18 @@ function getRender(this: Component): () => Promise<HTMLElement> {
     })();
 }
 
-export function executeRender(this: Component, children?) {
-    const renderFn = getRender.call(this);
-    return new Promise((res, rej) => {
-        renderFn.call(this, {
-            createElement: createElement.bind(this),
-            createTextNode: createTextNode.bind(this),
-            format: this.format.bind(this),
-            runExp: handleExpression.bind(this),
+export function executeRender(comp: Component, children?) {
+    const renderFn = getRender.call(comp);
+    return new Promise<HTMLElement>((res, rej) => {
+        renderFn.call(comp, {
+            createElement: createElement.bind(comp),
+            createTextNode: createTextNode.bind(comp),
+            format: comp.format.bind(comp),
+            runExp: handleExpression.bind(comp),
             children: children || []
             // runForExp: this.handleForExp_.bind(this)
         } as IRenderContext).then(el => {
-            this.element = el;
+            comp.element = el;
             res(el);
             nextTick(() => {
                 // if ((this as any).$store) {
@@ -44,10 +44,10 @@ export function executeRender(this: Component, children?) {
                 //         }
                 //     }
                 // }
-                el.addEventListener(LIFECYCLE_EVENT.Destroyed, (this as any).clearAll_);
-                this.emit(LIFECYCLE_EVENT.Rendered);
-                this.emit(LIFECYCLE_EVENT.Mount);
-                this.isMounted = true;
+                el.addEventListener(LIFECYCLE_EVENT.Destroyed, (comp as any).clearAll_);
+                comp.emit(LIFECYCLE_EVENT.Rendered);
+                comp.emit(LIFECYCLE_EVENT.Mount);
+                comp.isMounted = true;
             });
         }).catch(rej);
     })

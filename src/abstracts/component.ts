@@ -20,7 +20,7 @@ export abstract class Component {
     isMounted = false;
 
     constructor() {
-        nextTick(() => {
+        this.on(LIFECYCLE_EVENT.Created, () => {
             const computed = this.computed_;
             for (const key in computed) {
                 const data = computed[key];

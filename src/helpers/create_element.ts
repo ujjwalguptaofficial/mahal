@@ -110,14 +110,14 @@ const loadComponent = (savedComponent) => {
 }
 
 export function createElement(this: Component, tag: string, childs: Promise<HTMLElement>[], option): Promise<HTMLElement | Comment> {
-    let element: HTMLElement;
-    if (tag == null) {
-        return createCommentNode();
-    }
-    if (!option.attr) {
-        option.attr = {};
-    }
+
     return new Promise((res, rej) => {
+        if (tag == null) {
+            res(createCommentNode());
+        }
+        if (!option.attr) {
+            option.attr = {};
+        }
         Promise.all(childs).then(htmlChilds => {
             if (HTML_TAG[tag]) {
                 res(createNativeComponent.call(this, tag, htmlChilds, option));
@@ -128,8 +128,8 @@ export function createElement(this: Component, tag: string, childs: Promise<HTML
                 loadComponent(savedComponent).then((comp: any) => {
                     const component: Component = new comp();
                     const htmlAttributes = initComponent.call(this, component as any, option);
-                    executeRender.call(component, childs).then(_ => {
-                        element = component.element;
+                    executeRender(component, childs).then(_ => {
+                        const element = component.element;
                         let targetSlot = component.find(`slot[name='default']`);
                         if (targetSlot) {
                             htmlChilds.forEach(item => {
