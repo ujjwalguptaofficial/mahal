@@ -22,23 +22,18 @@ describe('MODEL TextAreabox', function () {
     let component;
 
     before(async function () {
-        component = await (app as any).initiate(Temp);
+        component = await (app as any).mount(Temp);
     });
 
-    it("from component to element", function (done) {
-        nextTick(() => {
-            const input = component.find('input');
-            expect(input.value).equal('');
-            const nameDiv = component.find('div.name');
-            expect(nameDiv.innerHTML).equal('');
-            component.name = "ujjwal";
-            nextTick(() => {
-                expect(nameDiv.innerHTML).to.equal(component.name);
-                expect(input.value).equal(component.name);
-                done();
-            })
-        })
-
+    it("from component to element", async function () {
+        const input = component.find('input');
+        expect(input.value).equal('');
+        const nameDiv = component.find('div.name');
+        expect(nameDiv.innerHTML).equal('');
+        component.name = "ujjwal";
+        await component.waitFor("update");
+        expect(nameDiv.innerHTML).to.equal(component.name);
+        expect(input.value).equal(component.name);
     });
 
     it("from element to component", function () {
