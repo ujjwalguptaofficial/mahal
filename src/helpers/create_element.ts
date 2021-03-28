@@ -1,5 +1,4 @@
 import { createCommentNode } from "./create_coment_node";
-import { emitReplacedBy } from "./emit_render";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { defaultSlotName, globalComponents } from "../constant";
 import { handleAttribute } from "./handle_attribute";
@@ -8,7 +7,6 @@ import { runPromisesInSequence } from "./run_promises_in_sequence";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
-import { emitComponentRender } from "./emit_comp_render";
 
 export async function createElement(this: Component, tag: string, childs: Promise<HTMLElement>[], option): Promise<HTMLElement | Comment> {
     let element: HTMLElement;

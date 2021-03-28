@@ -1,10 +1,7 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
 import { replaceEl } from "../utils";
-import { LIFECYCLE_EVENT } from "../enums";
-import { getReplacedBy } from "./get_replaced_by";
 import { createElement } from "./create_element";
-import { replacedBy } from "../constant";
 
 export function handleInPlace(this: Component, childs, option) {
     const attr = option.attr.of;

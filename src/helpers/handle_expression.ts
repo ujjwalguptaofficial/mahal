@@ -1,10 +1,7 @@
 import { LIFECYCLE_EVENT } from "../enums";
-import { getReplacedBy } from "./get_replaced_by";
-import { nextTick, replaceEl, Timer } from "../utils";
+import { nextTick, replaceEl } from "../utils";
 import { Component } from "../abstracts";
 import { handleForExp } from "./handle_for_expression";
-import { replacedBy } from "../constant";
-import { createElement } from "./create_element";
 
 export function handleExpression(this: Component, method: () => Promise<HTMLElement>, keys: string[], type?: string) {
     if (type === "for") {
@@ -15,8 +12,6 @@ export function handleExpression(this: Component, method: () => Promise<HTMLElem
         method().then(el => {
             let changesQueue = [];
             const handleChange = () => {
-                el.removeEventListener(replacedBy, handleChange);
-                el = getReplacedBy(el);
                 changesQueue.shift();
                 const onChange = () => {
                     nextTick(async () => {
