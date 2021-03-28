@@ -28,10 +28,9 @@ describe('InPlace if toggle', function () {
 
     let component;
 
-    const testNotExist = (done) => {
+    const testNotExist = () => {
         const btn = component.find('button.btn');
         expect(btn).to.equal(null);
-        done();
     }
 
     const testExist = (done) => {
@@ -40,29 +39,28 @@ describe('InPlace if toggle', function () {
         done();
     }
 
-    it("initiate btn", async function (done) {
-        component = await (app as any).initiate(Temp);
-        testNotExist(done);
+    it("initiate btn", async function () {
+        component = await (app as any).mount(Temp);
+        testNotExist();
     });
 
     for (let i = 0; i < 3; i++) {
         it(`turn on - ${i}`, function (done) {
-            setTimeout(() => {
+            setTimeout(async () => {
                 component.flag1 = true;
                 component.flag2 = true;
-                setTimeout(() => {
-                    testExist(done);
-                }, 10);
+                await component.waitFor("update");
+                testExist(done);
             }, 10)
-
         });
+
         it(`turn off - ${i}`, function (done) {
-            setTimeout(() => {
+            setTimeout(async () => {
                 component.flag1 = false;
                 component.flag2 = false;
-                setTimeout(() => {
-                    testNotExist(done);
-                }, 10);
+                await component.waitFor("update");
+                testNotExist();
+                done();
             }, 10)
         });
     }

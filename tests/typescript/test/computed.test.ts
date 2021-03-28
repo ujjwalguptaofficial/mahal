@@ -8,32 +8,26 @@ describe('Computed', function () {
     let component;
 
     before(async function () {
-        component = await (app as any).initiate(Computed);
+        component = await (app as any).mount(Computed);
     });
 
-    it("check for render", function (done) {
-        nextTick(() => {
-            expect(component.el.innerHTML).to.equal('ujjwal gupta');
-            done();
-        });
+    it("check for render", function () {
+        expect(component.el.innerHTML).to.equal('ujjwal gupta');
     });
 
-    it("change first name", function (done) {
+    it("change first name", async function () {
         component.firstName = "dev";
-        nextTick(() => {
-            const div = component.el;
-            expect(div.innerHTML).to.equal('dev gupta');
-            done();
-        });
+        await component.waitFor("update");
+        const div = component.el;
+        expect(div.innerHTML).to.equal('dev gupta');
+
     });
 
-    it("change last name", function (done) {
+    it("change last name", async function () {
         component.lastName = "batista";
-        setTimeout(() => {
-            const div = component.el;
-            expect(div.innerHTML).to.equal('dev batista');
-            done();
-        }, 10);
+        await component.waitFor("update");
+        const div = component.el;
+        expect(div.innerHTML).to.equal('dev batista');
     });
 
 });

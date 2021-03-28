@@ -37,37 +37,34 @@ describe('Nested Object Prop', function () {
     let component;
 
     before(async function () {
-        component = await (app as any).initiate(Temp);
+        component = await (app as any).mount(Temp);
     });
 
-    const testRendering = (done) => {
-        setTimeout(() => {
-            const nameDiv = component.find('.user .name');
-            expect(nameDiv.innerHTML).equal(component.user.info.name);
-            const flagDiv = component.find('.flag');
-            expect(flagDiv.innerHTML).equal(component.flag.toString());
-            done();
-        }, 50)
+    const testRendering = () => {
+        const nameDiv = component.find('.user .name');
+        expect(nameDiv.innerHTML).equal(component.user.info.name);
+        const flagDiv = component.find('.flag');
+        expect(flagDiv.innerHTML).equal(component.flag.toString());
+
     }
 
-    it("test for rendering user", function (done) {
-        testRendering(done);
+    it("test for rendering user", function () {
+        testRendering();
     });
 
-    it("unmount user and then check", function (done) {
+    it("unmount user and then check", async function () {
         component.flag = false;
-        nextTick(() => {
-            const nameDiv = component.find('.user');
-            expect(nameDiv).equal(null);
-            const flagDiv = component.find('.flag');
-            expect(flagDiv.innerHTML).equal(component.flag.toString());
-            done();
-        })
+        await component.waitFor("update");
+        const nameDiv = component.find('.user');
+        expect(nameDiv).equal(null);
+        const flagDiv = component.find('.flag');
+        expect(flagDiv.innerHTML).equal(component.flag.toString());
     });
 
-    it("mount user and then check", function (done) {
+    it("mount user and then check", async function () {
         component.flag = true;
-        testRendering(done);
+        await component.waitFor("update");
+        testRendering();
     });
 
 });
