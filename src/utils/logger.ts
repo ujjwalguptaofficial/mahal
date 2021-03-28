@@ -82,6 +82,10 @@ export class Logger implements IError {
     }
 
     throwPlain() {
-        throw `{${libName} throw}:` + this.getPlain();
+        const err = `{${libName} throw}:` + this.getPlain();;
+        if (process.env.NODE_ENV == "test") {
+            return err;
+        }
+        throw err;
     }
 }

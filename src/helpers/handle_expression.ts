@@ -14,11 +14,12 @@ export function handleExpression(this: Component, method: () => Promise<HTMLElem
             const handleChange = () => {
                 changesQueue.shift();
                 const onChange = () => {
-                    nextTick(async () => {
-                        const newEl = await method();
-                        replaceEl(el, newEl);
-                        el = newEl;
-                        handleChange();
+                    nextTick(() => {
+                        method().then(newEl => {
+                            replaceEl(el, newEl);
+                            el = newEl;
+                            handleChange();
+                        })
                     })
                 };
                 const watchCallBack = () => {
