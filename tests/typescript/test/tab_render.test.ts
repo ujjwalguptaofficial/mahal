@@ -44,7 +44,7 @@ describe('TAB RENDER', function () {
         it(`change activeTab & check - index - ${i}`, function (done) {
             setTimeout(() => {
                 component.activeTab = "Users";
-                nextTick(() => {
+                component.waitFor('update').then(() => {
                     testUser(done);
                 })
             }, 100);

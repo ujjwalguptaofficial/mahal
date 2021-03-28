@@ -39,6 +39,6 @@ export default class extends Component {
     }
 
     updated() {
-        console.log("updated");
+        console.info("updated");
     }
 }

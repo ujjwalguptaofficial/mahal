@@ -21,7 +21,7 @@ describe('IfELSE', function () {
 
     it("set state to 0", async function () {
         let sandbox = createSandbox();
-        const stub = sandbox.stub(component, "updated");
+        const stub = sandbox.stub(console, "info");
 
         component.state = 0;
         await component.waitFor("update");

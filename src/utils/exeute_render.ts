@@ -18,7 +18,7 @@ function getRender(this: Component): () => Promise<HTMLElement> {
 
 export function executeRender(this: Component, children?) {
     const renderFn = getRender.call(this);
-    return new Promise((res) => {
+    return new Promise((res, rej) => {
         renderFn.call(this, {
             createElement: createElement.bind(this),
             createTextNode: createTextNode.bind(this),
@@ -49,8 +49,7 @@ export function executeRender(this: Component, children?) {
                 this.emit(LIFECYCLE_EVENT.Mount);
                 this.isMounted = true;
             });
-        })
-
+        }).catch(rej);
     })
 
 }
