@@ -78,14 +78,19 @@ export class Logger implements IError {
     }
 
     static error(...args) {
+        if (args[0] === "return") {
+
+        }
         console.error(`{${libName} error}:`, ...args);
     }
 
-    throwPlain() {
+    throwPlain(shouldReturn?) {
         const err = `{${libName} throw}:` + this.getPlain();;
-        if (process.env.NODE_ENV == "test") {
+        if (shouldReturn) {
             return err;
         }
         throw err;
     }
+
+
 }

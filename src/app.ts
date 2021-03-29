@@ -41,13 +41,14 @@ export class App {
     create() {
         const componentInstance: Component = new (this as any).component();
         initComponent.call(this, componentInstance, {});
-        executeRender(componentInstance).then(el => {
-            this.element.appendChild(
-                el
-            )
+        return new Promise((res, rej) => {
+            executeRender(componentInstance).then(el => {
+                this.element.appendChild(
+                    el
+                )
+                res(componentInstance);
+            }).catch(rej);
         })
-
-        return componentInstance;
     }
 
     static extend = {

@@ -28,3 +28,13 @@ window.onerror = function (message, source, lineno, colno, error) {
 window.onunhandledrejection = function (message) {
     window.error = message;
 };
+
+const virtualConsole = jsdom.createVirtualConsole();
+virtualConsole.on('error', (...errors) => {
+    console.log("errors caught at", errors)
+});
+
+process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+    // application specific logging, throwing an error, or other logic here
+});

@@ -31,7 +31,7 @@ export abstract class Component {
                     });
                 })
             }
-            attachGetterSetter.call(this);
+            attachGetterSetter(this);
         });
         if (isNull(this.children)) {
             this.children = {};

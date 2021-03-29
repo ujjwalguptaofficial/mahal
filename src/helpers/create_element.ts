@@ -163,16 +163,17 @@ export function createElement(this: Component, tag: string, childs: Promise<HTML
                             setAttribute(element, item.key, item.value);
                         });
                         res(element);
-                    });
+                    }).catch(rej);
                 });
             }
             else if (tag === "in-place") {
                 res(handleInPlace.call(this, childs, option));
             }
             else {
+                console.log("rejecting error");
                 rej(new Logger(ERROR_TYPE.InvalidComponent, {
                     tag: tag
-                }).throwPlain());
+                }).throwPlain(true));
             }
         })
     });
