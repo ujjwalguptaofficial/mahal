@@ -35,6 +35,11 @@ module.exports = function (config) {
                 })
             ]
         },
+        client: {
+            mocha: {
+                timeout: 60000
+            }
+        },
         reporters: ["mocha"],
         // browsers: ["jsdom"],
         browsers: ['HeadlessChrome'],
@@ -51,6 +56,7 @@ module.exports = function (config) {
                 ]
             }
         },
+        autoWatch: false,
         singleRun: false,
         concurrency: Infinity
     });
