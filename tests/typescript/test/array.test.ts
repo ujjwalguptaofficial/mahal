@@ -32,7 +32,7 @@ describe('Array', function () {
                 name: 'ujjwal'
             }
         ];
-        nextTick(() => {
+        component.waitFor("update").then(() => {
             expect(component.findAll(".tr-list")).length(2);
             done();
         })
@@ -52,7 +52,7 @@ describe('Array', function () {
         component.find('#name').setValue(newName);
         expect(component.name).equal(newName);
         component.find("#btnAdd").click();
-        nextTick(() => {
+        component.waitFor("update").then(() => {
             expect(component.students).length(1);
             expect(component.students[0].name).equal(newName);
             expect(component.find("#name").value).equal('');
@@ -65,11 +65,10 @@ describe('Array', function () {
     it("edit student", function (done) {
         expect(component.students).length(1);
         component.find('#btnEditStudent').click();
-        nextTick(() => {
+        component.waitFor("update").then(() => {
             component.find('.edit-student-input input').setValue("hello");
             component.find('#btnUpdateStudent').click();
-        })
-        nextTick(() => {
+        }).then(() => {
             expect(component.students[0].name).equal('hello');
             done();
         })
@@ -78,7 +77,7 @@ describe('Array', function () {
     it("delete student", function (done) {
         expect(component.students).length(1);
         component.find('.btn-delete').click();
-        nextTick(() => {
+        component.waitFor("update").then(() => {
             expect(component.students).length(0);
             expect(component.findAll(".tr-list")).length(0);
             done();

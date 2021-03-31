@@ -11,10 +11,11 @@ module.exports = function (config) {
             "test/**/*.ts" // *.tsx for React Jsx
         ],
         preprocessors: {
-            "**/*.ts": "webpack", 
-            "**/*.js": "webpack" 
+            "**/*.ts": "webpack",
+            "**/*.js": "webpack"
         },
         webpack: {
+            mode: "development",
             module: {
                 rules: [{
                     test: /\.tsx?$/,
@@ -31,9 +32,10 @@ module.exports = function (config) {
             },
             plugins: [
                 new webpack.DefinePlugin({
-                    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+                    'process.env.NODE_ENV': "'test'"
                 })
-            ]
+            ],
+            devtool: 'inline-source-map'
         },
         client: {
             mocha: {
@@ -42,6 +44,8 @@ module.exports = function (config) {
         },
         reporters: ["mocha"],
         // browsers: ["jsdom"],
+        colors: true,
+        logLevel: config.LOG_INFO,
         browsers: ['HeadlessChrome'],
         customLaunchers: {
             HeadlessChrome: {
@@ -57,7 +61,8 @@ module.exports = function (config) {
             }
         },
         autoWatch: false,
-        singleRun: false,
-        concurrency: Infinity
+        singleRun: true,
+        concurrency: Infinity,
+        browserNoActivityTimeout: 10000,
     });
 };

@@ -9,6 +9,7 @@ if (process.env.NODE_ENV != "test") {
 
 
 export const app = new App(Main, document.querySelector('#app'));
+console.log("app", app);
 App.extend.formatter("dollar", (value: string) => {
     return "$" + value;
 });

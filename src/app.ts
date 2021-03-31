@@ -20,9 +20,19 @@ export class App {
         this.component = component;
         this.element = isString(element) ? document.querySelector(element) : element;
         if (this.element == null) {
-            this.element = document.body;
+            const defaultId = 'mahal-app';
+            let el: HTMLElement = document.querySelector(defaultId);
+            if (el) {
+                el.innerHTML = "";
+            }
+            else {
+                el = document.createElement('div');
+                el.id = defaultId;
+                document.body.appendChild(el);
+            }
+            this.element = el;
             if (process.env.NODE_ENV != 'production') {
-                Logger.warn("Provided element or element selector is not valid. Using body as default")
+                Logger.warn("Provided element or element selector is not valid. Using 'mahal-app' as default")
             }
         }
         new window.MutationObserver((mutations) => {

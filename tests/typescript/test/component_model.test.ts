@@ -15,7 +15,7 @@ describe('Component MODEL', function () {
         const input = component.find('input');
         expect(input.value).equal('initial');
         component.text = "ujjwal";
-        nextTick(() => {
+        component.waitFor("update").then(() => {
             expect(input.value).equal(component.text);
             done();
         })
@@ -24,7 +24,7 @@ describe('Component MODEL', function () {
     it("from element to component", function (done) {
         const input = component.find('input');
         input.setValue("random");
-        nextTick(() => {
+        component.waitFor("update").then(() => {
             expect(component.text).equal('random');
             done();
         })
@@ -33,7 +33,7 @@ describe('Component MODEL', function () {
     it("from component to element once again", function (done) {
         const input = component.find('input');
         component.text = "value changed";
-        nextTick(() => {
+        component.waitFor("update")(() => {
             expect(input.value).equal('value changed');
             done();
         })
