@@ -19,7 +19,7 @@ describe('Object', function () {
         component.students.push({
             name: 'ujjwal'
         })
-        nextTick(() => {
+        component.waitFor("update").then(() => {
             expect(component.findAll(".tr-list")).length(1);
             done();
         })
@@ -34,7 +34,7 @@ describe('Object', function () {
                 name: 'ujjwal'
             }
         };
-        nextTick(() => {
+        component.waitFor('update').then(() => {
             expect(component.findAll(".tr-list")).length(2);
             done();
         })
@@ -42,37 +42,36 @@ describe('Object', function () {
 
     it("reset students value", function (done) {
         component.students = {};
-        nextTick(() => {
+        nextTick().then(() => {
             expect(component.findAll(".tr-list")).length(0);
+            expect(getObjectLength(component.students)).equal(0);
             done();
         })
     });
 
     it("add students using btn", function (done) {
-        console.log("object", component.students, "length", getObjectLength(component.students));
-        expect(getObjectLength(component.students)).equal(0);
+
         const newName = "ujjwal gupta";
         component.find('#name').setValue(newName);
         expect(component.name).equal(newName);
         component.find("#btnAdd").click();
-        console.log("students", component.students);
         expect(getObjectLength(component.students)).equal(1);
         expect(component.students[newName].name).equal(newName);
-        nextTick(() => {
+        component.waitFor('update').then(() => {
             expect(component.find("#name").value).equal('');
             expect(component.findAll(".tr-list")).length(1);
+            expect(getObjectLength(component.students)).equal(1);
             done();
         })
     });
 
     it("edit student", function (done) {
-        expect(getObjectLength(component.students)).equal(1);
+        
         component.find('#btnEditStudent').click();
-        nextTick(() => {
+        component.waitFor('update').then(() => {
             component.find('.edit-student-input input').setValue("hello");
             component.find('#btnUpdateStudent').click();
-        })
-        nextTick(() => {
+        }).then(() => {
             expect(component.students['ujjwal gupta'].name).equal('hello');
             done();
         })

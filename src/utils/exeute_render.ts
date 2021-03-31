@@ -29,7 +29,7 @@ export function executeRender(comp: Component, children?) {
         } as IRenderContext).then(el => {
             comp.element = el;
             res(el);
-            nextTick(() => {
+            setTimeout(() => {
                 // if ((this as any).$store) {
                 //     for (let key in this.dependency_) {
                 //         if (key.indexOf("$store.state") >= 0) {
@@ -48,7 +48,7 @@ export function executeRender(comp: Component, children?) {
                 comp.emit(LIFECYCLE_EVENT.Rendered);
                 comp.emit(LIFECYCLE_EVENT.Mount);
                 comp.isMounted = true;
-            });
+            }, 0);
         }).catch(err => {
             console.error("error occured at executeRender", err);
             rej(err);

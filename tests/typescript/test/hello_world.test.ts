@@ -15,7 +15,7 @@ describe('HelloWorld', function () {
     it("initiate component", async function () {
         const consoleSpy = spy(console, "log");
 
-        component = await (app as any).initiate(HelloWorld, {
+        component = await (app as any).mount(HelloWorld, {
             props: {
                 count: 0
             }
