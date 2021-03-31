@@ -9,7 +9,7 @@
     "install:compiler": "node build_helper/compiler_installer.js",
     "build": "npm run install:compiler && npm run webpack:dev",
     "build:pack": "npm run build && npm run webpack:test && npm pack",
-    "build:install": "npm run build:pack && node tests/installer.js",
+    "build:install": "npm run build:pack && npm run install:test",
     "lint": "tslint src/**/*.ts",
     "test:general": "cd tests && npm run install:test",
     "install:general": "npm run build:pack && cd tests && npm run install:lib",

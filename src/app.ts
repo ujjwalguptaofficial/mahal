@@ -85,4 +85,8 @@ export class App {
             (App as any).createRenderer = val;
         }
     }
+
+    emit(){
+        
+    }
 }

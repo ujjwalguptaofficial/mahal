@@ -8,7 +8,7 @@ module.exports = function (config) {
         // plugins: ['karma-chai'],
         files: [
             // "src/**/*.ts",
-            "test/**/*.ts" // *.tsx for React Jsx
+            "test/index.ts" // *.tsx for React Jsx
         ],
         preprocessors: {
             "**/*.ts": "webpack",
@@ -63,6 +63,6 @@ module.exports = function (config) {
         autoWatch: false,
         singleRun: true,
         concurrency: Infinity,
-        browserNoActivityTimeout: 10000,
+        browserNoActivityTimeout: 20000,
     });
 };

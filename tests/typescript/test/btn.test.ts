@@ -10,7 +10,7 @@ describe('Btn prop test', function () {
 
     it("initiate btn with wrong data type", async function () {
         const consoleSpy = spy(console, "error");
-        component = await (app as any).initiate(Btn, {
+        component = await (app as any).mount(Btn, {
             props: {
                 label: false
             }
@@ -25,12 +25,11 @@ describe('Btn prop test', function () {
 
 
     it("initiate  with right data type", async function () {
-        component = await (app as any).initiate(Btn, {
+        component = await (app as any).mount(Btn, {
             props: {
                 label: "ujjwal"
             }
         });
-        await nextTick();
         const data = component.element.textContent.trim();
         expect(data).equal("UJJWAL");
     });

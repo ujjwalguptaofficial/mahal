@@ -33,7 +33,7 @@ describe('Component MODEL', function () {
     it("from component to element once again", function (done) {
         const input = component.find('input');
         component.text = "value changed";
-        component.waitFor("update")(() => {
+        component.waitFor("update").then(() => {
             expect(input.value).equal('value changed');
             done();
         })

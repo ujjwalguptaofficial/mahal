@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { IAttrItem } from "../interface";
-import { getDataype, nextTick, Logger, clone, forOwn, setAttribute } from "../utils";
+import { getDataype, Logger, clone, forOwn, setAttribute } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { Observer } from "./observer";
 
@@ -53,6 +53,9 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
         if (attrItem.k) {
             this.watch(attrItem.k, (newValue) => {
                 setAttribute(component, key, newValue);
+                this._timer_.debounce(() => {
+                    this.emit(LIFECYCLE_EVENT.Update);
+                })
             });
         }
     });
