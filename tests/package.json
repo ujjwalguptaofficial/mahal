@@ -10,8 +10,8 @@
     "install:dev": " npm run install:lib && npm run dev",
     "install:test": " npm run install:lib && npm run test",
     "start": "npm run dev",
-    "test:browser": "cd typescript && npm run test:browser",
-    "test": "cross-env NODE_ENV=test mochapack --require ./typescript/test/setup.js --webpack-config typescript/webpack.config.test.js \"typescript/test/**/*.test.ts\""
+    "test": "cd typescript && npm run test:browser",
+    "test:mochapack": "cross-env NODE_ENV=test mochapack --require ./typescript/test/setup.js --webpack-config typescript/webpack.config.test.js \"typescript/test/**/*.test.ts\""
   },
   "dependencies": {
     "chai": "^4.3.4",

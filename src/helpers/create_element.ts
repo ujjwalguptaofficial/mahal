@@ -170,7 +170,6 @@ export function createElement(this: Component, tag: string, childs: Promise<HTML
                 res(handleInPlace.call(this, childs, option));
             }
             else {
-                console.log("rejecting error");
                 rej(new Logger(ERROR_TYPE.InvalidComponent, {
                     tag: tag
                 }).throwPlain(true));

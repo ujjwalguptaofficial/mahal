@@ -49,10 +49,7 @@ export function executeRender(comp: Component, children?) {
                 comp.emit(LIFECYCLE_EVENT.Mount);
                 comp.isMounted = true;
             }, 0);
-        }).catch(err => {
-            console.error("error occured at executeRender", err);
-            rej(err);
-        });
+        }).catch(rej);
     })
 
 }

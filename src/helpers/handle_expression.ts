@@ -6,8 +6,7 @@ import { emitUpdate } from "./emit_update";
 
 export function handleExpression(this: Component, method: () => Promise<HTMLElement>, keys: string[], type?: string) {
     if (type === "for") {
-        const res = handleForExp.call(this, keys[0], method);
-        return res;
+        return handleForExp.call(this, keys[0], method);
     }
     return new Promise((res) => {
         method().then(el => {
