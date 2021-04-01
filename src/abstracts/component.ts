@@ -2,9 +2,9 @@ import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import {
     setAndReact, Observer, deleteAndReact, attachGetterSetter
 } from "../helpers";
-import { IPropOption, ITajStore, IRenderContext, } from "../interface";
+import { ITajStore, IRenderContext, } from "../interface";
 import { globalFormatter } from "../constant";
-import { isArray, nextTick, Logger, isNull, EventBus, Timer, } from "../utils";
+import { isArray, Logger, isNull, EventBus, Timer, } from "../utils";
 
 // do not rename this, this has been done to merge Component
 export interface Component {
@@ -21,10 +21,10 @@ export abstract class Component {
 
     constructor() {
         this.on(LIFECYCLE_EVENT.Created, () => {
-            const computed = this.computed_;
+            const computed = this._computed;
             for (const key in computed) {
                 const data = computed[key];
-                this.reactives_.push(key);
+                this._reactives.push(key);
                 data.args.forEach(arg => {
                     this.watch(arg, () => {
                         this[key] = data.fn.call(this);
@@ -36,20 +36,20 @@ export abstract class Component {
         if (isNull(this.children)) {
             this.children = {};
         }
-        if (isNull(this.formatters_)) {
-            this.formatters_ = {};
+        if (isNull(this._formatters)) {
+            this._formatters = {};
         }
-        if (isNull(this.directive_)) {
-            this.directive_ = {};
+        if (isNull(this._directive)) {
+            this._directive = {};
         }
-        if (isNull(this.props_)) {
-            this.props_ = {};
+        if (isNull(this._props)) {
+            this._props = {};
         }
-        if (isNull(this.computed_)) {
-            this.computed_ = {};
+        if (isNull(this._computed)) {
+            this._computed = {};
         }
-        if (isNull(this.watchList_)) {
-            this.watchList_ = {};
+        if (isNull(this._watchList)) {
+            this._watchList = {};
         }
     }
 
@@ -58,18 +58,18 @@ export abstract class Component {
     }
 
     watch(propName: string, cb: (newValue, oldValue) => void) {
-        if (this.watchList_[propName] == null) {
-            this.watchList_[propName] = [];
+        if (this._watchList[propName] == null) {
+            this._watchList[propName] = [];
         }
-        this.watchList_[propName].push(cb);
+        this._watchList[propName].push(cb);
         return this;
     }
 
     unwatch(propName: string, cb: (newValue, oldValue) => void) {
-        if (this.watchList_[propName] != null) {
-            const index = this.watchList_[propName].indexOf(cb);
+        if (this._watchList[propName] != null) {
+            const index = this._watchList[propName].indexOf(cb);
             if (index >= 0) {
-                this.watchList_[propName].splice(index, 1);
+                this._watchList[propName].splice(index, 1);
             }
         }
         return this;
@@ -84,12 +84,12 @@ export abstract class Component {
     }
 
     on(event: string, cb: Function) {
-        this.eventBus_.on(event, cb);
+        this._eventBus.on(event, cb);
         return this;
     }
 
     off(event: string, cb: Function) {
-        this.eventBus_.off(event, cb);
+        this._eventBus.off(event, cb);
     }
 
     waitFor<T>(eventName: string) {
@@ -103,7 +103,7 @@ export abstract class Component {
     }
 
     emit(event: string, ...args) {
-        return this.eventBus_.emit(event, ...args);
+        return this._eventBus.emit(event, ...args);
     }
 
     find(selector: string) {
@@ -122,8 +122,8 @@ export abstract class Component {
         if (globalFormatter[formatterName]) {
             return globalFormatter[formatterName](value);
         }
-        else if (this.formatters_[formatterName]) {
-            return this.formatters_[formatterName](value);
+        else if (this._formatters[formatterName]) {
+            return this._formatters[formatterName](value);
         }
         new Logger(ERROR_TYPE.InvalidFormatter, {
             formatter: formatterName
@@ -135,9 +135,9 @@ export abstract class Component {
         return properties.reduce((prev, curr) => prev && prev[curr], this);
     }
 
-    private eventBus_ = new EventBus(this);
+    private _eventBus = new EventBus(this);
 
-    private inPlaceWatchers = {};
+    private _inPlaceWatchers = {};
 
 
     // private updateDOM_(key: string, oldValue) {
@@ -180,15 +180,7 @@ export abstract class Component {
 
     private dependency_: { [key: string]: any[] } = {};
 
-    private observer_: Observer;
-
-    private onChange_(key, oldValue, newValue) {
-        if (this.watchList_[key] != null) {
-            this.watchList_[key].forEach(cb => {
-                cb.call(this, newValue, oldValue);
-            });
-        }
-    }
+    private _ob: Observer;
 
     private clearAll_ = () => {
         // need to emit before clearing events
@@ -197,21 +189,21 @@ export abstract class Component {
         this.storeWatchCb_.forEach(item => {
             this.$store.unwatch(item.key, item.cb);
         });
-        this.eventBus_.destroy();
-        this.element = this.eventBus_ =
-            this.observer_ =
+        this._eventBus.destroy();
+        this.element = this._eventBus =
+            this._ob =
             this.storeWatchCb_ = null;
         this.dependency_ = {};
-        this.watchList_ = {};
+        this._watchList = {};
     }
 
-    private directive_;
+    private _directive;
 
-    private formatters_;
-    private props_;
-    private reactives_;
+    private _formatters;
+    private _props;
+    private _reactives;
 
-    private watchList_: {
+    private _watchList: {
         [key: string]: Array<(newValue, oldValue) => void>
     };
 
@@ -220,6 +212,6 @@ export abstract class Component {
     private storeGetters_: Array<{ prop: string, state: string }>;
 
     private file_;
-    private computed_;
-    _timer_ = new Timer()
+    private _computed;
+    _timer = new Timer()
 }

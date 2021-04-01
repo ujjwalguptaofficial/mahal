@@ -4,8 +4,8 @@ import { DATA_TYPE } from "../enums";
 // tslint:disable-next-line
 export const Prop = (options?: IPropOption | any) => {
     return (target, key: string) => {
-        if (!target.props_) {
-            target.props_ = {};
+        if (!target._props) {
+            target._props = {};
         }
         if (typeof options === DATA_TYPE.Function) {
             const name = options.name;
@@ -18,6 +18,6 @@ export const Prop = (options?: IPropOption | any) => {
                 type: options
             };
         }
-        target.props_[key] = options || {};
+        target._props[key] = options || {};
     };
 };

@@ -11,9 +11,9 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
         if (!attr) return htmlAttributes;
         for (const key in attr) {
             const value: IAttrItem = attr[key];
-            if (component.props_[key]) {
-                if (component.props_[key].type) {
-                    const expected = component.props_[key].type;
+            if (component._props[key]) {
+                if (component._props[key].type) {
+                    const expected = component._props[key].type;
                     const received = getDataype(value.v);
                     if (expected !== received) {
                         this.waitFor(LIFECYCLE_EVENT.Rendered).then(_ => {

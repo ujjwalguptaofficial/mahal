@@ -1,8 +1,10 @@
 import { Component } from "../abstracts";
 import { Observer } from "./observer";
+import { onChange } from "./comp_on_change";
 
+const ob = '_ob';
 export function attachGetterSetter(comp: Component) {
-    comp['observer_'] = new Observer();
-    comp['observer_'].onChange = comp['onChange_'].bind(comp);
-    comp['observer_'].create(comp, Object.keys(comp['props_']).concat(comp['reactives_'] || []));
+    comp[ob] = new Observer();
+    comp[ob].onChange = onChange.bind(comp);
+    comp[ob].create(comp, Object.keys(comp['_props']).concat(comp['_reactives'] || []));
 }

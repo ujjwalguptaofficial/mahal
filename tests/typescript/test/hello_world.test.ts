@@ -120,11 +120,11 @@ describe('HelloWorld', function () {
         component.on("destroyed", () => {
             nextTick(() => {
                 expect(component.element).equal(null);
-                expect(component.eventBus_).equal(null);
+                expect(component._eventBus).equal(null);
                 // expect(component.dependency_).equal(null);
                 expect(getObjectLength(component.dependency_)).equal(0);
                 expect(component.storeWatchCb_).equal(null);
-                expect(component.watchList_).to.be.an('object')
+                expect(component._watchList).to.be.an('object')
                 // expect(getObjectLength(component.watchList_)).equal(0);
                 done();
             })

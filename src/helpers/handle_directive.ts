@@ -8,7 +8,7 @@ import { LIFECYCLE_EVENT } from "../enums";
 export function handleDirective(this: Component, element, dir, isComponent) {
     if (!dir) return;
     forOwn(dir, (name, compiledDir) => {
-        const storedDirective = (this as any).directive_[name] || globalDirectives[name];
+        const storedDirective = (this as any)._directive[name] || globalDirectives[name];
         if (storedDirective) {
             const binding = {
                 input: compiledDir.input,

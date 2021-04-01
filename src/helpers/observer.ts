@@ -46,7 +46,7 @@ export class Observer {
                     if (oldValue === newValue) return;
                     cached[key] = newValue;
                     if (process.env.NODE_ENV !== "production") {
-                        if (Observer.shouldCheckProp && (input as any).props_ && (input as any).props_[key]) {
+                        if (Observer.shouldCheckProp && (input as any)._props && (input as any)._props[key]) {
                             new Logger(ERROR_TYPE.MutatingProp, {
                                 html: (input as any).outerHTML,
                                 key: key

@@ -71,7 +71,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             emitUpdate(this);
             //add setter
             if (isObject(newValue)) {
-                (this as any).observer_.create(newValue, null, `${key}.`);
+                this['_ob'].create(newValue, null, `${key}.`);
             }
         },
         [`${key}.push`]: (_, oldValue) => {

@@ -18,9 +18,9 @@ export function handleInPlace(this: Component, childs, option) {
                 })
             };
 
-            if (!(this as any).inPlaceWatchers[key]) {
+            if (!this['_inPlaceWatchers'][key]) {
                 this.watch(key, watchCallBack);
-                this['inPlaceWatchers'][key] = true;
+                this['_inPlaceWatchers'][key] = true;
             }
         })
     }

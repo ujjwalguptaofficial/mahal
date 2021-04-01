@@ -66,7 +66,7 @@ describe('InPlace if toggle', function () {
     }
 
     it("check watchlist length", function () {
-        expect(component.watchList_["name"]).length(1);
+        expect(component._watchList["name"]).length(1);
         expect(window['error']).to.equal(undefined);
     });
 });

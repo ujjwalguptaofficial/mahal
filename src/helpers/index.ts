@@ -12,3 +12,4 @@ export * from "./attach_getter_setter";
 export * from "./handle_in_place";
 export * from "./create_element";
 export * from "./emit_update";
+export * from "./comp_on_change";
