@@ -2,6 +2,7 @@ import { LIFECYCLE_EVENT } from "../enums";
 import { nextTick, replaceEl } from "../utils";
 import { Component } from "../abstracts";
 import { handleForExp } from "./handle_for_expression";
+import { emitUpdate } from "./emit_update";
 
 export function handleExpression(this: Component, method: () => Promise<HTMLElement>, keys: string[], type?: string) {
     if (type === "for") {
@@ -41,11 +42,7 @@ export function handleExpression(this: Component, method: () => Promise<HTMLElem
                 if (changesQueue.length > 0) {
                     onChange();
                 }
-                if (this.isMounted) {
-                    this._timer_.debounce(() => {
-                        this.emit(LIFECYCLE_EVENT.Update);
-                    })
-                }
+                emitUpdate(this);
             };
             handleChange();
             res(el);

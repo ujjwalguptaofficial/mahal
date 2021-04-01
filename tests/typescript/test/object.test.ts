@@ -42,7 +42,7 @@ describe('Object', function () {
 
     it("reset students value", function (done) {
         component.students = {};
-        nextTick().then(() => {
+        (nextTick as any)().then(() => {
             expect(component.findAll(".tr-list")).length(0);
             expect(getObjectLength(component.students)).equal(0);
             done();
@@ -66,7 +66,7 @@ describe('Object', function () {
     });
 
     it("edit student", function (done) {
-        
+
         component.find('#btnEditStudent').click();
         component.waitFor('update').then(() => {
             component.find('.edit-student-input input').setValue("hello");

@@ -2,6 +2,7 @@ import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
 import { Logger, isPrimitive, isNull, isArray, isObject, nextTick, forOwn, indexOf } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
+import { emitUpdate } from "./emit_update";
 
 
 function runForExp(key, value, method) {
@@ -67,6 +68,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     });
                 });
             }
+            emitUpdate(this);
             //add setter
             if (isObject(newValue)) {
                 (this as any).observer_.create(newValue, null, `${key}.`);
@@ -120,6 +122,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 }
                 break;
         }
+        emitUpdate(this);
     };
     this.watch(key, callBacks[key]).
         watch(`${key}.push`, callBacks[`${key}.push`]).

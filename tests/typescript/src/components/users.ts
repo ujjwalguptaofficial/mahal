@@ -1,4 +1,4 @@
-import { Component, Template, Prop, Children, Reactive } from "mahal";
+import { Component, Template, Prop, Children, Reactive, LIFECYCLE_EVENT } from "mahal";
 import User from "./user";
 
 @Template(`
@@ -30,6 +30,14 @@ export default class extends Component {
         name: "Ujjwal",
         gender: "Male"
     }]
+
+    constructor() {
+        super();
+        window['comp'] = this;
+        this.on(LIFECYCLE_EVENT.Update, () => {
+            console.log("updated");
+        })
+    }
 
 
 }

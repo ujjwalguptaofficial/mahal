@@ -11,3 +11,4 @@ export * from "./handle_directive";
 export * from "./attach_getter_setter";
 export * from "./handle_in_place";
 export * from "./create_element";
+export * from "./emit_update";

@@ -1,4 +1,4 @@
-import { Component, Template, Reactive } from "mahal";
+import { Component, Template, Reactive, LIFECYCLE_EVENT } from "mahal";
 
 
 @Template(`
@@ -83,8 +83,12 @@ export default class extends Component {
         };
     }
 
-    rendered(){
+    constructor() {
+        super();
         window['comp'] = this;
+        this.on(LIFECYCLE_EVENT.Update, () => {
+            console.log("updated");
+        })
     }
 }
 

@@ -1,6 +1,5 @@
 import UsersComponent from "../src/components/users";
 import { app } from "../src/index";
-import { nextTick, Timer } from "mahal";
 import { expect } from "chai";
 
 describe('User slot test', function () {
@@ -43,7 +42,8 @@ describe('User slot test', function () {
             name: "prince",
             gender: "male"
         }]
-        new Timer().timeout(50).then(() => {
+        debugger;
+        component.waitFor('update').then(() => {
             const firstUser = component.find('.reactive-users');
             expect(firstUser.querySelector('.name').textContent.trim()).equal("My name is prince.");
             expect(firstUser.querySelector('.gender').textContent.trim()).equal("I am male.");
@@ -56,7 +56,7 @@ describe('User slot test', function () {
             name: "prince",
             gender: "male"
         })
-        component.waitFor('updated').then(() => {
+        component.waitFor('update').then(() => {
             expect(component.findAll(".reactive-users")).length(2);
             done();
         })

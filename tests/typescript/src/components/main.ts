@@ -19,7 +19,7 @@ import Computed from "./computed";
 // <in-place :of="name" #if(flag) label="as"/>
 // </div>`)
 @Template(`
-    <Mu :label="flag" :count="counter" on:click="incrementCounter" />
+    <Users :label="flag" :count="counter" on:click="incrementCounter" />
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
@@ -74,7 +74,7 @@ export default class Main extends Component {
 
     constructor() {
         super();
-        window['comp'] = this;
+        // window['comp'] = this;
         window['nextTick'] = nextTick;
         // setTimeout(() => {
         //     // alert("name changed");
