@@ -1,4 +1,4 @@
-import { createTextNode, handleExpression, createElement } from "../helpers";
+import { createTextNode, handleExpression, createElement, clearAll } from "../helpers";
 import { Component } from "../abstracts";
 import { App } from "../app";
 import { Logger, nextTick } from "../utils";
@@ -44,7 +44,7 @@ export function executeRender(comp: Component, children?) {
                 //         }
                 //     }
                 // }
-                el.addEventListener(LIFECYCLE_EVENT.Destroyed, (comp as any).clearAll_);
+                el.addEventListener(LIFECYCLE_EVENT.Destroyed, clearAll.bind(comp));
                 comp.emit(LIFECYCLE_EVENT.Rendered);
                 comp.emit(LIFECYCLE_EVENT.Mount);
                 comp.isMounted = true;

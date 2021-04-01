@@ -182,21 +182,6 @@ export abstract class Component {
 
     private _ob: Observer;
 
-    private clearAll_ = () => {
-        // need to emit before clearing events
-        this.emit(LIFECYCLE_EVENT.Destroyed);
-        this.element.removeEventListener(LIFECYCLE_EVENT.Destroyed, this.clearAll_);
-        this.storeWatchCb_.forEach(item => {
-            this.$store.unwatch(item.key, item.cb);
-        });
-        this._eventBus.destroy();
-        this.element = this._eventBus =
-            this._ob =
-            this.storeWatchCb_ = null;
-        this.dependency_ = {};
-        this._watchList = {};
-    }
-
     private _directive;
 
     private _formatters;
