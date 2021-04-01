@@ -175,6 +175,6 @@ export function createElement(this: Component, tag: string, childs: Promise<HTML
                     tag: tag
                 }).throwPlain(true));
             }
-        })
+        }).catch(rej);
     });
 }

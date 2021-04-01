@@ -17,7 +17,9 @@ App.extend.component("Btn", Btn);
 console.log("env", process.env.NODE_ENV);
 (App as any).createRenderer = createRenderer;
 if (process.env.NODE_ENV !== "test") {
-    app.create();
+    app.create().catch(err=>{
+        console.log("err", err)
+    })
 }
 else {
     App.extend.plugin(MahalTest, app);
