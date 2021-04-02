@@ -4,7 +4,7 @@ import {
 } from "../helpers";
 import { ITajStore, IRenderContext, } from "../interface";
 import { globalFormatter } from "../constant";
-import { isArray, Logger, isNull, EventBus, Timer, } from "../utils";
+import { isArray, Logger, isNull, EventBus, Timer, nextTick, } from "../utils";
 
 // do not rename this, this has been done to merge Component
 export interface Component {
@@ -95,8 +95,10 @@ export abstract class Component {
     waitFor<T>(eventName: string) {
         return new Promise<T>((res) => {
             const eventCallback = () => {
-                this.off(eventName, eventCallback);
                 res();
+                nextTick(_ => {
+                    this.off(eventName, eventCallback);
+                })
             }
             this.on(eventName, eventCallback);
         });

@@ -17,4 +17,11 @@ export default class extends Component {
     toUpper(value) {
         return value.toUpperCase();
     }
+
+    constructor() {
+        super();
+        this.on("mount", _ => {
+            console.log("mounted")
+        })
+    }
 }

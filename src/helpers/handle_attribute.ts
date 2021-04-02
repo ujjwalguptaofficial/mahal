@@ -16,7 +16,7 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                     const expected = component._props[key].type;
                     const received = getDataype(value.v);
                     if (expected !== received) {
-                        this.waitFor(LIFECYCLE_EVENT.Rendered).then(_ => {
+                        this.waitFor(LIFECYCLE_EVENT.Mount).then(_ => {
                             new Logger(ERROR_TYPE.PropDataTypeMismatch,
                                 {
                                     prop: key,

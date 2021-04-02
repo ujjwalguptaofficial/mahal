@@ -35,14 +35,14 @@ export default class HelloWorld extends BaseComponent {
     constructor() {
         super();
         this.on("created", this.onCreated);
-        this.on("rendered", this.rendered);
+        this.on("mount", this.mounted);
         this.on("update", this.updated);
         console.log("constructor", this.name, this.count);
     }
 
-    rendered() {
+    mounted() {
         window['comp'] = this;
-        console.log("rendered", this.name, this.count);
+        console.log("mounted", this.name, this.count);
     }
 
     onCreated() {

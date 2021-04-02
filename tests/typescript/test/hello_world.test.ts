@@ -35,7 +35,7 @@ describe('HelloWorld', function () {
 
         const args3 = consoleSpy.args[2];
         expect(args3).length(3);
-        expect(args3[0]).to.equal("rendered");
+        expect(args3[0]).to.equal("mounted");
         expect(args3[1]).to.equal(component.name);
         expect(args3[2]).to.equal(0);
         consoleSpy.restore();
