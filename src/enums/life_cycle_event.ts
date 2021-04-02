@@ -1,6 +1,6 @@
 export enum LIFECYCLE_EVENT {
-    Created = "created",
-    Destroyed = "destroyed",
+    Create = "create",
+    Destroy = "destroy",
     Update = "update",
     Mount = "mount",
 }

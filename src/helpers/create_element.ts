@@ -84,12 +84,12 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
         }
 
         const onElDestroyed = () => {
-            element.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+            element.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
             for (const ev in evListener) {
                 element.removeEventListener(ev, evListener[ev]);
             }
         };
-        element.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+        element.addEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
     }
 
     handleDirective.call(this, element, option.dir, false);

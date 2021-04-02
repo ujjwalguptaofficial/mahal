@@ -32,12 +32,12 @@ export function handleExpression(this: Component, method: () => Promise<HTMLElem
                     this.watch(item, watchCallBack);
                 });
                 const onElDestroyed = function () {
-                    el.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+                    el.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
                     keys.forEach(item => {
                         this.unwatch(item, watchCallBack);
                     });
                 }.bind(this);
-                el.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+                el.addEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
                 if (changesQueue.length > 0) {
                     onChange();
                 }

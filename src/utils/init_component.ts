@@ -45,8 +45,8 @@ export function initComponent(this: Component, component: Component, option) {
             });
         }
     }
-    component.emit(LIFECYCLE_EVENT.Created);
-    component.on(LIFECYCLE_EVENT.Destroyed, () => {
+    component.emit(LIFECYCLE_EVENT.Create);
+    component.on(LIFECYCLE_EVENT.Destroy, () => {
         component = null;
     });
     return htmlAttributes;

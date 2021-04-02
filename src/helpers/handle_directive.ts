@@ -28,7 +28,7 @@ export function handleDirective(this: Component, element, dir, isComponent) {
                 const onDestroyed = () => {
                     directive.destroyed();
                     if (!isComponent) {
-                        element.removeEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
+                        element.removeEventListener(LIFECYCLE_EVENT.Destroy, onDestroyed);
                     }
                     compiledDir.props.forEach((prop) => {
                         this.unwatch(prop, onValueUpdated);
@@ -36,10 +36,10 @@ export function handleDirective(this: Component, element, dir, isComponent) {
                     element = null;
                 };
                 if (isComponent) {
-                    (element as Component).on(LIFECYCLE_EVENT.Destroyed, onDestroyed);
+                    (element as Component).on(LIFECYCLE_EVENT.Destroy, onDestroyed);
                 }
                 else {
-                    element.addEventListener(LIFECYCLE_EVENT.Destroyed, onDestroyed);
+                    element.addEventListener(LIFECYCLE_EVENT.Destroy, onDestroyed);
                 }
                 compiledDir.props.forEach((prop) => {
                     this.watch(prop, onValueUpdated);

@@ -18,7 +18,7 @@ export default class extends Component {
 
     constructor() {
         super();
-        this.on("created", () => {
+        this.on("create", () => {
             this.text = this.value;
         })
         this.watch("value", this.onValueChange.bind(this));

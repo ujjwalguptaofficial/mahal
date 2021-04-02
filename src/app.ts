@@ -4,7 +4,7 @@ import { defaultExport } from "./default";
 import { Logger, isString, initComponent, isObject, executeRender } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 
-const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroyed);
+const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroy);
 
 function dispatchDestroyed(node: Node) {
     node.dispatchEvent(destroyedEvent);

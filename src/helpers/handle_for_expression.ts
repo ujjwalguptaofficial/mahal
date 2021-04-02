@@ -85,14 +85,14 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         }
     };
     const onElDestroyed = () => {
-        cmNode.removeEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+        cmNode.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
         cmNode = null;
         for (const ev in callBacks) {
             this.unwatch(ev, callBacks[ev]);
         }
         callBacks = null;
     };
-    cmNode.addEventListener(LIFECYCLE_EVENT.Destroyed, onElDestroyed);
+    cmNode.addEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
     const handleChange = (prop, params) => {
         const parent = cmNode.parentNode;
         const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);

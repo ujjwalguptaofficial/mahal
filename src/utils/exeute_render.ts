@@ -44,7 +44,7 @@ export function executeRender(comp: Component, children?) {
                 //         }
                 //     }
                 // }
-                el.addEventListener(LIFECYCLE_EVENT.Destroyed, clearAll.bind(comp));
+                el.addEventListener(LIFECYCLE_EVENT.Destroy, clearAll.bind(comp));
                 comp.emit(LIFECYCLE_EVENT.Mount);
                 comp.isMounted = true;
             }, 0);

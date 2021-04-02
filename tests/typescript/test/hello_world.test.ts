@@ -117,7 +117,7 @@ describe('HelloWorld', function () {
     })
 
     it("destroy", function (done) {
-        component.on("destroyed", () => {
+        component.on("destroy", () => {
             nextTick(() => {
                 expect(component.element).equal(null);
                 expect(component._eventBus).equal(null);
