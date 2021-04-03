@@ -70,9 +70,9 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             }
             emitUpdate(this);
             //add setter
-            if (isObject(newValue)) {
-                this['_ob'].create(newValue, null, `${key}.`);
-            }
+            // if (isObject(newValue)) {
+            //     this['_ob'].create(newValue, null, `${key}.`);
+            // }
         },
         [`${key}.push`]: (newValue) => {
             handleChange("push", newValue);

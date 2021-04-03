@@ -43,8 +43,8 @@ describe('MODEL TextBox', function () {
     it("check reactive of array property - users", function (done) {
         let newVal = [{ name: 'ujjwal' }];
         let prop = "users";
-        component.watch(prop, (newVal, oldVal) => {
-            expect(newVal).equal(newVal);
+        component.watch(prop, (newValue, oldVal) => {
+            expect(newVal).equal(newValue);
             expect(oldVal).length(0);
             component.unwatch(prop);
             expect(component['_watchBus']._events[prop]).length(0);
@@ -57,12 +57,16 @@ describe('MODEL TextBox', function () {
     it("check push of array property - users", function (done) {
         let newVal = { name: 'ujjwal gupta' };
         let prop = "users.push";
-        debugger;
-        component.watch(prop, (newVal, oldVal) => {
-            expect(newVal).equal(newVal);
-            expect(oldVal).length(0);
+        component.watch(prop, (newValue, oldVal) => {
+            expect(newValue).eql({
+                key: 1,
+                length: 2,
+                value: newVal
+            });
+            expect(oldVal).equal(undefined);
             component.unwatch(prop);
             expect(component['_watchBus']._events[prop]).length(0);
+            expect(component.users).length(2);
             done();
         });
         expect(component['_watchBus']._events[prop]).length(1);

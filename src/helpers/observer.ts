@@ -40,6 +40,11 @@ export class Observer {
         keys = keys || Object.keys(input);
         keys.forEach(key => {
             cached[key] = input[key];
+            const registerChild = () => {
+                if (isObject(input[key])) {
+                    this.create(input[key], null, `${prefix}${key}.`);
+                }
+            };
             Object.defineProperty(input, key, {
                 set(newValue) {
                     const oldValue = cached[key];
@@ -55,16 +60,14 @@ export class Observer {
                     }
 
                     onChange(prefix + key, newValue, oldValue);
+                    registerChild();
                 },
                 get() {
                     return cached[key];
                 }
 
             });
-
-            if (isObject(input[key])) {
-                this.create(input[key], null, `${prefix}${key}.`);
-            }
+            registerChild();
         });
 
         Object.defineProperty(input, "push", {
