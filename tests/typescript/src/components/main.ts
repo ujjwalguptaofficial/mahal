@@ -20,13 +20,14 @@ import Computed from "./computed";
 // </div>`)
 @Template(`
     <HelloWorld :label="flag" :count="counter" on:click="incrementCounter" />
-    `)
+`)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed
 })
 export default class Main extends Component {
 
+    @Reactive
     users = [{
         name: "Ujjwal kumar",
         gender: "Male"
@@ -83,6 +84,9 @@ export default class Main extends Component {
         // nextTick(() => {
         //     this.name = "kujjwal gupta";
         // })
+        this.watch("users.push", (newValue, oldValue) => {
+            console.log(newValue, oldValue);
+        });
     }
 
     onHelloWordClick() {

@@ -6,7 +6,7 @@ export class Observer {
 
     static shouldCheckProp = true;
 
-    onChange: (key: string, oldValue, newValue) => void;
+    onChange: (key: string, newValue, oldValue?) => void;
 
     create(input: object, keys?: string[], prefix = "") {
         const cached = {};
@@ -30,7 +30,7 @@ export class Observer {
                                 default:
                                     return args;
                             }
-                        })(), null);
+                        })());
                         return result;
                     }
                 });
@@ -54,7 +54,7 @@ export class Observer {
                         }
                     }
 
-                    onChange(prefix + key, oldValue, newValue);
+                    onChange(prefix + key, newValue, oldValue);
                 },
                 get() {
                     return cached[key];
@@ -76,7 +76,7 @@ export class Observer {
                     value: value,
                     key: keyToAdd,
                     length: length
-                }, null);
+                });
                 return length;
             }
         });
@@ -84,7 +84,7 @@ export class Observer {
         Object.defineProperty(input, "splice", {
             enumerable: false,
             value: (index, noOfItemToDelete) => {
-                onChange(`${prefix}splice`, [index, noOfItemToDelete], null);
+                onChange(`${prefix}splice`, [index, noOfItemToDelete]);
             }
         });
 
@@ -92,7 +92,7 @@ export class Observer {
             enumerable: false,
             value: function (prop, value) {
                 this[prop] = value;
-                onChange(`${prefix}update`, [prop, value], null);
+                onChange(`${prefix}update`, [prop, value]);
             }
         });
     }

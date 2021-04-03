@@ -74,14 +74,14 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 this['_ob'].create(newValue, null, `${key}.`);
             }
         },
-        [`${key}.push`]: (_, oldValue) => {
-            handleChange("push", oldValue);
+        [`${key}.push`]: (newValue) => {
+            handleChange("push", newValue);
         },
-        [`${key}.splice`]: (_, oldValue) => {
-            handleChange("splice", oldValue);
+        [`${key}.splice`]: (newValue) => {
+            handleChange("splice", newValue);
         },
-        [`${key}.update`]: (_, oldValue) => {
-            handleChange("update", oldValue);
+        [`${key}.update`]: (newValue) => {
+            handleChange("update", newValue);
         }
     };
     const onElDestroyed = () => {
