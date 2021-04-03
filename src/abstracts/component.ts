@@ -62,7 +62,7 @@ export abstract class Component {
         return this;
     }
 
-    unwatch(propName: string, cb: (newValue, oldValue) => void) {
+    unwatch(propName: string, cb?: (newValue, oldValue) => void) {
         this._watchBus.off(propName, cb);
         return this;
     }

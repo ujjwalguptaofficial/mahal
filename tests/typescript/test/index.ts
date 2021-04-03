@@ -23,3 +23,4 @@ import "./tab_render.test";
 import "./textarea-box.test";
 import "./textbox.test";
 import "./users.test";
+import "./watch.test";
