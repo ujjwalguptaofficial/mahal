@@ -20,7 +20,7 @@ import Computed from "./computed";
 // </div>`)
 @Template(`
     <HelloWorld :label="flag" :count="counter" on:click="incrementCounter" />
-`)
+    `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed
@@ -33,7 +33,7 @@ export default class Main extends Component {
     }]
 
     @Reactive
-    flag = true;
+    flag = false;
 
     @Reactive
     name = "Btn"
@@ -74,7 +74,7 @@ export default class Main extends Component {
 
     constructor() {
         super();
-        // window['comp'] = this;
+        window['comp'] = this;
         window['nextTick'] = nextTick;
         // setTimeout(() => {
         //     // alert("name changed");

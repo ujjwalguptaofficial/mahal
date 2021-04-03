@@ -41,7 +41,7 @@ export default class HelloWorld extends BaseComponent {
     }
 
     mounted() {
-        window['comp'] = this;
+        // window['comp'] = this;
         console.log("mounted", this.name, this.count);
     }
 

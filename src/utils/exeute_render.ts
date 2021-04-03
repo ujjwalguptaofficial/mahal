@@ -26,7 +26,7 @@ export function executeRender(comp: Component, children?) {
             runExp: handleExpression.bind(comp),
             children: children || []
             // runForExp: this.handleForExp_.bind(this)
-        } as IRenderContext).then(el => {
+        } as IRenderContext).then((el: HTMLElement) => {
             comp.element = el;
             res(el);
             setTimeout(() => {
@@ -44,9 +44,13 @@ export function executeRender(comp: Component, children?) {
                 //         }
                 //     }
                 // }
-                el.addEventListener(LIFECYCLE_EVENT.Destroy, clearAll.bind(comp));
+                const clear = clearAll.bind(comp);
+                el.addEventListener(LIFECYCLE_EVENT.Destroy, clear);
                 comp.emit(LIFECYCLE_EVENT.Mount);
                 comp.isMounted = true;
+                comp.on(LIFECYCLE_EVENT.Destroy, () => {
+                    el.removeEventListener(LIFECYCLE_EVENT.Destroy, clear);
+                });
             }, 0);
         }).catch(rej);
     })
