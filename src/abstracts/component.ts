@@ -48,9 +48,9 @@ export abstract class Component {
         if (isNull(this._computed)) {
             this._computed = {};
         }
-        if (isNull(this._watchList)) {
-            this._watchList = {};
-        }
+        // if (isNull(this._watchList)) {
+        //     this._watchList = {};
+        // }
     }
 
     destroy() {
@@ -58,20 +58,12 @@ export abstract class Component {
     }
 
     watch(propName: string, cb: (newValue, oldValue) => void) {
-        if (this._watchList[propName] == null) {
-            this._watchList[propName] = [];
-        }
-        this._watchList[propName].push(cb);
+        this._watchBus.on(propName, cb);
         return this;
     }
 
     unwatch(propName: string, cb: (newValue, oldValue) => void) {
-        if (this._watchList[propName] != null) {
-            const index = this._watchList[propName].indexOf(cb);
-            if (index >= 0) {
-                this._watchList[propName].splice(index, 1);
-            }
-        }
+        this._watchBus.off(propName, cb);
         return this;
     }
 
@@ -138,6 +130,7 @@ export abstract class Component {
     }
 
     private _eventBus = new EventBus(this);
+    private _watchBus = new EventBus(this);
 
     private _inPlaceWatchers = {};
 
@@ -189,16 +182,11 @@ export abstract class Component {
     private _formatters;
     private _props;
     private _reactives;
-
-    private _watchList: {
-        [key: string]: Array<(newValue, oldValue) => void>
-    };
-
     private storeWatchCb_: Array<{ key: string, cb: Function }> = [];
 
     private storeGetters_: Array<{ prop: string, state: string }>;
 
-    private file_;
+    private _file;
     private _computed;
     _timer = new Timer()
 }

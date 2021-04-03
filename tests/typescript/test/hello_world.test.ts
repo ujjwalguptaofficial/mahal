@@ -121,10 +121,10 @@ describe('HelloWorld', function () {
             new Timer().timeout(20).then(_ => {
                 expect(component.element).equal(null);
                 expect(component._eventBus).equal(null);
+                expect(component._watchBus._events).equal(null);
                 // expect(component.dependency_).equal(null);
                 expect(getObjectLength(component.dependency_)).equal(0);
                 expect(component.storeWatchCb_).equal(null);
-                expect(component._watchList).to.be.an('object')
                 // expect(getObjectLength(component.watchList_)).equal(0);
                 done();
             })

@@ -7,10 +7,10 @@ export function clearAll(this: Component) {
         //     this.$store.unwatch(item.key, item.cb);
         // });
         this['_eventBus'].destroy();
+        this['_watchBus'].destroy();
         this.element = this['_eventBus'] =
             this['_ob'] =
             this['storeWatchCb_'] = null;
         this['dependency_'] = {};
-        this['_watchList'] = {};
     });
 }

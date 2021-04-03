@@ -42,7 +42,6 @@ describe('User slot test', function () {
             name: "prince",
             gender: "male"
         }]
-        debugger;
         component.waitFor('update').then(() => {
             const firstUser = component.find('.reactive-users');
             expect(firstUser.querySelector('.name').textContent.trim()).equal("My name is prince.");

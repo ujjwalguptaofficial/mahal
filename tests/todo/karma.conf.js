@@ -11,8 +11,8 @@ module.exports = function (config) {
             "test/**/*.ts" // *.tsx for React Jsx
         ],
         preprocessors: {
-            "**/*.ts": "webpack",
-            "**/*.js": "webpack"
+            "**/*.ts": "webpack", 
+            "**/*.js": "webpack" 
         },
         webpack: {
             module: {

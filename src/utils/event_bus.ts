@@ -1,40 +1,40 @@
 export class EventBus {
 
     constructor(ctx?) {
-        this.ctx_ = ctx;
+        this._ctx = ctx;
     }
 
-    private ctx_;
+    private _ctx;
 
-    private events_: {
+    private _events: {
         [key: string]: Function[]
     } = {};
 
     on(event: string, cb: Function) {
-        if (this.events_[event] == null) {
-            this.events_[event] = [];
+        if (this._events[event] == null) {
+            this._events[event] = [];
         }
-        this.events_[event].push(cb);
+        this._events[event].push(cb);
         return this;
     }
 
     off(event: string, cb: Function) {
-        if (this.events_[event]) {
+        if (this._events[event]) {
             if (cb) {
-                const index = this.events_[event].indexOf(cb);
-                this.events_[event].splice(index, 1);
+                const index = this._events[event].indexOf(cb);
+                this._events[event].splice(index, 1);
             }
             else {
-                this.events_[event] = [];
+                this._events[event] = [];
             }
         }
     }
 
     emit(event: string, ...args) {
-        if (this.events_[event]) {
+        if (this._events[event]) {
             return Promise.all(
-                this.events_[event].map(cb => {
-                    const result = cb.call(this.ctx_, ...args);
+                this._events[event].map(cb => {
+                    const result = cb.call(this._ctx, ...args);
                     return result && result.then ? result : Promise.resolve(result);
                 })
             );
@@ -43,6 +43,7 @@ export class EventBus {
     }
 
     destroy() {
-        this.events_ = null;
+        this._events = null;
+        this._ctx = null;
     }
 }
