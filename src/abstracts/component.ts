@@ -8,7 +8,7 @@ import { isArray, Logger, isNull, EventBus, Timer, nextTick, } from "../utils";
 
 // do not rename this, this has been done to merge Component
 export interface Component {
-    render?(context: IRenderContext): HTMLElement;
+    render?(context: IRenderContext): Promise<HTMLElement>;
 }
 
 export abstract class Component {
@@ -48,9 +48,6 @@ export abstract class Component {
         if (isNull(this._computed)) {
             this._computed = {};
         }
-        // if (isNull(this._watchList)) {
-        //     this._watchList = {};
-        // }
     }
 
     destroy() {
