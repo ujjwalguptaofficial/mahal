@@ -106,16 +106,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                         parent.removeChild(child)
                     };
                 }
-                // if (isValueArray) {
-                //     Promise.all(
-                //         runForExp(key, (this[key] as any[]).slice(params[0]), method)
-                //     ).then(childs => {
-
-                //     });
-                // }
                 let promises = [];
                 for (let i = 2, j = params[0], length = params.length; i < length; i++, j++) {
-                    // promises.push(method(params[i], j));
                     promises.push(
                         new Promise(res => {
                             method(params[i], j).then(newElement => {
@@ -146,12 +138,6 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     })
 
                 })
-                // if (params[2]) {
-
-                //     method(params[2], params[0]).then(newElement => {
-                //         parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
-                //     })
-                // }
                 break;
             case 'update':
                 resolvedValue = this.resolve(key);

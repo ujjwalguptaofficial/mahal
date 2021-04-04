@@ -98,5 +98,21 @@ describe('Array', function () {
         })
     });
 
+    it("push value", function (done) {
+        component.students.push(
+            {
+                name: 'ujjwal'
+            }
+        );
+        component.waitFor("update").then(() => {
+            expect(component.findAll(".tr-list")).length(2);
+            const rows = component.findAll(".tr-list");
+            expect(rows).length(2);
+            expect(rows[0].querySelector('td').innerText).equal("0")
+            expect(rows[1].querySelector('td').innerText).equal("1")
+            done();
+        })
+    });
+
 });
 
