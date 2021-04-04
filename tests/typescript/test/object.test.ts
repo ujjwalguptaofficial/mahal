@@ -77,12 +77,52 @@ describe('Object', function () {
         })
     });
 
+    it("add value directly", function (done) {
+        component.set(component.students, "john", {
+            name: "john"
+        })
+        component.waitFor("update").then(() => {
+            expect(component.findAll(".tr-list")).length(2);
+            done();
+        })
+    });
+
     it("delete student", function (done) {
-        expect(getObjectLength(component.students)).equal(1);
+        expect(getObjectLength(component.students)).equal(2);
         component.find('.btn-delete').click();
-        nextTick(() => {
-            expect(getObjectLength(component.students)).equal(0);
-            expect(component.findAll(".tr-list")).length(0);
+        component.waitFor("update").then(() => {
+            expect(getObjectLength(component.students)).equal(1);
+            const rows = component.findAll(".tr-list");
+            expect(rows).length(1);
+            expect(rows[0].querySelector('td').innerText).equal("john")
+            done();
+        })
+    });
+
+    it("add value directly", function (done) {
+        component.set(component.students, "batman", {
+            name: "batman"
+        })
+        component.waitFor("update").then(() => {
+            expect(getObjectLength(component.students)).equal(2);
+            const rows = component.findAll(".tr-list");
+            expect(rows).length(2);
+            expect(rows[0].querySelector('td').innerText).equal("john")
+            expect(rows[1].querySelector('td').innerText).equal("batman")
+            done();
+        })
+    });
+
+    it("add same value", function (done) {
+        component.set(component.students, "batman", {
+            name: "batman"
+        })
+        component.waitFor("update").then(() => {
+            expect(getObjectLength(component.students)).equal(2);
+            const rows = component.findAll(".tr-list");
+            expect(rows).length(2);
+            expect(rows[0].querySelector('td').innerText).equal("john")
+            expect(rows[1].querySelector('td').innerText).equal("batman")
             done();
         })
     });

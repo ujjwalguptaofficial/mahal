@@ -118,7 +118,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     )
                 };
 
-                if (!isValueArray) return;
+                if (!isValueArray) break;
                 const from = (params.length - 2) + params[0];
                 // resolvedValue = this.resolve(key);
                 const sliced = this.resolve(key).slice(from);
