@@ -14,16 +14,17 @@ import Users from "./users";
 import TabRender from "./tab_render";
 import ObjectProp from "./object_prop";
 import Computed from "./computed";
+import Fruits from "./fruits";
 
 // @Template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
 // </div>`)
 @Template(`
-    <HelloWorld :label="flag" :count="counter" on:click="incrementCounter" />
+    <Fruits :label="flag" :count="counter" on:click="incrementCounter" />
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
-    Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed
+    Fruits,Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed
 })
 export default class Main extends Component {
 

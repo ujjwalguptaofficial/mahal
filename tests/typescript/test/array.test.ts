@@ -56,7 +56,6 @@ describe('Array', function () {
             expect(component.students).length(1);
             expect(component.students[0].name).equal(newName);
             expect(component.find("#name").value).equal('');
-            console.log("html", component.element);
             expect(component.findAll(".tr-list")).length(1);
             done();
         })
@@ -74,12 +73,27 @@ describe('Array', function () {
         })
     });
 
+    it("push value directly", function (done) {
+        component.students.push(
+            {
+                name: 'ujjwal'
+            }
+        );
+        component.waitFor("update").then(() => {
+            expect(component.findAll(".tr-list")).length(2);
+            done();
+        })
+    });
+
+
     it("delete student", function (done) {
-        expect(component.students).length(1);
+        expect(component.students).length(2);
         component.find('.btn-delete').click();
         component.waitFor("update").then(() => {
-            expect(component.students).length(0);
-            expect(component.findAll(".tr-list")).length(0);
+            expect(component.students).length(1);
+            const rows = component.findAll(".tr-list");
+            expect(rows).length(1);
+            expect(rows[0].querySelector('td').innerText).equal("0")
             done();
         })
     });
