@@ -24,3 +24,4 @@ import "./textarea-box.test";
 import "./textbox.test";
 import "./users.test";
 import "./watch.test";
+import "./fruits.test";

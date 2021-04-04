@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { Logger, isPrimitive, isNull, isArray, isObject, nextTick, forOwn, indexOf } from "../utils";
+import { Logger, isPrimitive, isNull, isArray, isObject, nextTick, forOwn, indexOf, replaceEl } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 
@@ -31,6 +31,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
     let els = [cmNode];
     let resolvedValue = this.resolve(key);
     els = els.concat(runForExp(key, resolvedValue, method));
+    const isValueArray = isArray(resolvedValue);
     let callBacks = {
         [key]: (newValue) => {
             // value resetted
@@ -69,10 +70,6 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 });
             }
             emitUpdate(this);
-            //add setter
-            // if (isObject(newValue)) {
-            //     this['_ob'].create(newValue, null, `${key}.`);
-            // }
         },
         [`${key}.push`]: (newValue) => {
             handleChange("push", newValue);
@@ -104,13 +101,57 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 break;
             case 'splice':
                 for (let i = 1; i <= params[1]; i++) {
-                    parent.removeChild(parent.childNodes[indexOfRef + params[0] + i]);
+                    const child = parent.childNodes[indexOfRef + params[0] + i];
+                    if (child) {
+                        parent.removeChild(child)
+                    };
                 }
-                if (params[2]) {
-                    method(params[2], params[0]).then(newElement => {
-                        parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
+                // if (isValueArray) {
+                //     Promise.all(
+                //         runForExp(key, (this[key] as any[]).slice(params[0]), method)
+                //     ).then(childs => {
+
+                //     });
+                // }
+                let promises = [];
+                for (let i = 2, j = params[0], length = params.length; i < length; i++, j++) {
+                    // promises.push(method(params[i], j));
+                    promises.push(
+                        new Promise(res => {
+                            method(params[i], j).then(newElement => {
+                                parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + j]);
+                                res();
+                            })
+                        })
+                    )
+                };
+
+                if (!isValueArray) return;
+                const from = (params.length - 2) + params[0];
+                // resolvedValue = this.resolve(key);
+                const sliced = this.resolve(key).slice(from);
+                // const asyncElements = runForExp(key, sliced, method);
+                Promise.all(promises).then(_ => {
+                    return Promise.all(
+                        sliced.map((item, index) => {
+                            return method(item, from + index);
+                        })
+                    );
+                }).then(elements => {
+                    const spliceRefIndex = indexOfRef + 1 + params[0] + params.length - 2;
+                    elements.forEach((newEl: HTMLElement, index) => {
+                        const el = parent.childNodes[spliceRefIndex + index]
+                        console.log("el", el);
+                        parent.replaceChild(newEl, el);
                     })
-                }
+
+                })
+                // if (params[2]) {
+
+                //     method(params[2], params[0]).then(newElement => {
+                //         parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + params[0]]);
+                //     })
+                // }
                 break;
             case 'update':
                 resolvedValue = this.resolve(key);
