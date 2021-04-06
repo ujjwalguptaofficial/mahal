@@ -31,15 +31,40 @@ export class EventBus {
     }
 
     emit(event: string, ...args) {
-        if (this._events[event]) {
-            return Promise.all(
-                this._events[event].map(cb => {
-                    const result = cb.call(this._ctx, ...args);
-                    return result && result.then ? result : Promise.resolve(result);
-                })
-            );
+        const events = this._events[event] || [];
+        return Promise.all(
+            events.map(cb => {
+                const result = cb.call(this._ctx, ...args);
+                return result && result.then ? result : Promise.resolve(result);
+            })
+        );
+    }
+
+    emitLinear(event: string, ...args) {
+        const events = this._events[event] || [];
+        let index = 0;
+        let length = events.length;
+        const results = [];
+        const callMethod = () => {
+            const result = events[index++].call(this._ctx, ...args);
+            return result && result.then ? result : Promise.resolve(result);
         }
-        return Promise.resolve([]);
+
+        return new Promise<any[]>((res) => {
+            const checkAndCall = () => {
+                if (index < length) {
+                    callMethod().then(result => {
+                        results.push(result);
+                        checkAndCall();
+                    })
+                }
+                else {
+                    res(results);
+                }
+            };
+            checkAndCall();
+        })
+
     }
 
     destroy() {
