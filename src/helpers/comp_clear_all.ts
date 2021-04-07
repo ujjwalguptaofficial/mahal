@@ -8,6 +8,7 @@ export function clearAll(this: Component) {
         // });
         this['_eventBus'].destroy();
         this['_watchBus'].destroy();
+        this['_ob'].destroy();
         this.element = this['_eventBus'] =
             this['_ob'] =
             this['storeWatchCb_'] = null;

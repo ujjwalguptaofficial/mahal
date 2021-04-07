@@ -5,7 +5,7 @@ export const refDirective = function (el: HTMLElement, binding: IDirectiveBindin
     const key = binding.props[0];
     this[key] = el;
     return {
-        destroyed() {
+        destroyed: () => {
             this[key] = null;
         }
     };

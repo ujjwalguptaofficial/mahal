@@ -5,8 +5,11 @@ import { ERROR_TYPE } from "../enums";
 export class Observer {
 
     static shouldCheckProp = true;
-
     onChange: (key: string, newValue, oldValue?) => void;
+
+    constructor(onChange) {
+        this.onChange = onChange;
+    }
 
     create(input: object, keys?: string[], prefix = "") {
         const cached = {};
@@ -98,6 +101,10 @@ export class Observer {
                 onChange(`${prefix}update`, [prop, value]);
             }
         });
+    }
+
+    destroy() {
+        this.onChange = null;
     }
 }
 
