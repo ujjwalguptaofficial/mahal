@@ -50,5 +50,17 @@ describe('TAB RENDER', function () {
             }, 100);
         });
     }
+
+    it(`make component null`, async function () {
+        component.activeTab = null;
+        await component.waitFor("update");
+        let childsLength = component.find("div.tab-content").childElementCount
+        expect(childsLength).equal(0);
+        component.activeTab = "Btn";
+        await component.waitFor("update");
+        childsLength = component.find("div.tab-content").childElementCount
+        expect(childsLength).equal(1);
+    });
+
 });
 

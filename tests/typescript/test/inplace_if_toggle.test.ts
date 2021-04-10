@@ -6,9 +6,14 @@ import Btn from "../src/components/btn";
 @Children({
     Btn
 })
+// @Template(`
+// <div>
+//     <in-place :of="name" #if(flag1 && flag2) label="as"/>
+// </div>
+// `)
 @Template(`
 <div>
-    <in-place :of="name" #if(flag1 && flag2) label="as"/>
+    <in-place :of="name" label="as"/>
 </div>
 `)
 class Temp extends Component {
@@ -44,26 +49,26 @@ describe('InPlace if toggle', function () {
         testNotExist();
     });
 
-    for (let i = 0; i < 3; i++) {
-        it(`turn on - ${i}`, function (done) {
-            setTimeout(async () => {
-                component.flag1 = true;
-                component.flag2 = true;
-                await component.waitFor("update");
-                testExist(done);
-            }, 10)
-        });
+    // for (let i = 0; i < 3; i++) {
+    //     it(`turn on - ${i}`, function (done) {
+    //         setTimeout(async () => {
+    //             component.flag1 = true;
+    //             component.flag2 = true;
+    //             await component.waitFor("update");
+    //             testExist(done);
+    //         }, 10)
+    //     });
 
-        it(`turn off - ${i}`, function (done) {
-            setTimeout(async () => {
-                component.flag1 = false;
-                component.flag2 = false;
-                await component.waitFor("update");
-                testNotExist();
-                done();
-            }, 10)
-        });
-    }
+    //     it(`turn off - ${i}`, function (done) {
+    //         setTimeout(async () => {
+    //             component.flag1 = false;
+    //             component.flag2 = false;
+    //             await component.waitFor("update");
+    //             testNotExist();
+    //             done();
+    //         }, 10)
+    //     });
+    // }
 
     it("check watchlist length", function () {
         expect(component._watchBus._events["name"]).length(1);

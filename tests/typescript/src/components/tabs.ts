@@ -8,7 +8,7 @@ import { Component, Template, Prop } from "mahal";
                 {{tab}}
             </div>
         </div>
-        <div>
+        <div class="tab-content">
             <slot></slot>
         </div>
     </div>
