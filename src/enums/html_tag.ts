@@ -1,20 +1,8 @@
 const exist = 1;
-export enum HTML_TAG {
-    div = exist,
-    p = exist,
-    b = exist,
-    span = exist,
-    input = exist,
-    u = exist,
-    button = exist,
-    table = exist,
-    tr = exist,
-    td = exist,
-    thead = exist,
-    tbody = exist,
-    tfoot = exist,
-    strong = exist,
-    slot = exist,
-    target = exist,
-    a = exist
-}
+const tags = [
+    "div", "p", "b", "span", "input", "u", "button",
+    "table", "tr", "td", "thead", "tbody", "tfoot", "slot",
+    "target", "a", "h1", "h2", "h3", "h4", "h5", "h6"
+]
+export const HTML_TAG = {};
+tags.forEach(tag => HTML_TAG[tag] = true);
