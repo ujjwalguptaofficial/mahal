@@ -98,6 +98,7 @@ export abstract class Component {
     }
 
     find(selector: string) {
+        if (this.element.nodeType == 8) return;
         return this.element.querySelector(selector);
     }
 
