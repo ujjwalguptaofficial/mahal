@@ -46,8 +46,11 @@ export class EventBus {
         let length = events.length;
         const results = [];
         const callMethod = () => {
-            const result = events[index++].call(this._ctx, ...args);
-            return result && result.then ? result : Promise.resolve(result);
+            const eventCb = events[index++];
+            if (eventCb) {
+                const result = eventCb.call(this._ctx, ...args);
+                return result && result.then ? result : Promise.resolve(result);
+            }
         }
 
         return new Promise<any[]>((res) => {
