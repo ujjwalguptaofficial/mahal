@@ -4,7 +4,7 @@ import {
 } from "../helpers";
 import { ITajStore, IRenderContext, } from "../interface";
 import { globalFormatter } from "../constant";
-import { isArray, Logger, isNull, EventBus, Timer, nextTick, } from "../utils";
+import { isArray, Logger, isNull, EventBus, Timer, nextTick, forOwn, } from "../utils";
 
 // do not rename this, this has been done to merge Component
 export interface Component {
@@ -48,6 +48,16 @@ export abstract class Component {
         if (isNull(this._computed)) {
             this._computed = {};
         }
+    }
+
+    $setState(key: string, newValue: any, oldValue?: any) {
+        this['_watchBus'].emit(key, newValue, oldValue);
+    }
+
+    $setManyState(value: { [key: string]: any }) {
+        forOwn(value, (key, value) => {
+            this.$setState(key, value);
+        })
     }
 
     destroy() {
