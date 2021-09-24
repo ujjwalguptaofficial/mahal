@@ -50,13 +50,13 @@ export abstract class Component {
         }
     }
 
-    $setState(key: string, newValue: any, oldValue?: any) {
+    setState(key: string, newValue: any, oldValue?: any) {
         this['_watchBus'].emit(key, newValue, oldValue);
     }
 
-    $setManyState(value: { [key: string]: any }) {
+    setManyState(value: { [key: string]: any }) {
         forOwn(value, (key, value) => {
-            this.$setState(key, value);
+            this.setState(key, value);
         })
     }
 

@@ -5,7 +5,7 @@ const ob = '_ob';
 export function attachGetterSetter(comp: Component) {
     const keys = Object.keys(comp['_props']).concat(comp['_reactives'] || [])
     if (keys.length) {
-        comp[ob] = new Observer(comp.$setState.bind(comp));
+        comp[ob] = new Observer(comp.setState.bind(comp));
         comp[ob].create(comp, keys);
     }
 }
