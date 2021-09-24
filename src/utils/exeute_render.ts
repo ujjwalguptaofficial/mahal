@@ -29,29 +29,29 @@ export function executeRender(comp: Component, children?) {
         } as IRenderContext).then((el: HTMLElement) => {
             comp.element = el;
             res(el);
-            setTimeout(() => {
-                // if ((this as any).$store) {
-                //     for (let key in this.dependency_) {
-                //         if (key.indexOf("$store.state") >= 0) {
-                //             const cb = (newValue, oldValue) => {
-                //                 this.updateDOM_(key, oldValue);
-                //             };
-                //             key = key.replace("$store.state.", '');
-                //             (this as any).$store.watch(key, cb);
-                //             this.storeWatchCb_.push({
-                //                 key, cb
-                //             });
-                //         }
-                //     }
-                // }
-                const clear = clearAll.bind(comp);
-                el.addEventListener(LIFECYCLE_EVENT.Destroy, clear);
-                comp.emit(LIFECYCLE_EVENT.Mount);
-                comp.isMounted = true;
-                comp.on(LIFECYCLE_EVENT.Destroy, () => {
-                    el.removeEventListener(LIFECYCLE_EVENT.Destroy, clear);
-                });
-            }, 0);
+            // nextTick(() => {
+            // if ((this as any).$store) {
+            //     for (let key in this.dependency_) {
+            //         if (key.indexOf("$store.state") >= 0) {
+            //             const cb = (newValue, oldValue) => {
+            //                 this.updateDOM_(key, oldValue);
+            //             };
+            //             key = key.replace("$store.state.", '');
+            //             (this as any).$store.watch(key, cb);
+            //             this.storeWatchCb_.push({
+            //                 key, cb
+            //             });
+            //         }
+            //     }
+            // }
+            const clear = clearAll.bind(comp);
+            el.addEventListener(LIFECYCLE_EVENT.Destroy, clear);
+            comp.emit(LIFECYCLE_EVENT.Mount);
+            comp.isMounted = true;
+            comp.on(LIFECYCLE_EVENT.Destroy, () => {
+                el.removeEventListener(LIFECYCLE_EVENT.Destroy, clear);
+            });
+            // });
         }).catch(rej);
     })
 
