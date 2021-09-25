@@ -16,8 +16,7 @@ export class Mahal {
     component: typeof Component;
     element: HTMLElement;
 
-    config = {};
-    global = {};
+    global: { [key: string]: any } = {};
 
     constructor(component, element) {
         this.component = component;

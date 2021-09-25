@@ -1,5 +1,5 @@
 import { app } from "../src/index";
-import { nextTick, Children, Template, Reactive, Component, Prop, Plugin, App } from "mahal";
+import { nextTick, Children, Template, Reactive, Component, Prop, Plugin, Mahal } from "mahal";
 import { expect } from "chai";
 class TextPlugin extends Plugin {
     setup() {

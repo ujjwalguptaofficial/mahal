@@ -9,6 +9,7 @@ import { Mahal } from "../mahal";
 // do not rename this, this has been done to merge Component
 export interface Component {
     render?(context: IRenderContext): Promise<HTMLElement>;
+
 }
 
 export abstract class Component {
@@ -31,6 +32,7 @@ export abstract class Component {
                 })
             }
             attachGetterSetter(this);
+            Object.assign(this, this._app.global);
         });
         if (isNull(this.children)) {
             this.children = {};
@@ -47,6 +49,8 @@ export abstract class Component {
         if (isNull(this._computed)) {
             this._computed = {};
         }
+
+       
     }
 
     setState(key: string, newValue: any, oldValue?: any) {
@@ -137,17 +141,7 @@ export abstract class Component {
         return properties.reduce((prev, curr) => prev && prev[curr], this);
     }
 
-    get config() {
-        return this._app.config;
-    }
 
-    get global() {
-        return this._app.global;
-    }
-
-    get store() {
-        return this._app['store'];
-    }
 
     private _eventBus = new EventBus(this);
     private _watchBus = new EventBus(this);
