@@ -15,7 +15,7 @@ class TextPlugin extends Plugin {
     }
 }
 
-App.extend.plugin(TextPlugin);
+app.extend.plugin(TextPlugin);
 
 @Template(`
 <div>

@@ -1,3 +1,8 @@
+import { App } from "../app";
+
 export abstract class Plugin {
-    abstract setup(component, options);
+    constructor() {
+
+    }
+    abstract setup(app: App, options);
 }

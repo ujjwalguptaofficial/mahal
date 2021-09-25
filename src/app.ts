@@ -1,8 +1,9 @@
 import { Component } from "./abstracts";
-import { globalFormatter, globalComponents, plugins, globalDirectives } from "./constant";
 import { defaultExport } from "./default";
 import { Logger, isString, initComponent, isObject, executeRender } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
+import { modelDirective, showDirective, classDirective, refDirective } from "./ready_made";
+
 
 const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroy);
 
@@ -46,10 +47,18 @@ export class App {
         }).observe(this.element, {
             childList: true, subtree: true
         })
+
+         // register global directive
+
+         this.extend.directive("model", modelDirective);
+         this.extend.directive("show", showDirective);
+         this.extend.directive("addClass", classDirective);
+         this.extend.directive("ref", refDirective);
     }
 
     create() {
         const componentInstance: Component = new (this as any).component();
+        componentInstance['_app'] = this;
         initComponent.call(this, componentInstance, {});
         return new Promise((res, rej) => {
             executeRender(componentInstance).then(el => {
@@ -57,32 +66,51 @@ export class App {
                     el
                 )
                 res(componentInstance);
+
             }).catch(rej);
         })
     }
 
-    static extend = {
-        plugin(plugin, options?) {
+
+
+    extend = {
+        plugin: (plugin, options?) => {
             const pluginInstane = new plugin();
-            const apis = pluginInstane.setup(defaultExport, options);
+            const apis = pluginInstane.setup(this, options);
             if (apis && isObject(apis)) {
                 for (const api in apis) {
                     Component.prototype['$' + api] = apis[api];
                 }
             }
-            plugins.push(plugin);
+            this._plugins.push(plugin);
         },
-        component(name, component) {
-            globalComponents[name] = component;
+        component: (name, component) => {
+            this._components[name] = component;
         },
-        formatter(name: string, cb) {
-            globalFormatter[name] = cb;
+        formatter: (name: string, cb) => {
+            this._formatter[name] = cb;
         },
-        directive(name: string, directive) {
-            globalDirectives[name] = directive;
+        directive: (name: string, directive) => {
+            this._directives[name] = directive;
         },
         set renderer(val) {
             (App as any).createRenderer = val;
         }
     }
+
+    private _plugins = [];
+    private _components = {};
+    private _directives = {};
+    private _formatter = {
+        toS(value) {
+            switch (typeof value) {
+                case 'string':
+                    return value;
+                case 'number':
+                    return (value as number).toString();
+                default:
+                    return JSON.stringify(value);
+            }
+        }
+    };
 }

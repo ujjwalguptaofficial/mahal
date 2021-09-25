@@ -1,6 +1,6 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { defaultSlotName, globalComponents } from "../constant";
+import { defaultSlotName } from "../constant";
 import { handleAttribute } from "./handle_attribute";
 import { Logger, isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, nextTick } from "../utils";
 import { runPromisesInSequence } from "./run_promises_in_sequence";
@@ -123,10 +123,11 @@ export function createElement(this: Component, tag: string, childs: Promise<HTML
                 res(createNativeComponent.call(this, tag, htmlChilds, option));
                 return;
             }
-            const savedComponent = this.children[tag] || globalComponents[tag];
+            const savedComponent = this.children[tag] || this['_app']['_components'][tag];
             if (savedComponent) {
                 loadComponent(savedComponent).then((comp: any) => {
                     const component: Component = new comp();
+                    component['_app'] = this['_app'];
                     const htmlAttributes = initComponent.call(this, component as any, option);
                     executeRender(component, childs).then(_ => {
                         const element = component.element;

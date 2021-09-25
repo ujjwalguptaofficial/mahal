@@ -3,8 +3,8 @@ import {
     setAndReact, Observer, deleteAndReact, attachGetterSetter
 } from "../helpers";
 import { ITajStore, IRenderContext, } from "../interface";
-import { globalFormatter } from "../constant";
 import { isArray, Logger, isNull, EventBus, Timer, nextTick, forOwn, } from "../utils";
+import { App } from "../app";
 
 // do not rename this, this has been done to merge Component
 export interface Component {
@@ -121,6 +121,7 @@ export abstract class Component {
     }
 
     format(formatterName: string, value) {
+        const globalFormatter = this._app['_formatter'];
         if (globalFormatter[formatterName]) {
             return globalFormatter[formatterName](value);
         }
@@ -139,6 +140,7 @@ export abstract class Component {
 
     private _eventBus = new EventBus(this);
     private _watchBus = new EventBus(this);
+    private _app: App;
 
     private _inPlaceWatchers = {};
 

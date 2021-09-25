@@ -7,7 +7,7 @@ if (process.env.NODE_ENV != "test") {
 }
 
 export const app = new App(Main, document.querySelector('#app'));
-App.extend.formatter("dollar", (value: string) => {
+app.extend.formatter("dollar", (value: string) => {
     return "$" + value;
 });
 console.log("env", process.env.NODE_ENV);
@@ -16,5 +16,5 @@ if (process.env.NODE_ENV !== "test") {
     app.create();
 }
 else {
-    App.extend.plugin(MahalTest, app);
+    app.extend.plugin(MahalTest, app);
 }

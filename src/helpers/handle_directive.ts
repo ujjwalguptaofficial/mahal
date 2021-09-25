@@ -1,6 +1,5 @@
 import { Component } from "../abstracts";
 import { forOwn, merge, nextTick } from "../utils";
-import { globalDirectives } from "../constant";
 import { IDirectiveBinding, IDirective } from "../interface";
 import { genericDirective } from "../generics";
 import { LIFECYCLE_EVENT } from "../enums";
@@ -8,7 +7,7 @@ import { LIFECYCLE_EVENT } from "../enums";
 export function handleDirective(this: Component, element, dir, isComponent) {
     if (!dir) return;
     forOwn(dir, (name, compiledDir) => {
-        const storedDirective = (this as any)._directive[name] || globalDirectives[name];
+        const storedDirective = this['_directive'][name] || this['_app']['_directives'][name];
         if (storedDirective) {
             const binding = {
                 input: compiledDir.input,
