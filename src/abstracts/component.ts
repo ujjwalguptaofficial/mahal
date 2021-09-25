@@ -4,7 +4,7 @@ import {
 } from "../helpers";
 import { ITajStore, IRenderContext, } from "../interface";
 import { isArray, Logger, isNull, EventBus, Timer, nextTick, forOwn, } from "../utils";
-import { App } from "../app";
+import { Mahal } from "../mahal";
 
 // do not rename this, this has been done to merge Component
 export interface Component {
@@ -140,7 +140,7 @@ export abstract class Component {
 
     private _eventBus = new EventBus(this);
     private _watchBus = new EventBus(this);
-    private _app: App;
+    private _app: Mahal;
 
     private _inPlaceWatchers = {};
 

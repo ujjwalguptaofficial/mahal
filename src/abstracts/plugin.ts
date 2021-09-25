@@ -1,8 +1,8 @@
-import { App } from "../app";
+import { Mahal } from "../mahal";
 
 export abstract class Plugin {
     constructor() {
 
     }
-    abstract setup(app: App, options);
+    abstract setup(app: Mahal, options);
 }

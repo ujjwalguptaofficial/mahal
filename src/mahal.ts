@@ -1,5 +1,4 @@
 import { Component } from "./abstracts";
-import { defaultExport } from "./default";
 import { Logger, isString, initComponent, isObject, executeRender } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 import { modelDirective, showDirective, classDirective, refDirective } from "./ready_made";
@@ -13,7 +12,7 @@ function dispatchDestroyed(node: Node) {
         dispatchDestroyed(item);
     });
 }
-export class App {
+export class Mahal {
     component: typeof Component;
     element: HTMLElement;
 
@@ -48,12 +47,12 @@ export class App {
             childList: true, subtree: true
         })
 
-         // register global directive
+        // register global directive
 
-         this.extend.directive("model", modelDirective);
-         this.extend.directive("show", showDirective);
-         this.extend.directive("addClass", classDirective);
-         this.extend.directive("ref", refDirective);
+        this.extend.directive("model", modelDirective);
+        this.extend.directive("show", showDirective);
+        this.extend.directive("addClass", classDirective);
+        this.extend.directive("ref", refDirective);
     }
 
     create() {
@@ -94,7 +93,7 @@ export class App {
             this._directives[name] = directive;
         },
         set renderer(val) {
-            (App as any).createRenderer = val;
+            (Mahal as any).createRenderer = val;
         }
     }
 

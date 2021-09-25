@@ -1,6 +1,6 @@
 import { createTextNode, handleExpression, createElement, clearAll } from "../helpers";
 import { Component } from "../abstracts";
-import { App } from "../app";
+import { Mahal } from "../mahal";
 import { Logger, nextTick } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { IRenderContext } from "../interface";
@@ -8,11 +8,11 @@ import { IRenderContext } from "../interface";
 function getRender(this: Component): () => Promise<HTMLElement> {
     return this.render || (() => {
         if (process.env.NODE_ENV !== "prodution") {
-            if (!(App as any).createRenderer) {
+            if (!(Mahal as any).createRenderer) {
                 new Logger(ERROR_TYPE.RendererNotFound).throwPlain();
             }
         }
-        return (App as any).createRenderer(this.template);
+        return (Mahal as any).createRenderer(this.template);
     })();
 }
 
