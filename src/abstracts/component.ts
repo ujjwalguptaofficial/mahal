@@ -2,7 +2,7 @@ import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import {
     setAndReact, Observer, deleteAndReact, attachGetterSetter
 } from "../helpers";
-import { ITajStore, IRenderContext, } from "../interface";
+import { IRenderContext, } from "../interface";
 import { isArray, Logger, isNull, EventBus, Timer, nextTick, forOwn, } from "../utils";
 import { Mahal } from "../mahal";
 
@@ -15,7 +15,6 @@ export abstract class Component {
     children: { [key: string]: typeof Component };
     element: HTMLElement;
     template: string;
-    $store: ITajStore;
 
     isMounted = false;
 
@@ -138,6 +137,18 @@ export abstract class Component {
         return properties.reduce((prev, curr) => prev && prev[curr], this);
     }
 
+    get config() {
+        return this._app.config;
+    }
+
+    get global() {
+        return this._app.global;
+    }
+
+    get store() {
+        return this._app['store'];
+    }
+
     private _eventBus = new EventBus(this);
     private _watchBus = new EventBus(this);
     private _app: Mahal;
@@ -198,5 +209,5 @@ export abstract class Component {
 
     private _file;
     private _computed;
-    _timer = new Timer()
+    private _timer = new Timer()
 }

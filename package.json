@@ -1,6 +1,6 @@
 {
   "name": "mahal",
-  "version": "0.8.0",
+  "version": "0.10.0",
   "description": "",
   "main": "dist/npm.export.js",
   "types": "dist/ts/index.d.ts",

@@ -21,7 +21,7 @@ export default class extends Component {
     constructor() {
         super();
         this.on("mount", _ => {
-            console.log("mounted")
+            console.log("mounted");
         })
     }
 }

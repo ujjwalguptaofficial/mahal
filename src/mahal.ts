@@ -16,6 +16,9 @@ export class Mahal {
     component: typeof Component;
     element: HTMLElement;
 
+    config = {};
+    global = {};
+
     constructor(component, element) {
         this.component = component;
         this.element = isString(element) ? document.querySelector(element) : element;

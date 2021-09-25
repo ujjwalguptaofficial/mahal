@@ -11,6 +11,16 @@ describe('Array', function () {
         component = await (app as any).initiate(ArrayComponent);
     });
 
+    it("set store", function () {
+        let error = false;
+        try {
+            component.store = "ujjwal";
+        } catch (ex) {
+            error = true;
+        }
+        expect(error).to.equal(true);
+    })
+
     it("check list", function () {
         expect(component.findAll(".tr-list")).length(0);
     });
