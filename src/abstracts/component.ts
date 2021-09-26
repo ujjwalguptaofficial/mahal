@@ -21,17 +21,7 @@ export abstract class Component {
 
     constructor() {
         this.on(LIFECYCLE_EVENT.Create, () => {
-            const computed = this._computed;
-            for (const key in computed) {
-                const data = computed[key];
-                this._reactives.push(key);
-                data.args.forEach(arg => {
-                    this.watch(arg, () => {
-                        this[key] = data.fn.call(this);
-                    });
-                })
-            }
-            attachGetterSetter(this);
+            
         });
         if (isNull(this.children)) {
             this.children = {};
@@ -147,45 +137,6 @@ export abstract class Component {
     private _app: Mahal;
 
     private _inPlaceWatchers = {};
-
-
-    // private updateDOM_(key: string, oldValue) {
-
-    //     const depItems = this.dependency_[key];
-    //     if (depItems == null) {
-    //         return;
-    //     }
-    //     depItems.forEach(item => {
-    //         switch (item.nodeType) {
-    //             // Text Node
-    //             case 3:
-    //                 item.nodeValue = this.resolve(key); break;
-    //             // Input node 
-    //             case 1:
-    //                 (item as HTMLInputElement).value = this.resolve(key);
-    //                 break;
-    //             default:
-    //                 if (item.ifExp) {
-    //                     const el = item.method();
-    //                     (item.el as HTMLElement).parentNode.replaceChild(
-    //                         el, item.el
-    //                     );
-    //                     item.el = el;
-    //                 }
-    //                 else if (item.forExp) {
-    //                     const resolvedValue = this.resolve(key);
-    //                     const ref: HTMLDivElement = item.ref;
-    //                     const els = this.runForExp_(key, resolvedValue, item.method);
-    //                     const parent = ref.parentNode;
-    //                     // remove all nodes
-    //                     for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
-    //                         parent.removeChild(ref.nextSibling);
-    //                     }
-    //                 }
-    //         }
-    //     });
-    // }
-
 
     private dependency_: { [key: string]: any[] } = {};
 

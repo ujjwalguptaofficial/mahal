@@ -8,8 +8,8 @@ describe('Computed', function () {
     let component;
 
     before(async function () {
-        console.log("computed")
         component = await (app as any).mount(Computed);
+        expect(component.fullName).equal('ujjwal gupta');
     });
 
     it("check for render", function () {
