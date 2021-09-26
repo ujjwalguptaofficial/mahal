@@ -32,7 +32,6 @@ export abstract class Component {
                 })
             }
             attachGetterSetter(this);
-            Object.assign(this, this._app.global);
         });
         if (isNull(this.children)) {
             this.children = {};
@@ -50,7 +49,7 @@ export abstract class Component {
             this._computed = {};
         }
 
-       
+
     }
 
     setState(key: string, newValue: any, oldValue?: any) {
@@ -197,9 +196,6 @@ export abstract class Component {
     private _formatters;
     private _props;
     private _reactives;
-    private storeWatchCb_: Array<{ key: string, cb: Function }> = [];
-
-    private storeGetters_: Array<{ prop: string, state: string }>;
 
     private _file;
     private _computed;

@@ -12,8 +12,7 @@ export function clearAll(this: Component) {
             this['_ob'].destroy();
         }
         this.element = this['_eventBus'] =
-            this['_ob'] =
-            this['storeWatchCb_'] = null;
+            this['_ob'] = null;
         this['dependency_'] = {};
     });
 }

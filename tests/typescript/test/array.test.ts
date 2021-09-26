@@ -9,6 +9,9 @@ describe('Array', function () {
 
     before(async function () {
         component = await (app as any).initiate(ArrayComponent);
+        component.on("create",()=>{
+            expect(component.authorName).to.equal("ujjwal");
+        })
     });
 
     it("check global vlue", function () {

@@ -124,7 +124,6 @@ describe('HelloWorld', function () {
                 expect(component._watchBus._events).equal(null);
                 // expect(component.dependency_).equal(null);
                 expect(getObjectLength(component.dependency_)).equal(0);
-                expect(component.storeWatchCb_).equal(null);
                 // expect(getObjectLength(component.watchList_)).equal(0);
                 done();
             })
