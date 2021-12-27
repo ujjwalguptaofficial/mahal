@@ -5,11 +5,11 @@
   "main": "dist/npm.export.js",
   "types": "dist/ts/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "install:compiler": "node build_helper/compiler_installer.js",
     "build": "npm run install:compiler && npm run webpack:dev",
     "build:pack": "npm run build && npm run webpack:test && npm pack",
-    "build:install": "npm run build:pack && npm run install:test",
+    "build:test": "npm run build:pack && npm run test",
+    "test": "npm run test:general",
     "lint": "tslint src/**/*.ts",
     "test:general": "cd tests && npm run install:test",
     "install:general": "npm run build:pack && cd tests && npm run install:lib",

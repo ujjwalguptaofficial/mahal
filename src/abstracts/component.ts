@@ -21,7 +21,7 @@ export abstract class Component {
 
     constructor() {
         this.on(LIFECYCLE_EVENT.Create, () => {
-            
+
         });
         if (isNull(this.children)) {
             this.children = {};
@@ -86,7 +86,7 @@ export abstract class Component {
     waitFor<T>(eventName: string) {
         return new Promise<T>((res) => {
             const eventCallback = () => {
-                res();
+                res(null);
                 nextTick(_ => {
                     this.off(eventName, eventCallback);
                 })
