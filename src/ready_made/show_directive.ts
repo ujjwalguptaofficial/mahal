@@ -2,7 +2,8 @@ import { IDirectiveBinding } from "../interface";
 
 export const showDirective = (el: HTMLElement, binding: IDirectiveBinding) => {
     const setElementShowHide = () => {
-        el.style.display = binding.value ? 'unset' : 'none';
+        const value = binding.value[0];
+        el.style.display = value ? 'unset' : 'none';
     };
     setElementShowHide();
     return {

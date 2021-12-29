@@ -2,7 +2,7 @@ import { Children, Template, Component, Prop } from "mahal";
 
 @Template(`
 <div>
-    <p #for(val,key in value) #addClass(key)>{{val}}</p>
+    <p #for(val,key in value) #class(key)>{{val}}</p>
 </div>
 `)
 

@@ -1,8 +1,8 @@
 import { IDirectiveBinding } from "../interface";
-import { isObject } from "util";
+import { isObject } from "../utils";
 
 export const classDirective = (el: HTMLElement, binding: IDirectiveBinding) => {
-    const isValueObject = isObject(binding.value);
+    const isValueObject = isObject(binding.value[0]);
 
     const addClass = () => {
         if (binding.params.length > 1) {
@@ -11,8 +11,9 @@ export const classDirective = (el: HTMLElement, binding: IDirectiveBinding) => {
             });
         }
         else {
+            const classValue = binding.value[0];
             if (isValueObject) {
-                const classes = binding.value;
+                const classes = classValue;
                 for (const name in classes) {
                     if (classes[name]) {
                         el.classList.add(name);
@@ -20,7 +21,7 @@ export const classDirective = (el: HTMLElement, binding: IDirectiveBinding) => {
                 }
             }
             else {
-                el.className += ` ${binding.value}`;
+                el.className += ` ${classValue}`;
             }
         }
     };
@@ -28,7 +29,7 @@ export const classDirective = (el: HTMLElement, binding: IDirectiveBinding) => {
     return {
         valueUpdated() {
             if (isValueObject) {
-                const classes = binding.value;
+                const classes = binding.value[0];
                 for (const name in classes) {
                     el.classList.remove(name);
                 }

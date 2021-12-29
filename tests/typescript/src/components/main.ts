@@ -19,8 +19,11 @@ import Fruits from "./fruits";
 // @Template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
 // </div>`)
+// @Template(`
+//     <TabRender :label="flag" :count="counter" on:click="incrementCounter" />
+// `)
 @Template(`
-    <TabRender :label="flag" :count="counter" on:click="incrementCounter" />
+    <DirectiveComp :label="flag" :count="counter" on:click="incrementCounter" />
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,

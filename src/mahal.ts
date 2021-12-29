@@ -53,7 +53,7 @@ export class Mahal {
 
         this.extend.directive("model", modelDirective);
         this.extend.directive("show", showDirective);
-        this.extend.directive("addClass", classDirective);
+        this.extend.directive("class", classDirective);
         this.extend.directive("ref", refDirective);
     }
 

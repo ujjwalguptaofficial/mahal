@@ -9,7 +9,7 @@ export function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding)
     handleAttribute.call(this, el, {
         value: {
             k: key,
-            v: binding[VALUE]
+            v: binding[VALUE][0]
         } as IAttrItem
     }, binding.isComponent);
     if (binding.isComponent) {

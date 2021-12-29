@@ -47,20 +47,16 @@ export default class extends Component {
 
     @Directive('name')
     nameDirective(el, binding) {
-        el.setAttribute('data-name', binding.value || 'taj');
+        const value = binding.value[0]
+        el.setAttribute('data-name', value || 'taj');
     }
 
     @Directive('highlight')
     highlightDirective(el, binding, component) {
         function handle() {
-            if (binding.params.length > 1) {
-                el.style.backgroundColor = binding.value[0];
-                el.style.color = binding.value[1];
-            }
-            else {
-                el.style.backgroundColor = binding.value || 'yellow';
-                el.style.color = 'black';
-            }
+            const [backgroundColor, color] = binding.value;
+            el.style.backgroundColor = backgroundColor || 'yellow';
+            el.style.color = color || 'black';
         }
         handle();
         return {
