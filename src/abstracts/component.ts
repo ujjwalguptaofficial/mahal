@@ -151,4 +151,8 @@ export abstract class Component {
     private _file;
     private _computed;
     private _timer = new Timer()
+
+    get global() {
+        return this._app.global;
+    }
 }

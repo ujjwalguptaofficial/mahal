@@ -4,7 +4,7 @@ import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { handleAttribute, handleDirective, runPromisesInSequence, attachGetterSetter } from "../helpers";
 
 export function initComponent(this: Component, component: Component, option) {
-    Object.assign(component, component['_app'].global);
+    
     const htmlAttributes = handleAttribute.call(this, component, option.attr, true);
     handleDirective.call(this, component, option.dir, true);
     if (option.on) {

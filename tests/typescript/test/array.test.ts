@@ -1,6 +1,6 @@
 import ArrayComponent from "../src/components/array";
 import { app } from "../src/index";
-import { nextTick } from "mahal";
+import { Component, nextTick } from "mahal";
 import { expect } from "chai";
 
 describe('Array', function () {
@@ -9,13 +9,13 @@ describe('Array', function () {
 
     before(async function () {
         component = await (app as any).initiate(ArrayComponent);
-        component.on("create",()=>{
-            expect(component.authorName).to.equal("ujjwal");
-        })
+        // await component.waitFor("create").then(() => {
+        //     expect(component.global.authorName).to.equal("ujjwal");
+        // })
     });
 
-    it("check global vlue", function () {
-        expect(component.authorName).to.equal("ujjwal");
+    it("check global value", function () {
+        expect(component.global.authorName).to.equal("ujjwal");
     })
 
     it("check list", function () {
