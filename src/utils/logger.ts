@@ -1,6 +1,5 @@
 import { IError } from "../interface";
 import { ERROR_TYPE } from "../enums";
-import { Config } from "../config";
 
 const libName = "Palace";
 

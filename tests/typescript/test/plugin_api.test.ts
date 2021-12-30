@@ -37,7 +37,7 @@ describe('Plugin api test', function () {
 
     it("add text to dom", function (done) {
         const text = 'i am text inserted by plugin'
-        component.$createDiv(text);
+        component.createDiv(text);
         nextTick(() => {
             const nameDiv = component.find('.plugin-text');
             expect(nameDiv.innerHTML).equal(text);

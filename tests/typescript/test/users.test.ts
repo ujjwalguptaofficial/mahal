@@ -55,7 +55,7 @@ describe('User slot test', function () {
             name: "prince",
             gender: "male"
         })
-        component.$updated().then(() => {
+        component.updated().then(() => {
             expect(component.findAll(".reactive-users")).length(2);
             done();
         })

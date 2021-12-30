@@ -1,5 +1,5 @@
 import { Component } from "./abstracts";
-import { Logger, isString, initComponent, isObject, executeRender } from "./utils";
+import { Logger, isString, initComponent, isObject, executeRender, getDataype } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 import { modelDirective, showDirective, classDirective, refDirective } from "./ready_made";
 
@@ -80,7 +80,10 @@ export class Mahal {
             const apis = pluginInstane.setup(this, options);
             if (apis && isObject(apis)) {
                 for (const api in apis) {
-                    Component.prototype['$' + api] = apis[api];
+                    const apiValue = apis[api];
+                    if (getDataype(apiValue) === "function") {
+                        Component.prototype[api] = apiValue;
+                    }
                 }
             }
             this._plugins.push(plugin);
