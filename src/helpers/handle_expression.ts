@@ -10,7 +10,7 @@ export function handleExpression(this: Component, method: () => Promise<HTMLElem
     }
     return new Promise((res) => {
         method().then(el => {
-            let changesQueue = [];
+            const changesQueue = [];
             const handleChange = () => {
                 changesQueue.shift();
                 const onChange = () => {
@@ -19,8 +19,8 @@ export function handleExpression(this: Component, method: () => Promise<HTMLElem
                             replaceEl(el, newEl);
                             el = newEl;
                             handleChange();
-                        })
-                    })
+                        });
+                    });
                 };
                 const watchCallBack = () => {
                     changesQueue.push(1);
@@ -46,6 +46,6 @@ export function handleExpression(this: Component, method: () => Promise<HTMLElem
             handleChange();
             res(el);
         });
-    })
+    });
 
 }

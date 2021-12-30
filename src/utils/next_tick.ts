@@ -18,13 +18,13 @@ export const nextTick = (cb?: Function): Promise<void> | void => {
     if (cb == null) {
         promise = new Promise((res) => {
             cb = res;
-        })
+        });
     }
     callbacks.push(cb);
     if (!isExecuting) {
         isExecuting = true;
         flushCallbacks();
-    };
+    }
     if (promise) {
         return promise;
     }

@@ -4,7 +4,7 @@ import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { handleAttribute, handleDirective, runPromisesInSequence, attachGetterSetter } from "../helpers";
 
 export function initComponent(this: Component, component: Component, option) {
-    
+
     const htmlAttributes = handleAttribute.call(this, component, option.attr, true);
     handleDirective.call(this, component, option.dir, true);
     if (option.on) {
@@ -34,7 +34,7 @@ export function initComponent(this: Component, component: Component, option) {
             this.watch(arg, () => {
                 component.setState(key, data.fn.call(this));
             });
-        })
+        });
     }
     attachGetterSetter(component);
     component.emit(LIFECYCLE_EVENT.Create);

@@ -7,6 +7,7 @@ import { isArray, Logger, isNull, EventBus, Timer, nextTick, forOwn, } from "../
 import { Mahal } from "../mahal";
 
 // do not rename this, this has been done to merge Component
+// tslint:disable-next-line
 export interface Component {
     render?(context: IRenderContext): Promise<HTMLElement>;
 
@@ -47,9 +48,9 @@ export abstract class Component {
     }
 
     setManyState(value: { [key: string]: any }) {
-        forOwn(value, (key, value) => {
-            this.setState(key, value);
-        })
+        forOwn(value, (key, val) => {
+            this.setState(key, val);
+        });
     }
 
     destroy() {
@@ -88,11 +89,11 @@ export abstract class Component {
         return new Promise<T>((res) => {
             eventCallback = () => {
                 res(null);
-            }
+            };
             this.on(eventName, eventCallback);
         }).then(_ => {
             this.off(eventName, eventCallback);
-        })
+        });
     }
 
     emit(event: string, ...args) {
@@ -100,7 +101,7 @@ export abstract class Component {
     }
 
     find(selector: string) {
-        if (this.element.nodeType == 8) return;
+        if (this.element.nodeType === 8) return;
         return this.element.querySelector(selector);
     }
 
@@ -150,8 +151,7 @@ export abstract class Component {
 
     private _file;
     private _computed;
-    private _timer = new Timer()
-
+    private _timer = new Timer();
     get global() {
         return this._app.global;
     }

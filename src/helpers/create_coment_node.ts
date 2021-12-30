@@ -1,3 +1,3 @@
 export const createCommentNode = (text?: string) => {
-    return document.createComment(text || "")
+    return document.createComment(text || "");
 };

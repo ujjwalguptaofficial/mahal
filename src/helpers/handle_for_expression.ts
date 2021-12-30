@@ -4,8 +4,7 @@ import { Logger, isPrimitive, isNull, isArray, isObject, nextTick, forOwn, index
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 
-
-function runForExp(key, value, method) {
+export const runForExp = (key, value, method) => {
     const els: any[] = [];
     if (process.env.NODE_ENV !== 'production') {
         if (isPrimitive(value) || isNull(value)) {
@@ -24,7 +23,7 @@ function runForExp(key, value, method) {
         }
     }
     return els;
-}
+};
 
 export function handleForExp(this: Component, key: string, method: (...args) => Promise<HTMLElement>) {
     let cmNode = createCommentNode();
@@ -97,26 +96,26 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             case 'push':
                 method(params.value, params.key).then(newElement => {
                     parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
-                })
+                });
                 break;
             case 'splice':
                 for (let i = 1; i <= params[1]; i++) {
                     const child = parent.childNodes[indexOfRef + params[0] + i];
                     if (child) {
-                        parent.removeChild(child)
-                    };
+                        parent.removeChild(child);
+                    }
                 }
-                let promises = [];
+                const promises = [];
                 for (let i = 2, j = params[0], length = params.length; i < length; i++, j++) {
                     promises.push(
                         new Promise(res => {
                             method(params[i], j).then(newElement => {
                                 parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + j]);
-                                res();
-                            })
+                                res(null);
+                            });
                         })
-                    )
-                };
+                    );
+                }
 
                 if (!isValueArray) break;
                 const from = (params.length - 2) + params[0];
@@ -125,19 +124,17 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 // const asyncElements = runForExp(key, sliced, method);
                 Promise.all(promises).then(_ => {
                     return Promise.all(
-                        sliced.map((item, index) => {
-                            return method(item, from + index);
+                        sliced.map((item, itemIndex) => {
+                            return method(item, from + itemIndex);
                         })
                     );
                 }).then(elements => {
                     const spliceRefIndex = indexOfRef + 1 + params[0] + params.length - 2;
-                    elements.forEach((newEl: HTMLElement, index) => {
-                        const el = parent.childNodes[spliceRefIndex + index]
-                        console.log("el", el);
+                    elements.forEach((newEl: HTMLElement, elementIndex) => {
+                        const el = parent.childNodes[spliceRefIndex + elementIndex];
                         parent.replaceChild(newEl, el);
-                    })
-
-                })
+                    });
+                });
                 break;
             case 'update':
                 resolvedValue = this.resolve(key);
@@ -145,7 +142,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 if (index >= 0) {
                     method(params[1], params[0]).then(newElement => {
                         parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
-                    })
+                    });
                 }
                 break;
         }

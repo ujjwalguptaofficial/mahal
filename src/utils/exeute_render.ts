@@ -16,7 +16,7 @@ function getRender(this: Component): () => Promise<HTMLElement> {
     })();
 }
 
-export function executeRender(comp: Component, children?) {
+export const executeRender = (comp: Component, children?) => {
     const renderFn = getRender.call(comp);
     return renderFn.call(comp, {
         createElement: createElement.bind(comp),
@@ -35,6 +35,5 @@ export function executeRender(comp: Component, children?) {
             el.removeEventListener(LIFECYCLE_EVENT.Destroy, clear);
         });
         return el;
-    })
-
-}
+    });
+};

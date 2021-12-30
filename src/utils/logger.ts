@@ -84,7 +84,7 @@ export class Logger implements IError {
     }
 
     throwPlain(shouldReturn?) {
-        const err = `{${libName} throw}:` + this.getPlain();;
+        const err = `{${libName} throw}:` + this.getPlain();
         if (shouldReturn) {
             return err;
         }

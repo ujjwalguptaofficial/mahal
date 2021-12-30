@@ -3,6 +3,7 @@ src
 tests
 webpack
 *.tgz
+*.env
 build
 build_helper
 

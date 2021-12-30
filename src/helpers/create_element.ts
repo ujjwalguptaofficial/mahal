@@ -101,15 +101,15 @@ const loadComponent = (savedComponent) => {
         if (savedComponent instanceof Promise) {
             savedComponent.then(comp => {
                 resolve(comp.default);
-            })
+            });
         }
         else {
             resolve(savedComponent);
         }
-    })
-}
+    });
+};
 
-export function createElement(this: Component, tag: string, childs: Promise<HTMLElement>[], option): Promise<HTMLElement | Comment> {
+export function createElement(this: Component, tag: string, childs: Array<Promise<HTMLElement>>, option): Promise<HTMLElement | Comment> {
 
     return new Promise((res, rej) => {
         if (tag == null) {

@@ -13,22 +13,22 @@ export function handleInPlace(this: Component, childs, option) {
     return handleExpression.call(this, () => {
         return createElement.call(this, this.resolve(key), childs, option);
     }, key ? [key] : []);
-    let elPromise: Promise<HTMLElement> = createElement.call(this, of.v, childs, option);
-    if (key) {
-        elPromise.then(el => {
-            const watchCallBack = (val) => {
-                createElement.call(this, val, childs, option).then(newEl => {
-                    replaceEl(el, newEl);
-                    el = newEl;
-                    emitUpdate(this);
-                })
-            };
+    // let elPromise: Promise<HTMLElement> = createElement.call(this, of.v, childs, option);
+    // if (key) {
+    //     elPromise.then(el => {
+    //         const watchCallBack = (val) => {
+    //             createElement.call(this, val, childs, option).then(newEl => {
+    //                 replaceEl(el, newEl);
+    //                 el = newEl;
+    //                 emitUpdate(this);
+    //             })
+    //         };
 
-            if (!this['_inPlaceWatchers'][key]) {
-                this.watch(key, watchCallBack);
-                this['_inPlaceWatchers'][key] = true;
-            }
-        })
-    }
-    return elPromise;
+    //         if (!this['_inPlaceWatchers'][key]) {
+    //             this.watch(key, watchCallBack);
+    //             this['_inPlaceWatchers'][key] = true;
+    //         }
+    //     })
+    // }
+    // return elPromise;
 }

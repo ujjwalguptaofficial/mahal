@@ -4,7 +4,7 @@ export class Timer {
     timeout(delay) {
         return new Promise((res) => {
             setTimeout(res, delay || 0);
-        })
+        });
     }
 
     throttle(fn, delay = 0) {
