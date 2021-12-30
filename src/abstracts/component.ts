@@ -84,15 +84,15 @@ export abstract class Component {
     }
 
     waitFor<T>(eventName: string) {
+        let eventCallback: Function;
         return new Promise<T>((res) => {
-            const eventCallback = () => {
+            eventCallback = () => {
                 res(null);
-                nextTick(_ => {
-                    this.off(eventName, eventCallback);
-                })
             }
             this.on(eventName, eventCallback);
-        });
+        }).then(_ => {
+            this.off(eventName, eventCallback);
+        })
     }
 
     emit(event: string, ...args) {
