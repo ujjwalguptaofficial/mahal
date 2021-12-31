@@ -1,7 +1,7 @@
 import { Component } from "./abstracts";
 import { Logger, isString, initComponent, isObject, executeRender, getDataype } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
-import { modelDirective, showDirective, classDirective, refDirective } from "./ready_made";
+import { createModelDirective, showDirective, classDirective, refDirective } from "./ready_made";
 
 
 const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroy);
@@ -51,7 +51,7 @@ export class Mahal {
 
         // register global directive
 
-        this.extend.directive("model", modelDirective);
+        this.extend.directive("model", createModelDirective("input", "value"));
         this.extend.directive("show", showDirective);
         this.extend.directive("class", classDirective);
         this.extend.directive("ref", refDirective);
