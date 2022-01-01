@@ -1,7 +1,6 @@
 import { Mahal } from "mahal";
 import Main from "./components/main";
 import Btn from "./components/btn";
-import { FragmentComponent } from "./components/fragment_comp";
 import MahalTest from "mahal-test-utils";
 import { createRenderer } from "mahal-html-compiler";
 if (process.env.NODE_ENV != "test") {

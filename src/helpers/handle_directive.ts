@@ -9,19 +9,26 @@ export function handleDirective(this: Component, element, dir, isComponent) {
     forOwn(dir, (name, compiledDir) => {
         const storedDirective = this['_directive'][name] || this['_app']['_directives'][name];
         if (storedDirective) {
-            const binding = {
-                input: compiledDir.input,
-                params: compiledDir.params,
-                isComponent: isComponent,
-                props: compiledDir.props,
-                value: compiledDir.value()
-            } as IDirectiveBinding;
+            const binding: IDirectiveBinding = compiledDir;
+            binding.isComponent = isComponent;
+            // {
+            //     input: compiledDir.input,
+            //         params: compiledDir.params,
+            //             isComponent: isComponent,
+            //                 props: compiledDir.props,
+            //                     get value() {
+            //         return compiledDir.value
+            //     },
+            //     set value(values) {
+            //         compiledDir.value = values;
+            //     }
+            // } as IDirectiveBinding;
 
             const directive: IDirective = merge(genericDirective,
                 storedDirective.call(this, element, binding));
             nextTick(() => {
                 const onValueUpdated = () => {
-                    binding.value = compiledDir.value();
+                    binding.value = compiledDir.value;
                     directive.valueUpdated();
                 };
                 const onDestroyed = () => {

@@ -12,12 +12,14 @@ export function createModelDirective(eventName, propToUse) {
         }, binding.isComponent);
         if (binding.isComponent) {
             (el as any).on(eventName, (val) => {
-                this[key] = val;
+                binding.value = [val];
             });
         }
         else {
             el.oninput = (event) => {
-                this[key] = (event.target as any)[propToUse];
+                binding.value = [
+                    (event.target as any)[propToUse]
+                ];
             };
         }
     }

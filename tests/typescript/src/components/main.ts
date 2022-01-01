@@ -16,6 +16,7 @@ import ObjectProp from "./object_prop";
 import Computed from "./computed";
 import Fruits from "./fruits";
 import Fragment from "./fragment";
+import ArrayModel from "./array_model";
 
 // @Template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
@@ -28,8 +29,8 @@ import Fragment from "./fragment";
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
-    Fruits,Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed,
-    Fragment
+    Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed,
+    Fragment, ArrayModel
 })
 export default class Main extends Component {
 
