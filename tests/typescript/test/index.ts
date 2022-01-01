@@ -26,3 +26,4 @@ import "./users.test";
 import "./watch.test";
 import "./fruits.test";
 import "./if_initial_value_false.test";
+import "./fragment.test";

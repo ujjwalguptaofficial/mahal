@@ -130,8 +130,8 @@ export function createElement(this: Component, tag: string, childs: Array<Promis
                     component['_app'] = this['_app'];
                     const htmlAttributes = initComponent.call(this, component as any, option);
                     executeRender(component, childs).then(_ => {
-                        const element = component.element;
-                        let targetSlot = component.find(`slot[name='default']`);
+                        let element = component.element;
+                        let targetSlot = component.find(`slot[name='default']`) || (element.tagName.match(/slot/i) ? element : null);
                         if (targetSlot) {
                             htmlChilds.forEach(item => {
                                 if (item.tagName === "TARGET") {
@@ -141,15 +141,21 @@ export function createElement(this: Component, tag: string, childs: Array<Promis
                                     }
                                 }
                                 const targetSlotParent = targetSlot.parentElement;
-                                if (item.nodeType === 3) {
-                                    targetSlotParent.insertBefore(item, targetSlot.nextSibling);
+                                if (targetSlotParent) {
+                                    // nodeType -3 : TextNode
+                                    if (item.nodeType === 3) {
+                                        targetSlotParent.insertBefore(item, targetSlot.nextSibling);
+                                    }
+                                    else {
+                                        item.childNodes.forEach(child => {
+                                            targetSlotParent.insertBefore(child, targetSlot.nextSibling);
+                                        });
+                                    }
+                                    targetSlotParent.removeChild(targetSlot);
                                 }
                                 else {
-                                    item.childNodes.forEach(child => {
-                                        targetSlotParent.insertBefore(child, targetSlot.nextSibling);
-                                    });
+                                    element = component.element = item;
                                 }
-                                targetSlotParent.removeChild(targetSlot);
                             });
                         }
 

@@ -15,6 +15,7 @@ import TabRender from "./tab_render";
 import ObjectProp from "./object_prop";
 import Computed from "./computed";
 import Fruits from "./fruits";
+import Fragment from "./fragment";
 
 // @Template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
@@ -23,11 +24,12 @@ import Fruits from "./fruits";
 //     <TabRender :label="flag" :count="counter" on:click="incrementCounter" />
 // `)
 @Template(`
-    <DirectiveComp :label="flag" :count="counter" on:click="incrementCounter" />
+    <Fragment />
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
-    Fruits,Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed
+    Fruits,Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed,
+    Fragment
 })
 export default class Main extends Component {
 

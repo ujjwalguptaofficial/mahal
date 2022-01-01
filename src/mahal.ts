@@ -103,7 +103,9 @@ export class Mahal {
     }
 
     private _plugins = [];
-    private _components = {};
+    private _components = {
+        // fragment: FragmentComponent
+    };
     private _directives = {};
     private _formatter = {
         toS(value) {
