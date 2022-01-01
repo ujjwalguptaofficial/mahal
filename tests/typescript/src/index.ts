@@ -15,7 +15,7 @@ app.extend.formatter("dollar", (value: string) => {
     return "$" + value;
 });
 app.extend.component("Btn", Btn);
-app.extend.component("fragment", FragmentComponent);
+// app.extend.component("fragment", FragmentComponent);
 (Mahal as any).createRenderer = createRenderer;
 if (process.env.NODE_ENV !== "test") {
     app.create().catch(err => {

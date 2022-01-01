@@ -1,8 +1,7 @@
-import { Component } from "./abstracts";
+import { Component } from "./abstracts/component";
 import { Logger, isString, initComponent, isObject, executeRender, getDataype } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
-import { createModelDirective, showDirective, classDirective, refDirective } from "./ready_made";
-
+import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective } from "./ready_made";
 
 const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroy);
 
@@ -104,7 +103,7 @@ export class Mahal {
 
     private _plugins = [];
     private _components = {
-        // fragment: FragmentComponent
+        fragment: FragmentComponent
     };
     private _directives = {};
     private _formatter = {

@@ -7,13 +7,14 @@ import { isArray, Logger, isNull, EventBus, Timer, nextTick, forOwn, } from "../
 import { Mahal } from "../mahal";
 
 // do not rename this, this has been done to merge Component
-// tslint:disable-next-line
-export interface Component {
-    render?(context: IRenderContext): Promise<HTMLElement>;
+// // tslint:disable-next-line
+// export interface Component {
 
-}
+// }
 
 export abstract class Component {
+    render?(context: IRenderContext): Promise<HTMLElement>;
+
     children: { [key: string]: typeof Component };
     element: HTMLElement;
     template: string;
