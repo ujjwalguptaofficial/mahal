@@ -7,7 +7,7 @@ function setValue(el, value) {
     el.dispatchEvent(new window.Event("input"));
 }
 
-describe('MODEL', function () {
+describe('Array Model', function () {
 
     let component: MahalComponent;
 

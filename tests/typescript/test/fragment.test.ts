@@ -8,7 +8,7 @@ function setValue(el, value) {
     el.dispatchEvent(new window.Event("input"));
 }
 
-describe('MODEL', function () {
+describe('Fragment', function () {
 
     let component: FragmentComponent;
 
