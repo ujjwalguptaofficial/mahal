@@ -7,8 +7,7 @@ import { Component, Template, Prop, Formatter, Reactive } from "mahal";
 // </div>
 // `)
 @Template(`<div>
-{{fruits | toS}}
-    <div #for(fruit,i in fruits)>
+    <div class="fruit-row" #for(fruit,i in fruits)>
         <input type="text" #model(fruit) />
         <span>{{fruit}}</span>
         <button on:click="()=>{updateFruit(fruit,i)}">Update</button>
@@ -21,7 +20,7 @@ export default class extends Component {
     @Reactive
     fruits = ["banana", "apple"];
 
-    updateFruit(fruit, index){
-
+    updateFruit(fruit, index) {
+        this.set(this.fruits, index, fruit);
     }
 }

@@ -25,7 +25,7 @@ import ArrayModel from "./array_model";
 //     <TabRender :label="flag" :count="counter" on:click="incrementCounter" />
 // `)
 @Template(`
-    <Fragment />
+    <ArrayModel />
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
