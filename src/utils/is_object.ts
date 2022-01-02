@@ -1,3 +1,3 @@
 export const isObject = (value) => {
-    return typeof value === "object";
+    return value != null && typeof value === "object";
 };

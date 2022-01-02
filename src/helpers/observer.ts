@@ -1,5 +1,4 @@
-import { isArray, getObjectLength, Logger } from "../utils";
-import { isObject } from "util";
+import { isArray, getObjectLength, Logger, isObject } from "../utils";
 import { ERROR_TYPE } from "../enums";
 
 export class Observer {
@@ -43,9 +42,17 @@ export class Observer {
         keys = keys || Object.keys(input);
         keys.forEach(key => {
             cached[key] = input[key];
-            const registerChild = () => {
+            const registerChild = (newValue, oldValue) => {
                 if (isObject(input[key])) {
-                    this.create(input[key], null, `${prefix}${key}.`);
+                    const objectValKeyWithPrefix = `${prefix}${key}.`;
+                    if (oldValue != null) {
+                        newValue = newValue || {};
+                        for (const valKey in oldValue) {
+                            onChange(`${objectValKeyWithPrefix}${valKey}`, newValue[valKey], oldValue[key]);
+                        }
+                    }
+
+                    this.create(input[key], null, objectValKeyWithPrefix);
                 }
             };
             Object.defineProperty(input, key, {
@@ -63,14 +70,14 @@ export class Observer {
                     }
 
                     onChange(prefix + key, newValue, oldValue);
-                    registerChild();
+                    registerChild(newValue, oldValue);
                 },
                 get() {
                     return cached[key];
                 }
 
             });
-            registerChild();
+            registerChild(null, null);
         });
 
         Object.defineProperty(input, "push", {

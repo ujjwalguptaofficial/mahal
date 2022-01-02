@@ -17,6 +17,7 @@ import Computed from "./computed";
 import Fruits from "./fruits";
 import Fragment from "./fragment";
 import ArrayModel from "./array_model";
+import ObjectResetModel from "./object_reset_model";
 
 // @Template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
@@ -25,12 +26,12 @@ import ArrayModel from "./array_model";
 //     <TabRender :label="flag" :count="counter" on:click="incrementCounter" />
 // `)
 @Template(`
-    <ArrayModel />
+    <ObjectResetModel />
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed,
-    Fragment, ArrayModel
+    Fragment, ArrayModel,ObjectResetModel
 })
 export default class Main extends Component {
 
