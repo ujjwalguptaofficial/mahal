@@ -49,5 +49,22 @@ describe('Object reset Model', function () {
         setTextAndCheck('hello');
     });
 
+    it("creating gender", () => {
+        component.student = {
+            name: "ujjwal gupta",
+            gender: "male"
+        } as any;
+        return component.waitFor('update').then(_ => {
+            const input = component.find('div input') as HTMLInputElement;
+            const name = component.find('div .name');
+            const gender = component.find('div .gender');
+            const student = component.student;
+            expect(input.value).equal(student.name);
+            expect(name.innerHTML).equal(student.name);
+            expect(gender.innerHTML).equal((student as any).gender);
+        });
+
+    })
+
 });
 

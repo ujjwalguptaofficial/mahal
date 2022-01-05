@@ -1,4 +1,4 @@
-import { isArray, getObjectLength, Logger, isObject } from "../utils";
+import { isArray, getObjectLength, Logger, isObject, merge } from "../utils";
 import { ERROR_TYPE } from "../enums";
 
 export class Observer {
@@ -46,9 +46,9 @@ export class Observer {
                 if (isObject(input[key])) {
                     const objectValKeyWithPrefix = `${prefix}${key}.`;
                     if (oldValue != null) {
-                        newValue = newValue || {};
-                        for (const valKey in oldValue) {
-                            onChange(`${objectValKeyWithPrefix}${valKey}`, newValue[valKey], oldValue[key]);
+                        newValue = merge(oldValue, newValue || {});
+                        for (const valKey in newValue) {
+                            onChange(`${objectValKeyWithPrefix}${valKey}`, newValue[valKey], oldValue[valKey]);
                         }
                     }
 

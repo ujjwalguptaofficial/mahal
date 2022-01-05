@@ -4,6 +4,7 @@ import { Component, Template, Reactive } from "mahal";
 <div>
    <input type="text" #model(student.name) />
    <div class="name">{{student.name}}</div>
+   <div class="gender">{{student.gender}}</div>
    <button on:click="reset">Reset</button>
 </div>
 `)
