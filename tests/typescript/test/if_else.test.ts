@@ -83,14 +83,14 @@ describe('IfELSE', function () {
     });
 
     it("set nested value to 0", async function () {
-        component.set(component.nested.nested1.nested2, 'nested3', 0);
+        component.setAndReact(component.nested.nested1.nested2, 'nested3', 0);
         await component.waitFor("update");
         expect(component.nested.nested1.nested2.nested3).equal(0);
         const div = component.find('div');
         expect(div.innerHTML).equal('10');
         expect(component.element.classList).length(1);
         expect(component.element.className).equal('nested-3');
-        component.set(component.nested.nested1.nested2, 'nested3', null);
+        component.setAndReact(component.nested.nested1.nested2, 'nested3', null);
         await component.waitFor("update");
         expect(component.element.className).equal('');
     });

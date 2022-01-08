@@ -44,7 +44,7 @@ export default class extends Component {
 
     editStudent(index) {
         this.editName = this.students[index].name;
-        this.set(this.students, index, {
+        this.setAndReact(this.students, index, {
             ... this.students[index], ...{
                 isEdit: true
             }
@@ -53,7 +53,7 @@ export default class extends Component {
 
     updateStudent(index) {
         this.students[index].name = this.editName;
-        this.set(this.students, index, {
+        this.setAndReact(this.students, index, {
             ... this.students[index], ...{
                 isEdit: false
             }

@@ -50,14 +50,14 @@ export default class extends Component {
         const index = this.students.findIndex(q => q.id === student.id);
         const savedStudent = this.students[index];
         savedStudent.isEdit = false;
-        this.set(this.students, index, savedStudent);
+        this.setAndReact(this.students, index, savedStudent);
     }
 
     edit(student) {
         const index = this.students.findIndex(q => q.id === student.id);
         const savedStudent = this.students[index];
         savedStudent.isEdit = true;
-        this.set(this.students, index, savedStudent);
+        this.setAndReact(this.students, index, savedStudent);
     }
 
 }

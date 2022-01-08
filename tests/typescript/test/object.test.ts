@@ -78,7 +78,7 @@ describe('Object', function () {
     });
 
     it("add value directly", function (done) {
-        component.set(component.students, "john", {
+        component.setAndReact(component.students, "john", {
             name: "john"
         })
         component.waitFor("update").then(() => {
@@ -100,7 +100,7 @@ describe('Object', function () {
     });
 
     it("add value directly", function (done) {
-        component.set(component.students, "batman", {
+        component.setAndReact(component.students, "batman", {
             name: "batman"
         })
         component.waitFor("update").then(() => {
@@ -114,7 +114,7 @@ describe('Object', function () {
     });
 
     it("add same value", function (done) {
-        component.set(component.students, "batman", {
+        component.setAndReact(component.students, "batman", {
             name: "batman"
         })
         component.waitFor("update").then(() => {

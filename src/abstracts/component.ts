@@ -1,6 +1,6 @@
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import {
-    setAndReact, Observer, deleteAndReact, attachGetterSetter
+    setAndReact, Observer, deleteAndReact
 } from "../helpers";
 import { IRenderContext, } from "../interface";
 import { isArray, Logger, isNull, EventBus, Timer, nextTick, forOwn, } from "../utils";
@@ -68,11 +68,11 @@ export abstract class Component {
         return this;
     }
 
-    set(target, prop, valueToSet) {
+    setAndReact(target, prop, valueToSet) {
         setAndReact(target, prop, valueToSet);
     }
 
-    delete(target, prop) {
+    deleteAndReact(target, prop) {
         deleteAndReact(target, prop);
     }
 
