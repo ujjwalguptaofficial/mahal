@@ -23,13 +23,19 @@ export default class extends Component {
     }
 
     gendergetCounter = 0;
-
-    gender = "male";
+    @Reactive gender = "male";
 
     @Computed("gender")
     get genderDetail() {
         this.gendergetCounter++;
         return `I am ${this.gender}`;
     }
+
+    @Computed("gender")
+    genderDetailCopy() {
+        return `I am ${this.gender}`;
+    }
+
+
 
 }

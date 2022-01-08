@@ -55,6 +55,28 @@ describe('Computed', function () {
         expect(component.genderDetail).equal("I am male");
         expect(component.genderDetail).equal("I am male");
         expect(component.gendergetCounter).equal(1);
+        expect(component.genderDetailCopy).equal("I am male");
+
+        component.gender = "female";
+        expect(component.genderDetail).equal("I am female");
+        expect(component.genderDetail).equal("I am female");
+        expect(component.gendergetCounter).equal(2);
+
+        expect(component.genderDetailCopy).equal("I am female");
+
+    });
+
+    it('set state', () => {
+        const promise = new Promise<void>((res) => {
+            component.watch('key', (newValue, oldValue) => {
+                expect(newValue).equal('new-value');
+                expect(oldValue).equal('old-value');
+                expect(component.key).equal('new-value');
+                res();
+            });
+        });
+        component.setState('key', 'new-value', 'old-value');
+        return promise;
     });
 
 });

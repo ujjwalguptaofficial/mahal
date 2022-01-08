@@ -30,8 +30,17 @@ export function initComponent(this: Component, component: Component, option) {
     const computed = component['_computed'];
     for (const key in computed) {
         const data = computed[key];
+        let computedValue = data.fn.call(component);
+        Object.defineProperty(component, key, {
+            get() {
+                return computedValue;
+            },
+            set(newValue) {
+                // component.setState(key, newValue, computedValue);
+                computedValue = newValue;
+            }
+        })
         data.args.forEach(arg => {
-            let computedValue = data.fn.call(component);
             component.watch(arg, () => {
                 const newValue = data.fn.call(component);
                 component.setState(key, newValue, computedValue);

@@ -4,6 +4,6 @@ export const Computed = (...args): MethodDecorator => {
         if (!target._computed) {
             target._computed = {};
         }
-        target._computed[methodName] = { args, fn: descriptor.get };
+        target._computed[methodName] = { args, fn: descriptor.value || descriptor.get };
     });
 };

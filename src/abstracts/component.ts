@@ -45,6 +45,7 @@ export abstract class Component {
     }
 
     setState(key: string, newValue: any, oldValue?: any) {
+        this[key] = newValue;
         this['_watchBus'].emit(key, newValue, oldValue);
     }
 
