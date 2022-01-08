@@ -48,12 +48,6 @@ export abstract class Component {
         this['_watchBus'].emit(key, newValue, oldValue);
     }
 
-    setManyState(value: { [key: string]: any }) {
-        forOwn(value, (key, val) => {
-            this.setState(key, val);
-        });
-    }
-
     destroy() {
         this.element.parentNode.removeChild(this.element);
     }

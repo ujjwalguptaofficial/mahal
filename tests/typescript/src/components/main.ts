@@ -26,7 +26,7 @@ import ObjectResetModel from "./object_reset_model";
 //     <TabRender :label="flag" :count="counter" on:click="incrementCounter" />
 // `)
 @Template(`
-    <ObjectResetModel />
+    <Computed />
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,

@@ -28,7 +28,7 @@ describe('Object reset Model', function () {
     }
 
     it("check text change", function () {
-        setTextAndCheck('hey');
+        return setTextAndCheck('hey');
     });
 
     it("reset button", function () {
@@ -46,7 +46,7 @@ describe('Object reset Model', function () {
     });
 
     it("check text change after reset", function () {
-        setTextAndCheck('hello');
+        return setTextAndCheck('hello');
     });
 
     it("creating gender", () => {

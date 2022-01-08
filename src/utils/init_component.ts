@@ -31,8 +31,11 @@ export function initComponent(this: Component, component: Component, option) {
     for (const key in computed) {
         const data = computed[key];
         data.args.forEach(arg => {
-            this.watch(arg, () => {
-                component.setState(key, data.fn.call(this));
+            let computedValue = data.fn.call(component);
+            component.watch(arg, () => {
+                const newValue = data.fn.call(component);
+                component.setState(key, newValue, computedValue);
+                computedValue = newValue;
             });
         });
     }

@@ -21,4 +21,15 @@ export default class extends Component {
         super();
         window['comp'] = this;
     }
+
+    gendergetCounter = 0;
+
+    gender = "male";
+
+    @Computed("gender")
+    get genderDetail() {
+        this.gendergetCounter++;
+        return `I am ${this.gender}`;
+    }
+
 }
