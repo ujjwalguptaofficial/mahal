@@ -19,6 +19,9 @@ export default class extends Component {
 
     constructor() {
         super();
+        this.on("mount",function(){
+            console.log("mounted", this);
+        })
         window['comp'] = this;
     }
 

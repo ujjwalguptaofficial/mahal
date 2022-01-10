@@ -7,6 +7,7 @@ import { runPromisesInSequence } from "./run_promises_in_sequence";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
+import { Observer } from ".";
 
 function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
     switch (tag) {
@@ -126,7 +127,8 @@ export function createElement(this: Component, tag: string, childs: Array<Promis
             const savedComponent = this.children[tag] || this['_app']['_components'][tag];
             if (savedComponent) {
                 loadComponent(savedComponent).then((comp: any) => {
-                    const component: Component = new comp();
+                    let component: Component = new comp();
+                    component = new Observer(component.setState.bind(component)).create(component) as any;
                     component['_app'] = this['_app'];
                     const htmlAttributes = initComponent.call(this, component as any, option);
                     executeRender(component, childs).then(_ => {
