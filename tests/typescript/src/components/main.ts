@@ -26,12 +26,15 @@ import ObjectResetModel from "./object_reset_model";
 //     <TabRender :label="flag" :count="counter" on:click="incrementCounter" />
 // `)
 @Template(`
-    <Computed />
+<div>
+    <TextAreaBox #model(name) on:input="incrementCounter"/>
+    <div class="name">{{name}}</div>
+</div>
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed,
-    Fragment, ArrayModel,ObjectResetModel
+    Fragment, ArrayModel, ObjectResetModel
 })
 export default class Main extends Component {
 
@@ -62,6 +65,7 @@ export default class Main extends Component {
     counter = 0;
 
     incrementCounter() {
+        debugger;
         this.counter++;
     }
 
@@ -83,7 +87,6 @@ export default class Main extends Component {
 
     constructor() {
         super();
-        window['comp'] = this;
         window['nextTick'] = nextTick;
         // setTimeout(() => {
         //     // alert("name changed");
@@ -95,6 +98,11 @@ export default class Main extends Component {
         this.watch("users.push", (newValue, oldValue) => {
             console.log(newValue, oldValue);
         });
+
+        this.on("mount", function(){
+            debugger;
+            window['comp'] = this;
+        })
     }
 
     onHelloWordClick() {

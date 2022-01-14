@@ -1,6 +1,6 @@
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import {
-    setAndReact, Observer, deleteAndReact
+    Observer
 } from "../helpers";
 import { IRenderContext, } from "../interface";
 import { isArray, Logger, isNull, EventBus, Timer, nextTick, forOwn, } from "../utils";
@@ -44,9 +44,13 @@ export abstract class Component {
 
     }
 
+    private __emitStateChange__(key: string, newValue: any, oldValue?: any) {
+        this['_watchBus'].emit(key, newValue, oldValue);
+    }
+
     setState(key: string, newValue: any, oldValue?: any) {
         this[key] = newValue;
-        this['_watchBus'].emit(key, newValue, oldValue);
+        this.__emitStateChange__(key, newValue, oldValue);
     }
 
     destroy() {
@@ -63,13 +67,13 @@ export abstract class Component {
         return this;
     }
 
-    setAndReact(target, prop, valueToSet) {
-        setAndReact(target, prop, valueToSet);
-    }
+    // setAndReact(target, prop, valueToSet) {
+    //     setAndReact(target, prop, valueToSet);
+    // }
 
-    deleteAndReact(target, prop) {
-        deleteAndReact(target, prop);
-    }
+    // deleteAndReact(target, prop) {
+    //     deleteAndReact(target, prop);
+    // }
 
     on(event: string, cb: Function) {
         this._eventBus.on(event, cb);
@@ -129,8 +133,8 @@ export abstract class Component {
 
 
 
-    private _eventBus = new EventBus(this);
-    private _watchBus = new EventBus(this);
+    private _eventBus: EventBus;
+    private _watchBus: EventBus;
     private _app: Mahal;
 
     private _inPlaceWatchers = {};

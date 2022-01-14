@@ -1,6 +1,6 @@
 import { isNull, isPrimitive, Logger, isArray, isArrayIndex, indexOf } from "../utils";
 
-export const setAndReact = (target, prop, valueToSet) => {
+const setAndReact = (target, prop, valueToSet) => {
     if (isNull(target)) {
         return Logger.warn("Can not set reactivity on null or undefined");
     }
@@ -22,7 +22,7 @@ export const setAndReact = (target, prop, valueToSet) => {
     }
 };
 
-export const deleteAndReact = (target, prop) => {
+const deleteAndReact = (target, prop) => {
     if (isNull(target)) {
         return Logger.warn("Can not set reactivity on null or undefined");
     }

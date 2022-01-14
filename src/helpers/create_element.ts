@@ -2,7 +2,7 @@ import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { defaultSlotName } from "../constant";
 import { handleAttribute } from "./handle_attribute";
-import { Logger, isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, nextTick } from "../utils";
+import { Logger, isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, nextTick, createComponent } from "../utils";
 import { runPromisesInSequence } from "./run_promises_in_sequence";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
@@ -127,9 +127,7 @@ export function createElement(this: Component, tag: string, childs: Array<Promis
             const savedComponent = this.children[tag] || this['_app']['_components'][tag];
             if (savedComponent) {
                 loadComponent(savedComponent).then((comp: any) => {
-                    let component: Component = new comp();
-                    component = new Observer(component.setState.bind(component)).create(component) as any;
-                    component['_app'] = this['_app'];
+                    let component: Component = createComponent(comp, this['_app']);
                     const htmlAttributes = initComponent.call(this, component as any, option);
                     executeRender(component, childs).then(_ => {
                         let element = component.element;

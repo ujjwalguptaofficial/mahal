@@ -40,36 +40,61 @@ export default class extends Component {
 
 
     addStudent() {
-        // this.students[this.name] = {
-        //     name: this.name
-        // };
-        this.setAndReact(this.students, this.name, {
+        this.students[this.name] = {
             name: this.name
-        })
+        };
+        // this.setAndReact(this.students, this.name, {
+        //     name: this.name
+        // })
         this.name = "";
     }
 
     editStudent(index) {
         this.editName = this.students[index].name;
-        this.setAndReact(this.students, index, {
-            ... this.students[index], ...{
-                isEdit: true
-            }
-        })
+        this.students[index] = {
+            name: this.editName,
+            isEdit: true
+        }
+        // Object.assign(
+        //     this.students[index],
+        //     {
+        //         name: this.editName,
+        //         isEdit: true
+        //     }
+        // );
+        // this.setAndReact(this.students, index, {
+        //     ... this.students[index], ...{
+        //         isEdit: true
+        //     }
+        // })
     }
 
     updateStudent(index) {
-        this.students[index].name = this.editName;
-        this.setAndReact(this.students, index, {
-            ... this.students[index],
-            ...{
-                isEdit: false
-            }
-        })
+        // const value = Object.assign(
+        //     this.students[index],
+        //     {
+        //         name: this.editName,
+        //         isEdit: false
+        //     }
+        // );
+        // debugger;
+        this.students[index] = {
+            name: this.editName,
+            isEdit: false
+        };
+        // debugger;
+        // this.students[index].name = this.editName;
+        // this.setAndReact(this.students, index, {
+        //     ... this.students[index],
+        //     ...{
+        //         isEdit: false
+        //     }
+        // })
     }
 
     deleteStudent(key) {
-        this.deleteAndReact(this.students, key);
+        delete this.students[key];
+        // this.deleteAndReact(this.students, key);
     }
 
     reset() {

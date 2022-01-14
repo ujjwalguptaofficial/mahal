@@ -1,5 +1,5 @@
 import { Component } from "./abstracts/component";
-import { Logger, isString, initComponent, isObject, executeRender, getDataype } from "./utils";
+import { Logger, isString, initComponent, isObject, executeRender, getDataype, createComponent } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective } from "./ready_made";
 import { Observer } from "./helpers";
@@ -58,9 +58,7 @@ export class Mahal {
     }
 
     create() {
-        let componentInstance: Component = new (this as any).component();
-        componentInstance = new Observer(componentInstance.setState.bind(componentInstance)).create(componentInstance) as any;
-        componentInstance['_app'] = this;
+        let componentInstance: Component = createComponent(this.component, this);
         initComponent.call(this, componentInstance, {});
         return new Promise((res, rej) => {
             executeRender(componentInstance).then(el => {
