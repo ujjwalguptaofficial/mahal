@@ -1,7 +1,7 @@
 import { Component } from "../abstracts";
 import { Logger, nextTick } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { handleAttribute, handleDirective, runPromisesInSequence, attachGetterSetter } from "../helpers";
+import { handleAttribute, handleDirective, runPromisesInSequence } from "../helpers";
 
 export function initComponent(this: Component, component: Component, option) {
 
