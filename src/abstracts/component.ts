@@ -133,8 +133,8 @@ export abstract class Component {
 
 
 
-    private _eventBus: EventBus;
-    private _watchBus: EventBus;
+    private _eventBus = new EventBus();
+    private _watchBus = new EventBus();
     private _app: Mahal;
 
     private _inPlaceWatchers = {};

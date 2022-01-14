@@ -30,7 +30,6 @@ describe('MODEL TextAreabox', function () {
         expect(input.value).equal('');
         const nameDiv = component.find('div.name');
         expect(nameDiv.innerHTML).equal('');
-        debugger;
         component.name = "ujjwal";
         await component.waitFor("update");
         expect(nameDiv.innerHTML).to.equal(component.name);

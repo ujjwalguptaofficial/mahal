@@ -54,13 +54,12 @@ export class Observer {
                 },
                 set: (target, prop: string, newValue, receiver) => {
                     let oldValue = target[prop];
-                    if (oldValue === newValue) return true;
+                    // if (oldValue === newValue) return true;
 
                     let setValue: boolean;
                     if (isObject(newValue)) {
-                        const proxyChild = registerChild(prop, newValue, oldValue);
                         setValue = Reflect.set(
-                            target, prop, proxyChild, receiver
+                            target, prop, newValue, receiver
                         );
                     }
                     else {

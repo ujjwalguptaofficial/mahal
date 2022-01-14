@@ -27,8 +27,7 @@ import ObjectResetModel from "./object_reset_model";
 // `)
 @Template(`
 <div>
-    <TextAreaBox #model(name) on:input="incrementCounter"/>
-    <div class="name">{{name}}</div>
+     <Fragment/>
 </div>
 `)
 @Children({
@@ -65,7 +64,6 @@ export default class Main extends Component {
     counter = 0;
 
     incrementCounter() {
-        debugger;
         this.counter++;
     }
 
@@ -100,7 +98,6 @@ export default class Main extends Component {
         });
 
         this.on("mount", function(){
-            debugger;
             window['comp'] = this;
         })
     }
