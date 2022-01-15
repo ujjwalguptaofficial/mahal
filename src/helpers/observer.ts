@@ -37,7 +37,6 @@ export class Observer {
                                 onChange(prefix + prop, (() => {
                                     switch (prop) {
                                         case 'push':
-                                            // return args[0];
                                             return {
                                                 value: args[0],
                                                 key: result - 1,
@@ -53,28 +52,9 @@ export class Observer {
                     return Reflect.get(target, prop, receiver);
                 },
                 set: (target, prop: string, newValue, receiver) => {
-                    // let oldValue = target[prop];
-                    // if (oldValue === newValue) return true;
-
-                    let setValue: boolean;
-                    if (isObject(newValue)) {
-                        setValue = Reflect.set(
-                            target, prop, newValue, receiver
-                        );
-                    }
-                    else {
-                        setValue = Reflect.set(target, prop, newValue, receiver);
-                    }
+                    const setValue = Reflect.set(target, prop, newValue, receiver);
                     onChange(`${prefix}update`, [Number(prop), newValue]);
                     return setValue;
-                },
-                apply(target, thisArgs, args) {
-                    return Reflect.apply(
-                        target as any, thisArgs, args
-                    );
-                },
-                has(target, prop) {
-                    return Reflect.has(target, prop);
                 }
             });
             return proxy;
@@ -87,15 +67,8 @@ export class Observer {
                 onChange(`${prefix}splice`, [index, noOfItemToDelete]);
                 return isValueDeleted;
             },
-            get(target, prop, receiver) {
-                return Reflect.get(target, prop, receiver);
-            },
             set: (target, prop: string, newValue, receiver) => {
                 let oldValue = target[prop];
-                // if (oldValue === newValue) return true;
-                // if (!hashkeys[prop] && !prefix) {
-                //     return Reflect.set(target, prop, newValue, receiver);
-                // }
                 let isValueSetted: boolean;
                 if (process.env.NODE_ENV !== "production") {
                     try {
@@ -150,18 +123,8 @@ export class Observer {
 
                 return Reflect.set(target, prop, newValue, receiver);
             },
-            apply(target, thisArgs, args) {
-                return Reflect.apply(
-                    target as any, thisArgs, args
-                );
-            },
-            has(target, prop) {
-                return Reflect.has(target, prop);
-            },
-            // defineProperty(target, prop, attributes) {
-            //     debugger;
-            //     return Reflect.defineProperty(target, prop, attributes);
-            // }
+
+
         });
         keys.forEach((key) => {
             if (isObject(input[key])) {

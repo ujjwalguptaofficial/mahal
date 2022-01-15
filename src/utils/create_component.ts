@@ -9,5 +9,6 @@ export const createComponent = (componentConstructor, app: Mahal) => {
         create(component, keys) as Component;
     component['_eventBus']['_ctx'] = component;
     component['_watchBus']['_ctx'] = component;
+    component.onInit();
     return component;
 }

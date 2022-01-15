@@ -16,8 +16,7 @@ export default class extends Component {
     @Reactive
     text = "";
 
-    constructor() {
-        super();
+    onInit() {
         this.on("create", function () {
             this.text = this.value;
         })

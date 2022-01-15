@@ -42,6 +42,10 @@ export abstract class Component {
 
     }
 
+    onInit(){
+        
+    }
+
     private __emitStateChange__(key: string, newValue: any, oldValue?: any) {
         this['_watchBus'].emit(key, newValue, oldValue);
     }
