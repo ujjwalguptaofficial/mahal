@@ -8,17 +8,17 @@ import { Component, Template, Prop, Formatter, Reactive } from "mahal";
 // `)
 @Template(`<div>
     <table>
-        <fragment #for(student in students)>
-            <tr #if(student.isEdit)>
+        <fragment :for(student in students)>
+            <tr :if(student.isEdit)>
                 <td>{{student.id}}</td>
                 <td>
-                    <input type="text" #model(student.name)/>
+                    <input type="text" :model(student.name)/>
                 </td>
                 <td>
                     <button on:click="()=>{ updateStudent(student) }">Update</button>
                 </td>
             </tr>
-            <tr #else>
+            <tr :else>
                 <td>{{student.id}}</td>
                 <td>{{student.name}}</td>
                 <td>

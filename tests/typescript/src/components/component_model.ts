@@ -3,7 +3,7 @@ import TextBox from "./text-box";
 
 @Template(`
 <div>
-   <TextBox on:update="onUpdate" :id="txtStandardCheckBox" #model(text) />
+   <TextBox on:update="onUpdate" :id="txtStandardCheckBox" :model(text) />
 </div>
 `)
 @Children({ TextBox })

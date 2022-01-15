@@ -3,7 +3,7 @@ import { Component, Template, Reactive, clone } from "mahal";
 
 @Template(`
 <div>
-<p #for(fruit,index in fruits)>
+<p :for(fruit,index in fruits)>
  {{index}}-{{fruit}}
 </p>
 </div>

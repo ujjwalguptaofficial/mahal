@@ -1,6 +1,6 @@
 import { Component, Template, Computed, Reactive } from "mahal";
 @Template(`
-    <div #ref(el)>
+    <div :ref(el)>
         {{fullName}}
     </div>
 `)

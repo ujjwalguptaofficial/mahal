@@ -3,7 +3,7 @@ import { Component, Template, Prop, Reactive, } from "mahal";
 @Template(`
 <div>
 Standard Text Area box
-   <input type="text" #model(text) />
+   <input type="text" :model(text) />
    textbox value inside component  {{value}}
 </div>
 `)

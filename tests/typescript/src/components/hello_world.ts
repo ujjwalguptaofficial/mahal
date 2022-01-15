@@ -2,7 +2,7 @@ import { Component, Template, Prop, Formatter, Reactive } from "mahal";
 
 @Template(`
 <div>
-    <span #if(count>0) #show(flag===true) id="testFilter">
+    <span :if(count>0) :show(flag===true) id="testFilter">
         {{"string" | toUpper}}
     </span>
     <span  id="name">{{name | toUpper}}</span>
@@ -10,7 +10,7 @@ import { Component, Template, Prop, Formatter, Reactive } from "mahal";
         {{count}}
     </button>
     <button on:click="destroy">Destory</button>
-    <p class="p-html" #html=myHtml></p>
+    <p class="p-html" :html=myHtml></p>
 </div>
 `)
 

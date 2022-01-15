@@ -1,7 +1,7 @@
 import { Component, Template, Prop, Formatter, Reactive } from "mahal";
 
 @Template(`<div>
-<input #model(email) type="text" />
+<input :model(email) type="text" />
 <button id="btnSubmit" on:click={"validate" | "submit"}>Submit</button>
 </div>
 `)

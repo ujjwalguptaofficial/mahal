@@ -8,7 +8,7 @@ import { expect } from "chai";
 })
 @Template(`
 <div>
-    <TextArea #model(name)/>
+    <TextArea :model(name)/>
     <div class="name">{{name}}</div>
 </div>
 `)

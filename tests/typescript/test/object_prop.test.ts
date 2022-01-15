@@ -18,7 +18,7 @@ class User extends Component {
 })
 @Template(`
 <div>
-    <User :value="user" #if(flag)/>
+    <User :value="user" :if(flag)/>
     <div class="flag">{{flag}}</div>
 </div>
 `)

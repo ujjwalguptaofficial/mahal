@@ -7,7 +7,7 @@ import { createSandbox, spy } from "sinon";
 @Template(`
 <div>
 Standard Text Area box
-   <input type="text" #model(value) />
+   <input type="text" :model(value) />
 </div>
 `)
 
@@ -32,7 +32,7 @@ export class TextBox extends Component {
 })
 @Template(`
 <div>
-    <TextArea #model(name)/>
+    <TextArea :model(name)/>
     <div class="name">{{name}}</div>
 </div>
 `)

@@ -3,7 +3,7 @@ import { nextTick, Template, Component, Prop, Children, Reactive } from "mahal";
 import { expect } from "chai";
 
 @Template(`
-    <div #if(cond)>
+    <div :if(cond)>
     </div>
 `)
 export class Div extends Component {

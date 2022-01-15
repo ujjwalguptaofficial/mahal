@@ -3,11 +3,11 @@ import User from "./user";
 
 @Template(`
 <div>
-    <User class="users" #for(user in users)>
+    <User class="users" :for(user in users)>
         <target>{{user.name}}</target>
         <target name="gender">{{user.gender}}</target>
     </User>
-    <User class="reactive-users" #for(user in reactiveUsers)>
+    <User class="reactive-users" :for(user in reactiveUsers)>
         <target>{{user.name}}</target>
         <target name="gender">{{user.gender}}</target>
     </User>

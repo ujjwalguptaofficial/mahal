@@ -4,7 +4,6 @@ import { IRenderContext } from "mahal/dist/ts/interface";
 export class FragmentComponent extends Component {
     constructor() {
         super();
-        debugger;
         this.template = `<slot></slot>`
     }
 

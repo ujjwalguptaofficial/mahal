@@ -4,7 +4,7 @@ import Tabs from "./tabs";
 
 @Template(`<div>
 <div class="tab-name">{{activeTab}}</div>
-<Tabs :tabs="tabs" #model(activeTab) >
+<Tabs :tabs="tabs" :model(activeTab) >
     <target>
         <in-place :of="activeTab" :users="users" label="name"/>
     </target>

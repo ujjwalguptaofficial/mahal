@@ -7,8 +7,8 @@ import { Component, Template, Prop, Formatter, Reactive } from "mahal";
 // </div>
 // `)
 @Template(`<div>
-    <div class="fruit-row" #for(fruit,i in fruits)>
-        <input type="text" #model(fruit) />
+    <div class="fruit-row" :for(fruit,i in fruits)>
+        <input type="text" :model(fruit) />
         <span>{{fruit}}</span>
         <button on:click="()=>{updateFruit(fruit,i)}">Update</button>
     </div>

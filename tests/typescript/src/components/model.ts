@@ -2,7 +2,7 @@ import { Component, Template, Reactive } from "mahal";
 
 @Template(`
 <div>
-   <input type="text" #model(text) />
+   <input type="text" :model(text) />
 </div>
 `)
 
