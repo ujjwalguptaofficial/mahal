@@ -53,7 +53,7 @@ export class Observer {
                     return Reflect.get(target, prop, receiver);
                 },
                 set: (target, prop: string, newValue, receiver) => {
-                    let oldValue = target[prop];
+                    // let oldValue = target[prop];
                     // if (oldValue === newValue) return true;
 
                     let setValue: boolean;
@@ -92,7 +92,7 @@ export class Observer {
             },
             set: (target, prop: string, newValue, receiver) => {
                 let oldValue = target[prop];
-                if (oldValue === newValue) return true;
+                // if (oldValue === newValue) return true;
                 // if (!hashkeys[prop] && !prefix) {
                 //     return Reflect.set(target, prop, newValue, receiver);
                 // }
