@@ -8,7 +8,7 @@ import "./directive.test";
 import "./form.test";
 import "./hello_world.test";
 import "./if_else.test";
-// import "./inplace_if_toggle.test";
+import "./inplace_if_toggle.test";
 import "./invalid_component.test";
 import "./invalid_event_handler.test";
 import "./invalid_formatter.test";

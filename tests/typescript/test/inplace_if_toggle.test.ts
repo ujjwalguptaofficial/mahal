@@ -38,15 +38,15 @@ describe('InPlace if toggle', function () {
         expect(btn).to.equal(null);
     }
 
-    const testExist = (done) => {
+    const testExist = ( ) => {
         const btn = component.find('.btn');
         expect(btn).to.not.equal(null);
-        done();
+        // done();
     }
 
     it("initiate btn", async function () {
         component = await (app as any).mount(Temp);
-        testNotExist();
+        testExist();
     });
 
     // for (let i = 0; i < 3; i++) {

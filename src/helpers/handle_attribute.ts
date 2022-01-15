@@ -31,7 +31,8 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
 
                 component[key] = clone(value.v);
                 if (value.k) {
-                    this.watch(value.k, (newValue) => {
+                    this.watch(value.k, (newValue, oldValue) => {
+                        if (oldValue === newValue) return;
                         Observer.shouldCheckProp = false;
                         component[key] = newValue;
                         Observer.shouldCheckProp = true;

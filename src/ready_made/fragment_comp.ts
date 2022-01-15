@@ -4,7 +4,7 @@ import { IRenderContext } from "../interface";
 export class FragmentComponent extends Component {
     constructor() {
         super();
-        this.template = `<slot></slot>`
+        this.template = `<slot></slot>`;
     }
 
     render(renderer: IRenderContext): Promise<HTMLElement> {

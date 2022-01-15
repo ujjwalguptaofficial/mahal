@@ -15,10 +15,10 @@ describe('Object', function () {
         expect(component.findAll(".tr-list")).length(0);
     });
 
-    it("add students using push", function (done) {
-        component.students.push({
+    it("add one students without overwriting var", function (done) {
+        component.students['ujjwal'] = {
             name: 'ujjwal'
-        })
+        };
         component.waitFor("update").then(() => {
             expect(component.findAll(".tr-list")).length(1);
             done();
@@ -78,9 +78,9 @@ describe('Object', function () {
     });
 
     it("add value directly", function (done) {
-        component.setAndReact(component.students, "john", {
+        component.students["john"] = {
             name: "john"
-        })
+        };
         component.waitFor("update").then(() => {
             expect(component.findAll(".tr-list")).length(2);
             done();
@@ -100,9 +100,9 @@ describe('Object', function () {
     });
 
     it("add value directly", function (done) {
-        component.setAndReact(component.students, "batman", {
+        component.students["batman"] = {
             name: "batman"
-        })
+        };
         component.waitFor("update").then(() => {
             expect(getObjectLength(component.students)).equal(2);
             const rows = component.findAll(".tr-list");
@@ -114,9 +114,9 @@ describe('Object', function () {
     });
 
     it("add same value", function (done) {
-        component.setAndReact(component.students, "batman", {
+        component.students["batman"] = {
             name: "batman"
-        })
+        };
         component.waitFor("update").then(() => {
             expect(getObjectLength(component.students)).equal(2);
             const rows = component.findAll(".tr-list");

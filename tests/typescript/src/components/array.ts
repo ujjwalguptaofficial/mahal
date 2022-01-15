@@ -44,20 +44,30 @@ export default class extends Component {
 
     editStudent(index) {
         this.editName = this.students[index].name;
-        this.setAndReact(this.students, index, {
+        this.students[index] = {
             ... this.students[index], ...{
                 isEdit: true
             }
-        })
+        };
+        // this.setAndReact(this.students, index, {
+        //     ... this.students[index], ...{
+        //         isEdit: true
+        //     }
+        // })
     }
 
     updateStudent(index) {
         this.students[index].name = this.editName;
-        this.setAndReact(this.students, index, {
+        this.students[index] = {
             ... this.students[index], ...{
                 isEdit: false
             }
-        })
+        };
+        // this.setAndReact(this.students, index, {
+        //     ... this.students[index], ...{
+        //         isEdit: false
+        //     }
+        // })
     }
 
     reset() {

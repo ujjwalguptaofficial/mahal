@@ -21,3 +21,5 @@ export * from "./clone";
 export * from "./exeute_render";
 export * from "./init_component";
 export * from "./throttle";
+export * from "./create_component";
+export * from "./hashify_array";

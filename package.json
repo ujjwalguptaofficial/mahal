@@ -9,6 +9,7 @@
     "build": "npm run install:compiler && npm run webpack:dev",
     "build:pack": "npm run build && npm run webpack:test && npm pack",
     "build:test": "npm run build:pack && npm run test",
+    "build:test:dev": "npm run build:pack && cd tests && npm run install:dev",
     "test": "npm run test:general",
     "lint": "tslint src/**/*.ts",
     "test:general": "cd tests && npm run install:test",

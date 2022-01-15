@@ -1,4 +1,4 @@
-import { isArray, getObjectLength, Logger, isObject, merge } from "../utils";
+import { isArray, getObjectLength, Logger, isObject, merge, hashifyArray, indexOf } from "../utils";
 import { ERROR_TYPE } from "../enums";
 
 export class Observer {
@@ -11,103 +11,127 @@ export class Observer {
     }
 
     create(input: object, keys?: string[], prefix = "") {
-        const cached = {};
         const onChange = this.onChange;
-        if (isArray(input)) {
-            keys = keys || ["push", "splice"];
-            keys.forEach(key => {
-                cached[key] = this[key];
-                Object.defineProperty(input, key, {
-                    value: function (...args) {
-                        const result = Array.prototype[key].apply(this, args);
-                        onChange(prefix + key, (() => {
-                            switch (key) {
-                                case 'push':
-                                    // return args[0];
-                                    return {
-                                        value: args[0],
-                                        key: result - 1,
-                                        length: result
-                                    };
-                                default:
-                                    return args;
-                            }
-                        })());
-                        return result;
-                    }
-                });
-            });
-            return;
-        }
-        keys = keys || Object.keys(input);
-        keys.forEach(key => {
-            cached[key] = input[key];
-            const registerChild = (newValue, oldValue) => {
-                if (isObject(input[key])) {
-                    const objectValKeyWithPrefix = `${prefix}${key}.`;
-                    if (oldValue != null) {
-                        newValue = merge(oldValue, newValue || {});
-                        for (const valKey in newValue) {
-                            onChange(`${objectValKeyWithPrefix}${valKey}`, newValue[valKey], oldValue[valKey]);
-                        }
-                    }
-
-                    this.create(input[key], null, objectValKeyWithPrefix);
+        const isInputArray = isArray(input);
+        keys = keys || (isInputArray ? [] : Object.keys(input));
+        const hashkeys = hashifyArray(keys);
+        const registerChild = (key, newValue, oldValue) => {
+            const objectValKeyWithPrefix = `${prefix}${key}.`;
+            if (oldValue != null) {
+                const mergedNewValue = merge(oldValue, newValue || {});
+                for (const valKey in mergedNewValue) {
+                    onChange(`${objectValKeyWithPrefix}${valKey}`, mergedNewValue[valKey], oldValue[valKey]);
                 }
-            };
-            Object.defineProperty(input, key, {
-                set(newValue) {
-                    const oldValue = cached[key];
-                    if (oldValue === newValue) return;
-                    cached[key] = newValue;
-                    if (process.env.NODE_ENV !== "production") {
-                        if (Observer.shouldCheckProp && (input as any)._props && (input as any)._props[key]) {
+            }
+
+            return this.create(newValue, null, objectValKeyWithPrefix);
+        };
+        if (isInputArray) {
+            const proxy = new Proxy(input, {
+                get(target, prop, receiver) {
+                    switch (prop) {
+                        case 'push':
+                        case 'splice':
+                            return (...args) => {
+                                const result = target[prop](...args);
+                                onChange(prefix + prop, (() => {
+                                    switch (prop) {
+                                        case 'push':
+                                            return {
+                                                value: args[0],
+                                                key: result - 1,
+                                                length: result
+                                            };
+                                        default:
+                                            return args;
+                                    }
+                                })());
+                                return result;
+                            };
+                    }
+                    return Reflect.get(target, prop, receiver);
+                },
+                set: (target, prop: string, newValue, receiver) => {
+                    const setValue = Reflect.set(target, prop, newValue, receiver);
+                    onChange(`${prefix}update`, [Number(prop), newValue]);
+                    return setValue;
+                }
+            });
+            return proxy;
+        }
+        const proxy = new Proxy(input, {
+            deleteProperty(target, prop) {
+                const index = indexOf(target, prop);
+                const noOfItemToDelete = 1;
+                const isValueDeleted = Reflect.deleteProperty(target, prop);
+                onChange(`${prefix}splice`, [index, noOfItemToDelete]);
+                return isValueDeleted;
+            },
+            set: (target, prop: string, newValue, receiver) => {
+                let oldValue = target[prop];
+                let isValueSetted: boolean;
+                if (process.env.NODE_ENV !== "production") {
+                    try {
+                        const componentProps = input['_props']
+                        if (componentProps && Observer.shouldCheckProp && componentProps[prop]) {
                             new Logger(ERROR_TYPE.MutatingProp, {
                                 html: (input as any).outerHTML,
-                                key: key
+                                key: prop
                             }).logPlainError();
                         }
+                    } catch (error) {
+
                     }
 
-                    onChange(prefix + key, newValue, oldValue);
-                    registerChild(newValue, oldValue);
-                },
-                get() {
-                    return cached[key];
                 }
 
-            });
-            registerChild(null, null);
-        });
+                const setValue = () => {
+                    if (isObject(newValue)) {
+                        const proxyChild = registerChild(prop, newValue, oldValue);
+                        return Reflect.set(
+                            target, prop, proxyChild, receiver
+                        );
+                    }
+                    else {
+                        return Reflect.set(target, prop, newValue, receiver);
+                    }
+                };
 
-        Object.defineProperty(input, "push", {
-            enumerable: false,
-            value: function (value, keyToAdd) {
-                this[keyToAdd] = value;
-                const length = getObjectLength(this);
-                onChange(`${prefix}push`, {
-                    value: value,
-                    key: keyToAdd,
-                    length: length
-                });
-                return length;
+                if (hashkeys[prop]) {
+                    isValueSetted = setValue();
+                    onChange(prefix + (prop as string), newValue, oldValue);
+                    return isValueSetted;
+                }
+
+                if (prefix) {
+                    isValueSetted = setValue();
+                    if (oldValue != null) {
+                        if (target.hasOwnProperty(prop)) {
+                            onChange(`${prefix}update`, [prop, newValue]);
+                        }
+                    } else {
+                        const length = getObjectLength(target);
+                        onChange(`${prefix}push`, {
+                            value: newValue,
+                            key: prop,
+                            length: length
+                        });
+                    }
+
+                    return isValueSetted;
+                }
+
+                return Reflect.set(target, prop, newValue, receiver);
+            },
+
+
+        });
+        keys.forEach((key) => {
+            if (isObject(input[key])) {
+                input[key] = registerChild(key, input[key], null);
             }
         });
-
-        Object.defineProperty(input, "splice", {
-            enumerable: false,
-            value: (index, noOfItemToDelete) => {
-                onChange(`${prefix}splice`, [index, noOfItemToDelete]);
-            }
-        });
-
-        Object.defineProperty(input, "update", {
-            enumerable: false,
-            value: function (prop, value) {
-                this[prop] = value;
-                onChange(`${prefix}update`, [prop, value]);
-            }
-        });
+        return proxy;
     }
 
     destroy() {

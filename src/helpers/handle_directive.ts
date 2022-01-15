@@ -26,20 +26,19 @@ export function handleDirective(this: Component, element, dir, isComponent) {
 
             const directive: IDirective = merge(genericDirective,
                 storedDirective.call(this, element, binding));
+            let eventCbs = [];
             nextTick(() => {
-                const onValueUpdated = () => {
-                    binding.value = compiledDir.value;
-                    directive.valueUpdated();
-                };
+
                 const onDestroyed = () => {
                     directive.destroyed();
                     if (!isComponent) {
                         element.removeEventListener(LIFECYCLE_EVENT.Destroy, onDestroyed);
                     }
-                    compiledDir.props.forEach((prop) => {
-                        this.unwatch(prop, onValueUpdated);
+                    compiledDir.props.forEach((prop, index) => {
+                        this.unwatch(prop, eventCbs[index]);
                     });
                     element = null;
+                    eventCbs = null;
                 };
                 if (isComponent) {
                     (element as Component).on(LIFECYCLE_EVENT.Destroy, onDestroyed);
@@ -47,8 +46,14 @@ export function handleDirective(this: Component, element, dir, isComponent) {
                 else {
                     element.addEventListener(LIFECYCLE_EVENT.Destroy, onDestroyed);
                 }
-                compiledDir.props.forEach((prop) => {
-                    this.watch(prop, onValueUpdated);
+                compiledDir.props.forEach((prop, index) => {
+                    const ev = (newValue, oldValue) => {
+                        if (oldValue === newValue) return;
+                        binding.value[index] = newValue;
+                        directive.valueUpdated();
+                    };
+                    this.watch(prop, ev);
+                    eventCbs.push(ev);
                 });
                 directive.inserted();
             });

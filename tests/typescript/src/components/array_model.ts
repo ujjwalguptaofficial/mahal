@@ -21,6 +21,7 @@ export default class extends Component {
     fruits = ["banana", "apple"];
 
     updateFruit(fruit, index) {
-        this.setAndReact(this.fruits, index, fruit);
+        this.fruits[index] = fruit
+        // this.setAndReact(this.fruits, index, fruit);
     }
 }

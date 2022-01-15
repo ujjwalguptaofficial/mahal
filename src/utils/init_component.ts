@@ -1,7 +1,7 @@
 import { Component } from "../abstracts";
 import { Logger, nextTick } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { handleAttribute, handleDirective, runPromisesInSequence, attachGetterSetter } from "../helpers";
+import { handleAttribute, handleDirective, runPromisesInSequence } from "../helpers";
 
 export function initComponent(this: Component, component: Component, option) {
 
@@ -48,7 +48,7 @@ export function initComponent(this: Component, component: Component, option) {
             });
         });
     }
-    attachGetterSetter(component);
+    // attachGetterSetter(component);
     component.emit(LIFECYCLE_EVENT.Create);
     component.on(LIFECYCLE_EVENT.Destroy, () => {
         component = null;
