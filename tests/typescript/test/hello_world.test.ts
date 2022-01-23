@@ -20,6 +20,7 @@ describe('HelloWorld', function () {
                 count: 0
             }
         });
+        expect(component.isMounted).equal(true);
         await nextTick();
         expect(consoleSpy.args).length(3);
         const args1 = consoleSpy.args[0];
@@ -112,8 +113,8 @@ describe('HelloWorld', function () {
     it('test filter rendering', () => {
         expect(component.count).gt(0);
         expect(component.find('#testFilter').innerHTML).equal("STRING");
-        expect(component.dependency_['"ujjwal" ']).equal(undefined);
-        expect(component.dependency_['"ujjwal"']).equal(undefined);
+        // expect(component.dependency_['"ujjwal" ']).equal(undefined);
+        // expect(component.dependency_['"ujjwal"']).equal(undefined);
     })
 
     it("destroy", function (done) {
@@ -121,9 +122,10 @@ describe('HelloWorld', function () {
             new Timer().timeout(20).then(_ => {
                 expect(component.element).equal(null);
                 expect(component._eventBus).equal(null);
+                expect(component._ob).equal(null);
                 expect(component._watchBus._events).equal(null);
                 // expect(component.dependency_).equal(null);
-                expect(getObjectLength(component.dependency_)).equal(0);
+                // expect(getObjectLength(component.dependency_)).equal(0);
                 // expect(getObjectLength(component.watchList_)).equal(0);
                 done();
             })

@@ -42,8 +42,8 @@ export abstract class Component {
 
     }
 
-    onInit(){
-        
+    onInit() {
+
     }
 
     private __emitStateChange__(key: string, newValue: any, oldValue?: any) {
@@ -68,14 +68,6 @@ export abstract class Component {
         this._watchBus.off(propName, cb);
         return this;
     }
-
-    // setAndReact(target, prop, valueToSet) {
-    //     setAndReact(target, prop, valueToSet);
-    // }
-
-    // deleteAndReact(target, prop) {
-    //     deleteAndReact(target, prop);
-    // }
 
     on(event: string, cb: Function) {
         this._eventBus.on(event, cb);
@@ -138,10 +130,6 @@ export abstract class Component {
     private _eventBus = new EventBus();
     private _watchBus = new EventBus();
     private _app: Mahal;
-
-    private _inPlaceWatchers = {};
-
-    private dependency_: { [key: string]: any[] } = {};
 
     private _ob: Observer;
 
