@@ -27,7 +27,8 @@ import ObjectResetModel from "./object_reset_model";
 // `)
 @Template(`
 <div>
-     <DirectiveComp/>
+Hi
+<div class="name" :namess ="name | dollar"></div>
 </div>
 `)
 @Children({

@@ -29,3 +29,4 @@ import "./if_initial_value_false.test";
 import "./array_model.test";
 import "./fragment.test";
 import "./object_reset_model.test";
+import "./attribute.test";

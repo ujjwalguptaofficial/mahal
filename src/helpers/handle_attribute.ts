@@ -4,6 +4,7 @@ import { getDataype, Logger, clone, forOwn, setAttribute } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { Observer } from "./observer";
 import { emitUpdate } from "./emit_update";
+import { getAttributeValue } from "./get_expression_value";
 
 export function handleAttribute(this: Component, component, attr, isComponent) {
     if (isComponent) {
@@ -12,9 +13,10 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
         for (const key in attr) {
             const value: IAttrItem = attr[key];
             if (component._props[key]) {
+                const attrValue = getAttributeValue(value, value.v);
                 if (component._props[key].type) {
                     const expected = component._props[key].type;
-                    const received = getDataype(value.v);
+                    const received = getDataype(attrValue);
                     if (expected !== received) {
                         this.waitFor(LIFECYCLE_EVENT.Mount).then(_ => {
                             new Logger(ERROR_TYPE.PropDataTypeMismatch,
@@ -29,12 +31,12 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                     }
                 }
 
-                component[key] = clone(value.v);
+                component[key] = clone(attrValue);
                 if (value.k) {
                     this.watch(value.k, (newValue, oldValue) => {
                         if (oldValue === newValue) return;
                         Observer.shouldCheckProp = false;
-                        component[key] = newValue;
+                        component[key] = getAttributeValue(value, newValue);
                         Observer.shouldCheckProp = true;
                     });
                 }
@@ -43,7 +45,7 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
             else {
                 htmlAttributes.push({
                     key,
-                    value: value.v
+                    value: getAttributeValue(value, value.v)
                 });
             }
         }
@@ -51,10 +53,10 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
     }
 
     forOwn(attr, (key, attrItem) => {
-        setAttribute(component, key, attrItem.v);
+        setAttribute(component, key, getAttributeValue(attrItem, attrItem.v));
         if (attrItem.k) {
             this.watch(attrItem.k, (newValue) => {
-                setAttribute(component, key, newValue);
+                setAttribute(component, key, getAttributeValue(attrItem, newValue));
                 emitUpdate(this);
             });
         }

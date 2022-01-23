@@ -1,4 +1,5 @@
 export interface IAttrItem {
     k: string;
-    v: string;
+    v: string | Function;
+    m: boolean;
 }
