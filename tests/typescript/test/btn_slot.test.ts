@@ -3,17 +3,10 @@ import { nextTick, Template, Component, Prop, Children } from "mahal";
 import { expect } from "chai";
 import { spy } from "sinon";
 
-@Template(`
-    <button>
-        <slot></slot>
-    </button>
-`)
-class Btn extends Component {
 
-}
 
 @Children({
-    Btn
+    Btn: import('./standard_button')
 })
 @Template(`
 <div>

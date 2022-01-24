@@ -28,13 +28,14 @@ import ObjectResetModel from "./object_reset_model";
 @Template(`
 <div>
 Hi
-<div class="name" :namess ="name | dollar"></div>
+<Btn>Hey</Btn>
 </div>
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed,
-    Fragment, ArrayModel, ObjectResetModel
+    Fragment, ArrayModel, ObjectResetModel,
+    Btn:  import('../../test/standard_button')
 })
 export default class Main extends Component {
 
@@ -98,7 +99,7 @@ export default class Main extends Component {
             console.log(newValue, oldValue);
         });
 
-        this.on("mount", function(){
+        this.on("mount", function () {
             window['comp'] = this;
         })
     }
