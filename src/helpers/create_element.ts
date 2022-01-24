@@ -25,10 +25,6 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
         element.appendChild(item);
     });
 
-    if (option.html) {
-        (element as HTMLElement).innerHTML = option.html;
-    }
-
     handleAttribute.call(this, element, option.attr, false);
 
     if (option.on) {

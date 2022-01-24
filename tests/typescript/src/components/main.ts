@@ -28,14 +28,14 @@ import ObjectResetModel from "./object_reset_model";
 @Template(`
 <div>
 Hi
-<Btn>Hey</Btn>
+<HelloWorld />
 </div>
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed,
     Fragment, ArrayModel, ObjectResetModel,
-    Btn:  import('../../test/standard_button')
+    Btn: import('../../test/standard_button')
 })
 export default class Main extends Component {
 

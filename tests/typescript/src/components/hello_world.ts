@@ -10,7 +10,7 @@ import { Component, Template, Prop, Formatter, Reactive } from "mahal";
         {{count}}
     </button>
     <button on:click="destroy">Destory</button>
-    <p class="p-html" :html=myHtml></p>
+    <p class="p-html" :html(myHtml) ></p>
 </div>
 `)
 
@@ -24,6 +24,7 @@ export default class HelloWorld extends BaseComponent {
     count;
 
     // @Prop("as")
+    @Reactive
     myHtml = "<b>BOLD</b>"
 
     @Reactive
@@ -41,7 +42,7 @@ export default class HelloWorld extends BaseComponent {
     }
 
     mounted() {
-        // window['comp'] = this;
+        window['helloComp'] = this;
         console.log("mounted", this.name, this.count);
     }
 

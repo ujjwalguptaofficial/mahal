@@ -110,6 +110,12 @@ describe('HelloWorld', function () {
         expect(component.find('.p-html').innerHTML).equal("<b>BOLD</b>")
     })
 
+    it('change html', async () => {
+        component.myHtml = "<i>Italic</i>";
+        await component.waitFor('update');
+        expect(component.find('.p-html').innerHTML).equal("<i>Italic</i>")
+    })
+
     it('test filter rendering', () => {
         expect(component.count).gt(0);
         expect(component.find('#testFilter').innerHTML).equal("STRING");

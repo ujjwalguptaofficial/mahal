@@ -11,18 +11,6 @@ export function handleDirective(this: Component, element, dir, isComponent) {
         if (storedDirective) {
             const binding: IDirectiveBinding = compiledDir;
             binding.isComponent = isComponent;
-            // {
-            //     input: compiledDir.input,
-            //         params: compiledDir.params,
-            //             isComponent: isComponent,
-            //                 props: compiledDir.props,
-            //                     get value() {
-            //         return compiledDir.value
-            //     },
-            //     set value(values) {
-            //         compiledDir.value = values;
-            //     }
-            // } as IDirectiveBinding;
 
             const directive: IDirective = merge(genericDirective,
                 storedDirective.call(this, element, binding));
