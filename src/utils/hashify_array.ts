@@ -4,4 +4,4 @@ export const hashifyArray = (input: any[]) => {
         obj[item] = true;
     });
     return obj;
-}
+};

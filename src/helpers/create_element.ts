@@ -123,7 +123,7 @@ export function createElement(this: Component, tag: string, childs: Array<Promis
             const savedComponent = this.children[tag] || this['_app']['_components'][tag];
             if (savedComponent) {
                 loadComponent(savedComponent).then((comp: any) => {
-                    let component: Component = createComponent(comp, this['_app']);
+                    const component: Component = createComponent(comp, this['_app']);
                     const htmlAttributes = initComponent.call(this, component as any, option);
                     executeRender(component, childs).then(_ => {
                         let element = component.element;

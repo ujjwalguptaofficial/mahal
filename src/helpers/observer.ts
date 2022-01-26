@@ -27,7 +27,7 @@ export class Observer {
             return this.create(newValue, null, objectValKeyWithPrefix);
         };
         if (isInputArray) {
-            const proxy = new Proxy(input, {
+            const arrProxy = new Proxy(input, {
                 get(target, prop, receiver) {
                     switch (prop) {
                         case 'push':
@@ -57,7 +57,7 @@ export class Observer {
                     return setValue;
                 }
             });
-            return proxy;
+            return arrProxy;
         }
         const proxy = new Proxy(input, {
             deleteProperty(target, prop) {
@@ -68,11 +68,11 @@ export class Observer {
                 return isValueDeleted;
             },
             set: (target, prop: string, newValue, receiver) => {
-                let oldValue = target[prop];
+                const oldValue = target[prop];
                 let isValueSetted: boolean;
                 if (process.env.NODE_ENV !== "production") {
                     try {
-                        const componentProps = input['_props']
+                        const componentProps = input['_props'];
                         if (componentProps && Observer.shouldCheckProp && componentProps[prop]) {
                             new Logger(ERROR_TYPE.MutatingProp, {
                                 html: (input as any).outerHTML,

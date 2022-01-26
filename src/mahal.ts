@@ -2,7 +2,6 @@ import { Component } from "./abstracts/component";
 import { Logger, isString, initComponent, isObject, executeRender, getDataype, createComponent } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective, htmlDirective } from "./ready_made";
-import { Observer } from "./helpers";
 
 const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroy);
 
@@ -33,7 +32,7 @@ export class Mahal {
                 document.body.appendChild(el);
             }
             this.element = el;
-            if (process.env.NODE_ENV != 'production') {
+            if (process.env.NODE_ENV !== 'production') {
                 Logger.warn("Provided element or element selector is not valid. Using 'mahal-app' as default")
             }
         }

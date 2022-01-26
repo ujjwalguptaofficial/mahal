@@ -1,6 +1,7 @@
 import { emitUpdate } from "../helpers";
 import { IDirectiveBinding } from "../interface";
 
+// tslint:disable-next-line
 export function htmlDirective(el: HTMLElement, binding: IDirectiveBinding) {
     if (binding.isComponent) return;
 
@@ -14,4 +15,4 @@ export function htmlDirective(el: HTMLElement, binding: IDirectiveBinding) {
             addClass();
         }
     };
-};
+}

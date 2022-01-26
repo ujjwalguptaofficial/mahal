@@ -36,10 +36,9 @@ export function initComponent(this: Component, component: Component, option) {
                 return computedValue;
             },
             set(newValue) {
-                // component.setState(key, newValue, computedValue);
                 computedValue = newValue;
             }
-        })
+        });
         data.args.forEach(arg => {
             component.watch(arg, () => {
                 const newValue = data.fn.call(component);

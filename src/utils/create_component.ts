@@ -11,4 +11,4 @@ export const createComponent = (componentConstructor, app: Mahal) => {
     component['_watchBus']['_ctx'] = component;
     component.onInit();
     return component;
-}
+};

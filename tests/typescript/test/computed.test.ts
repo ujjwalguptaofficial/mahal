@@ -1,7 +1,6 @@
 import Computed from "../src/components/computed";
 import { app } from "../src/index";
 import { expect } from "chai";
-import { nextTick } from "mahal";
 
 describe('Computed', function () {
 
@@ -12,7 +11,7 @@ describe('Computed', function () {
         expect(component.fullName).equal('ujjwal gupta');
     });
 
-    it("check for render", function () {
+    it("check for render using ref", function () {
         expect(component.el.innerHTML).to.equal('ujjwal gupta');
     });
 

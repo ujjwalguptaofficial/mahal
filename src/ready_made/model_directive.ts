@@ -1,6 +1,7 @@
 import { IDirectiveBinding, IAttrItem } from "../interface";
 import { handleAttribute } from "../helpers";
 
+// tslint:disable-next-line
 export function createModelDirective(eventName, propToUse) {
     return function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding) {
         const key = binding.props[0];
@@ -22,6 +23,6 @@ export function createModelDirective(eventName, propToUse) {
                 ];
             };
         }
-    }
+    };
 }
 
