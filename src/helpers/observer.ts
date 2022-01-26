@@ -32,6 +32,10 @@ export class Observer {
                     switch (prop) {
                         case 'push':
                         case 'splice':
+                        case 'pop':
+                        case 'shift':
+                        case 'unshift':
+                        case 'reverse':
                             return (...args) => {
                                 const result = target[prop](...args);
                                 onChange(prefix + prop, (() => {
@@ -41,6 +45,10 @@ export class Observer {
                                                 value: args[0],
                                                 key: result - 1,
                                                 length: result
+                                            };
+                                        case 'pop':
+                                            return {
+                                                indexRemoved: (target as any).length
                                             };
                                         default:
                                             return args;

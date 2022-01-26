@@ -73,5 +73,15 @@ describe('MODEL', function () {
         checkFruitValue(fruits);
     })
 
+    it('pop items', async () => {
+        component.setInitial();
+        await component.waitFor('update');
+        component.fruits.pop();
+        await component.waitFor('update');
+        const fruits = clone(component.initialFruits);
+        fruits.pop();
+        checkFruitValue(fruits);
+    });
+
 });
 
