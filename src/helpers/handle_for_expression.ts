@@ -74,7 +74,16 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             handleChange("push", newValue);
         },
         [`${key}.pop`]: (newValue) => {
-            handleChange("pop", newValue);
+            handleChange("splice", [newValue, 1]);
+        },
+        [`${key}.shift`]: () => {
+            handleChange("splice", [0, 1]);
+        },
+        [`${key}.unshift`]: (newValue) => {
+            handleChange("splice", [0, 0, newValue]);
+        },
+        [`${key}.reverse`]: (result) => {
+            handleChange("splice", [0, result.length, ...result.value]);
         },
         [`${key}.splice`]: (newValue) => {
             handleChange("splice", newValue);
@@ -100,13 +109,6 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 method(params.value, params.key).then(newElement => {
                     parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
                 });
-                break;
-            case 'pop':
-                // +1 for cm nodes
-                const child = parent.childNodes[indexOfRef + params.indexRemoved + 1];
-                if (child) {
-                    parent.removeChild(child);
-                };
                 break;
             case 'splice':
                 // i==1 for comment nodes 
@@ -163,6 +165,9 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         watch(`${key}.push`, callBacks[`${key}.push`]).
         watch(`${key}.splice`, callBacks[`${key}.splice`]).
         watch(`${key}.update`, callBacks[`${key}.update`]).
-        watch(`${key}.pop`, callBacks[`${key}.pop`]);
+        watch(`${key}.pop`, callBacks[`${key}.pop`]).
+        watch(`${key}.shift`, callBacks[`${key}.shift`]).
+        watch(`${key}.unshift`, callBacks[`${key}.unshift`]).
+        watch(`${key}.reverse`, callBacks[`${key}.reverse`]);
     return els;
 }

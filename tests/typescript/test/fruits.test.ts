@@ -83,5 +83,35 @@ describe('MODEL', function () {
         checkFruitValue(fruits);
     });
 
+    it('shift items', async () => {
+        component.setInitial();
+        await component.waitFor('update');
+        component.fruits.shift();
+        await component.waitFor('update');
+        const fruits = clone(component.initialFruits);
+        fruits.shift();
+        checkFruitValue(fruits);
+    });
+
+    it('unshift items', async () => {
+        component.setInitial();
+        await component.waitFor('update');
+        component.fruits.unshift('amrud');
+        await component.waitFor('update');
+        const fruits = clone(component.initialFruits);
+        fruits.unshift('amrud');
+        checkFruitValue(fruits);
+    });
+
+    it('reverse items', async () => {
+        component.setInitial();
+        await component.waitFor('update');
+        component.fruits.reverse();
+        await component.waitFor('update');
+        const fruits = clone(component.initialFruits);
+        fruits.reverse();
+        checkFruitValue(fruits);
+    });
+
 });
 

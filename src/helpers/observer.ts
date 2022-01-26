@@ -47,9 +47,14 @@ export class Observer {
                                                 length: result
                                             };
                                         case 'pop':
+                                            return (target as any).length;
+                                        case 'reverse':
                                             return {
-                                                indexRemoved: (target as any).length
+                                                length: (target as any).length,
+                                                value: result
                                             };
+                                        // case 'unshift':
+                                        //     return 0;
                                         default:
                                             return args;
                                     }
