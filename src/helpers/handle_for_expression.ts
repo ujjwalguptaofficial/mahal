@@ -112,8 +112,9 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 break;
             case 'splice':
                 // i==1 for comment nodes 
+                const relativeIndex = indexOfRef + params[0];
                 for (let i = 1; i <= params[1]; i++) {
-                    const child = parent.childNodes[indexOfRef + params[0] + i];
+                    const child = parent.childNodes[relativeIndex + 1];
                     if (child) {
                         parent.removeChild(child);
                     }
@@ -121,11 +122,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const promises = [];
                 for (let i = 2, j = params[0], length = params.length; i < length; i++, j++) {
                     promises.push(
-                        new Promise(res => {
-                            method(params[i], j).then(newElement => {
-                                parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + j]);
-                                res(null);
-                            });
+                        method(params[i], j).then(newElement => {
+                            parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + j]);
                         })
                     );
                 }
