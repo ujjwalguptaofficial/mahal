@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { Logger, isPrimitive, isNull, isArray, isObject, nextTick, forOwn, indexOf, replaceEl } from "../utils";
+import { Logger, isPrimitive, isNull, isArray, isObject, forOwn, indexOf } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 

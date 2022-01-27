@@ -7,7 +7,6 @@ import { runPromisesInSequence } from "./run_promises_in_sequence";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
-import { Observer } from ".";
 
 function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
     switch (tag) {
