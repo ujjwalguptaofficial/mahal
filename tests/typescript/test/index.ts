@@ -1,3 +1,4 @@
+import "./tag_list.test";
 import "./array_nested_prop.test";
 import "./array.test";
 import "./btn.test";
