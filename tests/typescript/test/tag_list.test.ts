@@ -14,11 +14,16 @@ describe('simple', function () {
 
         const component = await mount(compClass);
         const btn = component.element;
-        expect(btn.tagName).equal(expectedTag)
+        expect(btn.tagName).equal(expectedTag);
+        return btn;
     }
 
     it('div', () => {
         return testTag(`<div>{{ujjwal}}</div>`, 'DIV');
+    })
+
+    it('comment', async () => {
+        const el = await testTag(`<div><!-- Author of JsStore  --></div>`, 'DIV');
     })
 
 
@@ -32,11 +37,30 @@ describe('simple', function () {
       `, 'A');
     })
 
+    it('nav', () => {
+        return testTag(`
+        <nav>Title</nav>
+      `, 'NAV');
+    })
+
+    it('i', () => {
+        return testTag(`
+        <i>Title</i>
+      `, 'I');
+    })
+
     it('img tag', () => {
         const text = `
 			<img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="img/profile.png" alt="profile" />
 `;
         return testTag(text, 'IMG');
+
+    })
+    it('br tag', () => {
+        const text = `
+			<br class="img-fluid img-profile rounded-circle mx-auto mb-2" src="img/profile.png" alt="profile" />
+`;
+        return testTag(text, 'BR');
 
     })
 

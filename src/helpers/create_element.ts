@@ -109,7 +109,7 @@ export function createElement(this: Component, tag: string, childs: Array<Promis
 
     return new Promise((res, rej) => {
         if (tag == null) {
-            res(createCommentNode());
+            return res(createCommentNode());
         }
         if (!option.attr) {
             option.attr = {};
