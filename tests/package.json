@@ -18,8 +18,8 @@
     "flexboot": "^1.0.1",
     "jquery": "^3.6.0",
     "karma-typescript": "^5.5.1",
-    "mahal": "file:../mahal-0.16.0.tgz",
-    "mahal-html-compiler": "file:../../mahal-html-compiler/mahal-html-compiler-0.15.0.tgz",
+    "mahal": "file:../mahal-0.17.0.tgz",
+    "mahal-html-compiler": "file:../../mahal-html-compiler/mahal-html-compiler-0.18.0.tgz",
     "mahal-test-utils": "file:../../mahal-test-utils/mahal-test-utils-0.4.0.tgz",
     "mocha": "^8.3.2",
     "sinon": "^9.2.4"
