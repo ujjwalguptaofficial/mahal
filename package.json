@@ -1,6 +1,6 @@
 {
   "name": "mahal",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "description": "Simple, modern web application framework.",
   "main": "dist/npm.export.js",
   "types": "dist/ts/index.d.ts",
@@ -31,7 +31,7 @@
     "type": "git",
     "url": "git+https://github.com/ujjwalguptaofficial/mahal.git"
   },
-  "author": "Ujjwal Gupta",
+  "author": "Ujjwal Gupta <https://ujjwalguptaofficial.github.io/>",
   "license": "APACHE 2.0",
   "bugs": {
     "url": "https://github.com/ujjwalguptaofficial/mahal/issues"

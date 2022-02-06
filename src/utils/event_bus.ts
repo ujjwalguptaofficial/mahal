@@ -30,6 +30,14 @@ export class EventBus {
         }
     }
 
+    /**
+     * emit event to all listener at a time
+     *
+     * @param {string} event
+     * @param {*} args
+     * @return {*} 
+     * @memberof EventBus
+     */
     emit(event: string, ...args) {
         const events = this._events[event] || [];
         return Promise.all(
@@ -40,6 +48,14 @@ export class EventBus {
         );
     }
 
+    /**
+     * emit event one by one to listener - resolve one event and then call another event
+     *
+     * @param {string} event
+     * @param {*} args
+     * @return {*} 
+     * @memberof EventBus
+     */
     emitLinear(event: string, ...args) {
         const events = this._events[event] || [];
         let index = 0;
@@ -51,6 +67,7 @@ export class EventBus {
                 const result = eventCb.call(this._ctx, ...args);
                 return result && result.then ? result : Promise.resolve(result);
             }
+            return Promise.resolve(null);
         };
 
         return new Promise<any[]>((res) => {

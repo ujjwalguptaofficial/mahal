@@ -67,4 +67,8 @@ export default class HelloWorld extends BaseComponent {
         console.log("updated");
     }
 
+    destroy() {
+        this.element.parentNode.removeChild(this.element);
+    }
+
 }

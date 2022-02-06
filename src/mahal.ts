@@ -1,5 +1,5 @@
 import { Component } from "./abstracts/component";
-import { Logger, isString, initComponent, isObject, executeRender, getDataype, createComponent } from "./utils";
+import { Logger, isString, initComponent, isObject, executeRender, getDataype, createComponent, EventBus } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective, htmlDirective } from "./ready_made";
 
@@ -12,13 +12,15 @@ function dispatchDestroyed(node: Node) {
     });
 }
 export class Mahal {
-    component: typeof Component;
+    private __eventBus__ = new EventBus();
+    private __componentClass__: typeof Component;
+    component: Component;
     element: HTMLElement;
 
     global: { [key: string]: any } = {};
 
-    constructor(component, element) {
-        this.component = component;
+    constructor(component: typeof Component, element) {
+        this.__componentClass__ = component;
         this.element = isString(element) ? document.querySelector(element) : element;
         if (this.element == null) {
             const defaultId = 'mahal-app';
@@ -58,20 +60,30 @@ export class Mahal {
     }
 
     create() {
-        let componentInstance: Component = createComponent(this.component, this);
+        let componentInstance: Component = createComponent(this.__componentClass__, this);
         initComponent.call(this, componentInstance, {});
-        return new Promise((res, rej) => {
-            executeRender(componentInstance).then(el => {
-                this.element.appendChild(
-                    el
-                )
-                res(componentInstance);
-
-            }).catch(rej);
-        })
+        this.emit(LIFECYCLE_EVENT.Create);
+        return executeRender(componentInstance).then(el => {
+            this.element.appendChild(
+                el
+            )
+            this.emit(LIFECYCLE_EVENT.Mount);
+            return componentInstance;
+        });
     }
 
+    on(event: string, cb: Function) {
+        this.__eventBus__.on(event, cb);
+        return this;
+    }
 
+    off(event: string, cb: Function) {
+        this.__eventBus__.off(event, cb);
+    }
+
+    emit(event: string, ...args) {
+        return this.__eventBus__.emit(event, ...args);
+    }
 
     extend = {
         plugin: (plugin, options?) => {

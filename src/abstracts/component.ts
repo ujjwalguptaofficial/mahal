@@ -55,10 +55,6 @@ export abstract class Component {
         this.__emitStateChange__(key, newValue, oldValue);
     }
 
-    destroy() {
-        this.element.parentNode.removeChild(this.element);
-    }
-
     watch(propName: string, cb: (newValue, oldValue) => void) {
         this._watchBus.on(propName, cb);
         return this;

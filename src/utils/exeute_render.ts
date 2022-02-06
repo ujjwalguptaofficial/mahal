@@ -16,7 +16,7 @@ function getRender(this: Component): () => Promise<HTMLElement> {
     })();
 }
 
-export const executeRender = (comp: Component, children?) => {
+export const executeRender = (comp: Component, children?): Promise<any> => {
     const renderFn = getRender.call(comp);
     return renderFn.call(comp, {
         createElement: createElement.bind(comp),
