@@ -49,7 +49,7 @@ export class EventBus {
     }
 
     /**
-     * emit event one by one to listener - resolve one event and then call another event
+     * linearly calls events - in case of async: wait for one's completion and then call next
      *
      * @param {string} event
      * @param {*} args

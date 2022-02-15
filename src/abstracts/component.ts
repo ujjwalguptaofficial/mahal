@@ -86,8 +86,28 @@ export abstract class Component {
         });
     }
 
+    /**
+     * emit event to all listener at a time
+     *
+     * @param {string} event
+     * @param {*} args
+     * @return {*} 
+     * @memberof Component
+     */
     emit(event: string, ...args) {
         return this._eventBus.emit(event, ...args);
+    }
+
+    /**
+     * linearly calls events - in case of async: wait for one's completion and then call next
+     *
+     * @param {string} event
+     * @param {*} args
+     * @return {*} 
+     * @memberof Component
+     */
+    emitLinear(event: string, ...args) {
+        return this._eventBus.emitLinear(event, ...args);
     }
 
     find(selector: string) {
