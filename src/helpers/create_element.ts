@@ -2,7 +2,7 @@ import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { defaultSlotName } from "../constant";
 import { handleAttribute } from "./handle_attribute";
-import { Logger, isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, nextTick, createComponent } from "../utils";
+import { Logger, isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, nextTick, createComponent, promiseResolve } from "../utils";
 import { runPromisesInSequence } from "./run_promises_in_sequence";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
@@ -93,16 +93,17 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
 }
 
 const loadComponent = (savedComponent) => {
-    return new Promise(resolve => {
-        if (savedComponent instanceof Promise) {
-            savedComponent.then(comp => {
-                resolve(comp.default);
-            });
-        }
-        else {
-            resolve(savedComponent);
-        }
-    });
+    if (savedComponent instanceof Promise) {
+        return savedComponent.then(comp => {
+            return comp.default;
+        })
+    }
+    else if (savedComponent.isLazy) {
+        return loadComponent(
+            savedComponent.component()
+        )
+    }
+    return promiseResolve(savedComponent);
 };
 
 export function createElement(this: Component, tag: string, childs: Array<Promise<HTMLElement>>, option): Promise<HTMLElement | Comment> {

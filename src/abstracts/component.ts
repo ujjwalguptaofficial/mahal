@@ -1,6 +1,6 @@
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { Observer } from "../helpers";
-import { IRenderContext, } from "../interface";
+import { ILazyComponent, IRenderContext, } from "../interface";
 import { isArray, Logger, isNull, EventBus, Timer } from "../utils";
 import { Mahal } from "../mahal";
 
@@ -13,7 +13,7 @@ import { Mahal } from "../mahal";
 export abstract class Component {
     render?(context: IRenderContext): Promise<HTMLElement>;
 
-    children: { [key: string]: typeof Component };
+    children: { [key: string]: typeof Component | ILazyComponent };
     element: HTMLElement;
     template: string;
 

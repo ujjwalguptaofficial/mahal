@@ -10,6 +10,14 @@ export class EventBus {
         [key: string]: Function[]
     } = {};
 
+    /**
+     * subscribe to event
+     *
+     * @param {string} event
+     * @param {Function} cb
+     * @return {*} 
+     * @memberof EventBus
+     */
     on(event: string, cb: Function) {
         if (this._events[event] == null) {
             this._events[event] = [];
@@ -18,7 +26,16 @@ export class EventBus {
         return this;
     }
 
-    off(event: string, cb: Function) {
+    /**
+     * unsubscribe to event
+     * 
+     * if callback is provided, then only callback is removed otherwise all events subscriber for that event
+     *
+     * @param {string} event
+     * @param {Function} cb
+     * @memberof EventBus
+     */
+    off(event: string, cb?: Function) {
         if (this._events[event]) {
             if (cb) {
                 const index = this._events[event].indexOf(cb);

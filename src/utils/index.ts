@@ -23,3 +23,5 @@ export * from "./init_component";
 export * from "./throttle";
 export * from "./create_component";
 export * from "./hashify_array";
+export * from "./promise_resolve";
+export * from "./lazy_component";

@@ -1,10 +1,9 @@
 import { app } from "../src/index";
-import { nextTick, Template, Component, Prop, Children, Reactive } from "mahal";
+import { lazyComponent, Template, Component, Prop, Children, Reactive } from "mahal";
 import { expect } from "chai";
-import Btn from "../src/components/btn";
 
 @Children({
-    Btn
+    Btn: lazyComponent(()=> import('../src/components/btn'))
 })
 // @Template(`
 // <div>
