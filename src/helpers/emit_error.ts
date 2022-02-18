@@ -1,8 +1,9 @@
 import { Component } from "../abstracts";
 import { LIFECYCLE_EVENT } from "../enums";
-export function emitError(this: Component, err) {
-    if (process.env.NODE_ENV === 'development') {
+export function emitError(this: Component, err, shouldLog: boolean) {
+    if (process.env.NODE_ENV !== 'production' || shouldLog) {
         console.error(err);
     }
+    this['_app'].emit(LIFECYCLE_EVENT.Error, err);
     this.emit(LIFECYCLE_EVENT.Error, err);
 }

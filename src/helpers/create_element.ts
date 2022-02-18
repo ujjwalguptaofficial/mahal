@@ -169,7 +169,7 @@ export function createElement(this: Component, tag: string, childs: Array<Promis
                         res(element);
                     }).catch(rej);
                 }).catch((err) => {
-                    emitError.call(this, err);
+                    emitError.call(this, err, true);
                 });
             }
             else if (tag === "in-place") {

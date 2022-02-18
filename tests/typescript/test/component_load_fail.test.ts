@@ -17,10 +17,13 @@ class Temp extends Component {
     content = "Button"
 
     error: string;
+    appError: string;
     onInit(): void {
         this.on('error', err => {
-            debugger;
             this.error = err;
+        })
+        app.on('error', err => {
+            this.appError = err;
         })
     }
 }
@@ -32,7 +35,9 @@ describe('Component load fail', function () {
     it("initiate btn", function (done) {
         component = (app as any).initiate(Temp, {}, (comp) => {
             setTimeout(() => {
-                expect(comp.error).equal('load failed');
+                const expectedError = 'load failed';
+                expect(comp.error).equal(expectedError);
+                expect(comp.appError).equal(expectedError);
                 done();
             }, 200);
         });
