@@ -4,7 +4,7 @@
   "scripts": {
     "install:lib": "node installer.js",
     "install:build": "npm run install:lib && npm run build",
-    "build": "webpack",
+    "build:typescript": "webpack --config typescript/webpack.config.js",
     "dev": "webpack-dev-server --config typescript/webpack.config.js",
     "dev:todo": "webpack-dev-server --config todo/webpack.config.js",
     "install:dev": " npm run install:lib && npm run dev",

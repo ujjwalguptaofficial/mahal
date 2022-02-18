@@ -3,6 +3,7 @@ import { createCommentNode } from "./create_coment_node";
 import { Logger, isPrimitive, isNull, isArray, isObject, forOwn, indexOf } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
+import { emitError } from "./emit_error";
 
 export const runForExp = (key, value, method) => {
     const els: any[] = [];
@@ -108,7 +109,9 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             case 'push':
                 method(params.value, params.key).then(newElement => {
                     parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
-                });
+                }).catch(err => {
+                    emitError.call(this, err);
+                })
                 break;
             case 'splice':
                 // i==1 for comment nodes 
@@ -145,6 +148,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                         const el = parent.childNodes[spliceRefIndex + elementIndex];
                         parent.replaceChild(newEl, el);
                     });
+                }).catch(err => {
+                    emitError.call(this, err);
                 });
                 break;
             case 'update':
@@ -153,6 +158,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 if (index >= 0) {
                     method(params[1], params[0]).then(newElement => {
                         parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
+                    }).catch(err => {
+                        emitError.call(this, err);
                     });
                 }
                 break;

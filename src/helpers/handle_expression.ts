@@ -3,6 +3,7 @@ import { nextTick, replaceEl } from "../utils";
 import { Component } from "../abstracts";
 import { handleForExp } from "./handle_for_expression";
 import { emitUpdate } from "./emit_update";
+import { emitError } from "./emit_error";
 
 export function handleExpression(this: Component, method: () => Promise<HTMLElement>, keys: string[], type?: string) {
     if (type === "for") {
@@ -19,7 +20,9 @@ export function handleExpression(this: Component, method: () => Promise<HTMLElem
                             replaceEl(el, newEl);
                             el = newEl;
                             handleChange();
-                        });
+                        }).catch(err => {
+                            emitError.call(this, err);
+                        })
                     });
                 };
                 const watchCallBack = () => {

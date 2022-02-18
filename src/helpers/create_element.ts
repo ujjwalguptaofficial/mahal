@@ -7,6 +7,7 @@ import { runPromisesInSequence } from "./run_promises_in_sequence";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
+import { emitError } from "./emit_error";
 
 function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
     switch (tag) {
@@ -167,6 +168,8 @@ export function createElement(this: Component, tag: string, childs: Array<Promis
                         });
                         res(element);
                     }).catch(rej);
+                }).catch((err) => {
+                    emitError.call(this, err);
                 });
             }
             else if (tag === "in-place") {

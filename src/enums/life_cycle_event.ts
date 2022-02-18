@@ -3,4 +3,5 @@ export enum LIFECYCLE_EVENT {
     Destroy = "destroy",
     Update = "update",
     Mount = "mount",
+    Error = "error"
 }

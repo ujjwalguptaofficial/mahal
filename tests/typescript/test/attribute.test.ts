@@ -17,7 +17,6 @@ class Temp extends Component {
 
     @Formatter("toUpper")
     upperCase(value: string) {
-        debugger;
         return value.toUpperCase();
     }
 }
