@@ -22,7 +22,7 @@ export function handleExpression(this: Component, method: () => Promise<HTMLElem
                             handleChange();
                         }).catch(err => {
                             emitError.call(this, err);
-                        })
+                        });
                     });
                 };
                 const watchCallBack = () => {

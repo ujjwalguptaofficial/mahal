@@ -111,7 +111,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
                 }).catch(err => {
                     emitError.call(this, err);
-                })
+                });
                 break;
             case 'splice':
                 // i==1 for comment nodes 

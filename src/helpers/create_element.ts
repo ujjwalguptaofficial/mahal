@@ -97,12 +97,12 @@ const loadComponent = (savedComponent) => {
     if (savedComponent instanceof Promise) {
         return savedComponent.then(comp => {
             return comp.default;
-        })
+        });
     }
     else if (savedComponent.isLazy) {
         return loadComponent(
             savedComponent.component()
-        )
+        );
     }
     return promiseResolve(savedComponent);
 };
