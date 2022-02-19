@@ -1,3 +1,5 @@
+import { clone } from "./clone";
+
 export class EventBus {
 
     constructor(ctx?) {
@@ -74,7 +76,7 @@ export class EventBus {
      * @memberof EventBus
      */
     emitLinear(event: string, ...args) {
-        const events = this._events[event] || [];
+        const events = clone(this._events[event]) || [];
         let index = 0;
         const length = events.length;
         const results = [];
@@ -107,5 +109,9 @@ export class EventBus {
     destroy() {
         this._events = null;
         this._ctx = null;
+    }
+
+    getEvent(eventName: string) {
+        return this._events[eventName];
     }
 }

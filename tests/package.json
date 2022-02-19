@@ -1,5 +1,5 @@
 {
-  "name": "jsstore_typescript_example",
+  "name": "typescript_example",
   "version": "1.0.0",
   "scripts": {
     "install:lib": "node installer.js",
@@ -10,7 +10,9 @@
     "install:dev": " npm run install:lib && npm run dev",
     "install:test": " npm run install:lib && npm run test",
     "start": "npm run dev",
-    "test": "cd typescript && npm run test:browser",
+    "test": "npm run test:unit && npm run test:typescript",
+    "test:typescript": "cd typescript && npm run test:browser",
+    "test:unit": "cd unit_test && npm run test:browser",
     "test:mochapack": "cross-env NODE_ENV=test mochapack --require ./typescript/test/setup.js --webpack-config typescript/webpack.config.test.js \"typescript/test/**/*.test.ts\""
   },
   "dependencies": {
