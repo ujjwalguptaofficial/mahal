@@ -13,6 +13,6 @@
     "moduleResolution": "node",
     "outDir": "dist/out-tsc",
     "sourceMap": true,
-    "target": "es5"
+    "target": "es6"
   }
 }
