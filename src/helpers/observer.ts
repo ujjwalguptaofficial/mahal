@@ -1,5 +1,6 @@
-import { isArray, getObjectLength, Logger, isObject, merge, hashifyArray, indexOf } from "../utils";
+import { isArray, getObjectLength, isObject, merge, hashifyArray, indexOf } from "../utils";
 import { ERROR_TYPE } from "../enums";
+import { Logger } from "./logger";
 
 export class Observer {
 

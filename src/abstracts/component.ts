@@ -1,7 +1,7 @@
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { Observer } from "../helpers";
+import { Observer, Logger } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
-import { isArray, Logger, isNull, EventBus, Timer } from "../utils";
+import { isArray, isNull, EventBus, Timer } from "../utils";
 import { Mahal } from "../mahal";
 
 // do not rename this, this has been done to merge Component

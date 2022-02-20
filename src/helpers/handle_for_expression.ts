@@ -1,9 +1,10 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { Logger, isPrimitive, isNull, isArray, isObject, forOwn, indexOf } from "../utils";
+import { isPrimitive, isNull, isArray, isObject, forOwn, indexOf } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
+import { Logger } from "./logger";
 
 export const runForExp = (key, value, method) => {
     const els: any[] = [];

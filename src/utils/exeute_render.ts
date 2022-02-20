@@ -1,7 +1,6 @@
-import { createTextNode, handleExpression, createElement, clearAll } from "../helpers";
+import { createTextNode, handleExpression, createElement, clearAll, Logger } from "../helpers";
 import { Component } from "../abstracts";
 import { Mahal } from "../mahal";
-import { Logger, nextTick } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { IRenderContext } from "../interface";
 

@@ -1,6 +1,5 @@
 export * from "./is_primitive";
 export * from "./is_null";
-export * from "./logger";
 export * from "./is_array";
 export * from "./is_array_index";
 export * from "./is_object";
@@ -20,7 +19,7 @@ export * from "./dom";
 export * from "./clone";
 export * from "./exeute_render";
 export * from "./init_component";
-export * from "./throttle";
+export * from "./timer";
 export * from "./create_component";
 export * from "./hashify_array";
 export * from "./promise_resolve";

@@ -1,10 +1,12 @@
 import { Component } from "../abstracts";
 import { IAttrItem } from "../interface";
-import { getDataype, Logger, clone, forOwn, setAttribute } from "../utils";
+import { getDataype, clone, forOwn, setAttribute } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { Observer } from "./observer";
 import { emitUpdate } from "./emit_update";
 import { getAttributeValue } from "./get_expression_value";
+import { Logger } from "./logger";
+
 
 export function handleAttribute(this: Component, component, attr, isComponent) {
     if (isComponent) {

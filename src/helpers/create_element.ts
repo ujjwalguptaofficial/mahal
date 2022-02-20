@@ -2,12 +2,14 @@ import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { defaultSlotName } from "../constant";
 import { handleAttribute } from "./handle_attribute";
-import { Logger, isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, nextTick, createComponent, promiseResolve } from "../utils";
+import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, nextTick, createComponent, promiseResolve } from "../utils";
 import { runPromisesInSequence } from "./run_promises_in_sequence";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
 import { emitError } from "./emit_error";
+import { Logger } from "./logger";
+
 
 function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
     switch (tag) {

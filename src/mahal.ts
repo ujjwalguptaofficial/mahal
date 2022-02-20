@@ -1,7 +1,8 @@
 import { Component } from "./abstracts/component";
-import { Logger, isString, initComponent, isObject, executeRender, getDataype, createComponent, EventBus } from "./utils";
+import { isString, initComponent, isObject, executeRender, getDataype, createComponent, EventBus } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective, htmlDirective } from "./ready_made";
+import { Logger } from "./helpers";
 
 const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroy);
 
