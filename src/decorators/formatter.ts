@@ -1,9 +1,9 @@
 // tslint:disable-next-line
 export const Formatter = (name?: string): MethodDecorator => {
     return ((target: any, methodName: string, descriptor: PropertyDescriptor) => {
-        if (!target._formatters) {
-            target._formatters = {};
+        if (!target.__formatters__) {
+            target.__formatters__ = {};
         }
-        target._formatters[name || methodName] = target[methodName];
+        target.__formatters__[name || methodName] = target[methodName];
     });
 };

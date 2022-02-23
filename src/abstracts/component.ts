@@ -11,12 +11,30 @@ import { Mahal } from "../mahal";
 // }
 
 export abstract class Component {
-    render?(context: IRenderContext): Promise<HTMLElement>;
-
     children: { [key: string]: typeof Component | ILazyComponent };
     element: HTMLElement;
+    render?(context: IRenderContext): Promise<HTMLElement>;
+
+    /**
+     * contains component mounted dom element
+     *
+     * @type {HTMLElement}
+     * @memberof Component
+     */
+
+    /**
+     * contains html - is used when render method is not present
+     *      
+     * @type {string}
+     * @memberof Component
+     */
     template: string;
 
+    /**
+     * Boolean value - true if component mounted
+     *
+     * @memberof Component
+     */
     isMounted = false;
 
     constructor() {
@@ -26,17 +44,17 @@ export abstract class Component {
         if (isNull(this.children)) {
             this.children = {};
         }
-        if (isNull(this._formatters)) {
-            this._formatters = {};
+        if (isNull(this.__formatters__)) {
+            this.__formatters__ = {};
         }
-        if (isNull(this._directive)) {
-            this._directive = {};
+        if (isNull(this.__directive__)) {
+            this.__directive__ = {};
         }
-        if (isNull(this._props)) {
-            this._props = {};
+        if (isNull(this.__props__)) {
+            this.__props__ = {};
         }
-        if (isNull(this._computed)) {
-            this._computed = {};
+        if (isNull(this.__computed__)) {
+            this.__computed__ = {};
         }
 
 
@@ -47,7 +65,7 @@ export abstract class Component {
     }
 
     private __emitStateChange__(key: string, newValue: any, oldValue?: any) {
-        this['_watchBus'].emit(key, newValue, oldValue);
+        this['__watchBus__'].emit(key, newValue, oldValue);
     }
 
     setState(key: string, newValue: any, oldValue?: any) {
@@ -56,22 +74,22 @@ export abstract class Component {
     }
 
     watch(propName: string, cb: (newValue, oldValue) => void) {
-        this._watchBus.on(propName, cb);
+        this.__watchBus__.on(propName, cb);
         return this;
     }
 
     unwatch(propName: string, cb?: (newValue, oldValue) => void) {
-        this._watchBus.off(propName, cb);
+        this.__watchBus__.off(propName, cb);
         return this;
     }
 
     on(event: string, cb: Function) {
-        this._eventBus.on(event, cb);
+        this.__eventBus__.on(event, cb);
         return this;
     }
 
     off(event: string, cb: Function) {
-        this._eventBus.off(event, cb);
+        this.__eventBus__.off(event, cb);
     }
 
     waitFor<T>(eventName: string) {
@@ -95,7 +113,7 @@ export abstract class Component {
      * @memberof Component
      */
     emit(event: string, ...args) {
-        return this._eventBus.emit(event, ...args);
+        return this.__eventBus__.emit(event, ...args);
     }
 
     /**
@@ -107,7 +125,7 @@ export abstract class Component {
      * @memberof Component
      */
     emitLinear(event: string, ...args) {
-        return this._eventBus.emitLinear(event, ...args);
+        return this.__eventBus__.emitLinear(event, ...args);
     }
 
     find(selector: string) {
@@ -124,12 +142,12 @@ export abstract class Component {
     }
 
     format(formatterName: string, value) {
-        const globalFormatter = this._app['_formatter'];
+        const globalFormatter = this.__app__['_formatter'];
         if (globalFormatter[formatterName]) {
             return globalFormatter[formatterName](value);
         }
-        else if (this._formatters[formatterName]) {
-            return this._formatters[formatterName](value);
+        else if (this.__formatters__[formatterName]) {
+            return this.__formatters__[formatterName](value);
         }
         new Logger(ERROR_TYPE.InvalidFormatter, {
             formatter: formatterName
@@ -142,23 +160,35 @@ export abstract class Component {
     }
 
 
+    /**
+     * used for events
+     *
+     * @private
+     * @memberof Component
+     */
+    private __eventBus__ = new EventBus();
 
-    private _eventBus = new EventBus();
-    private _watchBus = new EventBus();
-    private _app: Mahal;
+    /**
+     * used for property watching
+     *
+     * @private
+     * @memberof Component
+     */
+    private __watchBus__ = new EventBus();
+    private __app__: Mahal;
 
-    private _ob: Observer;
+    private __ob__: Observer;
 
-    private _directive;
+    private __directive__;
 
-    private _formatters;
-    private _props;
-    private _reactives;
+    private __formatters__;
+    private __props__;
+    private __reactives__;
 
-    private _file;
-    private _computed;
-    private _timer = new Timer();
+    private __file__;
+    private __computed__;
+    timer = new Timer();
     get global() {
-        return this._app.global;
+        return this.__app__.global;
     }
 }

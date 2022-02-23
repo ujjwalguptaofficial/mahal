@@ -26,7 +26,7 @@ export function initComponent(this: Component, component: Component, option) {
             });
         }
     }
-    const computed = component['_computed'];
+    const computed = component['__computed__'];
     for (const key in computed) {
         const data = computed[key];
         let computedValue = data.fn.call(component);

@@ -1,7 +1,7 @@
 // tslint:disable-next-line
 export const Reactive = (target, key: string) => {
-    if (!target._reactives) {
-        target._reactives = [];
+    if (!target.__reactives__) {
+        target.__reactives__ = [];
     }
-    target._reactives.push(key);
+    target.__reactives__.push(key);
 };

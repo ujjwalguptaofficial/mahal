@@ -33,10 +33,10 @@ describe('MODEL TextBox', function () {
             expect(newVal).equal(newName);
             expect(oldVal).equal("");
             component.unwatch(prop);
-            expect(component['_watchBus']._events[prop]).length(0);
+            expect(component['__watchBus__']._events[prop]).length(0);
             done();
         });
-        expect(component['_watchBus']._events[prop]).length(1);
+        expect(component['__watchBus__']._events[prop]).length(1);
         component.name = newName;
     });
 
@@ -47,10 +47,10 @@ describe('MODEL TextBox', function () {
             expect(newVal).equal(newValue);
             expect(oldVal).length(0);
             component.unwatch(prop);
-            expect(component['_watchBus']._events[prop]).length(0);
+            expect(component['__watchBus__']._events[prop]).length(0);
             done();
         });
-        expect(component['_watchBus']._events[prop]).length(1);
+        expect(component['__watchBus__']._events[prop]).length(1);
         component[prop] = newVal;
     });
 
@@ -65,11 +65,11 @@ describe('MODEL TextBox', function () {
             });
             expect(oldVal).equal(undefined);
             component.unwatch(prop);
-            expect(component['_watchBus']._events[prop]).length(0);
+            expect(component['__watchBus__']._events[prop]).length(0);
             expect(component.users).length(2);
             done();
         });
-        expect(component['_watchBus']._events[prop]).length(1);
+        expect(component['__watchBus__']._events[prop]).length(1);
         component.users.push(newVal);
     });
 });

@@ -123,10 +123,10 @@ export function createElement(this: Component, tag: string, childs: Array<Promis
                 res(createNativeComponent.call(this, tag, htmlChilds, option));
                 return;
             }
-            const savedComponent = this.children[tag] || this['_app']['_components'][tag];
+            const savedComponent = this.children[tag] || this['__app__']['_components'][tag];
             if (savedComponent) {
                 loadComponent(savedComponent).then((comp: any) => {
-                    const component: Component = createComponent(comp, this['_app']);
+                    const component: Component = createComponent(comp, this['__app__']);
                     const htmlAttributes = initComponent.call(this, component as any, option);
                     executeRender(component, childs).then(_ => {
                         let element = component.element;

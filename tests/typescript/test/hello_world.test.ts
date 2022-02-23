@@ -127,9 +127,9 @@ describe('HelloWorld', function () {
         component.on("destroy", () => {
             new Timer().timeout(20).then(_ => {
                 expect(component.element).equal(null);
-                expect(component._eventBus).equal(null);
-                expect(component._ob).equal(null);
-                expect(component._watchBus._events).equal(null);
+                expect(component.__eventBus__).equal(null);
+                expect(component.__ob__).equal(null);
+                expect(component.__watchBus__._events).equal(null);
                 // expect(component.dependency_).equal(null);
                 // expect(getObjectLength(component.dependency_)).equal(0);
                 // expect(getObjectLength(component.watchList_)).equal(0);

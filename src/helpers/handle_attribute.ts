@@ -14,10 +14,10 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
         if (!attr) return htmlAttributes;
         for (const key in attr) {
             const value: IAttrItem = attr[key];
-            if (component._props[key]) {
+            if (component.__props__[key]) {
                 const attrValue = getAttributeValue(value, value.v);
-                if (component._props[key].type) {
-                    const expected = component._props[key].type;
+                if (component.__props__[key].type) {
+                    const expected = component.__props__[key].type;
                     const received = getDataype(attrValue);
                     if (expected !== received) {
                         this.waitFor(LIFECYCLE_EVENT.Mount).then(_ => {

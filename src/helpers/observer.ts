@@ -1,6 +1,7 @@
-import { isArray, getObjectLength, isObject, merge, hashifyArray, indexOf } from "../utils";
+import { isArray, getObjectLength, isObject, merge, hashifyArray } from "../utils";
 import { ERROR_TYPE } from "../enums";
 import { Logger } from "./logger";
+import { indexOf } from "./index_of";
 
 export class Observer {
 
@@ -86,7 +87,7 @@ export class Observer {
                 let isValueSetted: boolean;
                 if (process.env.NODE_ENV !== "production") {
                     try {
-                        const componentProps = input['_props'];
+                        const componentProps = input['__props__'];
                         if (componentProps && Observer.shouldCheckProp && componentProps[prop]) {
                             new Logger(ERROR_TYPE.MutatingProp, {
                                 html: (input as any).outerHTML,

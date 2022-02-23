@@ -3,7 +3,7 @@ import { lazyComponent, Template, Component, Prop, Children, Reactive } from "ma
 import { expect } from "chai";
 
 @Children({
-    Btn: lazyComponent(()=> import('../src/components/btn'))
+    Btn: lazyComponent(() => import('../src/components/btn'))
 })
 // @Template(`
 // <div>
@@ -37,7 +37,7 @@ describe('InPlace if toggle', function () {
         expect(btn).to.equal(null);
     }
 
-    const testExist = ( ) => {
+    const testExist = () => {
         const btn = component.find('.btn');
         expect(btn).to.not.equal(null);
         // done();
@@ -70,7 +70,7 @@ describe('InPlace if toggle', function () {
     // }
 
     it("check watchlist length", function () {
-        expect(component._watchBus._events["name"]).length(1);
+        expect(component.__watchBus__._events["name"]).length(1);
         expect(window['error']).to.equal(undefined);
     });
 });

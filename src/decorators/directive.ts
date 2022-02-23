@@ -1,9 +1,9 @@
 // tslint:disable-next-line
 export const Directive = (name?: string): MethodDecorator => {
     return ((target: any, methodName: string, descriptor: PropertyDescriptor) => {
-        if (!target._directive) {
-            target._directive = {};
+        if (!target.__directive__) {
+            target.__directive__ = {};
         }
-        target._directive[name || methodName] = target[methodName];
+        target.__directive__[name || methodName] = target[methodName];
     });
 };

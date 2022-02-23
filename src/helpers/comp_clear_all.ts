@@ -3,12 +3,12 @@ import { Component } from "../abstracts";
 export function clearAll(this: Component) {
     // need to emit before clearing events
     this.emit(LIFECYCLE_EVENT.Destroy).then(_ => {
-        this['_eventBus'].destroy();
-        this['_watchBus'].destroy();
-        if (this['_ob']) {
-            this['_ob'].destroy();
+        this['__eventBus__'].destroy();
+        this['__watchBus__'].destroy();
+        if (this['__ob__']) {
+            this['__ob__'].destroy();
         }
-        this.element = this['_eventBus'] =
-            this['_ob'] = null;
+        this.element = this['__eventBus__'] =
+            this['__ob__'] = null;
     });
 }
