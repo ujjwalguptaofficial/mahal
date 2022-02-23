@@ -11,9 +11,14 @@ import { Mahal } from "../mahal";
 // }
 
 export abstract class Component {
+
+    /**
+     * children components
+     *
+     * @type {({ [key: string]: typeof Component | ILazyComponent })}
+     * @memberof Component
+     */
     children: { [key: string]: typeof Component | ILazyComponent };
-    element: HTMLElement;
-    render?(context: IRenderContext): Promise<HTMLElement>;
 
     /**
      * contains component mounted dom element
@@ -21,6 +26,9 @@ export abstract class Component {
      * @type {HTMLElement}
      * @memberof Component
      */
+    element: HTMLElement;
+
+
 
     /**
      * contains html - is used when render method is not present
@@ -57,41 +65,90 @@ export abstract class Component {
             this.__computed__ = {};
         }
 
-
     }
 
+    render?(context: IRenderContext): Promise<HTMLElement>;
+
+    /**
+     * called just after the constructor - can be used to listen events
+     *
+     * @memberof Component
+     */
     onInit() {
 
     }
 
-    private __emitStateChange__(key: string, newValue: any, oldValue?: any) {
-        this['__watchBus__'].emit(key, newValue, oldValue);
-    }
-
+    /**
+     * set state
+     *
+     * @param {string} key
+     * @param {*} newValue
+     * @param {*} [oldValue]
+     * @memberof Component
+     */
     setState(key: string, newValue: any, oldValue?: any) {
         this[key] = newValue;
         this.__emitStateChange__(key, newValue, oldValue);
     }
 
+    /**
+     * subscribe to state changes
+     *
+     * @param {string} propName
+     * @param {(newValue, oldValue) => void} cb
+     * @return {*} 
+     * @memberof Component
+     */
     watch(propName: string, cb: (newValue, oldValue) => void) {
         this.__watchBus__.on(propName, cb);
         return this;
     }
 
+    /**
+     * unsubscribe to state changes
+     *
+     * @param {string} propName
+     * @param {(newValue, oldValue) => void} [cb]
+     * @return {*} 
+     * @memberof Component
+     */
     unwatch(propName: string, cb?: (newValue, oldValue) => void) {
         this.__watchBus__.off(propName, cb);
         return this;
     }
 
+    /**
+     * subscribe to events
+     *
+     * @param {string} event
+     * @param {Function} cb
+     * @return {*} 
+     * @memberof Component
+     */
     on(event: string, cb: Function) {
         this.__eventBus__.on(event, cb);
         return this;
     }
 
+    /**
+     * unsubscribe to events
+     *
+     * @param {string} event
+     * @param {Function} cb
+     * @memberof Component
+     */
     off(event: string, cb: Function) {
         this.__eventBus__.off(event, cb);
     }
 
+    /**
+     * wait for an event
+     *
+     * @template T
+     * @param {string} eventName
+     * @return {*} 
+     * @memberof Component
+     */
     waitFor<T>(eventName: string) {
         let eventCallback: Function;
         return new Promise<T>((res) => {
@@ -128,19 +185,48 @@ export abstract class Component {
         return this.__eventBus__.emitLinear(event, ...args);
     }
 
+    /**
+     * find first child element using selector
+     *
+     * @param {string} selector
+     * @return {*} 
+     * @memberof Component
+     */
     find(selector: string) {
+        // nodetype 8 is comment
         if (this.element.nodeType === 8) return;
         return this.element.querySelector(selector);
     }
 
+    /**
+     * find all child elements using selector
+     *
+     * @param {string} selector
+     * @return {*} 
+     * @memberof Component
+     */
     findAll(selector: string) {
         return this.element.querySelectorAll(selector);
     }
 
+    /**
+     * returns outer html of component
+     *
+     * @readonly
+     * @memberof Component
+     */
     get outerHTML() {
         return this.element.outerHTML;
     }
 
+    /**
+     * call specified formatter and return result
+     *
+     * @param {string} formatterName
+     * @param {*} value
+     * @return {*} 
+     * @memberof Component
+     */
     format(formatterName: string, value) {
         const globalFormatter = this.__app__['_formatter'];
         if (globalFormatter[formatterName]) {
@@ -154,9 +240,34 @@ export abstract class Component {
         }).throwPlain();
     }
 
+    /**
+     * resolve a state by string path 
+     * 
+     * useful for nested object 
+     * e.g - this.resolve('user.name.first')
+     * 
+     *
+     * @param {*} path
+     * @return {*} 
+     * @memberof Component
+     */
     resolve(path) {
         const properties = isArray(path) ? path : path.split(".");
         return properties.reduce((prev, curr) => prev && prev[curr], this);
+    }
+
+    /**
+     * global application value
+     *
+     * @readonly
+     * @memberof Component
+     */
+    get global() {
+        return this.__app__.global;
+    }
+
+    private __emitStateChange__(key: string, newValue: any, oldValue?: any) {
+        this['__watchBus__'].emit(key, newValue, oldValue);
     }
 
 
@@ -166,6 +277,7 @@ export abstract class Component {
      * @private
      * @memberof Component
      */
+    // tslint:disable-next-line
     private __eventBus__ = new EventBus();
 
     /**
@@ -174,21 +286,32 @@ export abstract class Component {
      * @private
      * @memberof Component
      */
+    // tslint:disable-next-line
     private __watchBus__ = new EventBus();
+
+    // tslint:disable-next-line
     private __app__: Mahal;
 
+    // tslint:disable-next-line
     private __ob__: Observer;
 
+    // tslint:disable-next-line
     private __directive__;
 
+    // tslint:disable-next-line
     private __formatters__;
+
+    // tslint:disable-next-line
     private __props__;
+
+    // tslint:disable-next-line
     private __reactives__;
 
+    // tslint:disable-next-line
     private __file__;
+
+    // tslint:disable-next-line
     private __computed__;
     timer = new Timer();
-    get global() {
-        return this.__app__.global;
-    }
+
 }
