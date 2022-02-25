@@ -1,3 +1,4 @@
+[![GitHub version](https://badge.fury.io/gh/ujjwalguptaofficial%2Fmahal.svg)](https://badge.fury.io/gh/ujjwalguptaofficial%2Fmahal) [![CI](https://github.com/ujjwalguptaofficial/mahal/actions/workflows/ci.yml/badge.svg)](https://github.com/ujjwalguptaofficial/mahal/actions/workflows/ci.yml) [![npm version](https://badge.fury.io/js/mahal.svg)](https://badge.fury.io/js/mahal)
 # Mahal
 
 Simple, modern web application framework for UI development.
