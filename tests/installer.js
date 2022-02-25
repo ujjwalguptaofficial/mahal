@@ -16,12 +16,14 @@ const packageInfo = JSON.parse(content);
 // const testUtilsContent = readFileSync(`${testUtilsFolderLocation}/package.json`);
 // const testUtilsPackageInfo = JSON.parse(testUtilsContent);
 
+ // execSync(`npm i ${compilerFolderLocation}/mahal-html-compiler-${compilerPackageInfo.version}.tgz`);
+    // execSync(`npm i ../../mahal-test-utils/mahal-test-utils-${testUtilsPackageInfo.version}.tgz`);
+
 if (packageInfo) {
     const version = packageInfo.version;
     console.log('version', version);
     execSync(`npm i ../mahal-${version}.tgz`);
-    execSync(`npm i ${compilerFolderLocation}/mahal-html-compiler-${compilerPackageInfo.version}.tgz`);
-    execSync(`npm i ../../mahal-test-utils/mahal-test-utils-${testUtilsPackageInfo.version}.tgz`);
+   
 }
 else {
     throw "no package found";
