@@ -6,15 +6,15 @@ const content = readFileSync("../package.json");
 
 const packageInfo = JSON.parse(content);
 
-const compilerFolderLocation = path.join(__dirname, "../../mahal-html-compiler");
-console.log("folderLocation", compilerFolderLocation);
-const compilerContent = readFileSync(`${compilerFolderLocation}/package.json`);
-const compilerPackageInfo = JSON.parse(compilerContent);
+// const compilerFolderLocation = path.join(__dirname, "../../mahal-html-compiler");
+// console.log("folderLocation", compilerFolderLocation);
+// const compilerContent = readFileSync(`${compilerFolderLocation}/package.json`);
+// const compilerPackageInfo = JSON.parse(compilerContent);
 
-const testUtilsFolderLocation = path.join(__dirname, "../../mahal-test-utils");
-console.log("testUtilsFolderLocation", testUtilsFolderLocation);
-const testUtilsContent = readFileSync(`${testUtilsFolderLocation}/package.json`);
-const testUtilsPackageInfo = JSON.parse(testUtilsContent);
+// const testUtilsFolderLocation = path.join(__dirname, "../../mahal-test-utils");
+// console.log("testUtilsFolderLocation", testUtilsFolderLocation);
+// const testUtilsContent = readFileSync(`${testUtilsFolderLocation}/package.json`);
+// const testUtilsPackageInfo = JSON.parse(testUtilsContent);
 
 if (packageInfo) {
     const version = packageInfo.version;
