@@ -195,7 +195,7 @@ export abstract class Component {
     find(selector: string) {
         // nodetype 8 is comment
         if (this.element.nodeType === 8) return;
-        return this.element.querySelector(selector);
+        return this.element.querySelector(selector) as HTMLElement;
     }
 
     /**

@@ -6,7 +6,8 @@
   "types": "dist/ts/index.d.ts",
   "scripts": {
     "install:compiler": "node build_helper/compiler_installer.js",
-    "build": "npm run install:compiler && npm run webpack:dev",
+    "build": "npm run webpack:dev",
+    "build:compiler": "npm run install:compiler && npm run webpack:dev",
     "build:pack": "npm run build && npm run webpack:test && npm pack",
     "build:test": "npm run build:pack && npm run test",
     "build:test:dev": "npm run build:pack && cd tests && npm run install:dev",
