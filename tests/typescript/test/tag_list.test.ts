@@ -2,7 +2,7 @@ import { createRenderer } from "mahal-html-compiler";
 import { expect } from "chai";
 import { createComponent } from "./create_component";
 import { mount } from "mahal-test-utils";
-import { HTML_TAG } from "mahal";
+import { Component, HTML_TAG } from "mahal";
 
 
 describe('simple', function () {
@@ -12,7 +12,7 @@ describe('simple', function () {
         ${text}
              `)
 
-        const component = await mount(compClass);
+        const component = await mount<Component>(compClass);
         const btn = component.element;
         expect(btn.tagName).equal(expectedTag);
         return btn;
