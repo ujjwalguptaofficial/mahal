@@ -18,4 +18,4 @@ export const getArrayEmitResult = (target, prop, args, result) => {
         default:
             return args;
     }
-}
+};

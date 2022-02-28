@@ -92,9 +92,9 @@ export abstract class Component {
         // const values = ...args;
         const firstValue = args[0];
         if (splittedKey.length > 1) {
-            let storedValue = this.resolve(key);
+            const storedValue = this.resolve(key);
             const prop = splittedKey.pop();
-            const targetKey = splittedKey.join(".")
+            const targetKey = splittedKey.join(".");
             const prefix = targetKey + ".";
             const target = this.resolve(targetKey);
             if (typeof storedValue === "function") {
@@ -106,7 +106,7 @@ export abstract class Component {
             }
             else {
                 const oldValue = target[prop];
-                if (oldValue != undefined) {
+                if (oldValue !== undefined) {
                     emitChange(`${prefix}update`, [prop, firstValue]);
                 } else {
                     const length = getObjectLength(target);

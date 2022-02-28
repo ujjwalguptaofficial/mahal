@@ -101,7 +101,7 @@ export class Observer {
 
                 if (prefix) {
                     isValueSetted = setValue();
-                    if (oldValue != null) {
+                    if (oldValue !== undefined) {
                         if (target.hasOwnProperty(prop)) {
                             onChange(`${prefix}update`, [prop, newValue]);
                         }
