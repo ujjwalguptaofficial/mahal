@@ -1,7 +1,7 @@
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { Observer, Logger } from "../helpers";
+import { Observer, Logger, getArrayEmitResult } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
-import { isArray, isNull, EventBus, Timer } from "../utils";
+import { isArray, isNull, EventBus, Timer, getObjectLength } from "../utils";
 import { Mahal } from "../mahal";
 
 // do not rename this, this has been done to merge Component
@@ -87,8 +87,38 @@ export abstract class Component {
      * @memberof Component
      */
     setState(key: string, newValue: any, oldValue?: any) {
+        const splittedKey = key.split(".");
+        const emitChange = this.__emitStateChange__.bind(this);
+        if (splittedKey.length > 1) {
+            let storedValue = this.resolve(key);
+            const prop = splittedKey.pop();
+            const targetKey = splittedKey.join(".")
+            const prefix = targetKey + ".";
+            const target = this.resolve(targetKey);
+            if (typeof storedValue === "function") {
+                const result = this[key](newValue);
+                emitChange(
+                    prefix + prop,
+                    getArrayEmitResult.call(this, target, prop, newValue, result)
+                );
+            }
+            else {
+                oldValue = target[prop];
+                if (oldValue != undefined) {
+                    emitChange(`${prefix}update`, [prop, newValue]);
+                } else {
+                    const length = getObjectLength(target);
+                    emitChange(`${prefix}push`, {
+                        value: newValue,
+                        key: prop,
+                        length: length
+                    });
+                }
+            }
+            return;
+        }
         this[key] = newValue;
-        this.__emitStateChange__(key, newValue, oldValue);
+        emitChange(key, newValue, oldValue);
     }
 
     /**
@@ -195,7 +225,7 @@ export abstract class Component {
     find(selector: string) {
         // nodetype 8 is comment
         if (this.element.nodeType === 8) return;
-        return this.element.querySelector(selector) as HTMLElement;
+        return this.element.querySelector<HTMLElement>(selector);
     }
 
     /**
@@ -206,7 +236,7 @@ export abstract class Component {
      * @memberof Component
      */
     findAll(selector: string) {
-        return this.element.querySelectorAll(selector);
+        return this.element.querySelectorAll<HTMLElement>(selector);
     }
 
     /**

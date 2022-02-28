@@ -107,6 +107,7 @@ export default class Main extends Component {
     }
 
     onInit(): void {
+        window['mainComp'] = this;
         this.on('create', () => {
             console.log('created');
         })
