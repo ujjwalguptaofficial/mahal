@@ -1,9 +1,9 @@
-import FruitComponent from "../src/components/fruits";
+import FruitComponent from "../src/components/fruits_set_state";
 import { app } from "../src/index";
 import { nextTick, clone } from "mahal";
 import { expect } from "chai";
 
-describe('Fruits', function () {
+describe('Fruit with set state', function () {
 
     let component: FruitComponent;
 
@@ -26,7 +26,7 @@ describe('Fruits', function () {
     it("splice value by 0,1", async function () {
         component.setInitial();
         await component.waitFor('update');
-        component.fruits.splice(0, 1);
+        component.setState('fruits.splice', 0, 1);
         await component.waitFor('update');
         const fruits = component.initialFruits;
         fruits.splice(0, 1);
@@ -36,7 +36,7 @@ describe('Fruits', function () {
     it("splice value by 2,1", async function () {
         component.setInitial();
         await component.waitFor('update');
-        component.fruits.splice(2, 1);
+        component.setState('fruits.splice', 2, 1);
         await component.waitFor('update');
         const fruits = clone(component.initialFruits);
         fruits.splice(2, 1);
@@ -46,7 +46,7 @@ describe('Fruits', function () {
     it(`splice value by 2,1, "Lemon", "Kiwi" `, async function () {
         component.setInitial();
         await component.waitFor('update');
-        component.fruits.splice(2, 1, "Lemon", "Kiwi");
+        component.setState('fruits.splice', 2, 1, "Lemon", "Kiwi");
         await component.waitFor('update');
         const fruits = clone(component.initialFruits);
         fruits.splice(2, 1, "Lemon", "Kiwi");
@@ -56,7 +56,7 @@ describe('Fruits', function () {
     it(`splice value by 2,0, "Lemon", "Kiwi" `, async function () {
         component.setInitial();
         await component.waitFor('update');
-        component.fruits.splice(2, 0, "Lemon", "Kiwi");
+        component.setState('fruits.splice', 2, 0, "Lemon", "Kiwi");
         await component.waitFor('update');
         const fruits = clone(component.initialFruits);
         fruits.splice(2, 0, "Lemon", "Kiwi");
@@ -66,7 +66,7 @@ describe('Fruits', function () {
     it(`splice value by 2,2, "Lemon", "Kiwi" `, async function () {
         component.setInitial();
         await component.waitFor('update');
-        component.fruits.splice(2, 2, "Lemon", "Kiwi");
+        component.setState('fruits.splice', 2, 2, "Lemon", "Kiwi");
         await component.waitFor('update');
         const fruits = clone(component.initialFruits);
         fruits.splice(2, 2, "Lemon", "Kiwi");
@@ -76,7 +76,7 @@ describe('Fruits', function () {
     it('pop items', async () => {
         component.setInitial();
         await component.waitFor('update');
-        component.fruits.pop();
+        component.setState('fruits.pop');
         await component.waitFor('update');
         const fruits = clone(component.initialFruits);
         fruits.pop();
@@ -86,7 +86,7 @@ describe('Fruits', function () {
     it('shift items', async () => {
         component.setInitial();
         await component.waitFor('update');
-        component.fruits.shift();
+        component.setState('fruits.shift');
         await component.waitFor('update');
         const fruits = clone(component.initialFruits);
         fruits.shift();
@@ -96,7 +96,7 @@ describe('Fruits', function () {
     it('unshift items', async () => {
         component.setInitial();
         await component.waitFor('update');
-        component.fruits.unshift('amrud');
+        component.setState('fruits.unshift', 'amrud');
         await component.waitFor('update');
         const fruits = clone(component.initialFruits);
         fruits.unshift('amrud');
@@ -106,12 +106,11 @@ describe('Fruits', function () {
     it('reverse items', async () => {
         component.setInitial();
         await component.waitFor('update');
-        component.fruits.reverse();
+        component.setState('fruits.reverse');
         await component.waitFor('update');
         const fruits = clone(component.initialFruits);
         fruits.reverse();
         checkFruitValue(fruits);
     });
-
 });
 

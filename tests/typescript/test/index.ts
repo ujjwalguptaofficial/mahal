@@ -26,6 +26,7 @@ import "./textbox.test";
 import "./users.test";
 import "./watch.test";
 import "./fruits.test";
+import "./fruits_set_state.test";
 import "./if_initial_value_false.test";
 import "./array_model.test";
 import "./fragment.test";

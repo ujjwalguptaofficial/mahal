@@ -69,12 +69,11 @@ describe('Computed', function () {
         const promise = new Promise<void>((res) => {
             component.watch('key', (newValue, oldValue) => {
                 expect(newValue).equal('new-value');
-                expect(oldValue).equal('old-value');
                 expect(component.key).equal('new-value');
                 res();
             });
         });
-        component.setState('key', 'new-value', 'old-value');
+        component.setState('key', 'new-value');
         return promise;
     });
 

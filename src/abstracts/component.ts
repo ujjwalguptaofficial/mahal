@@ -82,13 +82,15 @@ export abstract class Component {
      * set state
      *
      * @param {string} key
-     * @param {*} newValue
+     * @param {*} args
      * @param {*} [oldValue]
      * @memberof Component
      */
-    setState(key: string, newValue: any, oldValue?: any) {
+    setState(key: string, ...args) {
         const splittedKey = key.split(".");
         const emitChange = this.__emitStateChange__.bind(this);
+        // const values = ...args;
+        const firstValue = args[0];
         if (splittedKey.length > 1) {
             let storedValue = this.resolve(key);
             const prop = splittedKey.pop();
@@ -96,20 +98,20 @@ export abstract class Component {
             const prefix = targetKey + ".";
             const target = this.resolve(targetKey);
             if (typeof storedValue === "function") {
-                const result = this[key](newValue);
+                const result = target[prop](...args);
                 emitChange(
                     prefix + prop,
-                    getArrayEmitResult.call(this, target, prop, newValue, result)
+                    getArrayEmitResult.call(this, target, prop, args, result)
                 );
             }
             else {
-                oldValue = target[prop];
+                const oldValue = target[prop];
                 if (oldValue != undefined) {
-                    emitChange(`${prefix}update`, [prop, newValue]);
+                    emitChange(`${prefix}update`, [prop, firstValue]);
                 } else {
                     const length = getObjectLength(target);
                     emitChange(`${prefix}push`, {
-                        value: newValue,
+                        value: firstValue,
                         key: prop,
                         length: length
                     });
@@ -117,8 +119,8 @@ export abstract class Component {
             }
             return;
         }
-        this[key] = newValue;
-        emitChange(key, newValue, oldValue);
+        this[key] = firstValue;
+        emitChange(key, firstValue, args[1]);
     }
 
     /**

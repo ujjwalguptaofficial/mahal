@@ -29,15 +29,14 @@ import ObjectResetModel from "./object_reset_model";
 <div>
 Hi
 <Btn>as</Btn>
-<Btn1/>
 </div>
 `)
 @Children({
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed,
     Fragment, ArrayModel, ObjectResetModel,
-    Btn: lazyComponent(() => import('../../test/standard_button')),
-    Btn1: lazyComponent(() => Promise.reject('dd'))
+    Btn: lazyComponent(() => import('./fruits_set_state')),
+    // Btn1: lazyComponent(() => Promise.reject('dd'))
 })
 export default class Main extends Component {
 

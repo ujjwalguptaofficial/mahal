@@ -1,11 +1,8 @@
 import MahalComponent from "../src/components/array_model";
 import { app } from "../src/index";
 import { expect } from "chai";
+import { setInputValue } from "mahal-test-utils";
 
-function setValue(el, value) {
-    el.value = value;
-    el.dispatchEvent(new window.Event("input"));
-}
 
 describe('Array Model', function () {
 
@@ -39,7 +36,7 @@ describe('Array Model', function () {
             let btn = trs[index].querySelector('button');
             const input = trs[index].querySelector('input');
             const newValue = newFruits[index];
-            setValue(input, newValue);
+            setInputValue(input, newValue);
             btn.click();
             component.waitFor("update").then(_ => {
                 const span = component.findAll('div.fruit-row')[index].querySelector('span');
