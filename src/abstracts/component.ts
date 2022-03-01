@@ -105,17 +105,9 @@ export abstract class Component {
                 );
             }
             else {
-                const oldValue = target[prop];
-                if (oldValue !== undefined) {
-                    emitChange(`${prefix}update`, [prop, firstValue]);
-                } else {
-                    const length = getObjectLength(target);
-                    emitChange(`${prefix}push`, {
-                        value: firstValue,
-                        key: prop,
-                        length: length
-                    });
-                }
+                const oldValue = target && target[prop];
+                target[prop] = firstValue;
+                emitChange(prefix + (prop as string), firstValue, oldValue);
             }
             return;
         }

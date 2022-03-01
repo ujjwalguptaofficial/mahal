@@ -91,8 +91,8 @@ describe('IfELSE', function () {
         expect(div.innerHTML).equal('10');
         expect(component.element.classList).length(1);
         expect(component.element.className).equal('nested-3');
-        component.nested.nested1.nested2.nested3 = null;
-        // component.setAndReact(component.nested.nested1.nested2, 'nested3', null);
+        // component.nested.nested1.nested2.nested3 = null;
+        component.setState('nested.nested1.nested2.nested3', null);
         await component.waitFor("update");
         expect(component.element.className).equal('');
     });
