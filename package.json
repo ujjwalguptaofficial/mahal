@@ -22,12 +22,15 @@
     "build:prod": "npm run webpack:prod",
     "pack:test": "npm pack && npm run test",
     "build:all": "npm run webpack:dev && npm run webpack:prod && npm run webpack:test",
-    "build:ci": "npm run lint && npm run build:all && npm run pack:test",
+    "install:compiler@latest": "cd tests && npm i mahal-html-compiler@latest",
+    "build:ci": "npm run lint && npm run build:all && npm run install:compiler@latest && npm run pack:test",
     "webpack:dev": "webpack --config webpack/webpack.dev.config.js",
     "webpack:test": "webpack --config webpack/webpack.test.config.js",
     "webpack:prod": "webpack --config webpack/webpack.prod.config.js",
-    "move:deploy_file": "node build_helper/deploy_helper.js",
-    "deploy": "npm run build:ci"
+    "deploy": "npm run build:ci",
+    "un:compiler": "cd tests && npm un mahal-html-compiler",
+    "install:same:version": "cd tests && node install_same_version.js",
+    "prepublishOnly": "npm run install:same:version && npm run deploy"
   },
   "repository": {
     "type": "git",
@@ -42,6 +45,7 @@
   "devDependencies": {
     "@types/node": "^14.6.2",
     "copy-webpack-plugin": "^6.1.1",
+    "husky": "^7.0.4",
     "smart-banner-webpack-plugin": "^3.0.1",
     "ts-loader": "^8.0.2",
     "tslint": "^6.1.3",
@@ -50,5 +54,10 @@
     "webpack-cli": "^3.3.12",
     "webpack-merge": "^5.1.1"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run un:compiler"
+    }
+  }
 }

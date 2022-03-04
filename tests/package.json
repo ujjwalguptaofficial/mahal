@@ -21,8 +21,8 @@
     "jquery": "^3.6.0",
     "karma-typescript": "^5.5.1",
     "mahal": "file:../mahal-1.0.1.tgz",
-    "mahal-html-compiler": "file:../../mahal-html-compiler/mahal-html-compiler-1.0.0.tgz",
-    "mahal-test-utils": "^1.0.0",
+    "mahal-html-compiler": "^1.1.0",
+    "mahal-test-utils": "^1.0.1",
     "mocha": "^8.3.2",
     "sinon": "^9.2.4"
   },
