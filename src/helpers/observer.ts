@@ -6,7 +6,6 @@ import { getArrayEmitResult } from "./get_array_emit_result";
 
 export class Observer {
 
-    static shouldCheckProp = true;
     onChange: (key: string, newValue, oldValue?) => void;
 
     constructor(onChange) {
@@ -66,20 +65,6 @@ export class Observer {
             set: (target, prop: string, newValue, receiver) => {
                 const oldValue = target[prop];
                 let isValueSetted: boolean;
-                if (process.env.NODE_ENV !== "production") {
-                    try {
-                        const componentProps = input['__props__'];
-                        if (componentProps && Observer.shouldCheckProp && componentProps[prop]) {
-                            new Logger(ERROR_TYPE.MutatingProp, {
-                                html: (input as any).outerHTML,
-                                key: prop
-                            }).logPlainError();
-                        }
-                    } catch (error) {
-
-                    }
-
-                }
 
                 const setValue = () => {
                     if (isObject(newValue)) {

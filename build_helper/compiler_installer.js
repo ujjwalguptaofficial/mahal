@@ -11,7 +11,8 @@ const packageInfo = JSON.parse(content);
 if (packageInfo) {
     const version = packageInfo.version;
     console.log('version', version);
-    execSync(`npm i ${folderLocation}/mahal-html-compiler-${version}.tgz --no-save`);
+    execSync(`cd tests && npm un mahal-html-compiler`);
+    execSync(`cd tests && npm i ${folderLocation}/mahal-html-compiler-${version}.tgz`);
 }
 else {
     throw "no package found";

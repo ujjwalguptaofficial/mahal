@@ -64,6 +64,9 @@ export abstract class Component {
         if (isNull(this.__computed__)) {
             this.__computed__ = {};
         }
+        if (isNull(this.__reactives__)) {
+            this.__reactives__ = {};
+        }
 
     }
 
@@ -89,7 +92,6 @@ export abstract class Component {
     setState(key: string, ...args) {
         const splittedKey = key.split(".");
         const emitChange = this.__emitStateChange__.bind(this);
-        // const values = ...args;
         const firstValue = args[0];
         if (splittedKey.length > 1) {
             const storedValue = this.resolve(key);
@@ -111,8 +113,20 @@ export abstract class Component {
             }
             return;
         }
+        const oldValue = this[key];
         this[key] = firstValue;
-        emitChange(key, firstValue, args[1]);
+        if (!this.__reactives__[key]) {
+            if (process.env.NODE_ENV !== "production") {
+                const componentProps = this.__props__;
+                if (Component.shouldCheckProp && componentProps[key]) {
+                    new Logger(ERROR_TYPE.MutatingProp, {
+                        html: this.outerHTML,
+                        key: key
+                    }).logPlainError();
+                }
+            }
+            emitChange(key, firstValue, oldValue);
+        }
     }
 
     /**
@@ -329,7 +343,7 @@ export abstract class Component {
     private __props__;
 
     // tslint:disable-next-line
-    private __reactives__;
+    private __reactives__: { [key: string]: boolean };
 
     // tslint:disable-next-line
     private __file__;
@@ -337,5 +351,7 @@ export abstract class Component {
     // tslint:disable-next-line
     private __computed__;
     timer = new Timer();
+
+    static shouldCheckProp = true;
 
 }

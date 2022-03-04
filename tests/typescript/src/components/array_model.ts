@@ -9,7 +9,7 @@ import { Component, Template, Prop, Formatter, Reactive } from "mahal";
 @Template(`<div>
     <div class="fruit-row" :for(fruit,i in fruits)>
         <input type="text" :model(fruit) />
-        <span>{{fruit}}</span>
+        <span :fruit="fruit">{{fruit}}</span>
         <button on:click="()=>{updateFruit(fruit,i)}">Update</button>
     </div>
 </div>

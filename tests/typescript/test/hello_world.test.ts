@@ -49,7 +49,7 @@ describe('HelloWorld', function () {
 
     it('check if condition', async function () {
         expect(component.find("#testFilter")).equal(null);
-        component.count = 1;
+        component.setState('count', 1);
         await component.waitFor("update");
         expect(component.find("#testFilter")).not.equal(null);
     });
@@ -75,7 +75,7 @@ describe('HelloWorld', function () {
         const btn = component.find('#count');
         expect(btn.innerHTML).equal('1');
         component.on("click", function () {
-            ++component.count;
+            component.setState('count', ++component.count);
         });
         btn.click();
         expect(component.count).equal(2);
@@ -96,7 +96,7 @@ describe('HelloWorld', function () {
         component.count = 0;
         const btn = component.find('#count');
         component.on("click", function () {
-            ++component.count;
+            component.setState('count', ++component.count);
         });
         for (let i = 0; i < 5; i++) {
             component.find('#count').click();

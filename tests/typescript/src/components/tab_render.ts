@@ -27,11 +27,13 @@ export default class extends Component {
 
     items = ["hello", "world"]
 
-    constructor() {
-        super();
-        window['comp'] = this;
+    onInit() {
+        window['tabComp'] = this;
         this.watch("activeTab", (value) => {
             console.log(value);
+        })
+        this.on("update", () => {
+            console.log('updated');
         })
     }
 

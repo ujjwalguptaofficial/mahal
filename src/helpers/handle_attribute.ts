@@ -37,9 +37,9 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                 if (value.k) {
                     this.watch(value.k, (newValue, oldValue) => {
                         if (oldValue === newValue) return;
-                        Observer.shouldCheckProp = false;
-                        component[key] = getAttributeValue(value, newValue);
-                        Observer.shouldCheckProp = true;
+                        Component.shouldCheckProp = false;
+                        component.setState(key, getAttributeValue(value, newValue));
+                        Component.shouldCheckProp = true;
                     });
                 }
 

@@ -23,7 +23,9 @@ describe('Array Model', function () {
         component.fruits.forEach((fruit, index) => {
             const input = trs[index].querySelector('input');
             expect(input.value).equal(fruit);
-            expect(trs[index].querySelector('span').innerText).equal(fruit);
+            const span = trs[index].querySelector('span');
+            expect(span.innerText).equal(fruit);
+            expect(span.getAttribute('fruit')).equal(fruit);
             const btn = trs[index].querySelector('button');
             expect(btn.innerText).equal("Update");
         });

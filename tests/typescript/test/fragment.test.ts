@@ -2,11 +2,9 @@ import FragmentComponent from "../src/components/fragment";
 import { app } from "../src/index";
 import { nextTick, clone } from "mahal";
 import { expect } from "chai";
+import { setInputValue } from "mahal-test-utils";
 
-function setValue(el, value) {
-    el.value = value;
-    el.dispatchEvent(new window.Event("input"));
-}
+
 
 describe('Fragment', function () {
 
@@ -49,7 +47,7 @@ describe('Fragment', function () {
                 expect(input.value).equal(student.name);
                 expect(btn.innerText).equal("Update");
                 const text = 'hello';
-                setValue(input, text);
+                setInputValue(input, text);
                 btn.click();
                 component.waitFor("update").then(_ => {
                     const td = component.findAll('tr')[index].querySelectorAll('td')[2];
@@ -82,7 +80,7 @@ describe('Fragment', function () {
                 }).then(_ => {
                     const input = component.findAll('tr')[index].querySelectorAll('td')[1].querySelector('input');
                     expect(input.value).equal(student.name);
-                    setValue(input, text);
+                    setInputValue(input, text);
                     btn.click();
                     return component.waitFor("update")
                 }).then(_ => {
