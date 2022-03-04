@@ -82,17 +82,18 @@ export abstract class Component {
     }
 
     /**
-     * set state
+     *  set state
      *
      * @param {string} key
      * @param {*} args
-     * @param {*} [oldValue]
+     * @return {*} 
      * @memberof Component
      */
     setState(key: string, ...args) {
         const splittedKey = key.split(".");
         const emitChange = this.__emitStateChange__.bind(this);
         const firstValue = args[0];
+        let oldValue;
         if (splittedKey.length > 1) {
             const storedValue = this.resolve(key);
             const prop = splittedKey.pop();
@@ -107,13 +108,13 @@ export abstract class Component {
                 );
             }
             else {
-                const oldValue = target && target[prop];
+                oldValue = target && target[prop];
                 target[prop] = firstValue;
                 emitChange(prefix + (prop as string), firstValue, oldValue);
             }
             return;
         }
-        const oldValue = this[key];
+        oldValue = this[key];
         this[key] = firstValue;
         if (!this.__reactives__[key]) {
             if (process.env.NODE_ENV !== "production") {
