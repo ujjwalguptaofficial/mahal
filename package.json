@@ -23,7 +23,7 @@
     "pack:test": "npm pack && npm run test",
     "build:all": "npm run webpack:dev && npm run webpack:prod && npm run webpack:test",
     "install:compiler@latest": "cd tests && npm i mahal-html-compiler@latest",
-    "build:ci": "npm run lint && npm run build:all && npm run install:compiler@latest && npm run pack:test",
+    "build:ci": "npm run lint && npm run build:all && npm pack && && npm run install:compiler@latest && npm run pack:test",
     "webpack:dev": "webpack --config webpack/webpack.dev.config.js",
     "webpack:test": "webpack --config webpack/webpack.test.config.js",
     "webpack:prod": "webpack --config webpack/webpack.prod.config.js",
