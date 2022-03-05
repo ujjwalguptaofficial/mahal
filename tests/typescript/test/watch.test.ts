@@ -18,7 +18,7 @@ class Temp extends Component {
 
 }
 
-describe('MODEL TextBox', function () {
+describe('Watch', function () {
 
     let component: Temp;
 
@@ -55,14 +55,10 @@ describe('MODEL TextBox', function () {
     });
 
     it("check push of array property - users", function (done) {
-        let newVal = { name: 'ujjwal gupta' };
+        let valueToAdd = { name: 'ujjwal gupta' };
         let prop = "users.push";
         component.watch(prop, (newValue, oldVal) => {
-            expect(newValue).eql({
-                key: 1,
-                length: 2,
-                value: newVal
-            });
+            expect(newValue).eql([valueToAdd]);
             expect(oldVal).equal(undefined);
             component.unwatch(prop);
             expect(component['__watchBus__']._events[prop]).length(0);
@@ -70,7 +66,22 @@ describe('MODEL TextBox', function () {
             done();
         });
         expect(component['__watchBus__']._events[prop]).length(1);
-        component.users.push(newVal);
+        component.users.push(valueToAdd);
+    });
+
+    it("check push with multiple items - users", function (done) {
+        let valueToAdd = { name: 'batman gupta' };
+        let prop = "users.push";
+        component.watch(prop, (newValue, oldVal) => {
+            expect(newValue).eql([valueToAdd, valueToAdd]);
+            expect(oldVal).equal(undefined);
+            component.unwatch(prop);
+            expect(component['__watchBus__']._events[prop]).length(0);
+            expect(component.users).length(4);
+            done();
+        });
+        expect(component['__watchBus__']._events[prop]).length(1);
+        component.users.push(valueToAdd, valueToAdd);
     });
 });
 

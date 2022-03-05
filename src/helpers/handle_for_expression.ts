@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, isObject, forOwn } from "../utils";
+import { isPrimitive, isNull, isArray, isObject, forOwn, getObjectLength } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
@@ -52,19 +52,13 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
 
             // add all node
             if (isArray(newValue)) {
-                newValue.forEach((item, index) => {
-                    handleChange("push", {
-                        value: item,
-                        key: index,
-                        length: index + 1
-                    });
-                });
+                callBacks[`${key}.push`](newValue);
             }
             else {
                 let index = 0;
                 forOwn(newValue, (prop, value) => {
                     index++;
-                    handleChange("push", {
+                    handleChange("add", {
                         value,
                         key: prop,
                         length: index + 1
@@ -73,8 +67,11 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             }
             emitUpdate(this);
         },
-        [`${key}.push`]: (newValue) => {
-            handleChange("push", newValue);
+        [`${key}.push`]: (values) => {
+            handleChange("splice", [getObjectLength(this.resolve(key)) - values.length, 0, ...values]);
+        },
+        [`${key}.add`]: (newValue) => {
+            handleChange("add", newValue);
         },
         [`${key}.pop`]: (newValue) => {
             handleChange("splice", [newValue, 1]);
@@ -108,7 +105,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         const parent = cmNode.parentNode;
         const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
         switch (prop) {
-            case 'push':
+            case 'add':
                 method(params.value, params.key).then(newElement => {
                     parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
                 }).catch(err => {
@@ -170,6 +167,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
     };
     this.watch(key, callBacks[key]).
         watch(`${key}.push`, callBacks[`${key}.push`]).
+        watch(`${key}.add`, callBacks[`${key}.add`]).
         watch(`${key}.splice`, callBacks[`${key}.splice`]).
         watch(`${key}.update`, callBacks[`${key}.update`]).
         watch(`${key}.pop`, callBacks[`${key}.pop`]).

@@ -92,7 +92,7 @@ export class Observer {
                         }
                     } else {
                         const length = getObjectLength(target);
-                        onChange(`${prefix}push`, {
+                        onChange(`${prefix}add`, {
                             value: newValue,
                             key: prop,
                             length: length
