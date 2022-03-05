@@ -28,7 +28,7 @@
     "webpack:test": "webpack --config webpack/webpack.test.config.js",
     "webpack:prod": "webpack --config webpack/webpack.prod.config.js",
     "deploy": "npm run build:ci",
-    "un:compiler": "cd tests && npm un mahal-html-compiler",
+    "un:module": "cd tests && npm un mahal && npm un mahal-html-compiler",
     "install:same:version": "cd tests && node install_same_version.js",
     "prepublishOnly": "npm run install:same:version && npm run deploy"
   },
@@ -57,7 +57,7 @@
   "dependencies": {},
   "husky": {
     "hooks": {
-      "pre-commit": "npm run un:compiler"
+      "pre-commit": "npm run un:module"
     }
   }
 }
