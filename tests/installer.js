@@ -22,7 +22,7 @@ const packageInfo = JSON.parse(content);
 if (packageInfo) {
     const version = packageInfo.version;
     console.log('version', version);
-    execSync(`npm i ../mahal-${version}.tgz`);
+    execSync(`npm i ../mahal-${version}.tgz --no-save`);
    
 }
 else {
