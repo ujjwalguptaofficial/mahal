@@ -22,9 +22,9 @@ const packageInfo = JSON.parse(content);
 if (packageInfo) {
     const version = packageInfo.version;
     console.log('version', version);
-    execSync(`npm i mahal-test-utils@${version}`);
-    execSync(`npm i mahal-html-compiler@${version}`);
-
+    execSync(`npm i mahal-html-compiler@${version} --no-save`);
+    execSync(`npm i mahal-test-utils@${version} --no-save`);
+    execSync(`npm i mahal-webpack-loader@${version} --no-save`);
 }
 else {
     throw "no package found";
