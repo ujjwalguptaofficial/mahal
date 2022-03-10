@@ -31,7 +31,7 @@ export const runForExp = (key, value, method) => {
 export function handleForExp(this: Component, key: string, method: (...args) => Promise<HTMLElement>) {
     let cmNode = createCommentNode();
     let els = [cmNode];
-    let resolvedValue = this.resolve(key);
+    let resolvedValue = this.getState(key);
     els = els.concat(runForExp(key, resolvedValue, method));
     const isValueArray = isArray(resolvedValue);
     let callBacks = {
@@ -68,13 +68,14 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             emitUpdate(this);
         },
         [`${key}.push`]: (values) => {
-            handleChange("splice", [getObjectLength(this.resolve(key)) - values.length, 0, ...values]);
+            handleChange("splice", [getObjectLength(this.getState(key)) - values.length, 0, ...values]);
         },
         [`${key}.add`]: (newValue) => {
             handleChange("add", newValue);
         },
-        [`${key}.pop`]: (newValue) => {
-            handleChange("splice", [newValue, 1]);
+        [`${key}.pop`]: () => {
+            const length = getObjectLength(this.getState(key));
+            handleChange("splice", [length, 1]);
         },
         [`${key}.shift`]: () => {
             handleChange("splice", [0, 1]);
@@ -82,8 +83,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         [`${key}.unshift`]: (newValue) => {
             handleChange("splice", [0, 0, newValue]);
         },
-        [`${key}.reverse`]: (result) => {
-            handleChange("splice", [0, result.length, ...result.value]);
+        [`${key}.reverse`]: () => {
+            const reversedResult = this.getState(key);
+            const length = getObjectLength(reversedResult);
+            handleChange("splice", [0, length, ...reversedResult]);
         },
         [`${key}.splice`]: (newValue) => {
             handleChange("splice", newValue);
@@ -133,7 +136,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 if (!isValueArray) break;
                 const from = (params.length - 2) + params[0];
                 // resolvedValue = this.resolve(key);
-                const sliced = this.resolve(key).slice(from);
+                const sliced = this.getState(key).slice(from);
                 // const asyncElements = runForExp(key, sliced, method);
                 Promise.all(promises).then(_ => {
                     return Promise.all(
@@ -152,7 +155,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 });
                 break;
             case 'update':
-                resolvedValue = this.resolve(key);
+                resolvedValue = this.getState(key);
                 const index = isValueArray ? params[0] : indexOf(resolvedValue, params[0]);
                 if (index >= 0) {
                     method(params[1], params[0]).then(newElement => {

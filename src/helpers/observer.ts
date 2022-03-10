@@ -1,8 +1,5 @@
 import { isArray, getObjectLength, isObject, merge, hashifyArray } from "../utils";
-import { ERROR_TYPE } from "../enums";
-import { Logger } from "./logger";
 import { indexOf } from "./index_of";
-import { getArrayEmitResult } from "./get_array_emit_result";
 
 export class Observer {
 
@@ -40,7 +37,7 @@ export class Observer {
                         case 'reverse':
                             return (...args) => {
                                 const result = target[prop](...args);
-                                onChange(prefix + prop, getArrayEmitResult.call(this, target, prop, args, result));
+                                onChange(prefix + prop, args);
                                 return result;
                             };
                     }

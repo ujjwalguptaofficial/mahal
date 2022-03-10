@@ -15,8 +15,8 @@ export default class extends Component {
     @Prop()
     textBoxId;
 
-    onInput(value) {
-        this.emit("input", value);
+    onInput(e) {
+        this.emit("input", e.target.value);
     }
 
 }

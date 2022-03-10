@@ -59,11 +59,11 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
                     }).throwPlain();
                 }
             });
-            if (eventName === "input" && !ev.isNative) {
-                methods.unshift((e) => {
-                    return e.target.value;
-                });
-            }
+            // if (eventName === "input" && !ev.isNative) {
+            //     methods.unshift((e) => {
+            //         return e.target.value;
+            //     });
+            // }
             evListener[eventName] = methods.length > 1 ?
                 (e) => {
                     runPromisesInSequence(methods, e);

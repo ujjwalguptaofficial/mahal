@@ -9,6 +9,6 @@ export function handleInPlace(this: Component, childs, option) {
     delete option.attr.of;
     const key = of.k;
     return handleExpression.call(this, () => {
-        return createElement.call(this, this.resolve(key), childs, option);
+        return createElement.call(this, this.getState(key), childs, option);
     }, key ? [key] : []);
 }

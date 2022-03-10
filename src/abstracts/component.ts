@@ -1,5 +1,5 @@
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { Observer, Logger, getArrayEmitResult } from "../helpers";
+import { Observer, Logger } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
 import { isArray, isNull, EventBus, Timer, getObjectLength } from "../utils";
 import { Mahal } from "../mahal";
@@ -95,16 +95,16 @@ export abstract class Component {
         const firstValue = args[0];
         let oldValue;
         if (splittedKey.length > 1) {
-            const storedValue = this.resolve(key);
+            const storedValue = this.getState(key);
             const prop = splittedKey.pop();
             const targetKey = splittedKey.join(".");
             const prefix = targetKey + ".";
-            const target = this.resolve(targetKey);
+            const target = this.getState(targetKey);
             if (typeof storedValue === "function") {
                 const result = target[prop](...args);
                 emitChange(
                     prefix + prop,
-                    getArrayEmitResult.call(this, target, prop, args, result)
+                    args
                 );
             }
             else {
@@ -290,7 +290,7 @@ export abstract class Component {
      * @return {*} 
      * @memberof Component
      */
-    resolve(path) {
+    getState(path) {
         const properties = isArray(path) ? path : path.split(".");
         return properties.reduce((prev, curr) => prev && prev[curr], this);
     }

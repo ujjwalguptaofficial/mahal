@@ -1,6 +1,6 @@
 {
   "name": "mahal",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Simple, modern web application framework for UI development.",
   "main": "dist/npm.export.js",
   "types": "dist/ts/index.d.ts",
@@ -27,7 +27,8 @@
     "webpack:dev": "webpack --config webpack/webpack.dev.config.js",
     "webpack:test": "webpack --config webpack/webpack.test.config.js",
     "webpack:prod": "webpack --config webpack/webpack.prod.config.js",
-    "deploy": "npm run build:ci",
+    "clean": "del dist",
+    "deploy": "npm run clean && npm run build:ci",
     "un:module": "cd tests && npm un mahal && npm un mahal-html-compiler",
     "install:same:version": "cd tests && node install_same_version.js",
     "prepublishOnly": "npm run install:same:version && npm run deploy",
@@ -46,6 +47,7 @@
   "devDependencies": {
     "@types/node": "^14.6.2",
     "copy-webpack-plugin": "^6.1.1",
+    "del-cli": "^4.0.1",
     "husky": "^7.0.4",
     "smart-banner-webpack-plugin": "^3.0.1",
     "ts-loader": "^8.0.2",

@@ -14,4 +14,3 @@ export * from "./get_expression_value";
 export * from "./emit_error";
 export * from "./logger";
 export * from "./index_of";
-export * from "./get_array_emit_result";
