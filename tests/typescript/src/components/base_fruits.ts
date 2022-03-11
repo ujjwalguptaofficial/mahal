@@ -12,7 +12,9 @@ export default class extends Component {
 
     fruits;
 
-    initialFruits = ["Banana", "Orange", "Apple", "Mango"];
+    get initialFruits() {
+        return ["Banana", "Orange", "Apple", "Mango"];
+    }
 
     onInit() {
         window['fruitsComp'] = this;

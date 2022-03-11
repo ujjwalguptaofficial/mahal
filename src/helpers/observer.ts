@@ -1,18 +1,24 @@
+import { Component } from "../abstracts";
 import { isArray, getObjectLength, isObject, merge, hashifyArray } from "../utils";
 import { indexOf } from "./index_of";
 
 export class Observer {
 
     onChange: (key: string, newValue, oldValue?) => void;
+    component: Component;
 
-    constructor(onChange) {
+    constructor(onChange, component: Component) {
         this.onChange = onChange;
+        this.component = component;
     }
 
     create(input: object, keys?: string[], prefix = "") {
         const onChange = this.onChange;
         const isInputArray = isArray(input);
-        keys = keys || (isInputArray ? [] : Object.keys(input));
+        keys = keys || (isInputArray ? ["push", "pop", "splice", "shift", "unshift", "reverse"] : Object.keys(input));
+        keys.forEach(key => {
+            this.component['__reactives__'][prefix + key] = true;
+        });
         const hashkeys = hashifyArray(keys);
         const registerChild = (key, newValue, oldValue) => {
             const objectValKeyWithPrefix = `${prefix}${key}.`;
@@ -28,18 +34,25 @@ export class Observer {
         if (isInputArray) {
             const arrProxy = new Proxy(input, {
                 get(target, prop, receiver) {
-                    switch (prop) {
-                        case 'push':
-                        case 'splice':
-                        case 'pop':
-                        case 'shift':
-                        case 'unshift':
-                        case 'reverse':
-                            return (...args) => {
-                                const result = target[prop](...args);
-                                onChange(prefix + prop, args);
-                                return result;
-                            };
+                    // switch (prop) {
+                    //     case 'push':
+                    //     case 'splice':
+                    //     case 'pop':
+                    //     case 'shift':
+                    //     case 'unshift':
+                    //     case 'reverse':
+                    //         return (...args) => {
+                    //             const result = target[prop](...args);
+                    //             onChange(prefix + prop, args);
+                    //             return result;
+                    //         };
+                    // }
+                    if (hashkeys[prop]) {
+                        return (...args) => {
+                            const result = target[prop](...args);
+                            onChange(prefix + (prop as string), args);
+                            return result;
+                        };
                     }
                     return Reflect.get(target, prop, receiver);
                 },

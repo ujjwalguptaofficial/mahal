@@ -1,7 +1,7 @@
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { Observer, Logger } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
-import { isArray, isNull, EventBus, Timer, getObjectLength } from "../utils";
+import { isArray, isNull, EventBus, Timer, getObjectLength, emitStateChange } from "../utils";
 import { Mahal } from "../mahal";
 
 // do not rename this, this has been done to merge Component
@@ -91,7 +91,19 @@ export abstract class Component {
      */
     setState(key: string, ...args) {
         const splittedKey = key.split(".");
-        const emitChange = this.__emitStateChange__.bind(this);
+        const emitChange = (propToEmit, value1, value2?) => {
+            if (this.__reactives__[key]) return;
+            if (process.env.NODE_ENV !== "production") {
+                const componentProps = this.__props__;
+                if (Component.shouldCheckProp && componentProps[key]) {
+                    new Logger(ERROR_TYPE.MutatingProp, {
+                        html: this.outerHTML,
+                        key: key
+                    }).logPlainError();
+                }
+            }
+            emitStateChange.call(this, propToEmit, value1, value2);
+        };
         const firstValue = args[0];
         let oldValue;
         if (splittedKey.length > 1) {
@@ -116,18 +128,7 @@ export abstract class Component {
         }
         oldValue = this[key];
         this[key] = firstValue;
-        if (!this.__reactives__[key]) {
-            if (process.env.NODE_ENV !== "production") {
-                const componentProps = this.__props__;
-                if (Component.shouldCheckProp && componentProps[key]) {
-                    new Logger(ERROR_TYPE.MutatingProp, {
-                        html: this.outerHTML,
-                        key: key
-                    }).logPlainError();
-                }
-            }
-            emitChange(key, firstValue, oldValue);
-        }
+        emitChange(key, firstValue, oldValue);
     }
 
     /**
@@ -305,11 +306,6 @@ export abstract class Component {
         return this.__app__.global;
     }
 
-    private __emitStateChange__(key: string, newValue: any, oldValue?: any) {
-        this['__watchBus__'].emit(key, newValue, oldValue);
-    }
-
-
     /**
      * used for events
      *
@@ -354,5 +350,9 @@ export abstract class Component {
     timer = new Timer();
 
     static shouldCheckProp = true;
+
+    getMethod(methodName: string) {
+        return this[methodName] as Function;
+    }
 
 }
