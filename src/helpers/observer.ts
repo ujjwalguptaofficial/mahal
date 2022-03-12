@@ -34,19 +34,6 @@ export class Observer {
         if (isInputArray) {
             const arrProxy = new Proxy(input, {
                 get(target, prop, receiver) {
-                    // switch (prop) {
-                    //     case 'push':
-                    //     case 'splice':
-                    //     case 'pop':
-                    //     case 'shift':
-                    //     case 'unshift':
-                    //     case 'reverse':
-                    //         return (...args) => {
-                    //             const result = target[prop](...args);
-                    //             onChange(prefix + prop, args);
-                    //             return result;
-                    //         };
-                    // }
                     if (hashkeys[prop]) {
                         return (...args) => {
                             const result = target[prop](...args);
@@ -67,9 +54,8 @@ export class Observer {
         const proxy = new Proxy(input, {
             deleteProperty(target, prop) {
                 const index = indexOf(target, prop);
-                const noOfItemToDelete = 1;
                 const isValueDeleted = Reflect.deleteProperty(target, prop);
-                onChange(`${prefix}splice`, [index, noOfItemToDelete]);
+                onChange(`${prefix}delete`, index);
                 return isValueDeleted;
             },
             set: (target, prop: string, newValue, receiver) => {

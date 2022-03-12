@@ -1,5 +1,5 @@
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { Observer, Logger } from "../helpers";
+import { Observer, Logger, indexOf } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
 import { isArray, isNull, EventBus, Timer, getObjectLength, emitStateChange } from "../utils";
 import { Mahal } from "../mahal";
@@ -129,6 +129,16 @@ export abstract class Component {
         oldValue = this[key];
         this[key] = firstValue;
         emitChange(key, firstValue, oldValue);
+    }
+
+    deleteState(key, prop) {
+        const splittedKey = key.split(".");
+        const targetKey = splittedKey.join(".");
+        const prefix = targetKey + ".";
+        const target = this.getState(targetKey);
+        const index = indexOf(target, prop);
+        Reflect.deleteProperty(target, prop);
+        emitStateChange.call(this, prefix + 'delete', index);
     }
 
     /**

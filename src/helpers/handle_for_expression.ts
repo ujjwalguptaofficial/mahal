@@ -91,6 +91,9 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         [`${key}.splice`]: (newValue) => {
             handleChange("splice", newValue);
         },
+        [`${key}.delete`]: (index) => {
+            handleChange("splice", [index, 1]);
+        },
         [`${key}.update`]: (newValue) => {
             handleChange("update", newValue);
         }
@@ -173,6 +176,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         watch(`${key}.add`, callBacks[`${key}.add`]).
         watch(`${key}.splice`, callBacks[`${key}.splice`]).
         watch(`${key}.update`, callBacks[`${key}.update`]).
+        watch(`${key}.delete`, callBacks[`${key}.delete`]).
         watch(`${key}.pop`, callBacks[`${key}.pop`]).
         watch(`${key}.shift`, callBacks[`${key}.shift`]).
         watch(`${key}.unshift`, callBacks[`${key}.unshift`]).
