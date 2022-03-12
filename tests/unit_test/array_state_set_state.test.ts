@@ -6,7 +6,6 @@ import { initiate } from "mahal-test-utils";
 <div></div>
 `)
 class ArrayComp extends Component {
-    @Reactive
     fruits = [];
 
     initialFruits = ["Banana", "Orange", "Apple", "Mango"]
@@ -26,9 +25,7 @@ class ArrayComp extends Component {
     }
 
     initializeFruit() {
-        this.fruits = clone(
-            this.initialFruits
-        )
+        this.setState('fruits', clone(this.initialFruits));
     }
 }
 
@@ -83,7 +80,7 @@ describe("Fruit", () => {
         const fruits = clone(component.initialFruits);
         fruits.push('amrud', 'ddd');
 
-        component.fruits.push('amrud', 'ddd');
+        component.setState('fruits.push', 'amrud', 'ddd');
 
         return promise;
     })
@@ -92,7 +89,7 @@ describe("Fruit", () => {
         component.initializeFruit();
         const promise = new Promise<void>((res) => {
             component.watch("fruits.update", (newValue) => {
-                expect(newValue).eql({ key: 0, value: 'amrud' });
+                expect(newValue).eql({ key: '0', value: 'amrud' });
                 checkFruitValue(fruits);
                 component.unwatch("fruits.update");
                 res();
@@ -100,7 +97,7 @@ describe("Fruit", () => {
         })
         const fruits = clone(component.initialFruits);
         fruits[0] = 'amrud';
-        component.fruits[0] = 'amrud';
+        component.setState('fruits.0', 'amrud');
         return promise;
     })
 
@@ -118,7 +115,7 @@ describe("Fruit", () => {
         const fruits = clone(component.initialFruits);
         fruits.splice(0, 1);
 
-        component.fruits.splice(0, 1);
+        component.setState('fruits.splice', 0, 1);
 
         return promise;
     })
@@ -137,7 +134,7 @@ describe("Fruit", () => {
         const fruits = clone(component.initialFruits);
         fruits.splice(2, 1);
 
-        component.fruits.splice(2, 1);
+        component.setState('fruits.splice', 2, 1);
 
         return promise;
     })
@@ -156,7 +153,7 @@ describe("Fruit", () => {
         const fruits = clone(component.initialFruits);
         fruits.splice(2, 2, "Lemon", "Kiwi");
 
-        component.fruits.splice(2, 2, "Lemon", "Kiwi");
+        component.setState('fruits.splice', 2, 2, "Lemon", "Kiwi");
 
         return promise;
     })
@@ -175,7 +172,7 @@ describe("Fruit", () => {
         const fruits = clone(component.initialFruits);
         fruits.pop();
 
-        component.fruits.pop();
+        component.setState('fruits.pop');
 
         return promise;
     })
@@ -194,7 +191,7 @@ describe("Fruit", () => {
         const fruits = clone(component.initialFruits);
         fruits.shift();
 
-        component.fruits.shift();
+        component.setState('fruits.shift');
 
         return promise;
     })
@@ -213,7 +210,7 @@ describe("Fruit", () => {
         const fruits = clone(component.initialFruits);
         fruits.unshift('amrud')
 
-        component.fruits.unshift('amrud')
+        component.setState('fruits.unshift', 'amrud')
 
         return promise;
     })
@@ -232,7 +229,7 @@ describe("Fruit", () => {
         const fruits = clone(component.initialFruits);
         fruits.reverse();
 
-        component.fruits.reverse();
+        component.setState('fruits.reverse');
 
         return promise;
     })
