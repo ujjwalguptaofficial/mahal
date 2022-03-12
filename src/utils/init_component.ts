@@ -1,6 +1,8 @@
 import { Component } from "../abstracts";
+import { ARRAY_MUTABLE_METHODS } from "../constant";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { handleAttribute, handleDirective, runPromisesInSequence, Logger } from "../helpers";
+import { getDataype } from "./get_data_type";
 
 export function initComponent(this: Component, component: Component, option) {
 
@@ -39,10 +41,28 @@ export function initComponent(this: Component, component: Component, option) {
             }
         });
         data.args.forEach(arg => {
-            component.watch(arg, () => {
-                const newValue = data.fn.call(component);
-                component.setState(key, newValue, computedValue);
-                computedValue = newValue;
+            let eventsToWatch = [arg];
+            switch (getDataype(component[arg])) {
+                case "array":
+                    const evs = [...ARRAY_MUTABLE_METHODS, "update"].map(ev => {
+                        return `${arg}.${ev}`
+                    });
+                    eventsToWatch = eventsToWatch.concat(evs); break;
+                case "object":
+
+                    eventsToWatch = eventsToWatch.concat(
+                        ["add", "update", "delete"].map(ev => {
+                            return `${arg}.${ev}`;
+                        })
+                    ); break;
+
+            }
+            eventsToWatch.forEach(ev => {
+                component.watch(ev, () => {
+                    const newValue = data.fn.call(component);
+                    component.setState(key, newValue, computedValue);
+                    computedValue = newValue;
+                });
             });
         });
     }

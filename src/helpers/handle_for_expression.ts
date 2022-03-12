@@ -91,8 +91,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         [`${key}.splice`]: (newValue) => {
             handleChange("splice", newValue);
         },
-        [`${key}.delete`]: (index) => {
-            handleChange("splice", [index, 1]);
+        [`${key}.delete`]: (args) => {
+            handleChange("splice", [args.index, 1]);
         },
         [`${key}.update`]: (newValue) => {
             handleChange("update", newValue);
@@ -112,8 +112,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
         switch (prop) {
             case 'add':
+                const savedValue = this.getState(key);
+                const length = getObjectLength(savedValue);
                 method(params.value, params.key).then(newElement => {
-                    parent.insertBefore(newElement, parent.childNodes[indexOfRef + params.length]);
+                    parent.insertBefore(newElement, parent.childNodes[indexOfRef + length]);
                 }).catch(err => {
                     emitError.call(this, err);
                 });
@@ -159,9 +161,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 break;
             case 'update':
                 resolvedValue = this.getState(key);
-                const index = isValueArray ? params[0] : indexOf(resolvedValue, params[0]);
+                const prop = params.key;
+                const index = isValueArray ? prop : indexOf(resolvedValue, prop);
                 if (index >= 0) {
-                    method(params[1], params[0]).then(newElement => {
+                    method(params.value, prop).then(newElement => {
                         parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
                     }).catch(err => {
                         emitError.call(this, err);

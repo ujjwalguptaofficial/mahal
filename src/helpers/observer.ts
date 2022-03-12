@@ -1,4 +1,5 @@
 import { Component } from "../abstracts";
+import { ARRAY_MUTABLE_METHODS } from "../constant";
 import { isArray, getObjectLength, isObject, merge, hashifyArray } from "../utils";
 import { indexOf } from "./index_of";
 
@@ -15,7 +16,7 @@ export class Observer {
     create(input: object, keys?: string[], prefix = "") {
         const onChange = this.onChange;
         const isInputArray = isArray(input);
-        keys = keys || (isInputArray ? ["push", "pop", "splice", "shift", "unshift", "reverse"] : Object.keys(input));
+        keys = keys || (isInputArray ? ARRAY_MUTABLE_METHODS : Object.keys(input));
         keys.forEach(key => {
             this.component['__reactives__'][prefix + key] = true;
         });
@@ -45,7 +46,7 @@ export class Observer {
                 },
                 set: (target, prop: string, newValue, receiver) => {
                     const setValue = Reflect.set(target, prop, newValue, receiver);
-                    onChange(`${prefix}update`, [Number(prop), newValue]);
+                    onChange(`${prefix}update`, { key: Number(prop), value: newValue });
                     return setValue;
                 }
             });
@@ -55,7 +56,7 @@ export class Observer {
             deleteProperty(target, prop) {
                 const index = indexOf(target, prop);
                 const isValueDeleted = Reflect.deleteProperty(target, prop);
-                onChange(`${prefix}delete`, index);
+                onChange(`${prefix}delete`, { key: prop, index });
                 return isValueDeleted;
             },
             set: (target, prop: string, newValue, receiver) => {
@@ -84,14 +85,12 @@ export class Observer {
                     isValueSetted = setValue();
                     if (oldValue !== undefined) {
                         if (target.hasOwnProperty(prop)) {
-                            onChange(`${prefix}update`, [prop, newValue]);
+                            onChange(`${prefix}update`, { key: prop, value: newValue });
                         }
                     } else {
-                        const length = getObjectLength(target);
                         onChange(`${prefix}add`, {
                             value: newValue,
                             key: prop,
-                            length: length
                         });
                     }
 

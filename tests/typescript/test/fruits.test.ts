@@ -23,6 +23,26 @@ describe('Fruits', function () {
         checkFruitValue(component.initialFruits);
     })
 
+    it("push", async function () {
+        component.setInitial();
+        await component.waitFor('update');
+        component.fruits.push('nimbu');
+        await component.waitFor('update');
+        const fruits = component.initialFruits;
+        fruits.push('nimbu');
+        checkFruitValue(fruits);
+    })
+
+    it("update", async function () {
+        component.setInitial();
+        await component.waitFor('update');
+        component.fruits[component.fruits.length - 1] = 'random'
+        await component.waitFor('update');
+        const fruits = component.initialFruits;
+        fruits[fruits.length - 1] = 'random'
+        checkFruitValue(fruits);
+    })
+
     it("splice value by 0,1", async function () {
         component.setInitial();
         await component.waitFor('update');

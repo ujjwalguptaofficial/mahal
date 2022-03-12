@@ -46,9 +46,6 @@ export abstract class Component {
     isMounted = false;
 
     constructor() {
-        this.on(LIFECYCLE_EVENT.Create, () => {
-
-        });
         if (isNull(this.children)) {
             this.children = {};
         }
@@ -122,7 +119,15 @@ export abstract class Component {
             else {
                 oldValue = target && target[prop];
                 target[prop] = firstValue;
-                emitChange(prefix + (prop as string), firstValue, oldValue);
+                if (oldValue !== undefined) {
+                    emitChange(`${prefix}update`, { key: prop, value: firstValue });
+                } else {
+                    emitChange(`${prefix}add`, {
+                        value: firstValue,
+                        key: prop,
+                    });
+                }
+                // emitChange(prefix + (prop as string), firstValue, oldValue);
             }
             return;
         }
@@ -131,14 +136,15 @@ export abstract class Component {
         emitChange(key, firstValue, oldValue);
     }
 
-    deleteState(key, prop) {
+    deleteState(key) {
         const splittedKey = key.split(".");
+        const prop = splittedKey.pop();
         const targetKey = splittedKey.join(".");
         const prefix = targetKey + ".";
         const target = this.getState(targetKey);
         const index = indexOf(target, prop);
         Reflect.deleteProperty(target, prop);
-        emitStateChange.call(this, prefix + 'delete', index);
+        emitStateChange.call(this, prefix + 'delete', { index, key: prop });
     }
 
     /**
