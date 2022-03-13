@@ -21,7 +21,7 @@ class ObjComp extends Component {
 
     @Computed('fruits')
     fruitsArray() {
-        return Object.keys(this.fruits);
+        return Object.values(this.fruits);
     }
 
     initializeFruit() {
@@ -42,7 +42,7 @@ describe("object state using set state", () => {
         const fruitsFromStore = component.fruits;
         expect(Object.keys(value)).length(Object.keys(fruitsFromStore).length);
         expect(component.fruitsLength).equal(Object.keys(value).length);
-        expect(component.fruitsArray).eql(Object.keys(value));
+        expect(component.fruitsArray).eql(Object.values(value));
         expect(value).eql(fruitsFromStore);
     }
 
@@ -60,6 +60,22 @@ describe("object state using set state", () => {
         checkFruitValue(
             component.initialFruits
         )
+        return promise;
+    })
+
+    it("update value", async function () {
+        const promise = new Promise<void>((res) => {
+            const cb = (newValue) => {
+                expect(newValue).eql({ value: 'POTATO', key: 'potato' });
+                res();
+                component.unwatch("fruits.update", cb);
+            };
+            component.watch("fruits.update", cb);
+        })
+        const veggie = clone(component.initialFruits);
+        veggie['potato'] = 'POTATO';
+        component.setState(`fruits.potato`, 'POTATO');
+        checkFruitValue(veggie);
         return promise;
     })
 
@@ -81,7 +97,7 @@ describe("object state using set state", () => {
         return promise;
     })
 
-    it("update value", async function () {
+    it("update value after add", async function () {
         const promise = new Promise<void>((res) => {
             component.watch("fruits.update", (newValue) => {
                 expect(newValue).eql({ value: 'Amrud', key: 'amrud' });
