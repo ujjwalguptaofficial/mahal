@@ -1,5 +1,5 @@
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { Observer, Logger, indexOf } from "../helpers";
+import { Observer, Logger, indexOf, replaceIfNull } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
 import { isArray, isNull, EventBus, Timer, getObjectLength, emitStateChange } from "../utils";
 import { Mahal } from "../mahal";
@@ -46,25 +46,12 @@ export abstract class Component {
     isMounted = false;
 
     constructor() {
-        if (isNull(this.children)) {
-            this.children = {};
-        }
-        if (isNull(this.__formatters__)) {
-            this.__formatters__ = {};
-        }
-        if (isNull(this.__directive__)) {
-            this.__directive__ = {};
-        }
-        if (isNull(this.__props__)) {
-            this.__props__ = {};
-        }
-        if (isNull(this.__computed__)) {
-            this.__computed__ = {};
-        }
-        if (isNull(this.__reactives__)) {
-            this.__reactives__ = {};
-        }
-
+        this.children = replaceIfNull(this.children, {});
+        this.__formatters__ = replaceIfNull(this.__formatters__, {});
+        this.__directive__ = replaceIfNull(this.__directive__, {});
+        this.__props__ = replaceIfNull(this.__props__, {});
+        this.__computed__ = replaceIfNull(this.__computed__, {});
+        this.__reactives__ = replaceIfNull(this.__reactives__, {});
     }
 
     render?(context: IRenderContext): Promise<HTMLElement>;
