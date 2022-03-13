@@ -130,7 +130,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     }
                 }
                 const promises = [];
-                for (let i = 2, j = params[0], length = params.length; i < length; i++, j++) {
+                for (let i = 2, j = params[0], paramLength = params.length; i < paramLength; i++, j++) {
                     promises.push(
                         method(params[i], j).then(newElement => {
                             parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + j]);
@@ -161,10 +161,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 break;
             case 'update':
                 resolvedValue = this.getState(key);
-                const prop = params.key;
-                const index = isValueArray ? prop : indexOf(resolvedValue, prop);
+                const paramKey = params.key;
+                const index = isValueArray ? paramKey : indexOf(resolvedValue, paramKey);
                 if (index >= 0) {
-                    method(params.value, prop).then(newElement => {
+                    method(params.value, paramKey).then(newElement => {
                         parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
                     }).catch(err => {
                         emitError.call(this, err);

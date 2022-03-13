@@ -45,11 +45,10 @@ export function initComponent(this: Component, component: Component, option) {
             switch (getDataype(component[arg])) {
                 case "array":
                     const evs = [...ARRAY_MUTABLE_METHODS, "update"].map(ev => {
-                        return `${arg}.${ev}`
+                        return `${arg}.${ev}`;
                     });
                     eventsToWatch = eventsToWatch.concat(evs); break;
                 case "object":
-
                     eventsToWatch = eventsToWatch.concat(
                         ["add", "update", "delete"].map(ev => {
                             return `${arg}.${ev}`;
