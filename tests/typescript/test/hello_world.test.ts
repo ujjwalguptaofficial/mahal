@@ -78,16 +78,18 @@ describe('HelloWorld', function () {
             component.setState('count', ++component.count);
         });
         btn.click();
-        expect(component.count).equal(2);
         await component.waitFor("update");
+        expect(component.count).equal(2);
         expect(btn.innerHTML).equal('2');
         component.off("click");
     });
 
-    it('click count button', function () {
+    it('click count button', async function () {
         let sandbox = createSandbox();
         sandbox.stub(component, "emit");
         component.find('#count').click();
+        // await component.waitFor("update");
+        await nextTick();
         sandbox.assert.calledOnceWithExactly(component.emit as any, "click");
         sandbox.restore();
     });

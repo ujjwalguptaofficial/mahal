@@ -50,14 +50,14 @@ describe('Object', function () {
     });
 
     it("add students using btn", function (done) {
-
         const newName = "ujjwal gupta";
         component.find('#name').setValue(newName);
         expect(component.name).equal(newName);
         component.find("#btnAdd").click();
-        expect(getObjectLength(component.students)).equal(1);
-        expect(component.students[newName].name).equal(newName);
+
         component.waitFor('update').then(() => {
+            expect(getObjectLength(component.students)).equal(1);
+            expect(component.students[newName].name).equal(newName);
             expect(component.find("#name").value).equal('');
             expect(component.findAll(".tr-list")).length(1);
             expect(getObjectLength(component.students)).equal(1);

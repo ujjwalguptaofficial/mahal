@@ -2,8 +2,8 @@ import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { defaultSlotName } from "../constant";
 import { handleAttribute } from "./handle_attribute";
-import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, nextTick, createComponent, promiseResolve } from "../utils";
-import { runPromisesInSequence } from "./run_promises_in_sequence";
+import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve } from "../utils";
+import { executeEvents } from "./execute_events";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
@@ -50,8 +50,8 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
                 }
             });
             ev.handlers.forEach(item => {
-                if (item != null) {
-                    methods.push(item.bind(this));
+                if (typeof item === 'function') {
+                    methods.push(item);
                 }
                 else {
                     new Logger(ERROR_TYPE.InvalidEventHandler, {
@@ -64,13 +64,9 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
             //         return e.target.value;
             //     });
             // }
-            evListener[eventName] = methods.length > 1 ?
-                (e) => {
-                    runPromisesInSequence(methods, e);
-                } :
-                (e) => {
-                    methods[0].call(this, e);
-                };
+            evListener[eventName] = (e) => {
+                executeEvents.call(this, methods, e);
+            };
 
             (element as HTMLDivElement).addEventListener(
                 eventName, evListener[eventName],

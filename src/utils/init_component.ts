@@ -1,7 +1,7 @@
 import { Component } from "../abstracts";
 import { ARRAY_MUTABLE_METHODS } from "../constant";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { handleAttribute, handleDirective, runPromisesInSequence, Logger } from "../helpers";
+import { handleAttribute, handleDirective, executeEvents, Logger } from "../helpers";
 import { getDataype } from "./get_data_type";
 
 export function initComponent(this: Component, component: Component, option) {
@@ -12,19 +12,17 @@ export function initComponent(this: Component, component: Component, option) {
         const events = option.on;
         for (const eventName in events) {
             const ev = events[eventName];
-            const methods = [];
-            ev.handlers.forEach(item => {
-                if (item != null) {
-                    methods.push(item.bind(this));
-                }
-                else {
+            const methods = ev.handlers.filter(item => {
+                if (typeof item != 'function') {
                     new Logger(ERROR_TYPE.InvalidEventHandler, {
                         eventName,
-                    }).logPlainError();
+                    }).throwPlain();
+                    return false;
                 }
+                return true;
             });
             component.on(eventName, (args) => {
-                runPromisesInSequence(methods, args);
+                executeEvents.call(this, methods, args);
             });
         }
     }
