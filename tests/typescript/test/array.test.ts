@@ -14,6 +14,16 @@ describe('Array', function () {
         // })
     });
 
+    const checkForData = () => {
+        const rows = component.findAll(".tr-list");
+        expect(rows).length(2);
+        component.students.forEach((student, index) => {
+            const tds = rows[index].querySelectorAll('td')
+            expect(tds[0].innerText).equal(index.toString())
+            expect(tds[1].innerText).equal(student.name);
+        })
+    }
+
     it("check global value", function () {
         expect(component.global.authorName).to.equal("ujjwal");
     })
@@ -30,7 +40,7 @@ describe('Array', function () {
         expect(component.findAll(".tr-list")).length(1);
     });
 
-    it("set students value directly", function (done) {
+    it("set students value directly", async function () {
         component.students = [
             {
                 name: 'ujjwal'
@@ -39,10 +49,12 @@ describe('Array', function () {
                 name: 'ujjwal'
             }
         ];
-        component.waitFor("update").then(() => {
-            expect(component.findAll(".tr-list")).length(2);
-            done();
-        })
+        await component.waitFor("update");
+        expect(component.findAll(".tr-list")).length(2);
+        // debugger;
+        // component.students[0].name = 'commander';
+        // await component.waitFor("update");
+        checkForData();
     });
 
     it("reset students value", function (done) {
