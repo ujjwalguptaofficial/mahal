@@ -13,7 +13,7 @@ export function initComponent(this: Component, component: Component, option) {
         for (const eventName in events) {
             const ev = events[eventName];
             const methods = ev.handlers.filter(item => {
-                if (typeof item != 'function') {
+                if (typeof item !== 'function') {
                     new Logger(ERROR_TYPE.InvalidEventHandler, {
                         eventName,
                     }).throwPlain();
