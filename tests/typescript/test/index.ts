@@ -34,4 +34,4 @@ import "./fragment.test";
 import "./object_reset_model.test";
 import "./attribute.test";
 import "./component_load_fail.test";
-import "./async_event.test";
+import "./event.test";

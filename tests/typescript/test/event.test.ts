@@ -7,10 +7,22 @@ import { expect } from "chai";
 })
 @Template(`
 <div>
-    <button @click={'first' | 'second' | 'third' | 'fourth'}>Click me</button>
+    <button id="withoutMethod" @click="onClickWithoutMethod(FIRST)">Hello</button>
+    <button id="async" @click={'first' | 'second' | 'third' | 'fourth'}>Click me</button>
 </div>
 `)
 class Temp extends Component {
+
+    FIRST = "first";
+
+    withoutMethodCalled = false;
+
+    onClickWithoutMethod(arg) {
+        debugger;
+        if (arg === 'first') {
+            this.withoutMethodCalled = true;
+        }
+    }
 
     first() {
         return new Promise(res => {
@@ -52,11 +64,18 @@ describe('Async event test', function () {
     });
 
     it("click", async function () {
-        const btn = component.find('button');
+        const btn = component.find('#async');
         btn.click();
-        setTimeout(() => {
-            expect(component.isFinalCalled).equal(true);
-        }, 1000);
+        await component.timer.timeout(1000);
+        expect(component.isFinalCalled).equal(true);
+    });
+
+    it("withoutMethod", async function () {
+        const btn = component.find('#withoutMethod');
+        btn.click();
+        await component.timer.timeout(1000);
+
+        expect(component.withoutMethodCalled).equal(true);
     });
 });
 

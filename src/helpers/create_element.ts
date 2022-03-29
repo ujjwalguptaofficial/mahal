@@ -30,7 +30,7 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
     handleAttribute.call(this, element, option.attr, false);
 
     if (option.on) {
-        const evListener = {};
+        let evListener = {};
         const events = option.on;
         for (const eventName in events) {
             const ev = events[eventName];
@@ -83,6 +83,7 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
             for (const ev in evListener) {
                 element.removeEventListener(ev, evListener[ev]);
             }
+            evListener = {};
         };
         element.addEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
     }
