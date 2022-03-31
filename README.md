@@ -26,3 +26,7 @@ Check out repo - https://github.com/ujjwalguptaofficial/mahal-examples
 Support this project by adding stars, spreading the word.
 
 We would be more grateful if you sponsor the project which allows us to keep developing, educate people, organize different events.
+
+# Contributors
+
+You are very welcome to contribute, please see contributing guidelines - [[Contribute](CONTRIBUTING.MD)].
