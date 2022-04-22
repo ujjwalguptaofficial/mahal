@@ -42,6 +42,7 @@ describe("Fruit", () => {
         const fruitsFromcomponent = component.fruits;
         expect(value).length(fruitsFromcomponent.length);
         expect(fruitsFromcomponent.length).equal(value.length);
+        expect(component.fruitsLength).equal(value.length);
         expect(value).eql(fruitsFromcomponent);
 
         const obj = {};
