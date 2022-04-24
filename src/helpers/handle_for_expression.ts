@@ -123,12 +123,16 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             case 'splice':
                 // i==1 for comment nodes 
                 const relativeIndex = indexOfRef + params[0];
+                // remove elements
                 for (let i = 1; i <= params[1]; i++) {
                     const child = parent.childNodes[relativeIndex + 1];
                     if (child) {
                         parent.removeChild(child);
                     }
                 }
+                if (!isValueArray) break;
+                
+                // add new elements from splice third arguments
                 const promises = [];
                 for (let i = 2, j = params[0], paramLength = params.length; i < paramLength; i++, j++) {
                     promises.push(
@@ -138,7 +142,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     );
                 }
 
-                if (!isValueArray) break;
+                // arrange items after insertion
                 const from = (params.length - 2) + params[0];
                 // resolvedValue = this.resolve(key);
                 const sliced = this.getState(key).slice(from);
