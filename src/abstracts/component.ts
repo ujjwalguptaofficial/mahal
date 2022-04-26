@@ -1,5 +1,5 @@
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { Observer, Logger, indexOf, replaceIfNull } from "../helpers";
+import { Observer, Logger, indexOf, replaceIfNull, emitError } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
 import { isArray, isNull, EventBus, Timer, getObjectLength, emitStateChange } from "../utils";
 import { Mahal } from "../mahal";
@@ -272,11 +272,16 @@ export abstract class Component {
      */
     format(formatterName: string, value) {
         const globalFormatter = this.__app__['_formatter'];
-        if (globalFormatter[formatterName]) {
-            return globalFormatter[formatterName](value);
-        }
-        else if (this.__formatters__[formatterName]) {
-            return this.__formatters__[formatterName](value);
+        try {
+            if (globalFormatter[formatterName]) {
+                return globalFormatter[formatterName](value);
+            }
+            else if (this.__formatters__[formatterName]) {
+                return this.__formatters__[formatterName](value);
+            }
+        } catch (error) {
+            emitError.call(this, error, true);
+            return null;
         }
         new Logger(ERROR_TYPE.InvalidFormatter, {
             formatter: formatterName

@@ -36,3 +36,4 @@ import "./attribute.test";
 import "./component_load_fail.test";
 import "./event.test";
 import "./if_with_not.test";
+import "./formatter_error.test";
