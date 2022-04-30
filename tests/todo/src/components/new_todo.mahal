@@ -1,0 +1,67 @@
+---
+name: new_todo.mahal
+description: It helps you create new task. Contains input box to and a button to create task.
+events:
+    newTask : emits the task details when click on add.
+dateCreated: April 24, 2022
+---
+
+<html>
+<div class="row content-center content-v-center">
+	<div class="column">
+		<div class="textbox">
+			<input :model(title) placeholder="Enter task title" type="text" />
+		</div>
+		<div class="textbox margin-top-20px">
+			<input :model(description) type="text" placeholder="Enter task description" />
+		</div>
+	</div>
+	<button on:click={'validate' | 'addTask' } class="btn primary btn-add">
+		Add
+	</button>
+</div>
+</html>
+
+<script>
+import { Component, Reactive } from "mahal";
+
+export default class extends Component {
+    @Reactive
+    title = "";
+
+    @Reactive
+    description = "";
+
+    validate() {
+        if (!this.title) {
+            alert("Title can not be empty");
+            return false;
+        } else if (!this.description) {
+            alert("Description can not be empty");
+            return false;
+        }
+        return true;
+    }
+
+    addTask(isValid) {
+        if (!isValid) {
+            return;
+        }
+        this.emit("newTask", {
+            title: this.title,
+            description: this.description,
+        });
+        this.title = this.description = "";
+    }
+}
+</script>
+<style>
+.btn-add {
+    height: 50px;
+    width: 100px;
+    margin-left: 25px;
+}
+.textbox input {
+    width: 100%;
+}
+</style>

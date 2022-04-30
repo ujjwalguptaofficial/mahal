@@ -1,0 +1,36 @@
+---
+name: todo.mahal
+description: Render a task with remove button.
+events:
+    remove: emits the task id which can be used to remove target task.
+dateCreated: April 24, 2022
+---
+
+<html>
+<div class="row content-v-center">
+	<div class="title">{{task.title}}</div>
+	<div class="description">{{task.description}}</div>
+	<button on:click="remove" class="btn small error margin-left-20px">Remove</button>
+</div>
+</html>
+<script>
+import { Prop, Component } from "mahal";
+export default class extends Component {
+    @Prop("object")
+    task;
+
+    remove() {
+        this.emit("remove", this.task.id);
+    }
+}
+</script>
+<style>
+.title {
+    font-weight: bold;
+    width: 25%;
+}
+.description {
+    margin-left: 20px;
+    width: 50%;
+}
+</style>

@@ -8,23 +8,23 @@ import { Logger } from "./logger";
 import { indexOf } from "./index_of";
 
 export const runForExp = (key, value, method) => {
-    const els: any[] = [];
+    let els: any[] = [];
     if (process.env.NODE_ENV !== 'production') {
         if (isPrimitive(value) || isNull(value)) {
             new Logger(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
         }
     }
 
-    if (isArray(value)) {
-        value.map((item, i) => {
-            els.push(method(item, i));
-        });
+    // if (isArray(value)) {
+    //     els = value.map((item, i) => {
+    //         return method(item, i);
+    //     });
+    // }
+    // else if (isObject(value)) {
+    for (const prop in value) {
+        els.push(method(value[prop], prop));
     }
-    else if (isObject(value)) {
-        for (const prop in value) {
-            els.push(method(value[prop], prop));
-        }
-    }
+    // }
     return els;
 };
 
@@ -131,7 +131,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     }
                 }
                 if (!isValueArray) break;
-                
+
                 // add new elements from splice third arguments
                 const promises = [];
                 for (let i = 2, j = params[0], paramLength = params.length; i < paramLength; i++, j++) {

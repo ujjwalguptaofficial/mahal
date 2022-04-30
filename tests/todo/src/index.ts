@@ -1,20 +1,12 @@
-import { App } from "mahal";
-import Main from "./components/main";
-import MahalTest from "mahal-test-utils";
-import { createRenderer } from "mahal-html-compiler";
-if (process.env.NODE_ENV != "test") {
-    require("flexboot");
-}
+import { Mahal } from "mahal";
+import App from "@/app.mahal";
+import { registerGlobalFormatter } from "@/formatters";
+import config from "~/config";
 
-export const app = new App(Main, document.querySelector('#app'));
-app.extend.formatter("dollar", (value: string) => {
-    return "$" + value;
-});
-console.log("env", process.env.NODE_ENV);
-(App as any).createRenderer = createRenderer;
-if (process.env.NODE_ENV !== "test") {
-    app.create();
-}
-else {
-    app.extend.plugin(MahalTest, app);
-}
+
+const app = new Mahal(App, '#app');
+// register global formatter
+registerGlobalFormatter(app);
+// set config to be available globally
+app.global.config = config;
+app.create();
