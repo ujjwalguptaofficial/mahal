@@ -35,24 +35,24 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
     els = els.concat(runForExp(key, resolvedValue, method));
     const isValueArray = isArray(resolvedValue);
     let callBacks = {
-        [key]: (newValue) => {
+        [key]: (newValue, oldValue) => {
             // value resetted
-            runForExp(key, newValue, method);
+            // runForExp(key, newValue, method);
             const parent = cmNode.parentNode;
             // remove all nodes
 
-            // for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
-            //     parent.removeChild(cmNode.nextSibling);
-            // }
-            let nextSibling = cmNode.nextSibling;
-            while (nextSibling != null) {
-                parent.removeChild(nextSibling);
-                nextSibling = cmNode.nextSibling;
+            for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
+                parent.removeChild(cmNode.nextSibling);
             }
+            // let nextSibling = cmNode.nextSibling;
+            // while (nextSibling != null) {
+            //     parent.removeChild(nextSibling);
+            //     nextSibling = cmNode.nextSibling;
+            // }
 
             // add all node
             if (isArray(newValue)) {
-                callBacks[`${key}.push`](newValue);
+                callBacks[`${key}.push`](newValue, oldValue);
             }
             else {
                 let index = 0;
@@ -134,13 +134,18 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
 
                 // add new elements from splice third arguments
                 const promises = [];
+                const frag = document.createDocumentFragment();
                 for (let i = 2, j = params[0], paramLength = params.length; i < paramLength; i++, j++) {
                     promises.push(
-                        method(params[i], j).then(newElement => {
-                            parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + j]);
-                        })
+                        method(params[i], j)
+                            .then(newElement => {
+                                // parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + j]);
+                                frag.appendChild(newElement);
+                            })
                     );
                 }
+
+
 
                 // arrange items after insertion
                 const from = (params.length - 2) + params[0];
@@ -148,6 +153,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const sliced = this.getState(key).slice(from);
                 // const asyncElements = runForExp(key, sliced, method);
                 Promise.all(promises).then(_ => {
+                    parent.insertBefore(frag, parent.childNodes[indexOfRef + 1 + params[0]]);
                     return Promise.all(
                         sliced.map((item, itemIndex) => {
                             return method(item, from + itemIndex);

@@ -32,7 +32,7 @@ export default class App extends Component {
         super();
         console.time("app started");
         const students = [];
-        for (let i = 0; i < 10000; i++) {
+        for (let i = 0; i < 10; i++) {
             students.push({
                 title: "hello",
                 description: "world",
@@ -73,7 +73,7 @@ export default class App extends Component {
     addAll() {
         console.time("performance started");
         const students = [];
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 10000; i++) {
             students.push({
                 title: "hello",
                 description: "world",
