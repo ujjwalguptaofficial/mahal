@@ -7,32 +7,23 @@ import { emitError } from "./emit_error";
 import { Logger } from "./logger";
 import { indexOf } from "./index_of";
 
-export const runForExp = (key, value, method) => {
-    let els: any[] = [];
-    if (process.env.NODE_ENV !== 'production') {
-        if (isPrimitive(value) || isNull(value)) {
-            new Logger(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
-        }
-    }
 
-    // if (isArray(value)) {
-    //     els = value.map((item, i) => {
-    //         return method(item, i);
-    //     });
-    // }
-    // else if (isObject(value)) {
-    for (const prop in value) {
-        els.push(method(value[prop], prop));
-    }
-    // }
-    return els;
-};
 
 export function handleForExp(this: Component, key: string, method: (...args) => Promise<HTMLElement>) {
     let cmNode = createCommentNode();
     let els = [cmNode];
     let resolvedValue = this.getState(key);
-    els = els.concat(runForExp(key, resolvedValue, method));
+    if (process.env.NODE_ENV !== 'production') {
+        if (isPrimitive(resolvedValue) || isNull(resolvedValue)) {
+            new Logger(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
+        }
+    }
+
+    for (const prop in resolvedValue) {
+        els.push(
+            (method as any)(resolvedValue[prop], prop)
+        );
+    }
     const isValueArray = isArray(resolvedValue);
     let callBacks = {
         [key]: (newValue, oldValue) => {
@@ -52,7 +43,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
 
             // add all node
             if (isArray(newValue)) {
-                callBacks[`${key}.push`](newValue, oldValue);
+                handleChange('splice', [
+                    0, 0, ...newValue
+                ])
+                // callBacks[`${key}.push`](newValue, oldValue);
             }
             else {
                 let index = 0;
@@ -138,11 +132,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const frag = document.createDocumentFragment();
                 for (let i = 2, j = params[0], paramLength = params.length; i < paramLength; i++, j++) {
                     promises.push(
-                        method(params[i], j)
-                            .then(newElement => {
-                                // parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + j]);
-                                frag.appendChild(newElement);
-                            })
+                        method(params[i], j).then(newElement => {
+                            // parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + j]);
+                            frag.appendChild(newElement);
+                        })
                     );
                 }
 
