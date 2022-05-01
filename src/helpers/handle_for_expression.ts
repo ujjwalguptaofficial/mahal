@@ -121,6 +121,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 });
                 break;
             case 'splice':
+                console.time('splice');
                 // i==1 for comment nodes 
                 const relativeIndex = indexOfRef + params[0];
                 // remove elements
@@ -152,19 +153,21 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 // resolvedValue = this.resolve(key);
                 const sliced = this.getState(key).slice(from);
                 // const asyncElements = runForExp(key, sliced, method);
-                Promise.all(promises).then(_ => {
-                    parent.insertBefore(frag, parent.childNodes[indexOfRef + 1 + params[0]]);
-                    return Promise.all(
+                Promise.all([
+                    Promise.all(promises),
+                    Promise.all(
                         sliced.map((item, itemIndex) => {
                             return method(item, from + itemIndex);
                         })
-                    );
-                }).then(elements => {
+                    )
+                ]).then(results => {
+                    parent.insertBefore(frag, parent.childNodes[indexOfRef + 1 + params[0]]);
                     const spliceRefIndex = indexOfRef + 1 + params[0] + params.length - 2;
-                    elements.forEach((newEl: HTMLElement, elementIndex) => {
+                    results[1].forEach((newEl: HTMLElement, elementIndex) => {
                         const el = parent.childNodes[spliceRefIndex + elementIndex];
                         parent.replaceChild(newEl, el);
                     });
+                    console.timeEnd('splice');
                 }).catch(err => {
                     emitError.call(this, err);
                 });
