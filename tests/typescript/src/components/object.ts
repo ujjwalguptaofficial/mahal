@@ -1,4 +1,4 @@
-import { Component, Template, Reactive, LIFECYCLE_EVENT } from "mahal";
+import { Component, Template, Reactive, LIFECYCLE_EVENT, Computed } from "mahal";
 
 
 @Template(`
@@ -21,6 +21,10 @@ import { Component, Template, Reactive, LIFECYCLE_EVENT } from "mahal";
         <td><button class="btn-delete" on:click="()=>{deleteStudent(key)}">Delete</button></td>
       
        </tr>
+       <tr>
+        <td class="item-length">{{length}}</td>
+        <td>Hello</td>
+    </tr>
     </table>
  
 </div>
@@ -38,6 +42,12 @@ export default class extends Component {
     @Reactive
     editName = "";
 
+    @Computed('students')
+    get length() {
+        return Object.keys(
+            this.students
+        ).length;
+    }
 
     addStudent() {
         this.students[this.name] = {

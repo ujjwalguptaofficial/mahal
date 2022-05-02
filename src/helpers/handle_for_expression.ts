@@ -46,20 +46,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 handleChange('splice', [
                     0, 0, ...newValue
                 ])
-                // callBacks[`${key}.push`](newValue, oldValue);
             }
             else {
-                let index = 0;
-                forOwn(newValue, (prop, value) => {
-                    index++;
-                    handleChange("add", {
-                        value,
-                        key: prop,
-                        length: index + 1
-                    });
-                });
+                handleChange("addMany", newValue);
             }
-            emitUpdate(this);
         },
         [`${key}.push`]: (values) => {
             handleChange("splice", [getObjectLength(this.getState(key)) - values.length, 0, ...values]);
@@ -106,6 +96,22 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
         (() => {
             switch (prop) {
+                case 'addMany':
+                    const fragDoc = document.createDocumentFragment();
+                    const promiseList = [];
+                    forOwn(params, (prop, value) => {
+                        promiseList.push(
+                            method(value, prop).then(newElement => {
+                                fragDoc.appendChild(newElement);
+                            })
+                        );
+                    });
+
+                    return Promise.all(promiseList).then(_ => {
+                        parent.insertBefore(
+                            fragDoc, parent.childNodes[indexOfRef + 1]
+                        );
+                    });
                 case 'add':
                     const savedValue = this.getState(key);
                     const length = getObjectLength(savedValue);

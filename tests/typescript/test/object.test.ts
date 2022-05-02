@@ -5,7 +5,7 @@ import { expect } from "chai";
 
 describe('Object', function () {
 
-    let component;
+    let component: ObjectComponent;
 
     before(async function () {
         component = await (app as any).initiate(ObjectComponent);
@@ -36,6 +36,10 @@ describe('Object', function () {
         };
         component.waitFor('update').then(() => {
             expect(component.findAll(".tr-list")).length(2);
+            const trs = component.findAll('tr');
+            const lastTr = trs[trs.length - 1];
+            const itemLength = lastTr.querySelector('.item-length');
+            expect(itemLength.textContent).equal('2');
             done();
         })
     });
