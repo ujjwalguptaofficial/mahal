@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, isObject, forOwn, getObjectLength } from "../utils";
+import { isPrimitive, isNull, isArray, isObject, forOwn, getObjectLength, promiseResolve } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
@@ -104,81 +104,76 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
     const handleChange = (prop, params) => {
         const parent = cmNode.parentNode;
         const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
-        switch (prop) {
-            case 'add':
-                const savedValue = this.getState(key);
-                const length = getObjectLength(savedValue);
-                method(params.value, params.key).then(newElement => {
-                    parent.insertBefore(newElement, parent.childNodes[indexOfRef + length]);
-                }).catch(err => {
-                    emitError.call(this, err);
-                });
-                break;
-            case 'splice':
-                console.time('splice');
-                // i==1 for comment nodes 
-                const relativeIndex = indexOfRef + params[0];
-                // remove elements
-                for (let i = 1; i <= params[1]; i++) {
-                    const child = parent.childNodes[relativeIndex + 1];
-                    if (child) {
-                        parent.removeChild(child);
+        (() => {
+            switch (prop) {
+                case 'add':
+                    const savedValue = this.getState(key);
+                    const length = getObjectLength(savedValue);
+                    return method(params.value, params.key).then(newElement => {
+                        parent.insertBefore(newElement, parent.childNodes[indexOfRef + length]);
+                    });
+                case 'splice':
+                    // i==1 for comment nodes 
+                    const relativeIndex = indexOfRef + params[0];
+                    // remove elements
+                    for (let i = 1; i <= params[1]; i++) {
+                        const child = parent.childNodes[relativeIndex + 1];
+                        if (child) {
+                            parent.removeChild(child);
+                        }
                     }
-                }
-                if (!isValueArray) break;
+                    if (!isValueArray) return promiseResolve(null);
 
-                // add new elements from splice third arguments
-                const promises = [];
-                const frag = document.createDocumentFragment();
-                for (let i = 2, j = params[0], paramLength = params.length; i < paramLength; i++, j++) {
-                    promises.push(
-                        method(params[i], j).then(newElement => {
-                            // parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + j]);
-                            frag.appendChild(newElement);
-                        })
-                    );
-                }
-
+                    // add new elements from splice third arguments
+                    const promises = [];
+                    const frag = document.createDocumentFragment();
+                    for (let i = 2, j = params[0], paramLength = params.length; i < paramLength; i++, j++) {
+                        promises.push(
+                            method(params[i], j).then(newElement => {
+                                // parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + j]);
+                                frag.appendChild(newElement);
+                            })
+                        );
+                    }
 
 
-                // arrange items after insertion
-                const from = (params.length - 2) + params[0];
-                // resolvedValue = this.resolve(key);
-                const sliced = this.getState(key).slice(from);
-                // const asyncElements = runForExp(key, sliced, method);
-                Promise.all([
-                    Promise.all(promises),
-                    Promise.all(
-                        sliced.map((item, itemIndex) => {
-                            return method(item, from + itemIndex);
-                        })
-                    )
-                ]).then(results => {
-                    parent.insertBefore(frag, parent.childNodes[indexOfRef + 1 + params[0]]);
-                    const spliceRefIndex = indexOfRef + 1 + params[0] + params.length - 2;
-                    results[1].forEach((newEl: HTMLElement, elementIndex) => {
-                        const el = parent.childNodes[spliceRefIndex + elementIndex];
-                        parent.replaceChild(newEl, el);
+
+                    // arrange items after insertion
+                    const from = (params.length - 2) + params[0];
+                    // resolvedValue = this.resolve(key);
+                    const sliced = this.getState(key).slice(from);
+                    // const asyncElements = runForExp(key, sliced, method);
+                    return Promise.all([
+                        Promise.all(promises),
+                        Promise.all(
+                            sliced.map((item, itemIndex) => {
+                                return method(item, from + itemIndex);
+                            })
+                        )
+                    ]).then(results => {
+                        parent.insertBefore(frag, parent.childNodes[indexOfRef + 1 + params[0]]);
+                        const spliceRefIndex = indexOfRef + 1 + params[0] + params.length - 2;
+                        results[1].forEach((newEl: HTMLElement, elementIndex) => {
+                            const el = parent.childNodes[spliceRefIndex + elementIndex];
+                            parent.replaceChild(newEl, el);
+                        });
                     });
-                    console.timeEnd('splice');
-                }).catch(err => {
-                    emitError.call(this, err);
-                });
-                break;
-            case 'update':
-                resolvedValue = this.getState(key);
-                const paramKey = params.key;
-                const index = isValueArray ? paramKey : indexOf(resolvedValue, paramKey);
-                if (index >= 0) {
-                    method(params.value, paramKey).then(newElement => {
-                        parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
-                    }).catch(err => {
-                        emitError.call(this, err);
-                    });
-                }
-                break;
-        }
-        emitUpdate(this);
+                case 'update':
+                    resolvedValue = this.getState(key);
+                    const paramKey = params.key;
+                    const index = isValueArray ? paramKey : indexOf(resolvedValue, paramKey);
+                    if (index >= 0) {
+                        return method(params.value, paramKey).then(newElement => {
+                            parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
+                        });
+                    }
+                    return promiseResolve(null);
+            }
+        })().then(_ => {
+            emitUpdate(this);
+        }).catch(err => {
+            emitError.call(this, err);
+        });
     };
     this.watch(key, callBacks[key]).
         watch(`${key}.push`, callBacks[`${key}.push`]).
