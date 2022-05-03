@@ -11,7 +11,7 @@ import { indexOf } from "./index_of";
 
 export function handleForExp(this: Component, key: string, method: (...args) => Promise<HTMLElement>) {
     let cmNode = createCommentNode();
-    let els = [cmNode];
+    const els = [cmNode];
     let resolvedValue = this.getState(key);
     if (process.env.NODE_ENV !== 'production') {
         if (isPrimitive(resolvedValue) || isNull(resolvedValue)) {
@@ -45,7 +45,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             if (isArray(newValue)) {
                 handleChange('splice', [
                     0, 0, ...newValue
-                ])
+                ]);
             }
             else {
                 handleChange("addMany", newValue);
@@ -91,11 +91,11 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         callBacks = null;
     };
     cmNode.addEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
-    const handleChange = (prop, params) => {
+    const handleChange = (methodName, params) => {
         const parent = cmNode.parentNode;
         const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
         (() => {
-            switch (prop) {
+            switch (methodName) {
                 case 'addMany':
                     const fragDoc = document.createDocumentFragment();
                     const promiseList = [];
