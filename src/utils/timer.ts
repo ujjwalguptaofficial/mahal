@@ -7,19 +7,23 @@ export class Timer {
         });
     }
 
+    reset() {
+        this.throttleTimer = null;
+    }
+
     throttle(fn, delay = 0) {
         if (this.throttleTimer) return;
         this.throttleTimer = setTimeout(() => {
-            this.throttleTimer = null;
             fn();
+            this.reset();
         }, delay);
     }
 
     debounce(fn, delay = 0) {
         clearTimeout(this.throttleTimer);
         this.throttleTimer = setTimeout(() => {
-            this.throttleTimer = null;
             fn();
+            this.reset();
         }, delay);
     }
 }

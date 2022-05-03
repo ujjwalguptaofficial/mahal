@@ -54,6 +54,10 @@ describe('Array', function () {
         // debugger;
         // component.students[0].name = 'commander';
         // await component.waitFor("update");
+        const trs = component.findAll('tr');
+        const lastTr = trs[trs.length - 1];
+        const itemLength = lastTr.querySelector('.item-length');
+        expect(itemLength.textContent).equal('2');
         checkForData();
     });
 

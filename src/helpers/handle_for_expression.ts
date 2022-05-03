@@ -1,71 +1,55 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, isObject, forOwn, getObjectLength } from "../utils";
+import { isPrimitive, isNull, isArray, isObject, forOwn, getObjectLength, promiseResolve } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
 import { Logger } from "./logger";
 import { indexOf } from "./index_of";
 
-export const runForExp = (key, value, method) => {
-    const els: any[] = [];
+
+
+export function handleForExp(this: Component, key: string, method: (...args) => Promise<HTMLElement>) {
+    let cmNode = createCommentNode();
+    const els = [cmNode];
+    let resolvedValue = this.getState(key);
     if (process.env.NODE_ENV !== 'production') {
-        if (isPrimitive(value) || isNull(value)) {
+        if (isPrimitive(resolvedValue) || isNull(resolvedValue)) {
             new Logger(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
         }
     }
 
-    if (isArray(value)) {
-        value.map((item, i) => {
-            els.push(method(item, i));
-        });
+    for (const prop in resolvedValue) {
+        els.push(
+            (method as any)(resolvedValue[prop], prop)
+        );
     }
-    else if (isObject(value)) {
-        for (const prop in value) {
-            els.push(method(value[prop], prop));
-        }
-    }
-    return els;
-};
-
-export function handleForExp(this: Component, key: string, method: (...args) => Promise<HTMLElement>) {
-    let cmNode = createCommentNode();
-    let els = [cmNode];
-    let resolvedValue = this.getState(key);
-    els = els.concat(runForExp(key, resolvedValue, method));
     const isValueArray = isArray(resolvedValue);
     let callBacks = {
-        [key]: (newValue) => {
+        [key]: (newValue, oldValue) => {
             // value resetted
-            runForExp(key, newValue, method);
+            // runForExp(key, newValue, method);
             const parent = cmNode.parentNode;
             // remove all nodes
 
-            // for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
-            //     parent.removeChild(cmNode.nextSibling);
-            // }
-            let nextSibling = cmNode.nextSibling;
-            while (nextSibling != null) {
-                parent.removeChild(nextSibling);
-                nextSibling = cmNode.nextSibling;
+            for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
+                parent.removeChild(cmNode.nextSibling);
             }
+            // let nextSibling = cmNode.nextSibling;
+            // while (nextSibling != null) {
+            //     parent.removeChild(nextSibling);
+            //     nextSibling = cmNode.nextSibling;
+            // }
 
             // add all node
             if (isArray(newValue)) {
-                callBacks[`${key}.push`](newValue);
+                handleChange('splice', [
+                    0, 0, ...newValue
+                ]);
             }
             else {
-                let index = 0;
-                forOwn(newValue, (prop, value) => {
-                    index++;
-                    handleChange("add", {
-                        value,
-                        key: prop,
-                        length: index + 1
-                    });
-                });
+                handleChange("addMany", newValue);
             }
-            emitUpdate(this);
         },
         [`${key}.push`]: (values) => {
             handleChange("splice", [getObjectLength(this.getState(key)) - values.length, 0, ...values]);
@@ -107,76 +91,95 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         callBacks = null;
     };
     cmNode.addEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
-    const handleChange = (prop, params) => {
+    const handleChange = (methodName, params) => {
         const parent = cmNode.parentNode;
         const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
-        switch (prop) {
-            case 'add':
-                const savedValue = this.getState(key);
-                const length = getObjectLength(savedValue);
-                method(params.value, params.key).then(newElement => {
-                    parent.insertBefore(newElement, parent.childNodes[indexOfRef + length]);
-                }).catch(err => {
-                    emitError.call(this, err);
-                });
-                break;
-            case 'splice':
-                // i==1 for comment nodes 
-                const relativeIndex = indexOfRef + params[0];
-                // remove elements
-                for (let i = 1; i <= params[1]; i++) {
-                    const child = parent.childNodes[relativeIndex + 1];
-                    if (child) {
-                        parent.removeChild(child);
-                    }
-                }
-                if (!isValueArray) break;
-                
-                // add new elements from splice third arguments
-                const promises = [];
-                for (let i = 2, j = params[0], paramLength = params.length; i < paramLength; i++, j++) {
-                    promises.push(
-                        method(params[i], j).then(newElement => {
-                            parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + j]);
-                        })
-                    );
-                }
+        (() => {
+            switch (methodName) {
+                case 'addMany':
+                    const fragDoc = document.createDocumentFragment();
+                    const promiseList = [];
+                    forOwn(params, (prop, value) => {
+                        promiseList.push(
+                            method(value, prop).then(newElement => {
+                                fragDoc.appendChild(newElement);
+                            })
+                        );
+                    });
 
-                // arrange items after insertion
-                const from = (params.length - 2) + params[0];
-                // resolvedValue = this.resolve(key);
-                const sliced = this.getState(key).slice(from);
-                // const asyncElements = runForExp(key, sliced, method);
-                Promise.all(promises).then(_ => {
-                    return Promise.all(
-                        sliced.map((item, itemIndex) => {
-                            return method(item, from + itemIndex);
-                        })
-                    );
-                }).then(elements => {
-                    const spliceRefIndex = indexOfRef + 1 + params[0] + params.length - 2;
-                    elements.forEach((newEl: HTMLElement, elementIndex) => {
-                        const el = parent.childNodes[spliceRefIndex + elementIndex];
-                        parent.replaceChild(newEl, el);
+                    return Promise.all(promiseList).then(_ => {
+                        parent.insertBefore(
+                            fragDoc, parent.childNodes[indexOfRef + 1]
+                        );
                     });
-                }).catch(err => {
-                    emitError.call(this, err);
-                });
-                break;
-            case 'update':
-                resolvedValue = this.getState(key);
-                const paramKey = params.key;
-                const index = isValueArray ? paramKey : indexOf(resolvedValue, paramKey);
-                if (index >= 0) {
-                    method(params.value, paramKey).then(newElement => {
-                        parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
-                    }).catch(err => {
-                        emitError.call(this, err);
+                case 'add':
+                    const savedValue = this.getState(key);
+                    const length = getObjectLength(savedValue);
+                    return method(params.value, params.key).then(newElement => {
+                        parent.insertBefore(newElement, parent.childNodes[indexOfRef + length]);
                     });
-                }
-                break;
-        }
-        emitUpdate(this);
+                case 'splice':
+                    // i==1 for comment nodes 
+                    const relativeIndex = indexOfRef + params[0];
+                    // remove elements
+                    for (let i = 1; i <= params[1]; i++) {
+                        const child = parent.childNodes[relativeIndex + 1];
+                        if (child) {
+                            parent.removeChild(child);
+                        }
+                    }
+                    if (!isValueArray) return promiseResolve(null);
+
+                    // add new elements from splice third arguments
+                    const promises = [];
+                    const frag = document.createDocumentFragment();
+                    for (let i = 2, j = params[0], paramLength = params.length; i < paramLength; i++, j++) {
+                        promises.push(
+                            method(params[i], j).then(newElement => {
+                                // parent.insertBefore(newElement, parent.childNodes[indexOfRef + 1 + j]);
+                                frag.appendChild(newElement);
+                            })
+                        );
+                    }
+
+
+
+                    // arrange items after insertion
+                    const from = (params.length - 2) + params[0];
+                    // resolvedValue = this.resolve(key);
+                    const sliced = this.getState(key).slice(from);
+                    // const asyncElements = runForExp(key, sliced, method);
+                    return Promise.all([
+                        Promise.all(promises),
+                        Promise.all(
+                            sliced.map((item, itemIndex) => {
+                                return method(item, from + itemIndex);
+                            })
+                        )
+                    ]).then(results => {
+                        parent.insertBefore(frag, parent.childNodes[indexOfRef + 1 + params[0]]);
+                        const spliceRefIndex = indexOfRef + 1 + params[0] + params.length - 2;
+                        results[1].forEach((newEl: HTMLElement, elementIndex) => {
+                            const el = parent.childNodes[spliceRefIndex + elementIndex];
+                            parent.replaceChild(newEl, el);
+                        });
+                    });
+                case 'update':
+                    resolvedValue = this.getState(key);
+                    const paramKey = params.key;
+                    const index = isValueArray ? paramKey : indexOf(resolvedValue, paramKey);
+                    if (index >= 0) {
+                        return method(params.value, paramKey).then(newElement => {
+                            parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);
+                        });
+                    }
+                    return promiseResolve(null);
+            }
+        })().then(_ => {
+            emitUpdate(this);
+        }).catch(err => {
+            emitError.call(this, err);
+        });
     };
     this.watch(key, callBacks[key]).
         watch(`${key}.push`, callBacks[`${key}.push`]).

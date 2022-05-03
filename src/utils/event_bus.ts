@@ -1,4 +1,5 @@
 import { clone } from "./clone";
+import { promiseResolve } from "./promise_resolve";
 
 export class EventBus {
 
@@ -62,7 +63,7 @@ export class EventBus {
         return Promise.all(
             events.map(cb => {
                 const result = cb.call(this._ctx, ...args);
-                return result && result.then ? result : Promise.resolve(result);
+                return result && result.then ? result : promiseResolve(result);
             })
         );
     }
@@ -84,9 +85,9 @@ export class EventBus {
             const eventCb = events[index++];
             if (eventCb) {
                 const result = eventCb.call(this._ctx, ...args);
-                return result && result.then ? result : Promise.resolve(result);
+                return result && result.then ? result : promiseResolve(result);
             }
-            return Promise.resolve(null);
+            return promiseResolve(null);
         };
 
         return new Promise<any[]>((res) => {

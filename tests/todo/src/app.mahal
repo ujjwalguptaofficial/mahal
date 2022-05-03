@@ -1,0 +1,99 @@
+---
+name: app.mahal
+description: This component is the main parent component which is used to initiate the app.
+dateCreated: April 24, 2022
+---
+
+<html>
+<div class="column center container">
+	<NewTodo class="mb-20px" @newTask="addTask" />
+	<Todo :for(task in tasks) @remove="removeTask" class="mt-20px" :task="task" />
+	<button @click="addAll">Add all tasks</button>
+	<button @click="clearAll">Clear all tasks</button>
+</div>
+</html>
+<script>
+import { Component, Reactive, Children } from "mahal";
+import Todo from "@/components/todo.mahal";
+import NewTodo from "@/components/new_todo.mahal";
+import "flexstyle";
+
+@Children({
+    Todo,
+    NewTodo,
+})
+export default class App extends Component {
+    uniqueId = 0;
+
+    // @Reactive
+    tasks = [];
+
+    constructor() {
+        super();
+        console.time("app started");
+        const students = [];
+        for (let i = 0; i < 10; i++) {
+            students.push({
+                title: "hello",
+                description: "world",
+            });
+        }
+        this.tasks = students;
+    }
+
+    onInit() {
+        this.on("mount", this.onMounted);
+        this.on("update", this.onUpdated);
+    }
+
+    onUpdated() {
+        console.timeEnd("performance started");
+    }
+
+    onMounted() {
+        // this.addTask({
+        //     title: "Buy shoe",
+        //     description: "Buy a canvas shoe from Myntra",
+        // });
+        console.timeEnd("app started");
+    }
+
+    addTask(task) {
+        task.id = ++this.uniqueId;
+        this.tasks.push(task);
+    }
+
+    removeTask(id) {
+        const index = this.tasks.findIndex((q) => q.id === id);
+        if (index >= 0) {
+            this.tasks.splice(index, 1);
+        }
+    }
+
+    addAll() {
+        console.time("performance started");
+        const students = [];
+        for (let i = 0; i < 10000; i++) {
+            students.push({
+                title: "hello",
+                description: "world",
+            });
+        }
+        this.setState("tasks", students);
+        console.timeLog("performance started");
+    }
+
+    clearAll() {
+        const length = this.tasks.length;
+        // for (let i = 0; i < length; i++) {
+        this.tasks.splice(0, length);
+        // }
+    }
+}
+</script>
+<style>
+.container {
+    max-width: 500px;
+    margin-top: 50px;
+}
+</style>
