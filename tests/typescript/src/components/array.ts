@@ -1,4 +1,4 @@
-import { Component, Template, Reactive } from "mahal";
+import { Component, Template, Reactive, Computed } from "mahal";
 
 
 @Template(`
@@ -20,6 +20,11 @@ import { Component, Template, Reactive } from "mahal";
     <td :else on:click="()=>{editStudent(index)}"><button id="btnEditStudent">EditStudent</button></td>
     <td><button class="btn-delete" on:click="()=>{deleteStudent(index)}">Delete</button></td>
     </tr>
+
+    <tr>
+    <td class="item-length">{{length}}</td>
+    <td>Hello</td>
+</tr>
     </table>
 </div>
 `)
@@ -33,6 +38,11 @@ export default class extends Component {
 
     @Reactive
     editName = "";
+
+    @Computed('students')
+    get length() {
+        return this.students.length;
+    }
 
 
     addStudent() {
