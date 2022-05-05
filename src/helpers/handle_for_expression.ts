@@ -166,8 +166,14 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     });
                 case 'update':
                     resolvedValue = this.getState(key);
-                    const paramKey = params.key;
-                    const index = isValueArray ? paramKey : indexOf(resolvedValue, paramKey);
+                    let paramKey = params.key;
+                    let index;
+                    if (isValueArray) {
+                        paramKey = index = Number(paramKey);
+                    }
+                    else {
+                        index = indexOf(resolvedValue, paramKey);
+                    }
                     if (index >= 0) {
                         return method(params.value, paramKey).then(newElement => {
                             parent.replaceChild(newElement, parent.childNodes[indexOfRef + 1 + index]);

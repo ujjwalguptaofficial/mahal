@@ -22,7 +22,7 @@ import { Component, Template, Reactive, Computed } from "mahal";
     </tr>
 
     <tr>
-    <td class="item-length">{{length}}</td>
+    <td class="item-length">{{studentsLength}}</td>
     <td>Hello</td>
 </tr>
     </table>
@@ -40,7 +40,7 @@ export default class extends Component {
     editName = "";
 
     @Computed('students')
-    get length() {
+    get studentsLength() {
         return this.students.length;
     }
 

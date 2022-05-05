@@ -92,12 +92,13 @@ describe("Fruit", () => {
     it("update value", async function () {
         component.initializeFruit();
         const promise = new Promise<void>((res) => {
-            component.watch("fruits.update", (newValue) => {
-                expect(newValue).eql({ key: 0, value: 'amrud' });
+            const cb = (newValue) => {
+                expect(newValue).eql({ key: '0', value: 'amrud' });
                 checkFruitValue(fruits);
-                component.unwatch("fruits.update");
+                component.unwatch("fruits.update", cb);
                 res();
-            });
+            };
+            component.watch("fruits.update", cb);
         })
         const fruits = clone(component.initialFruits);
         fruits[0] = 'amrud';
@@ -235,6 +236,25 @@ describe("Fruit", () => {
 
         component.fruits.reverse();
 
+        return promise;
+    })
+
+    it("update value by setState", async function () {
+        component.initializeFruit();
+        const fruits = clone(component.initialFruits);
+        const promise = new Promise<void>((res) => {
+            const cb = (newValue) => {
+                expect(newValue).eql({ key: '0', value: 'lichi' });
+                // console.log("fruits", fruits);
+                // console.log("component.fruits", component.fruits);
+                checkFruitValue(fruits);
+                component.unwatch("fruits.update", cb);
+                res();
+            }
+            component.watch("fruits.update", cb);
+        })
+        fruits[0] = 'lichi';
+        component.setState('fruits.0', 'lichi');
         return promise;
     })
 })

@@ -22,7 +22,7 @@ import { Component, Template, Reactive, LIFECYCLE_EVENT, Computed } from "mahal"
       
        </tr>
        <tr>
-        <td class="item-length">{{length}}</td>
+        <td class="item-length">{{students_length}}</td>
         <td>Hello</td>
     </tr>
     </table>
@@ -43,7 +43,7 @@ export default class extends Component {
     editName = "";
 
     @Computed('students')
-    get length() {
+    get students_length() {
         return Object.keys(
             this.students
         ).length;

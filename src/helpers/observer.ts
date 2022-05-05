@@ -46,7 +46,7 @@ export class Observer {
                 },
                 set: (target, prop: string, newValue, receiver) => {
                     const setValue = Reflect.set(target, prop, newValue, receiver);
-                    onChange(`${prefix}update`, { key: Number(prop), value: newValue });
+                    onChange(`${prefix}update`, { key: prop, value: newValue });
                     return setValue;
                 }
             });

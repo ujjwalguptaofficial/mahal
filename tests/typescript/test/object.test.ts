@@ -2,6 +2,7 @@ import ObjectComponent from "../src/components/object";
 import { app } from "../src/index";
 import { nextTick, getObjectLength } from "mahal";
 import { expect } from "chai";
+import { setInputValue } from "mahal-test-utils";
 
 describe('Object', function () {
 
@@ -55,14 +56,17 @@ describe('Object', function () {
 
     it("add students using btn", function (done) {
         const newName = "ujjwal gupta";
-        component.find('#name').setValue(newName);
+        setInputValue(
+            component.find('#name'),
+            newName
+        );
         expect(component.name).equal(newName);
         component.find("#btnAdd").click();
 
         component.waitFor('update').then(() => {
             expect(getObjectLength(component.students)).equal(1);
             expect(component.students[newName].name).equal(newName);
-            expect(component.find("#name").value).equal('');
+            expect((component.find<HTMLInputElement>("#name") as HTMLInputElement).value).equal('');
             expect(component.findAll(".tr-list")).length(1);
             expect(getObjectLength(component.students)).equal(1);
             done();
@@ -73,7 +77,10 @@ describe('Object', function () {
 
         component.find('#btnEditStudent').click();
         component.waitFor('update').then(() => {
-            component.find('.edit-student-input input').setValue("hello");
+            setInputValue(
+                component.find('.edit-student-input input'),
+                "hello"
+            );
             component.find('#btnUpdateStudent').click();
         }).then(() => {
             expect(component.students['ujjwal gupta'].name).equal('hello');
