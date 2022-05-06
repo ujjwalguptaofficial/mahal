@@ -47,7 +47,7 @@ describe('Object', function () {
 
     it("reset students value", function (done) {
         component.students = {};
-        (nextTick as any)().then(() => {
+        component.waitFor('update').then(() => {
             expect(component.findAll(".tr-list")).length(0);
             expect(getObjectLength(component.students)).equal(0);
             done();
@@ -66,7 +66,7 @@ describe('Object', function () {
         component.waitFor('update').then(() => {
             expect(getObjectLength(component.students)).equal(1);
             expect(component.students[newName].name).equal(newName);
-            expect((component.find<HTMLInputElement>("#name") as HTMLInputElement).value).equal('');
+            expect((component.find("#name") as HTMLInputElement).value).equal('');
             expect(component.findAll(".tr-list")).length(1);
             expect(getObjectLength(component.students)).equal(1);
             done();

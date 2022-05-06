@@ -55,15 +55,16 @@ describe('Array', function () {
         // component.students[0].name = 'commander';
         // await component.waitFor("update");
         const trs = component.findAll('tr');
-        const lastTr = trs[trs.length - 1];
+        const lastTr = trs[trs.length - 1] as HTMLTableRowElement;
         const itemLength = lastTr.querySelector('.item-length');
+        expect(component.findAll('tr.tr-list.gt-0')).length(1);
         expect(itemLength.textContent).equal('2');
         checkForData();
     });
 
     it("reset students value", function (done) {
         component.students = [];
-        nextTick(() => {
+        component.waitFor('update').then(() => {
             expect(component.findAll(".tr-list")).length(0);
             done();
         })

@@ -3,14 +3,14 @@ import { Component, Template, Reactive, Computed } from "mahal";
 
 @Template(`
 <div>
-<button on:click="()=>{students=[]}">Reset</button>
+<button on:click="()=>{reset()}">Reset</button>
     <table>
     <tr>
         <td><input id="name" :model(name) /></td>
         <td><button id="btnAdd" on:click="addStudent">Add Student</button></td>
         <td></td>
     </tr>
-    <tr class="tr-list" :for(student,index in students)>
+    <tr class="tr-list" :for(student,index in students) :class({'gt-0':index>0})>
     <td>{{index}}</td>
     <td class="edit-student-input" :if(student.isEdit) >
        <input :model(editName) />
@@ -81,7 +81,12 @@ export default class extends Component {
     }
 
     reset() {
-        this.students = [];
+        this.students = [ {
+            name: 'ujjwal'
+        },
+        {
+            name: 'ujjwal'
+        }];
     }
 
     deleteStudent(index) {

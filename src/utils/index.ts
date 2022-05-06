@@ -24,3 +24,4 @@ export * from "./hashify_array";
 export * from "./promise_resolve";
 export * from "./lazy_component";
 export * from "./emit_state_change";
+export * from "./for";
