@@ -7,23 +7,6 @@ import { emitError } from "./emit_error";
 import { Logger } from "./logger";
 import { indexOf } from "./index_of";
 
-const getFragDoc = (params, method) => {
-    const fragDoc = document.createDocumentFragment();
-    const promiseList = [];
-    forEach(params, (value, prop) => {
-        promiseList.push(
-            method(value, prop).then(newElement => {
-                fragDoc.appendChild(newElement);
-            })
-        );
-    });
-
-    return Promise.all(promiseList).then(_ => {
-        return fragDoc;
-    })
-}
-
-
 export function handleForExp(this: Component, key: string, method: (...args) => Promise<HTMLElement>) {
     let cmNode = createCommentNode();
     const els = [cmNode];
@@ -45,10 +28,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             handleChange("reset", [oldValue, newValue]);
         },
         [`${key}.push`]: (values) => {
-            handleChange("splice", [
-                getObjectLength(this.getState(key)) - values.length, 0,
-                ...values]
-            );
+            handleChange("push", values);
         },
         [`${key}.add`]: (newValue) => {
             handleChange("add", newValue);
@@ -65,8 +45,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         },
         [`${key}.reverse`]: () => {
             const reversedResult = this.getState(key);
-            const length = getObjectLength(reversedResult);
-            handleChange("splice", [0, length, ...reversedResult]);
+            handleChange("reset", [reversedResult, reversedResult]);
+            // const reversedResult = newValue;
+            // const length = getObjectLength(reversedResult);
+            // handleChange("splice", [0, length, ...reversedResult]);
         },
         [`${key}.splice`]: (newValue) => {
             handleChange("splice", newValue);
@@ -91,10 +73,39 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         const parent = cmNode.parentNode;
         const indexOfRef = Array.prototype.indexOf.call(parent.childNodes, cmNode);
         const methods = {
+            push: () => {
+                const newValue = params;
+                const fragDoc = document.createDocumentFragment();
+                const promiseList = [];
+                let fromIndex = getObjectLength(this.getState(key)) - newValue.length;
+                forEach(newValue, (value, prop) => {
+                    promiseList.push(
+                        method(value, prop + fromIndex).then(newElement => {
+                            fragDoc.appendChild(newElement);
+                        })
+                    );
+                });
+
+                return Promise.all(promiseList).then(_ => {
+                    parent.insertBefore(
+                        fragDoc, parent.childNodes[indexOfRef + 1 + fromIndex]
+                    );
+                });
+            },
             reset() {
                 const oldValue = params[0];
                 const newValue = params[1];
-                return getFragDoc(newValue, method).then(fragDoc => {
+                const fragDoc = document.createDocumentFragment();
+                const promiseList = [];
+                forEach(newValue, (value, prop) => {
+                    promiseList.push(
+                        method(value, prop).then(newElement => {
+                            fragDoc.appendChild(newElement);
+                        })
+                    );
+                });
+
+                return Promise.all(promiseList).then(_ => {
                     // value resetted
                     // runForExp(key, newValue, method);
                     // const parent = cmNode.parentNode;
