@@ -1,11 +1,14 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, isObject, forOwn, getObjectLength, promiseResolve, forEach } from "../utils";
+import { isPrimitive, isNull, isArray, getObjectLength, promiseResolve, forEach } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
 import { Logger } from "./logger";
 import { indexOf } from "./index_of";
+
+const forExpMethods = ['push', 'add', 'splice', 'update', 'delete', 'pop', 'shift', 'unshift', 'reverse'];
+
 
 export function handleForExp(this: Component, key: string, method: (...args) => Promise<HTMLElement>) {
     let cmNode = createCommentNode();
@@ -204,15 +207,12 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             emitError.call(this, err);
         });
     };
-    this.watch(key, callBacks[key]).
-        watch(`${key}.push`, callBacks[`${key}.push`]).
-        watch(`${key}.add`, callBacks[`${key}.add`]).
-        watch(`${key}.splice`, callBacks[`${key}.splice`]).
-        watch(`${key}.update`, callBacks[`${key}.update`]).
-        watch(`${key}.delete`, callBacks[`${key}.delete`]).
-        watch(`${key}.pop`, callBacks[`${key}.pop`]).
-        watch(`${key}.shift`, callBacks[`${key}.shift`]).
-        watch(`${key}.unshift`, callBacks[`${key}.unshift`]).
-        watch(`${key}.reverse`, callBacks[`${key}.reverse`]);
+    this.watch(key, callBacks[key]);
+    // watch(`${key}.update`, callBacks[`${key}.update`]).
+    // watch(`${key}.delete`, callBacks[`${key}.delete`]);
+    forExpMethods.forEach(methodName => {
+        this.watch(`${key}.${methodName}`, callBacks[`${key}.${methodName}`]);
+    })
+
     return els;
 }
