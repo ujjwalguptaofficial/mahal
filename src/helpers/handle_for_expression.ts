@@ -113,14 +113,11 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 });
 
                 return Promise.all(promiseList).then(_ => {
-                    // value resetted
-                    // runForExp(key, newValue, method);
-                    // const parent = cmNode.parentNode;
                     // remove all nodes
-
                     for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
                         parent.removeChild(cmNode.nextSibling);
                     }
+                    
                     parent.insertBefore(
                         fragDoc, childNodes[indexOfRef + 1]
                     );
