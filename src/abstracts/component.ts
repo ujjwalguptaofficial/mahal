@@ -10,21 +10,21 @@ import { Mahal } from "../mahal";
 
 // }
 
-class AnimationFrame {
-    private throttleTimer;
+// class AnimationFrame {
+//     private throttleTimer;
 
-    reset() {
-        this.throttleTimer = null;
-    }
+//     reset() {
+//         this.throttleTimer = null;
+//     }
 
-    debounce(fn) {
-        cancelAnimationFrame(this.throttleTimer);
-        this.throttleTimer = requestAnimationFrame(() => {
-            fn();
-            this.reset();
-        });
-    }
-}
+//     debounce(fn) {
+//         cancelAnimationFrame(this.throttleTimer);
+//         this.throttleTimer = requestAnimationFrame(() => {
+//             fn();
+//             this.reset();
+//         });
+//     }
+// }
 
 
 export abstract class Component {
@@ -373,7 +373,6 @@ export abstract class Component {
     // tslint:disable-next-line
     private __computed__;
     timer = new Timer();
-    animator = new AnimationFrame();
 
     static shouldCheckProp = true;
 
