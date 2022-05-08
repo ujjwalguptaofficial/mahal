@@ -55,7 +55,13 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
     }
 
     forOwn(attr, (key, attrItem) => {
-        setAttribute(component, key, getAttributeValue(attrItem, attrItem.v));
+        const attrValue = getAttributeValue(attrItem, attrItem.v);
+        if (key === "key") {
+            component._mhl_key = attrValue;
+        }
+        else {
+            setAttribute(component, key, attrValue);
+        }
         if (attrItem.k) {
             this.watch(attrItem.k, (newValue) => {
                 setAttribute(component, key, getAttributeValue(attrItem, newValue));

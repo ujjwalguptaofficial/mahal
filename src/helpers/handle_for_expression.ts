@@ -6,6 +6,7 @@ import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
 import { Logger } from "./logger";
 import { indexOf } from "./index_of";
+import { getElementKey } from "./get_el_key";
 
 const forExpMethods = ['push', 'add', 'splice', 'update', 'delete', 'pop', 'shift', 'unshift', 'reverse'];
 
@@ -180,8 +181,12 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     const spliceRefIndex = indexOfRef + 1 + params[0] + params.length - 2;
                     results[1].forEach((newEl: HTMLElement, elementIndex) => {
                         const el = childNodes[spliceRefIndex + elementIndex];
+                        const elKey = getElementKey(el);
+                        if (elKey == null || elKey !== getElementKey(newEl)) {
+                            parent.replaceChild(newEl, el);
+                        }
                         // el.replaceWith()
-                        parent.replaceChild(newEl, el);
+                        // parent.replaceChild(newEl, el);
                     });
                 });
             },
