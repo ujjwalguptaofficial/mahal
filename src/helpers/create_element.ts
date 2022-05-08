@@ -2,7 +2,7 @@ import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { defaultSlotName } from "../constant";
 import { handleAttribute } from "./handle_attribute";
-import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve } from "../utils";
+import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload } from "../utils";
 import { executeEvents } from "./execute_events";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
@@ -92,93 +92,111 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
     return element;
 }
 
-const loadComponent = (savedComponent) => {
-    if (savedComponent instanceof Promise) {
-        return savedComponent.then(comp => {
-            return comp.default;
-        });
-    }
-    else if (savedComponent.isLazy) {
-        return loadComponent(
-            savedComponent.component()
-        );
-    }
-    return promiseResolve(savedComponent);
-};
 
-export function createElement(this: Component, tag: string, childs: Array<Promise<HTMLElement>>, option): Promise<HTMLElement | Comment> {
 
-    return new Promise((res, rej) => {
-        if (tag == null) {
-            return res(createCommentNode());
-        }
-        if (!option.attr) {
-            option.attr = {};
-        }
-        Promise.all(childs).then(htmlChilds => {
-            if (HTML_TAG[tag]) {
-                res(createNativeComponent.call(this, tag, htmlChilds, option));
-                return;
+export function createElement(this: Component, tag: string, childs: HTMLElement[], option): HTMLElement | Comment {
+    if (tag == null) {
+        return createCommentNode();
+    }
+    if (!option.attr) {
+        option.attr = {};
+    }
+
+    if (HTML_TAG[tag]) {
+        return createNativeComponent.call(this, tag, childs, option);
+    }
+    const savedComponent = this.children[tag] || this['__app__']['_components'][tag];
+    if (savedComponent) {
+        const loadComponent = (componentClass) => {
+            if (componentClass instanceof Promise) {
+                return componentClass.then(comp => {
+                    return comp.default;
+                });
+                // return createCommentNode();
             }
-            const savedComponent = this.children[tag] || this['__app__']['_components'][tag];
-            if (savedComponent) {
-                loadComponent(savedComponent).then((comp: any) => {
-                    const component: Component = createComponent(comp, this['__app__']);
-                    const htmlAttributes = initComponent.call(this, component as any, option);
-                    executeRender(component, childs).then(_ => {
-                        let element = component.element;
-                        let targetSlot = component.find(`slot[name='default']`) || (element.tagName.match(/slot/i) ? element : null);
-                        if (targetSlot) {
-                            htmlChilds.forEach(item => {
-                                if (item.tagName === "TARGET") {
-                                    const namedSlot = component.find(`slot[name='${item.getAttribute("name")}']`);
-                                    if (namedSlot) {
-                                        targetSlot = namedSlot;
-                                    }
-                                }
-                                const targetSlotParent = targetSlot.parentElement;
-                                if (targetSlotParent) {
-                                    // nodeType -3 : TextNode
-                                    if (item.nodeType === 3) {
-                                        targetSlotParent.insertBefore(item, targetSlot.nextSibling);
-                                    }
-                                    else {
-                                        item.childNodes.forEach(child => {
-                                            targetSlotParent.insertBefore(child, targetSlot.nextSibling);
-                                        });
-                                    }
-                                    targetSlotParent.removeChild(targetSlot);
-                                }
-                                else {
-                                    element = component.element = item;
-                                }
+            else if (componentClass.isLazy) {
+                return loadComponent(
+                    (componentClass as ILazyComponentPayload).component()
+                );
+                // return createCommentNode();
+            }
+            return componentClass;
+        };
+        const renderComponent = (comp) => {
+            const component: Component = createComponent(comp, this['__app__']);
+            const htmlAttributes = initComponent.call(this, component as any, option);
+            executeRender(component, childs);
+            let element = component.element;
+            let targetSlot = component.find(`slot[name='default']`) || (element.tagName.match(/slot/i) ? element : null);
+            if (targetSlot) {
+                childs.forEach(item => {
+                    if (item.tagName === "TARGET") {
+                        const namedSlot = component.find(`slot[name='${item.getAttribute("name")}']`);
+                        if (namedSlot) {
+                            targetSlot = namedSlot;
+                        }
+                    }
+                    const targetSlotParent = targetSlot.parentElement;
+                    if (targetSlotParent) {
+                        // nodeType -3 : TextNode
+                        if (item.nodeType === 3) {
+                            targetSlotParent.insertBefore(item, targetSlot.nextSibling);
+                        }
+                        else {
+                            item.childNodes.forEach(child => {
+                                targetSlotParent.insertBefore(child, targetSlot.nextSibling);
                             });
                         }
-
-                        (htmlAttributes || []).forEach(item => {
-                            switch (item.key) {
-                                case 'class':
-                                    item.value = (getAttribute(element, item.key) || '') + ' ' + item.value;
-                                    break;
-                                case 'style':
-                                    item.value = (getAttribute(element, item.key) || '') + item.value;
-                            }
-                            setAttribute(element, item.key, item.value);
-                        });
-                        res(element);
-                    }).catch(rej);
-                }).catch((err) => {
-                    emitError.call(this, err, true);
+                        targetSlotParent.removeChild(targetSlot);
+                    }
+                    else {
+                        element = component.element = item;
+                    }
                 });
             }
-            else if (tag === "in-place") {
-                res(handleInPlace.call(this, childs, option));
-            }
-            else {
-                rej(new Logger(ERROR_TYPE.InvalidComponent, {
-                    tag: tag
-                }).throwPlain(true));
-            }
-        }).catch(rej);
-    });
+
+            (htmlAttributes || []).forEach(item => {
+                switch (item.key) {
+                    case 'class':
+                        item.value = (getAttribute(element, item.key) || '') + ' ' + item.value;
+                        break;
+                    case 'style':
+                        item.value = (getAttribute(element, item.key) || '') + item.value;
+                }
+                setAttribute(element, item.key, item.value);
+            });
+            return element;
+        };
+        const compPromise = loadComponent(savedComponent);
+        if (compPromise instanceof Promise) {
+            const el = createCommentNode();
+            compPromise.then(comp => {
+                const newEl = renderComponent(comp);
+                // replaceEl(
+                //     el as any,
+                //     newEl,
+                // );
+                el.parentElement.insertBefore(
+                    newEl, el.nextSibling
+                );
+            }).catch((err) => {
+                emitError.call(this, err, true);
+            });
+            return el;
+        }
+        return renderComponent(compPromise);
+        //    .then((comp: any) => {
+
+        //     }).catch((err) => {
+        //         emitError.call(this, err, true);
+        //     });
+    }
+    else if (tag === "in-place") {
+        return handleInPlace.call(this, childs, option);
+    }
+    else {
+        new Logger(ERROR_TYPE.InvalidComponent, {
+            tag: tag
+        }).throwPlain();
+    }
 }

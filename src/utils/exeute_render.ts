@@ -15,24 +15,23 @@ function getRender(this: Component): () => Promise<HTMLElement> {
     })();
 }
 
-export const executeRender = (comp: Component, children?): Promise<any> => {
+export const executeRender = (comp: Component, children?) => {
     const renderFn = getRender.call(comp);
-    return renderFn.call(comp, {
+    const el: HTMLElement = renderFn.call(comp, {
         createElement: createElement.bind(comp),
         createTextNode: createTextNode.bind(comp),
         format: comp.format.bind(comp),
         runExp: handleExpression.bind(comp),
         children: children || []
         // runForExp: this.handleForExp_.bind(this)
-    } as IRenderContext).then((el: HTMLElement) => {
-        comp.element = el;
-        const clear = clearAll.bind(comp);
-        el.addEventListener(LIFECYCLE_EVENT.Destroy, clear);
-        comp.emit(LIFECYCLE_EVENT.Mount);
-        comp.isMounted = true;
-        comp.on(LIFECYCLE_EVENT.Destroy, () => {
-            el.removeEventListener(LIFECYCLE_EVENT.Destroy, clear);
-        });
-        return el;
+    } as IRenderContext);
+    comp.element = el;
+    const clear = clearAll.bind(comp);
+    el.addEventListener(LIFECYCLE_EVENT.Destroy, clear);
+    comp.emit(LIFECYCLE_EVENT.Mount);
+    comp.isMounted = true;
+    comp.on(LIFECYCLE_EVENT.Destroy, () => {
+        el.removeEventListener(LIFECYCLE_EVENT.Destroy, clear);
     });
+    return el;
 };

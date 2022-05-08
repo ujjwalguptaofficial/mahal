@@ -1,5 +1,5 @@
 import { Component } from "./abstracts/component";
-import { isString, initComponent, isObject, executeRender, getDataype, createComponent, EventBus } from "./utils";
+import { isString, initComponent, isObject, executeRender, getDataype, createComponent, EventBus, promiseResolve } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective, htmlDirective } from "./ready_made";
 import { Logger } from "./helpers";
@@ -64,13 +64,14 @@ export class Mahal {
         let componentInstance: Component = createComponent(this.__componentClass__, this);
         initComponent.call(this, componentInstance, {});
         this.emit(LIFECYCLE_EVENT.Create);
-        return executeRender(componentInstance).then(el => {
-            this.element.appendChild(
-                el
-            )
-            this.emit(LIFECYCLE_EVENT.Mount);
-            return componentInstance;
-        });
+        const el = executeRender(componentInstance);
+        this.element.appendChild(
+            el
+        )
+        this.emit(LIFECYCLE_EVENT.Mount);
+        return promiseResolve(
+            componentInstance
+        );
     }
 
     on(event: string, cb: Function) {

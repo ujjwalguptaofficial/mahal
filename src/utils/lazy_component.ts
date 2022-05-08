@@ -1,6 +1,6 @@
 import { ILazyComponent } from "../interface";
 
-interface ILazyComponentPayload {
+export interface ILazyComponentPayload {
     component: () => Promise<any>;
     loading: {
         component: () => Promise<any>;

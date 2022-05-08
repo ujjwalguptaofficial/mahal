@@ -12,7 +12,7 @@ import { ARRAY_MUTABLE_METHODS } from "../constant";
 const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 
 
-export function handleForExp(this: Component, key: string, method: (...args) => Promise<HTMLElement>) {
+export function handleForExp(this: Component, key: string, method: (...args) => HTMLElement) {
     let cmNode = createCommentNode();
     const els = [cmNode];
     let resolvedValue = this.getState(key);
@@ -83,52 +83,40 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             push: () => {
                 const newValue = params;
                 const fragDoc = document.createDocumentFragment();
-                const promiseList = [];
                 const fromIndex = getObjectLength(this.getState(key)) - newValue.length;
                 forEach(newValue, (value, prop) => {
-                    promiseList.push(
-                        method(value, prop + fromIndex).then(newElement => {
-                            fragDoc.appendChild(newElement);
-                        })
+                    fragDoc.appendChild(
+                        method(value, prop + fromIndex)
                     );
                 });
-
-                return Promise.all(promiseList).then(_ => {
-                    parent.insertBefore(
-                        fragDoc, childNodes[indexOfRef + 1 + fromIndex]
-                    );
-                });
+                parent.insertBefore(
+                    fragDoc, childNodes[indexOfRef + 1 + fromIndex]
+                );
             },
             reset() {
                 const oldValue = params[0];
                 const newValue = params[1];
                 const fragDoc = document.createDocumentFragment();
-                const promiseList = [];
                 forEach(newValue, (value, prop) => {
-                    promiseList.push(
-                        method(value, prop).then(newElement => {
-                            fragDoc.appendChild(newElement);
-                        })
+                    fragDoc.appendChild(
+                        method(value, prop)
                     );
                 });
 
-                return Promise.all(promiseList).then(_ => {
-                    // remove all nodes
-                    for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
-                        parent.removeChild(cmNode.nextSibling);
-                    }
-                    
-                    parent.insertBefore(
-                        fragDoc, childNodes[indexOfRef + 1]
-                    );
-                });
+                // remove all nodes
+                for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
+                    parent.removeChild(cmNode.nextSibling);
+                }
+
+                parent.insertBefore(
+                    fragDoc, childNodes[indexOfRef + 1]
+                );
             },
             add: () => {
                 const savedValue = this.getState(key);
                 const length = getObjectLength(savedValue);
-                return method(params.value, params.key).then(newElement => {
-                    parent.insertBefore(newElement, childNodes[indexOfRef + length]);
-                });
+                const newElement = method(params.value, params.key);
+                parent.insertBefore(newElement, childNodes[indexOfRef + length]);
             },
             splice: () => {
                 // i==1 for comment nodes 
@@ -145,47 +133,35 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
 
                 if (!isValueArray) {
                     removeElements();
-                    return promiseResolve(null);
+                    return null;
                 }
 
                 // add new elements from splice third arguments
-                const promises = [];
                 const frag = document.createDocumentFragment();
                 for (let i = 2, j = params[0], paramLength = params.length; i < paramLength; i++, j++) {
-                    promises.push(
-                        method(params[i], j).then(newElement => {
-                            frag.appendChild(newElement);
-                        })
-                    );
+                    const newElement = method(params[i], j);
+                    frag.appendChild(newElement);
                 }
-
-
 
                 // arrange items after insertion
                 const from = (params.length - 2) + params[0];
                 // resolvedValue = this.resolve(key);
                 const sliced = this.getState(key).slice(from);
                 // const asyncElements = runForExp(key, sliced, method);
-                return Promise.all([
-                    Promise.all(promises),
-                    Promise.all(
-                        sliced.map((item, itemIndex) => {
-                            return method(item, from + itemIndex);
-                        })
-                    )
-                ]).then(results => {
-                    removeElements();
-                    parent.insertBefore(frag, childNodes[indexOfRef + 1 + params[0]]);
-                    const spliceRefIndex = indexOfRef + 1 + params[0] + params.length - 2;
-                    results[1].forEach((newEl: HTMLElement, elementIndex) => {
-                        const el = childNodes[spliceRefIndex + elementIndex];
-                        const elKey = getElementKey(el);
-                        if (elKey == null || elKey !== getElementKey(newEl)) {
-                            parent.replaceChild(newEl, el);
-                        }
-                        // el.replaceWith()
-                        // parent.replaceChild(newEl, el);
-                    });
+                removeElements();
+                parent.insertBefore(frag, childNodes[indexOfRef + 1 + params[0]]);
+                const spliceRefIndex = indexOfRef + 1 + params[0] + params.length - 2;
+
+                sliced.map((item, itemIndex) => {
+                    return method(item, from + itemIndex);
+                }).forEach((newEl: HTMLElement, elementIndex) => {
+                    const el = childNodes[spliceRefIndex + elementIndex];
+                    const elKey = getElementKey(el);
+                    if (elKey == null || elKey !== getElementKey(newEl)) {
+                        parent.replaceChild(newEl, el);
+                    }
+                    // el.replaceWith()
+                    // parent.replaceChild(newEl, el);
                 });
             },
             update: () => {
@@ -199,18 +175,18 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     index = indexOf(resolvedValue, paramKey);
                 }
                 if (index >= 0) {
-                    return method(params.value, paramKey).then(newElement => {
-                        parent.replaceChild(newElement, childNodes[indexOfRef + 1 + index]);
-                    });
+                    const newElement = method(params.value, paramKey);
+                    parent.replaceChild(newElement, childNodes[indexOfRef + 1 + index]);
                 }
-                return promiseResolve(null);
+                return null;
             }
         };
-        methods[methodName]().then(_ => {
+        try {
+            methods[methodName]();
             emitUpdate(this);
-        }).catch(err => {
+        } catch (err) {
             emitError.call(this, err);
-        });
+        }
     };
     this.watch(key, callBacks[key]);
     forExpMethods.forEach(methodName => {
