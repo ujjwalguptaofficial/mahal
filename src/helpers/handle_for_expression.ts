@@ -80,11 +80,11 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         const childNodes = parent.childNodes;
         const indexOfRef = Array.prototype.indexOf.call(childNodes, cmNode);
         const methods = {
-            push: () => {
-                const newValue = params;
+            push() {
+                const pushedValue = params;
                 const fragDoc = document.createDocumentFragment();
-                const fromIndex = getObjectLength(this.getState(key)) - newValue.length;
-                forEach(newValue, (value, prop) => {
+                const fromIndex = getObjectLength(resolvedValue) - pushedValue.length;
+                forEach(pushedValue, (value, prop) => {
                     fragDoc.appendChild(
                         method(value, prop + fromIndex)
                     );
@@ -95,9 +95,9 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             },
             reset() {
                 const oldValue = params[0];
-                const newValue = params[1];
+                resolvedValue = params[1];
                 const fragDoc = document.createDocumentFragment();
-                forEach(newValue, (value, prop) => {
+                forEach(resolvedValue, (value, prop) => {
                     fragDoc.appendChild(
                         method(value, prop)
                     );
@@ -112,28 +112,24 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     fragDoc, childNodes[indexOfRef + 1]
                 );
             },
-            add: () => {
-                const savedValue = this.getState(key);
-                const length = getObjectLength(savedValue);
+            add() {
+                const length = getObjectLength(resolvedValue);
                 const newElement = method(params.value, params.key);
                 parent.insertBefore(newElement, childNodes[indexOfRef + length]);
             },
-            splice: () => {
+            splice() {
                 // i==1 for comment nodes 
                 const relativeIndex = indexOfRef + params[0];
                 // remove elements
-                const removeElements = () => {
-                    for (let i = 1; i <= params[1]; i++) {
-                        const child = childNodes[relativeIndex + 1];
-                        if (child) {
-                            parent.removeChild(child);
-                        }
+                for (let i = 1; i <= params[1]; i++) {
+                    const child = childNodes[relativeIndex + 1];
+                    if (child) {
+                        parent.removeChild(child);
                     }
-                };
+                }
 
                 if (!isValueArray) {
-                    removeElements();
-                    return null;
+                    return;
                 }
 
                 // add new elements from splice third arguments
@@ -146,9 +142,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 // arrange items after insertion
                 const from = (params.length - 2) + params[0];
                 // resolvedValue = this.resolve(key);
-                const sliced = this.getState(key).slice(from);
+                const sliced = resolvedValue.slice(from);
                 // const asyncElements = runForExp(key, sliced, method);
-                removeElements();
                 parent.insertBefore(frag, childNodes[indexOfRef + 1 + params[0]]);
                 const spliceRefIndex = indexOfRef + 1 + params[0] + params.length - 2;
 
@@ -164,8 +159,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     // parent.replaceChild(newEl, el);
                 });
             },
-            update: () => {
-                resolvedValue = this.getState(key);
+            update() {
+                // resolvedValue = this.getState(key);
                 let paramKey = params.key;
                 let index;
                 if (isValueArray) {
