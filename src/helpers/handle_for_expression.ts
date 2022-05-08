@@ -7,8 +7,9 @@ import { emitError } from "./emit_error";
 import { Logger } from "./logger";
 import { indexOf } from "./index_of";
 import { getElementKey } from "./get_el_key";
+import { ARRAY_MUTABLE_METHODS } from "../constant";
 
-const forExpMethods = ['push', 'add', 'splice', 'update', 'delete', 'pop', 'shift', 'unshift', 'reverse'];
+const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 
 
 export function handleForExp(this: Component, key: string, method: (...args) => Promise<HTMLElement>) {
