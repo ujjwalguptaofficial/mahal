@@ -40,7 +40,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             handleChange("add", newValue);
         },
         [`${key}.pop`]: () => {
-            const length = getObjectLength(this.getState(key));
+            const length = getObjectLength(resolvedValue);
             handleChange("splice", [length, 1]);
         },
         [`${key}.shift`]: () => {
@@ -50,8 +50,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             handleChange("splice", [0, 0, newValue]);
         },
         [`${key}.reverse`]: () => {
-            const reversedResult = this.getState(key);
-            handleChange("reset", [reversedResult, reversedResult]);
+            // const reversedResult = this.getState(key);
+            handleChange("reset", [resolvedValue, resolvedValue]);
             // const reversedResult = newValue;
             // const length = getObjectLength(reversedResult);
             // handleChange("splice", [0, length, ...reversedResult]);
@@ -103,13 +103,16 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     );
                 });
 
+                const nextIndexRef = indexOfRef + 1;
+
                 // remove all nodes
                 for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
-                    parent.removeChild(cmNode.nextSibling);
+                    // parent.removeChild(cmNode.nextSibling);
+                    parent.removeChild(childNodes[nextIndexRef]);
                 }
 
                 parent.insertBefore(
-                    fragDoc, childNodes[indexOfRef + 1]
+                    fragDoc, childNodes[nextIndexRef]
                 );
             },
             add() {
@@ -121,8 +124,9 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 // i==1 for comment nodes 
                 const relativeIndex = indexOfRef + params[0];
                 // remove elements
+                const nextRelativeIndex = relativeIndex + 1;
                 for (let i = 1; i <= params[1]; i++) {
-                    const child = childNodes[relativeIndex + 1];
+                    const child = childNodes[nextRelativeIndex];
                     if (child) {
                         parent.removeChild(child);
                     }
@@ -134,30 +138,34 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
 
                 // add new elements from splice third arguments
                 const frag = document.createDocumentFragment();
-                for (let i = 2, j = params[0], paramLength = params.length; i < paramLength; i++, j++) {
+                const paramLength = params.length;
+                for (let i = 2, j = params[0]; i < paramLength; i++, j++) {
                     const newElement = method(params[i], j);
                     frag.appendChild(newElement);
                 }
 
                 // arrange items after insertion
-                const from = (params.length - 2) + params[0];
+                const from = (paramLength - 2) + params[0];
                 // resolvedValue = this.resolve(key);
                 const sliced = resolvedValue.slice(from);
                 // const asyncElements = runForExp(key, sliced, method);
-                parent.insertBefore(frag, childNodes[indexOfRef + 1 + params[0]]);
-                const spliceRefIndex = indexOfRef + 1 + params[0] + params.length - 2;
+                const nextIndexRef = indexOfRef + 1;
+                parent.insertBefore(frag, childNodes[nextIndexRef + params[0]]);
+                const spliceRefIndex = nextIndexRef + params[0] + paramLength - 2;
 
-                sliced.map((item, itemIndex) => {
-                    return method(item, from + itemIndex);
-                }).forEach((newEl: HTMLElement, elementIndex) => {
-                    const el = childNodes[spliceRefIndex + elementIndex];
+                sliced.forEach((item, itemIndex) => {
+                    const newEl =  method(item, from + itemIndex);
+                    const el = childNodes[spliceRefIndex + itemIndex];
                     const elKey = getElementKey(el);
                     if (elKey == null || elKey !== getElementKey(newEl)) {
                         parent.replaceChild(newEl, el);
                     }
-                    // el.replaceWith()
-                    // parent.replaceChild(newEl, el);
                 });
+                // .forEach((newEl: HTMLElement, elementIndex) => {
+                    
+                //     // el.replaceWith()
+                //     // parent.replaceChild(newEl, el);
+                // });
             },
             update() {
                 // resolvedValue = this.getState(key);
@@ -173,7 +181,6 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     const newElement = method(params.value, paramKey);
                     parent.replaceChild(newElement, childNodes[indexOfRef + 1 + index]);
                 }
-                return null;
             }
         };
         try {
