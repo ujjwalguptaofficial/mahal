@@ -1,6 +1,6 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { defaultSlotName } from "../constant";
+import { defaultSlotName, EL_REPLACED } from "../constant";
 import { handleAttribute } from "./handle_attribute";
 import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload } from "../utils";
 import { executeEvents } from "./execute_events";
@@ -172,12 +172,10 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
             const el = createCommentNode();
             compPromise.then(comp => {
                 const newEl = renderComponent(comp);
-                // replaceEl(
-                //     el as any,
-                //     newEl,
-                // );
-                el.parentElement.insertBefore(
-                    newEl, el.nextSibling
+                el[EL_REPLACED] = newEl;
+                replaceEl(
+                    el as any,
+                    newEl,
                 );
             }).catch((err) => {
                 emitError.call(this, err, true);

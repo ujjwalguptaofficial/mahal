@@ -1,5 +1,7 @@
+import { MAHAL_KEY } from "../constant";
+
 export const getElementKey = (el) => {
-    return el._mhl_key;
+    return el[MAHAL_KEY];
 };
 
 // export const isNodeNotEqual = (el1, el2) => {

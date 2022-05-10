@@ -4,6 +4,7 @@ import { Component } from "../abstracts";
 import { handleForExp } from "./handle_for_expression";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
+import { EL_REPLACED } from "../constant";
 
 export function handleExpression(this: Component, method: () => HTMLElement, keys: string[], type?: string) {
     if (type === "for") {
@@ -39,6 +40,14 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
             keys.forEach(item => {
                 this.unwatch(item, watchCallBack);
             });
+            const replacedEl = el[EL_REPLACED];
+            if (replacedEl) {
+                el = replacedEl;
+                handleChange();
+            }
+            // else {
+            //     el = null;
+            // }
         }.bind(this);
         el.addEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
         if (changesQueue.length > 0) {

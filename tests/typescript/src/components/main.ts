@@ -18,6 +18,7 @@ import Fruits from "./fruits";
 import Fragment from "./fragment";
 import ArrayModel from "./array_model";
 import ObjectResetModel from "./object_reset_model";
+import {Temp} from "../../test/inplace_if_toggle.test";
 
 // @Template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
@@ -28,10 +29,11 @@ import ObjectResetModel from "./object_reset_model";
 @Template(`
 <div>
 Hi
-<Student />
+<Temp />
 </div>
 `)
 @Children({
+    Temp,
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed,
     Fragment, ArrayModel, ObjectResetModel,

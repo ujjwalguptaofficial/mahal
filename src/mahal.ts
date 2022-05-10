@@ -3,6 +3,7 @@ import { isString, initComponent, isObject, executeRender, getDataype, createCom
 import { LIFECYCLE_EVENT } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective, htmlDirective } from "./ready_made";
 import { Logger } from "./helpers";
+import { TRUE } from "./constant";
 
 const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroy);
 
@@ -41,23 +42,25 @@ export class Mahal {
         }
         new window.MutationObserver((mutations) => {
             mutations.forEach(mutation => {
-                if (mutation.removedNodes) {
-                    mutation.removedNodes.forEach(removedNode => {
+                const removedNodes = mutation.removedNodes;
+                if (removedNodes) {
+                    removedNodes.forEach(removedNode => {
                         dispatchDestroyed(removedNode);
                     });
                 }
             });
         }).observe(this.element, {
-            childList: true, subtree: true
+            childList: TRUE, subtree: TRUE
         })
 
         // register global directive
+        const extendDirective = this.extend.directive;
 
-        this.extend.directive("model", createModelDirective("input", "value"));
-        this.extend.directive("show", showDirective);
-        this.extend.directive("class", classDirective);
-        this.extend.directive("ref", refDirective);
-        this.extend.directive("html", htmlDirective);
+        extendDirective("model", createModelDirective("input", "value"));
+        extendDirective("show", showDirective);
+        extendDirective("class", classDirective);
+        extendDirective("ref", refDirective);
+        extendDirective("html", htmlDirective);
     }
 
     create() {

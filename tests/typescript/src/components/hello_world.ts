@@ -1,7 +1,7 @@
 import { Component, Template, Prop, Formatter, Reactive } from "mahal";
 
 @Template(`
-<div>
+<div class='hello-world'>
     <span :if(count>0) :show(flag===true) id="testFilter">
         {{"string" | toUpper}}
     </span>

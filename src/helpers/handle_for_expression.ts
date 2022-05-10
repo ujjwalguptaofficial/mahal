@@ -144,31 +144,28 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     frag.appendChild(newElement);
                 }
 
-                // arrange items after insertion
-                const from = (paramLength - 2) + params[0];
-                // resolvedValue = this.resolve(key);
-                const sliced = resolvedValue.slice(from);
-                // const asyncElements = runForExp(key, sliced, method);
                 const nextIndexRef = indexOfRef + 1;
                 parent.insertBefore(frag, childNodes[nextIndexRef + params[0]]);
+
+                // arrange items after insertion
+                let from = (paramLength - 2) + params[0];
+                // const sliced = resolvedValue.slice(from);
                 const spliceRefIndex = nextIndexRef + params[0] + paramLength - 2;
 
-                sliced.forEach((item, itemIndex) => {
-                    const newEl =  method(item, from + itemIndex);
+                // sliced.forEach((item, itemIndex) => {
+                for (let itemIndex = 0, length = resolvedValue.length - from; itemIndex < length; itemIndex++) {
+                    const actualIndex = from + itemIndex;
+                    const item = resolvedValue[actualIndex];
+                    const newEl = method(item, actualIndex);
                     const el = childNodes[spliceRefIndex + itemIndex];
                     const elKey = getElementKey(el);
                     if (elKey == null || elKey !== getElementKey(newEl)) {
                         parent.replaceChild(newEl, el);
                     }
-                });
-                // .forEach((newEl: HTMLElement, elementIndex) => {
-                    
-                //     // el.replaceWith()
-                //     // parent.replaceChild(newEl, el);
+                }
                 // });
             },
             update() {
-                // resolvedValue = this.getState(key);
                 let paramKey = params.key;
                 let index;
                 if (isValueArray) {

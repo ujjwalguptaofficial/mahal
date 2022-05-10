@@ -6,6 +6,7 @@ import { Observer } from "./observer";
 import { emitUpdate } from "./emit_update";
 import { getAttributeValue } from "./get_expression_value";
 import { Logger } from "./logger";
+import { KEY, MAHAL_KEY } from "../constant";
 
 
 export function handleAttribute(this: Component, component, attr, isComponent) {
@@ -56,8 +57,8 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
 
     forOwn(attr, (key, attrItem) => {
         const attrValue = getAttributeValue(attrItem, attrItem.v);
-        if (key === "key") {
-            component._mhl_key = attrValue;
+        if (key === KEY) {
+            component[MAHAL_KEY] = attrValue;
         }
         else {
             setAttribute(component, key, attrValue);

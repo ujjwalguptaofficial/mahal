@@ -1,9 +1,11 @@
 import { app } from "../src/index";
 import { lazyComponent, Template, Component, Prop, Children, Reactive } from "mahal";
 import { expect } from "chai";
+import HelloWorld from "../src/components/hello_world";
 
 @Children({
-    Btn: lazyComponent(() => import('../src/components/btn'))
+    Btn: lazyComponent(() => import('../src/components/btn')),
+    HelloWorld: lazyComponent(() => import('../src/components/hello_world'))
 })
 // @Template(`
 // <div>
@@ -12,14 +14,14 @@ import { expect } from "chai";
 // `)
 @Template(`
 <div>
-    <in-place :of="name" label="as"/>
+    <in-place :if(flag1) :of="name" label="as"/>
 </div>
 `)
 class Temp extends Component {
     content = "Button"
 
     @Reactive
-    flag1 = false;
+    flag1 = true;
 
     @Reactive
     flag2 = false;
@@ -30,7 +32,7 @@ class Temp extends Component {
 
 describe('InPlace if toggle', function () {
 
-    let component;
+    let component: Temp;
 
     const testNotExist = () => {
         const btn = component.find('button.btn');
@@ -70,8 +72,27 @@ describe('InPlace if toggle', function () {
     // }
 
     it("check watchlist length", function () {
-        expect(component.__watchBus__._events["name"]).length(1);
+        expect(component['__watchBus__']._events["name"]).length(1);
         expect(window['error']).to.equal(undefined);
     });
+
+    it('flag1 to false', async () => {
+        component.flag1 = false;
+        await component.waitFor('update');
+        testNotExist();
+        component.flag1 = true;
+        await component.waitFor('update');
+        testExist();
+    })
+
+    it('change comp name', async () => {
+        component.name = "HelloWorld";
+        await component.waitFor('update');
+        testNotExist();
+        await component.timer.timeout(1000);
+        expect(
+            (component.element.querySelectorAll('.hello-world'))
+        ).length(1);
+    })
 });
 
