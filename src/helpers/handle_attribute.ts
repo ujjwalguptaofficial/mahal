@@ -6,7 +6,7 @@ import { Observer } from "./observer";
 import { emitUpdate } from "./emit_update";
 import { getAttributeValue } from "./get_expression_value";
 import { Logger } from "./logger";
-import { KEY, MAHAL_KEY } from "../constant";
+import { FALSE, KEY, MAHAL_KEY, TRUE } from "../constant";
 
 
 export function handleAttribute(this: Component, component, attr, isComponent) {
@@ -38,9 +38,9 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                 if (value.k) {
                     this.watch(value.k, (newValue, oldValue) => {
                         if (oldValue === newValue) return;
-                        Component.shouldCheckProp = false;
+                        Component.shouldCheckProp = FALSE;
                         component.setState(key, getAttributeValue(value, newValue));
-                        Component.shouldCheckProp = true;
+                        Component.shouldCheckProp = TRUE;
                     });
                 }
 

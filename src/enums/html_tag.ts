@@ -1,3 +1,5 @@
+import { TRUE } from "../constant";
+
 const tags = [
     "div", "p", "b", "u", "i", "span", "input", "button",
     "table", "tr", "th", "td", "thead", "tbody", "tfoot", "slot",
@@ -5,4 +7,4 @@ const tags = [
     "section", "video", "audio", "ul", "ol", "li", "img", "nav", "br"
 ];
 export const HTML_TAG = {};
-tags.forEach(tag => HTML_TAG[tag] = true);
+tags.forEach(tag => HTML_TAG[tag] = TRUE);

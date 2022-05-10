@@ -1,3 +1,4 @@
+import { TRUE } from "../constant";
 import { ILazyComponent } from "../interface";
 
 export interface ILazyComponentPayload {
@@ -14,7 +15,7 @@ export interface ILazyComponentPayload {
 export const lazyComponent = (component: Function | ILazyComponentPayload): ILazyComponent => {
     if (typeof component === 'function') {
         return {
-            isLazy: true,
+            isLazy: TRUE,
             component: component
         };
     }

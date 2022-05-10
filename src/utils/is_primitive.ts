@@ -1,8 +1,10 @@
+import { FALSE, TRUE } from "../constant";
+
 export const isPrimitive = (value) => {
     switch (typeof value) {
         case 'undefined':
         case 'object':
-            return false;
+            return FALSE;
     }
-    return true;
+    return TRUE;
 };

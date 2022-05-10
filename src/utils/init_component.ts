@@ -1,13 +1,13 @@
 import { Component } from "../abstracts";
-import { ARRAY_MUTABLE_METHODS } from "../constant";
+import { ARRAY_MUTABLE_METHODS, FALSE, TRUE } from "../constant";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { handleAttribute, handleDirective, executeEvents, Logger } from "../helpers";
 import { getDataype } from "./get_data_type";
 
 export function initComponent(this: Component, component: Component, option) {
 
-    const htmlAttributes = handleAttribute.call(this, component, option.attr, true);
-    handleDirective.call(this, component, option.dir, true);
+    const htmlAttributes = handleAttribute.call(this, component, option.attr, TRUE);
+    handleDirective.call(this, component, option.dir, TRUE);
     if (option.on) {
         const events = option.on;
         for (const eventName in events) {
@@ -17,9 +17,9 @@ export function initComponent(this: Component, component: Component, option) {
                     new Logger(ERROR_TYPE.InvalidEventHandler, {
                         eventName,
                     }).throwPlain();
-                    return false;
+                    return FALSE;
                 }
-                return true;
+                return TRUE;
             });
             component.on(eventName, (args) => {
                 executeEvents.call(this, methods, args);

@@ -3,6 +3,7 @@ import { Component } from "../abstracts";
 import { Mahal } from "../mahal";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { IRenderContext } from "../interface";
+import { TRUE } from "../constant";
 
 function getRender(this: Component): () => Promise<HTMLElement> {
     return this.render || (() => {
@@ -29,7 +30,7 @@ export const executeRender = (comp: Component, children?) => {
     const clear = clearAll.bind(comp);
     el.addEventListener(LIFECYCLE_EVENT.Destroy, clear);
     comp.emit(LIFECYCLE_EVENT.Mount);
-    comp.isMounted = true;
+    comp.isMounted = TRUE;
     comp.on(LIFECYCLE_EVENT.Destroy, () => {
         el.removeEventListener(LIFECYCLE_EVENT.Destroy, clear);
     });

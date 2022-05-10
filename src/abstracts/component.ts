@@ -3,7 +3,7 @@ import { Observer, Logger, indexOf, replaceIfNull, emitError } from "../helpers"
 import { ILazyComponent, IRenderContext, } from "../interface";
 import { isArray, isNull, EventBus, Timer, getObjectLength, emitStateChange } from "../utils";
 import { Mahal } from "../mahal";
-import { TRUE } from "../constant";
+import { FALSE, TRUE } from "../constant";
 
 // do not rename this, this has been done to merge Component
 // // tslint:disable-next-line
@@ -61,7 +61,7 @@ export abstract class Component {
      *
      * @memberof Component
      */
-    isMounted = false;
+    isMounted = FALSE;
 
     constructor() {
         this.children = replaceIfNull(this.children, {});
@@ -375,7 +375,7 @@ export abstract class Component {
     private __computed__;
     timer = new Timer();
 
-    static shouldCheckProp = true;
+    static shouldCheckProp = TRUE;
 
     getMethod(methodName: string) {
         return this[methodName] as Function;
