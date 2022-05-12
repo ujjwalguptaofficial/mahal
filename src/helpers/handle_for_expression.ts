@@ -148,7 +148,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 parent.insertBefore(frag, childNodes[nextIndexRef + params[0]]);
 
                 // arrange items after insertion
-                const from = (paramLength - 2) + params[0];
+                let from = (paramLength - 2) + params[0];
                 // const sliced = resolvedValue.slice(from);
                 const spliceRefIndex = nextIndexRef + params[0] + paramLength - 2;
 

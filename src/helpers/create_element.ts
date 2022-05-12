@@ -1,6 +1,6 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { defaultSlotName, EL_REPLACED, FALSE, TRUE } from "../constant";
+import { defaultSlotName, EL_REPLACED } from "../constant";
 import { handleAttribute } from "./handle_attribute";
 import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload } from "../utils";
 import { executeEvents } from "./execute_events";
@@ -27,7 +27,7 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
         element.appendChild(item);
     });
 
-    handleAttribute.call(this, element, option.attr, FALSE);
+    handleAttribute.call(this, element, option.attr, false);
 
     if (option.on) {
         let evListener = {};
@@ -88,7 +88,7 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
         element.addEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
     }
 
-    handleDirective.call(this, element, option.dir, FALSE);
+    handleDirective.call(this, element, option.dir, false);
     return element;
 }
 
@@ -178,11 +178,16 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
                     newEl,
                 );
             }).catch((err) => {
-                emitError.call(this, err, TRUE);
+                emitError.call(this, err, true);
             });
             return el;
         }
         return renderComponent(compPromise);
+        //    .then((comp: any) => {
+
+        //     }).catch((err) => {
+        //         emitError.call(this, err, true);
+        //     });
     }
     else if (tag === "in-place") {
         return handleInPlace.call(this, childs, option);
