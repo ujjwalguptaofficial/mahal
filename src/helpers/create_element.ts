@@ -2,7 +2,7 @@ import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { defaultSlotName, EL_REPLACED } from "../constant";
 import { handleAttribute } from "./handle_attribute";
-import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload } from "../utils";
+import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload, nextTick } from "../utils";
 import { executeEvents } from "./execute_events";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
@@ -10,6 +10,21 @@ import { handleInPlace } from "./handle_in_place";
 import { emitError } from "./emit_error";
 import { Logger } from "./logger";
 
+const loadComponent = (componentClass) => {
+    if (componentClass instanceof Promise) {
+        return componentClass.then(comp => {
+            return comp.default;
+        });
+        // return createCommentNode();
+    }
+    else if (componentClass.isLazy) {
+        return loadComponent(
+            (componentClass as ILazyComponentPayload).component()
+        );
+        // return createCommentNode();
+    }
+    return componentClass;
+};
 
 function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
     switch (tag) {
@@ -23,7 +38,7 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
     }
 
     const element = document.createElement(tag) as HTMLElement;
-    htmlChilds.forEach((item) => {
+    htmlChilds.forEach(item => {
         element.appendChild(item);
     });
 
@@ -49,16 +64,21 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
                         }); break;
                 }
             });
-            ev.handlers.forEach(item => {
-                if (typeof item === 'function') {
-                    methods.push(item);
-                }
-                else {
-                    new Logger(ERROR_TYPE.InvalidEventHandler, {
-                        ev: eventName,
-                    }).throwPlain();
-                }
-            });
+            if (process.env.NODE_ENV !== 'production') {
+                ev.handlers.forEach(item => {
+                    if (typeof item === 'function') {
+                        methods.push(item);
+                    }
+                    else {
+                        new Logger(ERROR_TYPE.InvalidEventHandler, {
+                            ev: eventName,
+                        }).throwPlain();
+                    }
+                });
+            }
+            else {
+                ev.handlers.forEach(methods.push);
+            }
             // if (eventName === "input" && !ev.isNative) {
             //     methods.unshift((e) => {
             //         return e.target.value;
@@ -79,11 +99,13 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
         }
 
         const onElDestroyed = () => {
-            element.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
-            for (const ev in evListener) {
-                element.removeEventListener(ev, evListener[ev]);
-            }
-            evListener = {};
+            nextTick(_ => {
+                element.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
+                for (const ev in evListener) {
+                    element.removeEventListener(ev, evListener[ev]);
+                }
+                evListener = null;
+            });
         };
         element.addEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
     }
@@ -107,21 +129,7 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
     }
     const savedComponent = this.children[tag] || this['__app__']['_components'][tag];
     if (savedComponent) {
-        const loadComponent = (componentClass) => {
-            if (componentClass instanceof Promise) {
-                return componentClass.then(comp => {
-                    return comp.default;
-                });
-                // return createCommentNode();
-            }
-            else if (componentClass.isLazy) {
-                return loadComponent(
-                    (componentClass as ILazyComponentPayload).component()
-                );
-                // return createCommentNode();
-            }
-            return componentClass;
-        };
+
         const renderComponent = (comp) => {
             const component: Component = createComponent(comp, this['__app__']);
             const htmlAttributes = initComponent.call(this, component as any, option);

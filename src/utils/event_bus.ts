@@ -50,6 +50,14 @@ export class EventBus {
         }
     }
 
+    emitAll(event: string, ...args) {
+        const events = this._events[event] || [];
+        return events.map(cb => {
+            const result = cb.call(this._ctx, ...args);
+            return result;
+        });
+    }
+
     /**
      * emit event to all listener at a time
      *
@@ -63,7 +71,7 @@ export class EventBus {
         return Promise.all(
             events.map(cb => {
                 const result = cb.call(this._ctx, ...args);
-                return result && result.then ? result : promiseResolve(result);
+                return result;
             })
         );
     }

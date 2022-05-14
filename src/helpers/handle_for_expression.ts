@@ -96,12 +96,6 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             reset() {
                 const oldValue = params[0];
                 resolvedValue = params[1];
-                const fragDoc = document.createDocumentFragment();
-                forEach(resolvedValue, (value, prop) => {
-                    fragDoc.appendChild(
-                        method(value, prop)
-                    );
-                });
 
                 const nextIndexRef = indexOfRef + 1;
 
@@ -111,6 +105,15 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     parent.removeChild(childNodes[nextIndexRef]);
                 }
 
+                // if (getObjectLength(resolvedValue) === 0) return;
+
+                const fragDoc = document.createDocumentFragment();
+                forEach(resolvedValue, (value, prop) => {
+                    fragDoc.appendChild(
+                        method(value, prop)
+                    );
+                });
+                
                 parent.insertBefore(
                     fragDoc, childNodes[nextIndexRef]
                 );
@@ -148,7 +151,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 parent.insertBefore(frag, childNodes[nextIndexRef + params[0]]);
 
                 // arrange items after insertion
-                let from = (paramLength - 2) + params[0];
+                const from = (paramLength - 2) + params[0];
                 // const sliced = resolvedValue.slice(from);
                 const spliceRefIndex = nextIndexRef + params[0] + paramLength - 2;
 

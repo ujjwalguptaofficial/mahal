@@ -1,18 +1,11 @@
 import { Component } from "./abstracts/component";
-import { isString, initComponent, isObject, executeRender, getDataype, createComponent, EventBus, promiseResolve } from "./utils";
+import { isString, initComponent, isObject, executeRender, getDataype, createComponent, EventBus, promiseResolve, nextTick } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective, htmlDirective } from "./ready_made";
-import { Logger } from "./helpers";
+import { Logger, dispatchDestroyed } from "./helpers";
 import { TRUE } from "./constant";
 
-const destroyedEvent = new window.CustomEvent(LIFECYCLE_EVENT.Destroy);
 
-function dispatchDestroyed(node: Node) {
-    node.dispatchEvent(destroyedEvent);
-    node.childNodes.forEach(item => {
-        dispatchDestroyed(item);
-    });
-}
 export class Mahal {
     private __eventBus__ = new EventBus();
     private __componentClass__: typeof Component;
@@ -41,16 +34,19 @@ export class Mahal {
             }
         }
         new window.MutationObserver((mutations) => {
-            mutations.forEach(mutation => {
-                const removedNodes = mutation.removedNodes;
-                if (removedNodes) {
-                    removedNodes.forEach(removedNode => {
-                        dispatchDestroyed(removedNode);
-                    });
-                }
-            });
+            // nextTick(() => {
+                mutations.forEach(mutation => {
+                    const removedNodes = mutation.removedNodes;
+                    if (removedNodes) {
+                        removedNodes.forEach(removedNode => {
+                            dispatchDestroyed(removedNode);
+                        });
+                    }
+                });
+            // })
         }).observe(this.element, {
-            childList: TRUE, subtree: TRUE
+            childList: TRUE,
+            subtree: TRUE,
         })
 
         // register global directive

@@ -6,6 +6,7 @@ import { LIFECYCLE_EVENT } from "../enums";
 
 export function handleDirective(this: Component, element, dir, isComponent) {
     if (!dir) return;
+    const onEvent = isComponent ? 'on' : 'addEventListener';
     forOwn(dir, (name, compiledDir) => {
         const storedDirective = this['__directive__'][name] || this['__app__']['_directives'][name];
         if (storedDirective) {
@@ -14,27 +15,24 @@ export function handleDirective(this: Component, element, dir, isComponent) {
 
             const directive: IDirective = merge(genericDirective,
                 storedDirective.call(this, element, binding));
-            let eventCbs = [];
+            // call directive async, this will create element faster
             nextTick(() => {
+                const destroyEvent = LIFECYCLE_EVENT.Destroy;
 
+                let eventCbs = [];
+                const props = compiledDir.props;
                 const onDestroyed = () => {
-                    directive.destroyed();
-                    if (!isComponent) {
-                        element.removeEventListener(LIFECYCLE_EVENT.Destroy, onDestroyed);
-                    }
-                    compiledDir.props.forEach((prop, index) => {
+                    props.forEach((prop, index) => {
                         this.unwatch(prop, eventCbs[index]);
                     });
-                    element = null;
-                    eventCbs = null;
+                    directive.destroyed();
+                    if (!isComponent) {
+                        element.removeEventListener(destroyEvent, onDestroyed);
+                    }
+                    eventCbs = element = null;
                 };
-                if (isComponent) {
-                    (element as Component).on(LIFECYCLE_EVENT.Destroy, onDestroyed);
-                }
-                else {
-                    element.addEventListener(LIFECYCLE_EVENT.Destroy, onDestroyed);
-                }
-                compiledDir.props.forEach((prop, index) => {
+                element[onEvent](destroyEvent, onDestroyed);
+                props.forEach((prop, index) => {
                     const ev = (newValue, oldValue) => {
                         if (oldValue === newValue) return;
                         binding.value[index] = newValue;
