@@ -19,7 +19,7 @@ export function handleDirective(this: Component, element, dir, isComponent) {
             nextTick(() => {
                 const destroyEvent = LIFECYCLE_EVENT.Destroy;
 
-                let eventCbs = [];
+                const eventCbs = [];
                 const props = compiledDir.props;
                 const onDestroyed = () => {
                     props.forEach((prop, index) => {

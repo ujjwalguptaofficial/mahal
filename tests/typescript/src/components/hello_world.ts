@@ -1,4 +1,4 @@
-import { Component, Template, Prop, Formatter, Reactive } from "mahal";
+import { Component, removeEl, Template, Prop, Formatter, Reactive } from "mahal";
 
 @Template(`
 <div class='hello-world'>
@@ -68,7 +68,8 @@ export default class HelloWorld extends BaseComponent {
     }
 
     destroy() {
-        this.element.parentNode.removeChild(this.element);
+        removeEl(this.element);
+        // this.element.parentNode.removeChild(this.element);
     }
 
 }

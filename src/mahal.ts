@@ -33,16 +33,16 @@ export class Mahal {
                 Logger.warn("Provided element or element selector is not valid. Using 'mahal-app' as default")
             }
         }
-        new window.MutationObserver((mutations) => {
-            mutations.forEach(mutation => {
-                mutation.removedNodes.forEach(removedNode => {
-                    dispatchDestroyed(removedNode);
-                });
-            });
-        }).observe(this.element, {
-            childList: TRUE,
-            subtree: TRUE,
-        })
+        // new window.MutationObserver((mutations) => {
+        //     mutations.forEach(mutation => {
+        //         mutation.removedNodes.forEach(removedNode => {
+        //             dispatchDestroyed(removedNode);
+        //         });
+        //     });
+        // }).observe(this.element, {
+        //     childList: TRUE,
+        //     subtree: TRUE,
+        // })
 
         // register global directive
         const extendDirective = this.extend.directive;

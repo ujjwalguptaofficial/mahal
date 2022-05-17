@@ -2,7 +2,7 @@ import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { defaultSlotName, EL_REPLACED } from "../constant";
 import { handleAttribute } from "./handle_attribute";
-import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload, nextTick } from "../utils";
+import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload, nextTick, removeEl } from "../utils";
 import { executeEvents } from "./execute_events";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
@@ -45,7 +45,7 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
     handleAttribute.call(this, element, option.attr, false);
 
     if (option.on) {
-        let evListener = {};
+        const evListener = {};
         const events = option.on;
         for (const eventName in events) {
             const ev = events[eventName];
@@ -144,7 +144,8 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
                                 targetSlotParent.insertBefore(child, targetSlot.nextSibling);
                             });
                         }
-                        targetSlotParent.removeChild(targetSlot);
+                        removeEl(targetSlot);
+                        // targetSlotParent.removeChild(targetSlot);
                     }
                     else {
                         element = component.element = item;

@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, getObjectLength, promiseResolve, forEach, removeEl } from "../utils";
+import { isPrimitive, isNull, isArray, getObjectLength, promiseResolve, forEach, removeEl, replaceEl } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
@@ -29,7 +29,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
     });
 
     const isValueArray = isArray(resolvedValue);
-    let callBacks = {
+    const callBacks = {
         [key]: (newValue, oldValue) => {
             handleChange("reset", [oldValue, newValue]);
         },
@@ -130,7 +130,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 for (let i = 1; i <= params[1]; i++) {
                     const child = childNodes[nextRelativeIndex];
                     if (child) {
-                        parent.removeChild(child);
+                        removeEl(child as any);
                     }
                 }
 
@@ -162,7 +162,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     const el = childNodes[spliceRefIndex + itemIndex];
                     const elKey = getElementKey(el);
                     if (elKey == null || elKey !== getElementKey(newEl)) {
-                        parent.replaceChild(newEl, el);
+                        replaceEl(el as any, newEl);
                     }
                 }
                 // });
@@ -178,7 +178,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 }
                 if (index >= 0) {
                     const newElement = method(params.value, paramKey);
-                    parent.replaceChild(newElement, childNodes[indexOfRef + 1 + index]);
+                    replaceEl(childNodes[indexOfRef + 1 + index] as any, newElement);
                 }
             }
         };
