@@ -34,16 +34,11 @@ export class Mahal {
             }
         }
         new window.MutationObserver((mutations) => {
-            // nextTick(() => {
-                mutations.forEach(mutation => {
-                    const removedNodes = mutation.removedNodes;
-                    if (removedNodes) {
-                        removedNodes.forEach(removedNode => {
-                            dispatchDestroyed(removedNode);
-                        });
-                    }
+            mutations.forEach(mutation => {
+                mutation.removedNodes.forEach(removedNode => {
+                    dispatchDestroyed(removedNode);
                 });
-            // })
+            });
         }).observe(this.element, {
             childList: TRUE,
             subtree: TRUE,

@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, getObjectLength, promiseResolve, forEach } from "../utils";
+import { isPrimitive, isNull, isArray, getObjectLength, promiseResolve, forEach, removeEl } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
@@ -67,12 +67,11 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         }
     };
     const onElDestroyed = () => {
-        cmNode.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
+        // cmNode.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
         cmNode = null;
         for (const ev in callBacks) {
             this.unwatch(ev, callBacks[ev]);
         }
-        callBacks = null;
     };
     cmNode.addEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
     const handleChange = (methodName, params) => {
@@ -102,7 +101,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 // remove all nodes
                 for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
                     // parent.removeChild(cmNode.nextSibling);
-                    parent.removeChild(childNodes[nextIndexRef]);
+                    removeEl(childNodes[nextIndexRef] as any);
                 }
 
                 // if (getObjectLength(resolvedValue) === 0) return;
@@ -113,7 +112,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                         method(value, prop)
                     );
                 });
-                
+
                 parent.insertBefore(
                     fragDoc, childNodes[nextIndexRef]
                 );

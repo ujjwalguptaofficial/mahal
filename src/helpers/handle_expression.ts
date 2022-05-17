@@ -36,7 +36,7 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
             this.watch(item, watchCallBack);
         });
         const onElDestroyed = function () {
-            el.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
+            // el.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
             keys.forEach(item => {
                 this.unwatch(item, watchCallBack);
             });

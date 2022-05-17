@@ -26,10 +26,10 @@ export function handleDirective(this: Component, element, dir, isComponent) {
                         this.unwatch(prop, eventCbs[index]);
                     });
                     directive.destroyed();
-                    if (!isComponent) {
-                        element.removeEventListener(destroyEvent, onDestroyed);
-                    }
-                    eventCbs = element = null;
+                    // if (!isComponent) {
+                    //     element.removeEventListener(destroyEvent, onDestroyed);
+                    // }
+                    // eventCbs = element = null;
                 };
                 element[onEvent](destroyEvent, onDestroyed);
                 props.forEach((prop, index) => {

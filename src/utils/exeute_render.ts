@@ -27,11 +27,12 @@ export const executeRender = (comp: Component, children?) => {
     } as IRenderContext);
     comp.element = el;
     const clear = clearAll.bind(comp);
+    
     el.addEventListener(LIFECYCLE_EVENT.Destroy, clear);
     comp.emit(LIFECYCLE_EVENT.Mount);
     comp.isMounted = true;
-    comp.on(LIFECYCLE_EVENT.Destroy, () => {
-        el.removeEventListener(LIFECYCLE_EVENT.Destroy, clear);
-    });
+    // comp.on(LIFECYCLE_EVENT.Destroy, () => {
+    //     el.removeEventListener(LIFECYCLE_EVENT.Destroy, clear);
+    // });
     return el;
 };

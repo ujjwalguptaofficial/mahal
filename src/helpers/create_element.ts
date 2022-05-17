@@ -97,17 +97,6 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
                 }
             );
         }
-
-        const onElDestroyed = () => {
-            nextTick(_ => {
-                element.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
-                for (const ev in evListener) {
-                    element.removeEventListener(ev, evListener[ev]);
-                }
-                evListener = null;
-            });
-        };
-        element.addEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
     }
 
     handleDirective.call(this, element, option.dir, false);
@@ -191,11 +180,6 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
             return el;
         }
         return renderComponent(compPromise);
-        //    .then((comp: any) => {
-
-        //     }).catch((err) => {
-        //         emitError.call(this, err, true);
-        //     });
     }
     else if (tag === "in-place") {
         return handleInPlace.call(this, childs, option);
