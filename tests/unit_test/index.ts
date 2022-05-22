@@ -3,5 +3,5 @@ import "./object_state.test";
 import "./object_state_set_state.test";
 import "./array_state.test";
 import "./array_state_set_state.test";
-import "./array_event.test";
+import "./array_nested_elemet_destory.test";
 import "./directive_destroy.test";
