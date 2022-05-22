@@ -73,8 +73,8 @@ export class Mahal {
         return this;
     }
 
-    off(event: string, cb: Function) {
-        this.__eventBus__.off(event, cb);
+    off(event: string, eventId: number) {
+        this.__eventBus__.off(event, eventId);
     }
 
     emit(event: string, ...args) {

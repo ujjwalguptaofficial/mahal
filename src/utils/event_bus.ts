@@ -1,4 +1,3 @@
-import { clone } from "./clone";
 import { promiseResolve } from "./promise_resolve";
 
 export class EventBus {
@@ -10,7 +9,11 @@ export class EventBus {
     private _ctx;
 
     private _events: {
-        [key: string]: Function[]
+        [key: string]: Map<number, Function>
+    } = {};
+
+    private _eventsId: {
+        [key: string]: number
     } = {};
 
     /**
@@ -22,11 +25,15 @@ export class EventBus {
      * @memberof EventBus
      */
     on(event: string, cb: Function) {
-        if (this._events[event] == null) {
-            this._events[event] = [];
+        let events = this._events[event];
+        if (events == null) {
+            events = this._events[event] = new Map();
+            this._eventsId[event] = 0;
         }
-        this._events[event].push(cb);
-        return this;
+
+        const eventId = ++this._eventsId[event];
+        events.set(eventId, cb);
+        return eventId;
     }
 
     /**
@@ -38,22 +45,27 @@ export class EventBus {
      * @param {Function} cb
      * @memberof EventBus
      */
-    off(event: string, cb?: Function) {
+    off(event: string, eventId: number) {
         const events = this._events[event];
         if (events) {
-            if (cb) {
-                const index = events.indexOf(cb);
-                events.splice(index, 1);
-            }
-            else {
-                this._events[event] = [];
-            }
+            events.delete(eventId);
         }
     }
 
+    eachEvent(events: Map<number, Function>, cb) {
+        const size = events.size;
+        let index = 0;
+        events.forEach((value) => {
+            if (index++ < size) {
+                cb(value);
+            }
+        });
+    }
+
     emitAll(event: string, ...args) {
-        const events = this._events[event] || [];
-        return events.map(cb => {
+        const events = this.getEvent(event);
+        if (!events) return;
+        this.eachEvent(events, (cb) => {
             const result = cb.call(this._ctx, ...args);
             return result;
         });
@@ -68,12 +80,15 @@ export class EventBus {
      * @memberof EventBus
      */
     emit(event: string, ...args) {
-        const events = this._events[event] || [];
+        const events = this.getEvent(event);
+        if (!events) return promiseResolve<any[]>([]);
+        const promises = [];
+        this.eachEvent(events, (cb) => {
+            const result = cb.call(this._ctx, ...args);
+            promises.push(result);
+        });
         return Promise.all(
-            events.map(cb => {
-                const result = cb.call(this._ctx, ...args);
-                return result;
-            })
+            promises
         );
     }
 
@@ -86,12 +101,12 @@ export class EventBus {
      * @memberof EventBus
      */
     emitLinear(event: string, ...args) {
-        const events = clone(this._events[event]) || [];
-        let index = 0;
-        const length = events.length;
+        const storedEvents = this.getEvent(event);
+        if (!storedEvents) return promiseResolve<any[]>([]);
+        const events = new Map(storedEvents);
         const results = [];
-        const callMethod = () => {
-            const eventCb = events[index++];
+        const items = events.entries();
+        const callMethod = (eventCb) => {
             if (eventCb) {
                 const result = eventCb.call(this._ctx, ...args);
                 return result && result.then ? result : promiseResolve(result);
@@ -101,8 +116,9 @@ export class EventBus {
 
         return new Promise<any[]>((res) => {
             const checkAndCall = () => {
-                if (index < length) {
-                    callMethod().then(result => {
+                const eventCb = items.next();
+                if (!eventCb.done) {
+                    callMethod(eventCb.value[1]).then(result => {
                         results.push(result);
                         checkAndCall();
                     });
@@ -117,8 +133,7 @@ export class EventBus {
     }
 
     destroy() {
-        this._events = null;
-        this._ctx = null;
+        this._ctx = this._events = this._eventsId = null;
     }
 
     getEvent(eventName: string) {

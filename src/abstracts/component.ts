@@ -161,8 +161,7 @@ export abstract class Component {
      * @memberof Component
      */
     watch(propName: string, cb: (newValue, oldValue) => void) {
-        this.__watchBus__.on(propName, cb);
-        return this;
+        return this.__watchBus__.on(propName, cb);
     }
 
     /**
@@ -173,8 +172,8 @@ export abstract class Component {
      * @return {*} 
      * @memberof Component
      */
-    unwatch(propName: string, cb?: (newValue, oldValue) => void) {
-        this.__watchBus__.off(propName, cb);
+    unwatch(propName: string, eventId: number) {
+        this.__watchBus__.off(propName, eventId);
         return this;
     }
 
@@ -187,8 +186,7 @@ export abstract class Component {
      * @memberof Component
      */
     on(event: string, cb: Function) {
-        this.__eventBus__.on(event, cb);
-        return this;
+        return this.__eventBus__.on(event, cb);
     }
 
     /**
@@ -198,8 +196,8 @@ export abstract class Component {
      * @param {Function} cb
      * @memberof Component
      */
-    off(event: string, cb: Function) {
-        this.__eventBus__.off(event, cb);
+    off(event: string, eventId: number) {
+        this.__eventBus__.off(event, eventId);
     }
 
     /**
@@ -216,9 +214,9 @@ export abstract class Component {
             eventCallback = () => {
                 res(null);
             };
-            this.on(eventName, eventCallback);
-        }).then(_ => {
-            this.off(eventName, eventCallback);
+            return this.on(eventName, eventCallback);
+        }).then(eventId => {
+            this.off(eventName, eventId as any);
         });
     }
 

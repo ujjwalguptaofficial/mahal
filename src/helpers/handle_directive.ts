@@ -21,11 +21,11 @@ export function handleDirective(this: Component, element: HTMLElement, dir, isCo
             // call directive async, this will create element faster
             nextTick(() => {
 
-                const eventCbs = [];
+                let eventsId: number[];
                 const props = compiledDir.props;
                 const onDestroyed = () => {
                     props.forEach((prop, index) => {
-                        this.unwatch(prop, eventCbs[index]);
+                        this.unwatch(prop, eventsId[index]);
                     });
                     directive.destroyed();
                     // if (!isComponent) {
@@ -35,31 +35,26 @@ export function handleDirective(this: Component, element: HTMLElement, dir, isCo
                 };
                 if (isComponent) {
                     element[onEvent](destroyEvent, onDestroyed);
-                    props.forEach((prop, index) => {
-                        const ev = (newValue, oldValue) => {
+                    eventsId = props.map((prop, index) => {
+                        return this.watch(prop, (newValue, oldValue) => {
                             if (oldValue === newValue) return;
                             binding.value[index] = newValue;
                             directive.valueUpdated();
-                        };
-                        this.watch(prop, ev);
-                        eventCbs.push(ev);
+                        });
                     });
                 }
                 else {
                     onElDestroy(element, onDestroyed);
-                    props.forEach((prop, index) => {
-                        const ev = (newValue, oldValue) => {
+                    eventsId = props.map((prop, index) => {
+                        return this.watch(prop, (newValue, oldValue) => {
                             if (oldValue === newValue) return;
                             if (element.isConnected) {
                                 binding.value[index] = newValue;
                                 directive.valueUpdated();
                             }
-                        };
-                        this.watch(prop, ev);
-                        eventCbs.push(ev);
+                        });
                     });
                 }
-
                 directive.inserted();
             });
         }

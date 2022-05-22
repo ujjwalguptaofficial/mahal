@@ -29,10 +29,10 @@ describe('Watch', function () {
     it("check reactive of primitive property - name", function (done) {
         let newName = "ujjwal";
         let prop = "name";
-        component.watch(prop, (newVal, oldVal) => {
+        const eventId = component.watch(prop, (newVal, oldVal) => {
             expect(newVal).equal(newName);
             expect(oldVal).equal("");
-            component.unwatch(prop);
+            component.unwatch(prop, eventId);
             expect(component['__watchBus__']._events[prop]).length(0);
             done();
         });
@@ -43,10 +43,10 @@ describe('Watch', function () {
     it("check reactive of array property - users", function (done) {
         let newVal = [{ name: 'ujjwal' }];
         let prop = "users";
-        component.watch(prop, (newValue, oldVal) => {
+        const eventId = component.watch(prop, (newValue, oldVal) => {
             expect(newVal).equal(newValue);
             expect(oldVal).length(0);
-            component.unwatch(prop);
+            component.unwatch(prop, eventId);
             expect(component['__watchBus__']._events[prop]).length(0);
             done();
         });
@@ -57,10 +57,10 @@ describe('Watch', function () {
     it("check push of array property - users", function (done) {
         let valueToAdd = { name: 'ujjwal gupta' };
         let prop = "users.push";
-        component.watch(prop, (newValue, oldVal) => {
+        const eventId = component.watch(prop, (newValue, oldVal) => {
             expect(newValue).eql([valueToAdd]);
             expect(oldVal).equal(undefined);
-            component.unwatch(prop);
+            component.unwatch(prop, eventId);
             expect(component['__watchBus__']._events[prop]).length(0);
             expect(component.users).length(2);
             done();
@@ -72,10 +72,10 @@ describe('Watch', function () {
     it("check push with multiple items - users", function (done) {
         let valueToAdd = { name: 'batman gupta' };
         let prop = "users.push";
-        component.watch(prop, (newValue, oldVal) => {
+        const eventId = component.watch(prop, (newValue, oldVal) => {
             expect(newValue).eql([valueToAdd, valueToAdd]);
             expect(oldVal).equal(undefined);
-            component.unwatch(prop);
+            component.unwatch(prop, eventId);
             expect(component['__watchBus__']._events[prop]).length(0);
             expect(component.users).length(4);
             done();

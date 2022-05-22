@@ -49,11 +49,11 @@ describe("object state using set state", () => {
     it("initialize fruits", () => {
 
         const promise = new Promise<void>((res) => {
-            component.watch("fruits", (newValue, oldValue) => {
+            var eventId = component.watch("fruits", (newValue, oldValue) => {
                 expect(newValue).eql(component.initialFruits);
                 expect(oldValue).eql({});
                 res();
-                component.unwatch("fruits");
+                component.unwatch("fruits", eventId);
             });
         })
         component.initializeFruit();
@@ -68,9 +68,9 @@ describe("object state using set state", () => {
             const cb = (newValue) => {
                 expect(newValue).eql({ value: 'POTATO', key: 'potato' });
                 res();
-                component.unwatch("fruits.update", cb);
+                component.unwatch("fruits.update", eventId);
             };
-            component.watch("fruits.update", cb);
+            var eventId = component.watch("fruits.update", cb);
         })
         const veggie = clone(component.initialFruits);
         veggie['potato'] = 'POTATO';
@@ -83,10 +83,10 @@ describe("object state using set state", () => {
         component.initializeFruit();
 
         const promise = new Promise<void>((res) => {
-            component.watch("fruits.add", (newValue) => {
+            var eventId = component.watch("fruits.add", (newValue) => {
                 expect(newValue).eql({ value: 'amrud', key: 'amrud' });
                 res();
-                component.unwatch("fruits.add");
+                component.unwatch("fruits.add", eventId);
             });
         })
         const veggie = clone(component.initialFruits);
@@ -99,10 +99,10 @@ describe("object state using set state", () => {
 
     it("update value after add", async function () {
         const promise = new Promise<void>((res) => {
-            component.watch("fruits.update", (newValue) => {
+            const eventId = component.watch("fruits.update", (newValue) => {
                 expect(newValue).eql({ value: 'Amrud', key: 'amrud' });
                 res();
-                component.unwatch("fruits.update");
+                component.unwatch("fruits.update", eventId);
             });
         })
         const veggie = clone(component.initialFruits);
@@ -114,10 +114,10 @@ describe("object state using set state", () => {
 
     it("delete value", async function () {
         const promise = new Promise<void>((res) => {
-            component.watch("fruits.delete", (newValue) => {
+            const eventId = component.watch("fruits.delete", (newValue) => {
                 expect(newValue).eql({ key: 'amrud', index: 4 });
                 res();
-                component.unwatch("fruits.delete");
+                component.unwatch("fruits.delete", eventId);
             });
         })
         const veggie = clone(component.initialFruits);

@@ -67,11 +67,12 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             handleChange("update", newValue);
         }
     };
+    const eventsId = {};
     const onElDestroyed = () => {
         // cmNode.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
         cmNode = null;
         for (const ev in callBacks) {
-            this.unwatch(ev, callBacks[ev]);
+            this.unwatch(ev, eventsId[ev]);
         }
     };
     onElDestroy(
@@ -192,9 +193,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             emitError.call(this, err);
         }
     };
-    this.watch(key, callBacks[key]);
+    eventsId[key] = this.watch(key, callBacks[key]);
     forExpMethods.forEach(methodName => {
-        this.watch(`${key}.${methodName}`, callBacks[`${key}.${methodName}`]);
+        const methodKey = `${key}.${methodName}`;
+        eventsId[methodKey] = this.watch(methodKey, callBacks[methodKey]);
     });
 
     return els;

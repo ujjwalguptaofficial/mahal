@@ -51,11 +51,11 @@ describe("Fruit", () => {
     it("initialize fruits", () => {
 
         const promise = new Promise<void>((res) => {
-            component.watch("fruits", (newValue, oldValue) => {
+            var eventId = component.watch("fruits", (newValue, oldValue) => {
                 console.log("new value", newValue);
                 expect(newValue).eql(component.initialFruits);
                 expect(oldValue).eql([]);
-                component.unwatch("fruits");
+                component.unwatch("fruits", eventId);
                 checkFruitValue(
                     component.initialFruits
                 )
@@ -69,10 +69,10 @@ describe("Fruit", () => {
     it("push value", async function () {
         component.initializeFruit();
         const promise = new Promise<void>((res) => {
-            component.watch("fruits.push", (newValue) => {
+            var eventId = component.watch("fruits.push", (newValue) => {
                 expect(newValue).eql(['amrud', 'ddd']);
                 checkFruitValue(fruits);
-                component.unwatch("fruits.push");
+                component.unwatch("fruits.push", eventId);
                 res();
             });
         })
@@ -88,10 +88,10 @@ describe("Fruit", () => {
     it("update value", async function () {
         component.initializeFruit();
         const promise = new Promise<void>((res) => {
-            component.watch("fruits.update", (newValue) => {
+            var eventId = component.watch("fruits.update", (newValue) => {
                 expect(newValue).eql({ key: '0', value: 'amrud' });
                 checkFruitValue(fruits);
-                component.unwatch("fruits.update");
+                component.unwatch("fruits.update", eventId);
                 res();
             });
         })
@@ -107,10 +107,10 @@ describe("Fruit", () => {
             const cb = (newValue) => {
                 expect(newValue).eql([0, 1]);
                 checkFruitValue(fruits);
-                component.unwatch("fruits.splice", cb);
+                component.unwatch("fruits.splice", eventId);
                 res();
             }
-            component.watch("fruits.splice", cb);
+            var eventId = component.watch("fruits.splice", cb);
         })
         const fruits = clone(component.initialFruits);
         fruits.splice(0, 1);
@@ -126,10 +126,10 @@ describe("Fruit", () => {
             const cb = (newValue) => {
                 expect(newValue).eql([2, 1]);
                 checkFruitValue(fruits);
-                component.unwatch("fruits.splice", cb);
+                component.unwatch("fruits.splice", eventId);
                 res();
             };
-            component.watch("fruits.splice", cb);
+            var eventId = component.watch("fruits.splice", cb);
         })
         const fruits = clone(component.initialFruits);
         fruits.splice(2, 1);
@@ -145,10 +145,10 @@ describe("Fruit", () => {
             const cb = (newValue) => {
                 expect(newValue).eql([2, 2, "Lemon", "Kiwi"]);
                 checkFruitValue(fruits);
-                component.unwatch("fruits.splice", cb);
+                component.unwatch("fruits.splice", eventId);
                 res();
             };
-            component.watch("fruits.splice", cb);
+            var eventId = component.watch("fruits.splice", cb);
         })
         const fruits = clone(component.initialFruits);
         fruits.splice(2, 2, "Lemon", "Kiwi");
@@ -164,10 +164,10 @@ describe("Fruit", () => {
             const cb = (newValue) => {
                 expect(newValue).eql([]);
                 checkFruitValue(fruits);
-                component.unwatch("fruits.pop", cb);
+                component.unwatch("fruits.pop", eventId);
                 res();
             };
-            component.watch("fruits.pop", cb);
+            var eventId = component.watch("fruits.pop", cb);
         })
         const fruits = clone(component.initialFruits);
         fruits.pop();
@@ -183,10 +183,10 @@ describe("Fruit", () => {
             const cb = (newValue) => {
                 expect(newValue).eql([]);
                 checkFruitValue(fruits);
-                component.unwatch("fruits.shift", cb);
+                component.unwatch("fruits.shift", eventId);
                 res();
             };
-            component.watch("fruits.shift", cb);
+            var eventId = component.watch("fruits.shift", cb);
         })
         const fruits = clone(component.initialFruits);
         fruits.shift();
@@ -202,10 +202,10 @@ describe("Fruit", () => {
             const cb = (newValue) => {
                 expect(newValue).eql(['amrud']);
                 checkFruitValue(fruits);
-                component.unwatch("fruits.unshift", cb);
+                component.unwatch("fruits.unshift", eventId);
                 res();
             };
-            component.watch("fruits.unshift", cb);
+            var eventId = component.watch("fruits.unshift", cb);
         })
         const fruits = clone(component.initialFruits);
         fruits.unshift('amrud')
@@ -221,10 +221,10 @@ describe("Fruit", () => {
             const cb = (newValue) => {
                 expect(newValue).eql([]);
                 checkFruitValue(fruits);
-                component.unwatch("fruits.reverse", cb);
+                component.unwatch("fruits.reverse", eventId);
                 res();
             };
-            component.watch("fruits.reverse", cb);
+            var eventId = component.watch("fruits.reverse", cb);
         })
         const fruits = clone(component.initialFruits);
         fruits.reverse();

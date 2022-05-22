@@ -1,3 +1,3 @@
-export const promiseResolve = (value) => {
-    return Promise.resolve(value);
+export const promiseResolve = <T>(value) => {
+    return Promise.resolve<T>(value);
 };

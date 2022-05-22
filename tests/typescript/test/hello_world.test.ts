@@ -74,14 +74,14 @@ describe('HelloWorld', function () {
     it('value of count button', async function () {
         const btn = component.find('#count');
         expect(btn.innerHTML).equal('1');
-        component.on("click", function () {
+        const eventId = component.on("click", function () {
             component.setState('count', ++component.count);
         });
         btn.click();
         await component.waitFor("update");
         expect(component.count).equal(2);
         expect(btn.innerHTML).equal('2');
-        component.off("click");
+        component.off("click", eventId);
     });
 
     it('click count button', async function () {

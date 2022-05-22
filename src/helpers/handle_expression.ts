@@ -33,13 +33,14 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
                 onChange();
             }
         };
-        keys.forEach(item => {
-            this.watch(item, watchCallBack);
+
+        const keysId = keys.map(item => {
+            return this.watch(item, watchCallBack);
         });
-        const onElDestroyed = function () {
+        const onElDestroyed = () => {
             // el.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
-            keys.forEach(item => {
-                this.unwatch(item, watchCallBack);
+            keys.forEach((item, index) => {
+                this.unwatch(item, keysId[index]);
             });
             const replacedEl = el[EL_REPLACED];
             if (replacedEl) {
@@ -49,7 +50,7 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
             // else {
             //     el = null;
             // }
-        }.bind(this);
+        };
         onElDestroy(el, onElDestroyed);
         if (changesQueue.length > 0) {
             onChange();
