@@ -10,6 +10,14 @@
 <body>
     <div id="app"></div>
 
+    <div id="temp">
+        <div id="temp1">Hey
+            <div id="temp12">Hey
+
+            </div>
+        </div>
+    </div>
+
     <!-- Example -->
 
     <!-- if -->
@@ -41,8 +49,25 @@
 
     </div>
 
-    
 
+    <script>
+        const event = new window.Event('destroy');
+        document.querySelector('#temp1').addEventListener("destroy", () => {
+            alert('executed');
+        })
+        const parent = document.querySelector('#temp');
+        parent.addEventListener("destroy", () => {
+            console.log('executed parent');
+        })
+        parent.dispatchEvent(
+            event
+        )
+        parent.querySelectorAll('*').forEach(node => {
+            node.dispatchEvent(
+                event
+            )
+        })
+    </script>
 
 </body>
 

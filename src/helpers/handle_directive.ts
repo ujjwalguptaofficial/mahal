@@ -3,6 +3,7 @@ import { forOwn, merge, nextTick } from "../utils";
 import { IDirectiveBinding, IDirective } from "../interface";
 import { genericDirective } from "../generics";
 import { LIFECYCLE_EVENT } from "../enums";
+import { onElDestroy } from "./on_el_destroy";
 
 export function handleDirective(this: Component, element, dir, isComponent) {
     if (!dir) return;
@@ -31,7 +32,13 @@ export function handleDirective(this: Component, element, dir, isComponent) {
                     // }
                     // eventCbs = element = null;
                 };
-                element[onEvent](destroyEvent, onDestroyed);
+                if (isComponent) {
+                    element[onEvent](destroyEvent, onDestroyed);
+                }
+                else {
+                    onElDestroy(element, onDestroyed);
+                    // element[onEvent](destroyEvent, onDestroyed);
+                }
                 props.forEach((prop, index) => {
                     const ev = (newValue, oldValue) => {
                         if (oldValue === newValue) return;

@@ -1,10 +1,10 @@
 import { dispatchDestroyed } from "../helpers";
 
 export const replaceEl = (oldEl: HTMLElement, newEl: HTMLElement) => {
-    oldEl.replaceWith(newEl);
     dispatchDestroyed(oldEl);
+    oldEl.replaceWith(newEl);
 };
 export const removeEl = (el: Element) => {
-    el.remove();
     dispatchDestroyed(el);
+    el.remove();
 };

@@ -5,7 +5,9 @@ import { initiate, mount } from "mahal-test-utils";
 @Template(`
 <div>
     <div :if(flag)>
-        <div :for(item in fruits)>{{item}}</div>
+        <div>
+            <div :for(item in fruits)>{{item}}</div>
+        </div>
     </div>
 </div>
 `)

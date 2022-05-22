@@ -8,6 +8,7 @@ import { Logger } from "./logger";
 import { indexOf } from "./index_of";
 import { getElementKey } from "./get_el_key";
 import { ARRAY_MUTABLE_METHODS } from "../constant";
+import { onElDestroy } from "./on_el_destroy";
 
 const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 
@@ -73,7 +74,9 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             this.unwatch(ev, callBacks[ev]);
         }
     };
-    cmNode.addEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
+    onElDestroy(
+        cmNode, onElDestroyed
+    );
     const handleChange = (methodName, params) => {
         const parent = cmNode.parentNode;
         const childNodes = parent.childNodes;

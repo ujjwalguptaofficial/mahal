@@ -5,6 +5,7 @@ import { handleForExp } from "./handle_for_expression";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
 import { EL_REPLACED } from "../constant";
+import { onElDestroy } from "./on_el_destroy";
 
 export function handleExpression(this: Component, method: () => HTMLElement, keys: string[], type?: string) {
     if (type === "for") {
@@ -49,7 +50,7 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
             //     el = null;
             // }
         }.bind(this);
-        el.addEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
+        onElDestroy(el, onElDestroyed);
         if (changesQueue.length > 0) {
             onChange();
         }

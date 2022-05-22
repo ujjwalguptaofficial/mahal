@@ -1,4 +1,4 @@
-import { createTextNode, handleExpression, createElement, clearAll, Logger } from "../helpers";
+import { createTextNode, handleExpression, createElement, clearAll, Logger, onElDestroy } from "../helpers";
 import { Component } from "../abstracts";
 import { Mahal } from "../mahal";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
@@ -27,8 +27,8 @@ export const executeRender = (comp: Component, children?) => {
     } as IRenderContext);
     comp.element = el;
     const clear = clearAll.bind(comp);
-    
-    el.addEventListener(LIFECYCLE_EVENT.Destroy, clear);
+
+    onElDestroy(el, clear);
     comp.emit(LIFECYCLE_EVENT.Mount);
     comp.isMounted = true;
     // comp.on(LIFECYCLE_EVENT.Destroy, () => {
