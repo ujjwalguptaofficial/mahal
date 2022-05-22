@@ -13,13 +13,17 @@ export default class extends Component {
 
     @Reactive
     student = {
-        name:""
+        name: ""
     };
 
     reset() {
         this.student = {
-            name:""
+            name: ""
         };
+    }
+
+    onInit(): void {
+        window['compObj'] = this;
     }
 
 }

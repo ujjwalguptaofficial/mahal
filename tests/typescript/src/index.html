@@ -53,7 +53,7 @@
     <script>
         const event = new window.Event('destroy');
         document.querySelector('#temp1').addEventListener("destroy", () => {
-            alert('executed');
+            console.log('executed');
         })
         const parent = document.querySelector('#temp');
         parent.addEventListener("destroy", () => {

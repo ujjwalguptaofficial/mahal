@@ -25,7 +25,7 @@ export const nextTick = (cb?: Function): Promise<void> | void => {
         isExecuting = true;
         flushCallbacks();
     }
-    if (promise) {
-        return promise;
-    }
+    // if (promise) {
+    return promise;
+    // }
 };

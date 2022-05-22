@@ -4,3 +4,4 @@ import "./object_state_set_state.test";
 import "./array_state.test";
 import "./array_state_set_state.test";
 import "./array_event.test";
+import "./directive_destroy.test";

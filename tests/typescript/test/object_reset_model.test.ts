@@ -32,12 +32,13 @@ describe('Object reset Model', function () {
     });
 
     it("reset button", function () {
-        const input = component.find('div input') as HTMLInputElement;
-        const name = component.find('div .name');
+
         const button = component.find('div button') as HTMLButtonElement;
         const text = '';
         button.click();
         return component.waitFor('update').then(_ => {
+            const input = component.find('div input') as HTMLInputElement;
+            const name = component.find('div .name');
             const student = component.student;
             expect(student.name).equal(text);
             expect(name.innerHTML).equal(text);

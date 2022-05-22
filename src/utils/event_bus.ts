@@ -39,10 +39,11 @@ export class EventBus {
      * @memberof EventBus
      */
     off(event: string, cb?: Function) {
-        if (this._events[event]) {
+        const events = this._events[event];
+        if (events) {
             if (cb) {
-                const index = this._events[event].indexOf(cb);
-                this._events[event].splice(index, 1);
+                const index = events.indexOf(cb);
+                events.splice(index, 1);
             }
             else {
                 this._events[event] = [];

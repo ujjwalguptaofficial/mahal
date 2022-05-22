@@ -5,7 +5,9 @@ import { genericDirective } from "../generics";
 import { LIFECYCLE_EVENT } from "../enums";
 import { onElDestroy } from "./on_el_destroy";
 
-export function handleDirective(this: Component, element, dir, isComponent) {
+const destroyEvent = LIFECYCLE_EVENT.Destroy;
+
+export function handleDirective(this: Component, element: HTMLElement, dir, isComponent) {
     if (!dir) return;
     const onEvent = isComponent ? 'on' : 'addEventListener';
     forOwn(dir, (name, compiledDir) => {
@@ -18,7 +20,6 @@ export function handleDirective(this: Component, element, dir, isComponent) {
                 storedDirective.call(this, element, binding));
             // call directive async, this will create element faster
             nextTick(() => {
-                const destroyEvent = LIFECYCLE_EVENT.Destroy;
 
                 const eventCbs = [];
                 const props = compiledDir.props;
@@ -34,20 +35,31 @@ export function handleDirective(this: Component, element, dir, isComponent) {
                 };
                 if (isComponent) {
                     element[onEvent](destroyEvent, onDestroyed);
+                    props.forEach((prop, index) => {
+                        const ev = (newValue, oldValue) => {
+                            if (oldValue === newValue) return;
+                            binding.value[index] = newValue;
+                            directive.valueUpdated();
+                        };
+                        this.watch(prop, ev);
+                        eventCbs.push(ev);
+                    });
                 }
                 else {
                     onElDestroy(element, onDestroyed);
-                    // element[onEvent](destroyEvent, onDestroyed);
+                    props.forEach((prop, index) => {
+                        const ev = (newValue, oldValue) => {
+                            if (oldValue === newValue) return;
+                            if (element.isConnected) {
+                                binding.value[index] = newValue;
+                                directive.valueUpdated();
+                            }
+                        };
+                        this.watch(prop, ev);
+                        eventCbs.push(ev);
+                    });
                 }
-                props.forEach((prop, index) => {
-                    const ev = (newValue, oldValue) => {
-                        if (oldValue === newValue) return;
-                        binding.value[index] = newValue;
-                        directive.valueUpdated();
-                    };
-                    this.watch(prop, ev);
-                    eventCbs.push(ev);
-                });
+
                 directive.inserted();
             });
         }

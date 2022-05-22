@@ -16,16 +16,16 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
     const handleChange = () => {
         changesQueue.shift();
         const onChange = () => {
-            nextTick(() => {
-                try {
-                    const newEl = method();
-                    replaceEl(el, newEl);
-                    el = newEl;
-                    handleChange();
-                } catch (err) {
-                    emitError.call(this, err);
-                }
-            });
+            // nextTick(() => {
+            try {
+                const newEl = method();
+                replaceEl(el, newEl);
+                el = newEl;
+                handleChange();
+            } catch (err) {
+                emitError.call(this, err);
+            }
+            // });
         };
         const watchCallBack = () => {
             changesQueue.push(1);

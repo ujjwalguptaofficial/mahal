@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { ARRAY_MUTABLE_METHODS } from "../constant";
-import { isArray, getObjectLength, isObject, merge, hashifyArray } from "../utils";
+import { isArray, getObjectLength, isObject, merge, hashifyArray, nextTick } from "../utils";
 import { indexOf } from "./index_of";
 
 export class Observer {
@@ -23,13 +23,14 @@ export class Observer {
         const hashkeys = hashifyArray(keys);
         const registerChild = (key, newValue, oldValue) => {
             const objectValKeyWithPrefix = `${prefix}${key}.`;
-            if (oldValue != null) {
-                const mergedNewValue = merge(oldValue, newValue || {});
-                for (const valKey in mergedNewValue) {
-                    onChange(`${objectValKeyWithPrefix}${valKey}`, mergedNewValue[valKey], oldValue[valKey]);
+            nextTick(() => {
+                if (oldValue != null) {
+                    const mergedNewValue = merge(oldValue, newValue || {});
+                    for (const valKey in mergedNewValue) {
+                        onChange(`${objectValKeyWithPrefix}${valKey}`, mergedNewValue[valKey], oldValue[valKey]);
+                    }
                 }
-            }
-
+            });
             return this.create(newValue, null, objectValKeyWithPrefix);
         };
         if (isInputArray) {
