@@ -37,7 +37,7 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                 component[key] = clone(attrValue);
                 if (value.k) {
                     this.watch(value.k, (newValue, oldValue) => {
-                        if (oldValue === newValue) return;
+                        // if (oldValue === newValue) return;
                         Component.shouldCheckProp = false;
                         component.setState(key, getAttributeValue(value, newValue));
                         Component.shouldCheckProp = true;

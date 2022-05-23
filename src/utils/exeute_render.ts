@@ -31,8 +31,5 @@ export const executeRender = (comp: Component, children?) => {
     onElDestroy(el, clear);
     comp.emit(LIFECYCLE_EVENT.Mount);
     comp.isMounted = true;
-    // comp.on(LIFECYCLE_EVENT.Destroy, () => {
-    //     el.removeEventListener(LIFECYCLE_EVENT.Destroy, clear);
-    // });
     return el;
 };

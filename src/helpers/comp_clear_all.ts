@@ -1,8 +1,10 @@
 import { LIFECYCLE_EVENT } from "../enums";
 import { Component } from "../abstracts";
+
+const destroyEvent = LIFECYCLE_EVENT.Destroy;
 export function clearAll(this: Component) {
     // need to emit before clearing events
-    this.emit(LIFECYCLE_EVENT.Destroy).then(_ => {
+    this.emit(destroyEvent).then(_ => {
         this['__eventBus__'].destroy();
         this['__watchBus__'].destroy();
         if (this['__ob__']) {

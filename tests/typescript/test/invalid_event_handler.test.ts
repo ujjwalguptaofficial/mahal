@@ -11,7 +11,7 @@ describe('Invalid Event Handler', function () {
         try {
             component = await (app as any).initiate(Component);
         } catch (error) {
-            expect(error).equal(`{Palace throw}: Invalid event handler for event "click", Handler does not exist in component.\n\ntype : invalid_event_handler`);
+            expect(error).equal(`{Mahal throw}: Invalid event handler for event "click", Handler does not exist in component.\n\ntype : invalid_event_handler`);
         }
     });
 });

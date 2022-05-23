@@ -38,7 +38,6 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
             return this.watch(item, watchCallBack);
         });
         const onElDestroyed = () => {
-            // el.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
             keys.forEach((item, index) => {
                 this.unwatch(item, keysId[index]);
             });
@@ -47,9 +46,6 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
                 el = replacedEl;
                 handleChange();
             }
-            // else {
-            //     el = null;
-            // }
         };
         onElDestroy(el, onElDestroyed);
         if (changesQueue.length > 0) {

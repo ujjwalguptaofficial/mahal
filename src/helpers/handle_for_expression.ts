@@ -1,7 +1,7 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, getObjectLength, promiseResolve, forEach, removeEl, replaceEl } from "../utils";
-import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
+import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl } from "../utils";
+import { ERROR_TYPE } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
 import { Logger } from "./logger";
@@ -69,7 +69,6 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
     };
     const eventsId = {};
     const onElDestroyed = () => {
-        // cmNode.removeEventListener(LIFECYCLE_EVENT.Destroy, onElDestroyed);
         cmNode = null;
         for (const ev in callBacks) {
             this.unwatch(ev, eventsId[ev]);

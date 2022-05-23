@@ -1,7 +1,7 @@
 import { IError } from "../interface";
 import { ERROR_TYPE } from "../enums";
 
-const libName = "Palace";
+const libName = "Mahal";
 
 const newLine = "\n\n";
 
@@ -41,6 +41,7 @@ export class Logger implements IError {
     }
 
     private getMsg_() {
+        const info = this.info_;
         switch (this.type) {
             case ERROR_TYPE.PropDataTypeMismatch:
                 let str = `Expected Data type of property ${this.info_.prop} is ${this.info_.exp} but received ${this.info_.got}.${newLine}`;
@@ -67,6 +68,8 @@ export class Logger implements IError {
                 return `Do not mutate prop "${this.info_.key}" directly. Instead use a reactive property.`
                     + newLine + `found in -` + newLine +
                     `${this.info_.html}`;
+            case ERROR_TYPE.SetSameValue:
+                return `Component won't be updated, because of old value and new value are same for state - ${info.key}.`;
             default:
                 return this.msg;
         }

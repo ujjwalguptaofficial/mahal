@@ -20,9 +20,7 @@ export const classDirective = (el: HTMLElement, binding: IDirectiveBinding) => {
     };
 
     const addClass = () => {
-        binding.value.forEach(value => {
-            applyClass(value);
-        });
+        binding.value.forEach(applyClass);
     };
     addClass();
     return {

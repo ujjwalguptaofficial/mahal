@@ -75,7 +75,7 @@ describe('HelloWorld', function () {
         const btn = component.find('#count');
         expect(btn.innerHTML).equal('1');
         const eventId = component.on("click", function () {
-            component.setState('count', ++component.count);
+            component.setState('count', component.count + 1);
         });
         btn.click();
         await component.waitFor("update");
@@ -98,7 +98,7 @@ describe('HelloWorld', function () {
         component.count = 0;
         const btn = component.find('#count');
         component.on("click", function () {
-            component.setState('count', ++component.count);
+            component.setState('count', component.count + 1);
         });
         for (let i = 0; i < 5; i++) {
             component.find('#count').click();

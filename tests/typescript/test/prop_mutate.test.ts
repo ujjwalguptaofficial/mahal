@@ -77,7 +77,7 @@ describe('Mutate prop in custom TextBox', function () {
         nextTick(() => {
             const args = consoleSpy.args[0];
             expect(args).length(2);
-            expect(args[0]).to.equal("{Palace error}:");
+            expect(args[0]).to.equal("{Mahal error}:");
             expect(args[1]).to.equal(' Do not mutate prop "value" directly. Instead use a reactive property.\n\nfound in -\n\n<div>Standard Text Area box <input type="text"></div>\n\ntype : mutating_prop');
             expect(component.name).to.equal(value);
             consoleSpy.restore();

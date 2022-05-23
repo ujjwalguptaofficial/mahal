@@ -7,5 +7,6 @@ export enum ERROR_TYPE {
     InvalidFormatter = "invalid_formatter",
     PropDataTypeMismatch = "prop_data_type_mismatch",
     RendererNotFound = "createRenderer_not_found",
-    MutatingProp = "mutating_prop"
+    MutatingProp = "mutating_prop",
+    SetSameValue = "set_same_value"
 }
