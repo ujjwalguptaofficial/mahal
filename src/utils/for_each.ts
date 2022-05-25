@@ -1,4 +1,4 @@
-export const forEach = (obj, cb: (key, value) => void) => {
+export const forEach = (obj, cb: (value, key) => void) => {
     if (obj.forEach) {
         obj.forEach((item, index) => {
             cb(item, index);

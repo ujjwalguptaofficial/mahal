@@ -1,7 +1,7 @@
-import { doNothing } from "../helpers/do_nothing";
+// import { doNothing } from "../helpers/do_nothing";
 
-export const genericDirective = {
-    inserted: doNothing,
-    valueUpdated: doNothing,
-    destroyed: doNothing
-};
+// export const genericDirective = {
+//     inserted: doNothing,
+//     valueUpdated: doNothing,
+//     destroyed: doNothing
+// };

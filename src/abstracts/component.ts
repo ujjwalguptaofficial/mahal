@@ -1,30 +1,13 @@
-import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
+import { ERROR_TYPE } from "../enums";
 import { Observer, Logger, indexOf, replaceIfNull, emitError } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
-import { isArray, isNull, EventBus, Timer, getObjectLength, emitStateChange } from "../utils";
+import { isArray, EventBus, Timer, emitStateChange } from "../utils";
 import { Mahal } from "../mahal";
-import { TRUE } from "../constant";
 
 // do not rename this, this has been done to merge Component
 // // tslint:disable-next-line
 // export interface Component {
 
-// }
-
-// class AnimationFrame {
-//     private throttleTimer;
-
-//     reset() {
-//         this.throttleTimer = null;
-//     }
-
-//     debounce(fn) {
-//         cancelAnimationFrame(this.throttleTimer);
-//         this.throttleTimer = requestAnimationFrame(() => {
-//             fn();
-//             this.reset();
-//         });
-//     }
 // }
 
 
@@ -174,7 +157,6 @@ export abstract class Component {
      */
     unwatch(propName: string, eventId: number) {
         this.__watchBus__.off(propName, eventId);
-        return this;
     }
 
     /**
@@ -296,8 +278,7 @@ export abstract class Component {
                 return this.__formatters__[formatterName](value);
             }
         } catch (error) {
-            emitError.call(this, error, TRUE);
-            return null;
+            return emitError.call(this, error, true);
         }
         new Logger(ERROR_TYPE.InvalidFormatter, {
             formatter: formatterName
