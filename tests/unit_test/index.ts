@@ -5,3 +5,4 @@ import "./array_state.test";
 import "./array_state_set_state.test";
 import "./array_nested_elemet_destory.test";
 import "./directive_destroy.test";
+import "./next_tick.test";
