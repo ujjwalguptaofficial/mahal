@@ -45,7 +45,6 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
     handleAttribute.call(this, element, option.attr, false);
 
     if (option.on) {
-        const evListener = {};
         const events = option.on;
         for (const eventName in events) {
             const ev = events[eventName];
@@ -79,17 +78,13 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
             else {
                 ev.handlers.forEach(methods.push);
             }
-            // if (eventName === "input" && !ev.isNative) {
-            //     methods.unshift((e) => {
-            //         return e.target.value;
-            //     });
-            // }
-            evListener[eventName] = (e) => {
+            const cb = methods.length > 0 ? (e) => {
                 executeEvents.call(this, methods, e);
+            } : (e) => {
+                methods[0].call(this, e);
             };
-
             (element as HTMLDivElement).addEventListener(
-                eventName, evListener[eventName],
+                eventName, cb,
                 {
                     capture: isKeyExist(ev.option, 'capture'),
                     once: isKeyExist(ev.option, 'once'),

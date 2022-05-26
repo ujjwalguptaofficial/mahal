@@ -107,7 +107,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     removeEl(childNodes[nextIndexRef] as any);
                 }
 
-                // if (getObjectLength(resolvedValue) === 0) return;
+                if (getObjectLength(resolvedValue) === 0) return;
 
                 const fragDoc = document.createDocumentFragment();
                 forEach(resolvedValue, (value, prop) => {
@@ -137,9 +137,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     }
                 }
 
-                if (!isValueArray) {
-                    return;
-                }
+                if (!isValueArray) return;
 
                 // add new elements from splice third arguments
                 const frag = document.createDocumentFragment();
@@ -165,7 +163,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     const el = childNodes[spliceRefIndex + itemIndex];
                     const elKey = getElementKey(el);
                     if (elKey == null || elKey !== getElementKey(newEl)) {
-                        replaceEl(el as any, newEl);
+                        replaceEl(el as any, newEl);    
                     }
                 }
                 // });
