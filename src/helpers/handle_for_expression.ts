@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl } from "../utils";
+import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick } from "../utils";
 import { ERROR_TYPE } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
@@ -163,7 +163,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     const el = childNodes[spliceRefIndex + itemIndex];
                     const elKey = getElementKey(el);
                     if (elKey == null || elKey !== getElementKey(newEl)) {
-                        replaceEl(el as any, newEl);    
+                        replaceEl(el as any, newEl);
                     }
                 }
                 // });
@@ -184,8 +184,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             }
         };
         try {
-            methods[methodName]();
-            emitUpdate(this);
+            nextTick(_ => {
+                methods[methodName]();
+                emitUpdate(this);
+            });
         } catch (err) {
             emitError.call(this, err);
         }

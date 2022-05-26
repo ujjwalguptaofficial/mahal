@@ -6,7 +6,7 @@ import { onElDestroy } from "./on_el_destroy";
 export function handleDirective(this: Component, element: HTMLElement, dir, isComponent) {
     if (!dir) return;
     const htmlEl = isComponent ? (element as any as Component).element : element;
-    forEach(dir, (compiledDir, name) => {
+    forEach(dir, (compiledDir: IDirectiveBinding, name) => {
         const storedDirective = this['__directive__'][name] || this['__app__']['_directives'][name];
         if (!storedDirective) return;
 
@@ -39,10 +39,12 @@ export function handleDirective(this: Component, element: HTMLElement, dir, isCo
             onElDestroy(htmlEl, onDestroyed);
             eventsId = props.map((prop, index) => {
                 return this.watch(prop, (newValue) => {
-                    if (htmlEl.isConnected) {
-                        compiledDir.value[index] = newValue;
-                        directiveUpdate();
-                    }
+                    nextTick(_ => {
+                        if (htmlEl.isConnected) {
+                            compiledDir.value[index] = newValue;
+                            directiveUpdate();
+                        }
+                    });
                 });
             });
         });
