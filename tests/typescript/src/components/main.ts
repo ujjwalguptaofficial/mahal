@@ -29,7 +29,7 @@ import ObjectResetModel from "./object_reset_model";
 @Template(`
 <div>
 Hi
-<HelloWorld :count="counter" @click="incrementCounter" />
+<Student :count="counter" @click="incrementCounter" />
 </div>
 `)
 @Children({

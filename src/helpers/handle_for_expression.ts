@@ -159,10 +159,11 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 for (let itemIndex = 0, length = resolvedValue.length - from; itemIndex < length; itemIndex++) {
                     const actualIndex = from + itemIndex;
                     const item = resolvedValue[actualIndex];
-                    const newEl = method(item, actualIndex);
+                    const newElKey = method(item, actualIndex, true);
                     const el = childNodes[spliceRefIndex + itemIndex];
                     const elKey = getElementKey(el);
-                    if (elKey == null || elKey !== getElementKey(newEl)) {
+                    if (elKey == null || elKey !== newElKey) {
+                        const newEl = method(item, actualIndex);
                         replaceEl(el as any, newEl);
                     }
                 }
