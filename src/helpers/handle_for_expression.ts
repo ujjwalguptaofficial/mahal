@@ -162,7 +162,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     const newElKey = method(item, actualIndex, true);
                     const el = childNodes[spliceRefIndex + itemIndex];
                     const elKey = getElementKey(el);
-                    if (elKey == null || elKey !== newElKey) {
+                    if (elKey !== newElKey) {
                         const newEl = method(item, actualIndex);
                         replaceEl(el as any, newEl);
                     }
