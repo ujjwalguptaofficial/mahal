@@ -78,7 +78,7 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
             else {
                 ev.handlers.forEach(methods.push);
             }
-            const cb = methods.length > 0 ? (e) => {
+            const cb = methods.length > 1 ? (e) => {
                 executeEvents.call(this, methods, e);
             } : (e) => {
                 methods[0].call(this, e);
