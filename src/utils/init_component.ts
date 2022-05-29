@@ -12,18 +12,22 @@ export function initComponent(this: Component, component: Component, option) {
         const events = option.on;
         for (const eventName in events) {
             const ev = events[eventName];
-            const methods = ev.handlers.filter(item => {
-                if (typeof item !== 'function') {
-                    new Logger(ERROR_TYPE.InvalidEventHandler, {
-                        eventName,
-                    }).throwPlain();
-                    return false;
-                }
-                return true;
-            });
-            component.on(eventName, (args) => {
-                executeEvents.call(this, methods, args);
-            });
+            if (process.env.NODE_ENV !== 'production') {
+                ev.handlers.forEach(item => {
+                    if (typeof item !== 'function') {
+                        new Logger(ERROR_TYPE.InvalidEventHandler, {
+                            eventName,
+                        }).throwPlain();
+                    }
+                });
+            }
+            const methods = ev.handlers;
+            const cb = methods.length > 1 ? (e) => {
+                executeEvents.call(this, methods, e);
+            } : (e) => {
+                methods[0].call(this, e);
+            };
+            component.on(eventName, cb);
         }
     }
     const computed = component['__computed__'];
