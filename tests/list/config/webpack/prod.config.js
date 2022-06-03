@@ -4,9 +4,9 @@ const baseConfig = require('./base.config')
 const prod = merge(baseConfig, {
     mode: 'production',
     devtool: false,
-    output: {
-        publicPath: 'dist/',
-    },
+    // output: {
+    //     publicPath: 'dist/',
+    // },
 })
 
 module.exports = prod;

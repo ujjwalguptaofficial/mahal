@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "npm run deploy && node test/index.js",
     "dev": "webpack serve --open --config config/webpack/dev.config.js",
     "copy:html": "node build_helper/copy_html.js",
     "build-prod": "npm run deploy && npm run copy:html",
@@ -13,7 +14,11 @@
   "author": "",
   "license": "",
   "private": "true",
-  "dependencies": {},
+  "dependencies": {
+    "connect": "^3.7.0",
+    "finalhandler": "^1.2.0",
+    "serve-static": "^1.15.0"
+  },
   "devDependencies": {
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^10.2.4",
@@ -24,6 +29,7 @@
     "html-webpack-plugin": "^5.2.0",
     "mahal-webpack-loader": "^1.2.0",
     "mini-css-extract-plugin": "^2.5.3",
+    "mocha": "^10.0.0",
     "sass": "^1.49.0",
     "sass-loader": "^12.4.0",
     "style-loader": "^3.3.1",
