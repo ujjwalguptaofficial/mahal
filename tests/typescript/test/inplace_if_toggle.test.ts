@@ -1,5 +1,5 @@
 import { app } from "../src/index";
-import { lazyComponent, Template, Component, Prop, Children, Reactive } from "mahal";
+import { lazyComponent, Computed, Template, Component, Prop, Children, Reactive } from "mahal";
 import { expect } from "chai";
 import HelloWorld from "../src/components/hello_world";
 
@@ -14,10 +14,10 @@ import HelloWorld from "../src/components/hello_world";
 // `)
 @Template(`
 <div>
-    <in-place :if(flag1) :of="name" label="as"/>
+    <in-place :of="componentName" label="as"/>
 </div>
 `)
-class Temp extends Component {
+export class Temp extends Component {
     content = "Button"
 
     @Reactive
@@ -28,6 +28,15 @@ class Temp extends Component {
 
     @Reactive
     name = "Btn"
+
+    @Computed('name', 'flag1')
+    componentName() {
+        return this.flag1 ? this.name : null;
+    }
+
+    onInit(): void {
+        window['compTemp'] = this;
+    }
 }
 
 describe('InPlace if toggle', function () {

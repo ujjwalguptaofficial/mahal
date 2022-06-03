@@ -20,8 +20,8 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
             try {
                 const newEl = method();
                 replaceEl(el, newEl);
-                el = newEl;
-                handleChange();
+                // el = newEl;
+                // handleChange();
             } catch (err) {
                 emitError.call(this, err);
             }
@@ -45,6 +45,10 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
             if (replacedEl) {
                 el = replacedEl;
                 handleChange();
+            }
+            else {
+                el.removeEventListener('destroy', onElDestroyed);
+                el = null;
             }
         };
         onElDestroy(el, onElDestroyed);
