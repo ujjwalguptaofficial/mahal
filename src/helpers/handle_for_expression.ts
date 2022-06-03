@@ -15,7 +15,7 @@ const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 
 export function handleForExp(this: Component, key: string, method: (...args) => HTMLElement) {
     let cmNode = createCommentNode();
-    const els = [cmNode];
+    let els = [cmNode];
     let resolvedValue = this.getState(key);
     if (process.env.NODE_ENV !== 'production') {
         if (isPrimitive(resolvedValue) || isNull(resolvedValue)) {
@@ -198,6 +198,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         const methodKey = `${key}.${methodName}`;
         eventsId[methodKey] = this.watch(methodKey, callBacks[methodKey]);
     });
-
+    nextTick(_ => {
+        els = null;
+    })
     return els;
 }

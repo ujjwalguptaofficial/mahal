@@ -28,8 +28,7 @@ import ObjectResetModel from "./object_reset_model";
 // `)
 @Template(`
 <div>
-Hi
-<Student :count="counter" @click="incrementCounter" />
+<div :for(item in items)>hello</div>
 </div>
 `)
 @Children({
@@ -86,6 +85,7 @@ export default class Main extends Component {
         this.name = "name changed";
     }
 
+    @Reactive
     items = ["hello", "world"]
 
     constructor() {

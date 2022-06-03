@@ -16,16 +16,12 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
     const handleChange = () => {
         changesQueue.shift();
         const onChange = () => {
-            // nextTick(() => {
             try {
                 const newEl = method();
                 replaceEl(el, newEl);
-                // el = newEl;
-                // handleChange();
             } catch (err) {
                 emitError.call(this, err);
             }
-            // });
         };
         const watchCallBack = () => {
             changesQueue.push(1);
@@ -38,18 +34,16 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
             return this.watch(item, watchCallBack);
         });
         const onElDestroyed = () => {
-            keys.forEach((item, index) => {
-                this.unwatch(item, keysId[index]);
+            nextTick(_ => {
+                keys.forEach((item, index) => {
+                    this.unwatch(item, keysId[index]);
+                });
+                const replacedEl = el[EL_REPLACED];
+                if (replacedEl) {
+                    el = replacedEl;
+                    handleChange();
+                }
             });
-            const replacedEl = el[EL_REPLACED];
-            if (replacedEl) {
-                el = replacedEl;
-                handleChange();
-            }
-            else {
-                el.removeEventListener('destroy', onElDestroyed);
-                el = null;
-            }
         };
         onElDestroy(el, onElDestroyed);
         if (changesQueue.length > 0) {
