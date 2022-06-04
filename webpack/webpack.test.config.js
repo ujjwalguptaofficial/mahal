@@ -7,8 +7,9 @@ module.exports = [merge(baseConfig[0], {
     output: {
         path: path.join(__dirname, "../dist"),
         filename: "mahal.commonjs2.test.js",
-        library: 'mahal',
-        libraryTarget: "commonjs2"
+        // library: 'mahal',
+        libraryTarget: "commonjs2",
+        // libraryExport: 'default'
     },
     plugins: [
         new webpack.DefinePlugin({

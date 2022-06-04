@@ -2,6 +2,7 @@ const path = require('path');
 const SmartBannerPlugin = require('smart-banner-webpack-plugin');
 const banner = require('../build_helper/licence');
 const CopyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = [{
     name: "mahal",
@@ -20,7 +21,7 @@ module.exports = [{
         extensions: ['.ts', '.js'] // '' is needed to find modules like "jquery"
     },
     plugins: [
-        new SmartBannerPlugin(banner),
+        new webpack.BannerPlugin(banner),
         new CopyPlugin({
             patterns: [
                 { from: 'build_helper', to: '' },

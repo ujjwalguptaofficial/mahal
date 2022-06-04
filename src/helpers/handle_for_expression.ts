@@ -51,11 +51,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             handleChange("splice", [0, 0, newValue]);
         },
         [`${key}.reverse`]: () => {
-            // const reversedResult = this.getState(key);
             handleChange("reset", [resolvedValue, resolvedValue]);
-            // const reversedResult = newValue;
-            // const length = getObjectLength(reversedResult);
-            // handleChange("splice", [0, length, ...reversedResult]);
         },
         [`${key}.splice`]: (newValue) => {
             handleChange("splice", newValue);
@@ -200,6 +196,6 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
     });
     nextTick(_ => {
         els = null;
-    })
+    });
     return els;
 }

@@ -17,7 +17,7 @@ function getConfigForTaget(target) {
         output: {
             path: path.join(__dirname, "../dist"),
             filename: target.name,
-            library: 'mahal',
+            library: target.type === 'var' ? 'mahal' : undefined,
             libraryTarget: target.type
         },
         plugins: [

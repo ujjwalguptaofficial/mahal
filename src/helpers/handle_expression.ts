@@ -1,4 +1,3 @@
-import { LIFECYCLE_EVENT } from "../enums";
 import { nextTick, replaceEl } from "../utils";
 import { Component } from "../abstracts";
 import { handleForExp } from "./handle_for_expression";
