@@ -28,7 +28,7 @@ import ObjectResetModel from "./object_reset_model";
 // `)
 @Template(`
 <div>
-<div :for(item in items)>hello</div>
+<Student/>
 </div>
 `)
 @Children({

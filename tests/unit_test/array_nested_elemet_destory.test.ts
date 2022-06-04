@@ -15,7 +15,7 @@ import { initiate, mount } from "mahal-test-utils";
     </div>
 </div>
 `)
-class ArrayComp extends Component {
+export class ArrayComp extends Component {
     @Reactive
     fruits = [];
 
@@ -49,6 +49,10 @@ class ArrayComp extends Component {
             },
         }
     }
+
+    onInit(): void {
+        window['temp'] = this;
+    }
 }
 
 const ARRAY_MUTABLE_METHODS = ["push", "pop", "splice", "shift", "unshift", "reverse"];
@@ -61,6 +65,7 @@ describe("Array nested element destroy", () => {
 
     it("count events", async () => {
         await component.timer.timeout(1000);
+        debugger;
         expect(Object.keys(component['__watchBus__']._events)).length(12);
         ARRAY_MUTABLE_METHODS.forEach(name => {
             expect(component['__watchBus__']._events[`fruits.${name}`]).length(1);

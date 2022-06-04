@@ -1,6 +1,6 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { defaultSlotName, EL_REPLACED } from "../constant";
+import { defaultSlotName, EL_REPLACED, EVENTS } from "../constant";
 import { handleAttribute } from "./handle_attribute";
 import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload, nextTick, removeEl } from "../utils";
 import { executeEvents } from "./execute_events";
@@ -9,6 +9,7 @@ import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
 import { emitError } from "./emit_error";
 import { Logger } from "./logger";
+import { onElDestroy } from "./on_el_destroy";
 
 const loadComponent = (componentClass) => {
     if (componentClass instanceof Promise) {
@@ -25,6 +26,62 @@ const loadComponent = (componentClass) => {
     }
     return componentClass;
 };
+
+export function registerEvents(element, events) {
+    if (!events) return;
+    const eventListeners = new Map<string, Function>();
+    onElDestroy(element, () => {
+        element[EVENTS] = null;
+    });
+    for (const eventName in events) {
+        const ev = events[eventName];
+        const methods = [];
+        ev.modifiers.forEach(item => {
+            switch (item) {
+                case 'prevent':
+                    methods.push((e) => {
+                        e.preventDefault();
+                        return e;
+                    }); break;
+                case 'stop':
+                    methods.push((e) => {
+                        e.stopPropagation();
+                        return e;
+                    }); break;
+            }
+        });
+        if (process.env.NODE_ENV !== 'production') {
+            ev.handlers.forEach(item => {
+                if (typeof item === 'function') {
+                    methods.push(item);
+                }
+                else {
+                    new Logger(ERROR_TYPE.InvalidEventHandler, {
+                        ev: eventName,
+                    }).throwPlain();
+                }
+            });
+        }
+        else {
+            ev.handlers.forEach(methods.push);
+        }
+        const cb = methods.length > 1 ? (e) => {
+            executeEvents.call(this, methods, e);
+        } : (e) => {
+            methods[0].call(this, e);
+        };
+        (element as HTMLDivElement).addEventListener(
+            eventName, cb,
+            {
+                capture: isKeyExist(ev.option, 'capture'),
+                once: isKeyExist(ev.option, 'once'),
+                passive: isKeyExist(ev.option, 'passive'),
+            }
+        );
+        eventListeners.set(eventName, cb);
+    }
+    element[EVENTS] = eventListeners;
+}
 
 function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
     switch (tag) {
@@ -43,57 +100,7 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
     });
 
     handleAttribute.call(this, element, option.attr, false);
-
-    if (option.on) {
-        const events = option.on;
-        for (const eventName in events) {
-            const ev = events[eventName];
-            const methods = [];
-            ev.modifiers.forEach(item => {
-                switch (item) {
-                    case 'prevent':
-                        methods.push((e) => {
-                            e.preventDefault();
-                            return e;
-                        }); break;
-                    case 'stop':
-                        methods.push((e) => {
-                            e.stopPropagation();
-                            return e;
-                        }); break;
-                }
-            });
-            if (process.env.NODE_ENV !== 'production') {
-                ev.handlers.forEach(item => {
-                    if (typeof item === 'function') {
-                        methods.push(item);
-                    }
-                    else {
-                        new Logger(ERROR_TYPE.InvalidEventHandler, {
-                            ev: eventName,
-                        }).throwPlain();
-                    }
-                });
-            }
-            else {
-                ev.handlers.forEach(methods.push);
-            }
-            const cb = methods.length > 1 ? (e) => {
-                executeEvents.call(this, methods, e);
-            } : (e) => {
-                methods[0].call(this, e);
-            };
-            (element as HTMLDivElement).addEventListener(
-                eventName, cb,
-                {
-                    capture: isKeyExist(ev.option, 'capture'),
-                    once: isKeyExist(ev.option, 'once'),
-                    passive: isKeyExist(ev.option, 'passive'),
-                }
-            );
-        }
-    }
-
+    registerEvents.call(this, element, option.on);
     handleDirective.call(this, element, option.dir, false);
     return element;
 }

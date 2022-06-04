@@ -1,15 +1,25 @@
 import { Component } from "../abstracts";
 import { IAttrItem } from "../interface";
-import { getDataype, clone, forOwn, setAttribute } from "../utils";
+import { getDataype, clone, forOwn, setAttribute, nextTick, getObjectLength } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { Observer } from "./observer";
 import { emitUpdate } from "./emit_update";
 import { getAttributeValue } from "./get_expression_value";
 import { Logger } from "./logger";
 import { KEY, MAHAL_KEY } from "../constant";
+import { onElDestroy } from "./on_el_destroy";
 
 
 export function handleAttribute(this: Component, component, attr, isComponent) {
+    const eventIds = {};
+    // this.unwatch()
+    nextTick(_ => {
+        if (getObjectLength(eventIds) === 0) return;
+        onElDestroy(isComponent ? component.element : component, () => {
+            for (const evName in eventIds) {
+                this.unwatch(evName, eventIds[evName]);
+            }
+        });
+    });
     if (isComponent) {
         const htmlAttributes = [];
         if (!attr) return htmlAttributes;
@@ -35,15 +45,14 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                 }
 
                 component[key] = clone(attrValue);
-                if (value.k) {
-                    this.watch(value.k, (newValue, oldValue) => {
-                        // if (oldValue === newValue) return;
+                const attributeKey = value.k;
+                if (attributeKey) {
+                    eventIds[attributeKey] = this.watch(attributeKey, (newValue, oldValue) => {
                         Component.shouldCheckProp = false;
                         component.setState(key, getAttributeValue(value, newValue));
                         Component.shouldCheckProp = true;
                     });
                 }
-
             }
             else {
                 htmlAttributes.push({
@@ -63,8 +72,9 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
         else {
             setAttribute(component, key, attrValue);
         }
-        if (attrItem.k) {
-            this.watch(attrItem.k, (newValue) => {
+        const attributeKey = attrItem.k;
+        if (attributeKey) {
+            eventIds[attributeKey] = this.watch(attributeKey, (newValue) => {
                 setAttribute(component, key, getAttributeValue(attrItem, newValue));
                 emitUpdate(this);
             });

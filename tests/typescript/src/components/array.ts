@@ -81,7 +81,7 @@ export default class extends Component {
     }
 
     reset() {
-        this.students = [ {
+        this.students = [{
             name: 'ujjwal'
         },
         {
@@ -93,8 +93,8 @@ export default class extends Component {
         this.students.splice(index, 1);
     }
 
-    rendered() {
-        window["comp"] = this;
+    onInit() {
+        window["arrayComp"] = this;
     }
 
 }

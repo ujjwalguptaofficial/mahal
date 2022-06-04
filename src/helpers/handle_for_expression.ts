@@ -7,8 +7,10 @@ import { emitError } from "./emit_error";
 import { Logger } from "./logger";
 import { indexOf } from "./index_of";
 import { getElementKey } from "./get_el_key";
-import { ARRAY_MUTABLE_METHODS } from "../constant";
+import { ARRAY_MUTABLE_METHODS, EVENTS } from "../constant";
 import { onElDestroy } from "./on_el_destroy";
+import morphdom from "morphdom";
+import { dispatchDestroyed } from "./dispatch_destroy";
 
 const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 
@@ -176,7 +178,32 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 }
                 if (index >= 0) {
                     const newElement = method(params.value, paramKey);
-                    replaceEl(childNodes[indexOfRef + 1 + index] as any, newElement);
+                    morphdom(childNodes[indexOfRef + 1 + index] as any, newElement, {
+                        onBeforeElUpdated(fromEl, toEl) {
+                            if (fromEl.isEqualNode(toEl)) {
+                                return false;
+                            }
+                            const fromEvs: Map<string, Function> = fromEl[EVENTS];
+                            if (fromEvs) {
+                                fromEvs.forEach((ev, name) => {
+                                    fromEl.removeEventListener(name, ev as any);
+                                });
+                            }
+                            const toEvs: Map<string, Function> = toEl[EVENTS];
+                            if (toEvs) {
+                                toEvs.forEach((ev, name) => {
+                                    fromEl.addEventListener(name, ev as any);
+                                });
+                            }
+                            fromEl[EVENTS] = toEvs;
+                            return true;
+                        },
+                        onBeforeNodeDiscarded(node) {
+                            dispatchDestroyed(node);
+                            return true;
+                        }
+                    });
+                    // replaceEl(, newElement);
                 }
             }
         };

@@ -73,9 +73,9 @@ export default class extends Component {
     data = [];
     selected = 0;
 
-    // onInit() {
-    //     window["comp"] = this;
-    // }
+    onInit() {
+        window["comp"] = this;
+    }
 
     add() {
         this.setState("data.push", ...buildData(1000));

@@ -17,7 +17,7 @@ export function handleDirective(this: Component, element: HTMLElement, dir, isCo
         // call directive async, this will create element faster
         // also nextTick make sure that element is now inserted
         nextTick(() => {
-            if (!directive) return;
+            if (!directive || !htmlEl.isConnected) return;
 
             if (directive.inserted) {
                 directive.inserted();
