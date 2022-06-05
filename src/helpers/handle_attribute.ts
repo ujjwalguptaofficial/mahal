@@ -11,7 +11,6 @@ import { onElDestroy } from "./on_el_destroy";
 
 export function handleAttribute(this: Component, component, attr, isComponent) {
     const eventIds = {};
-    // this.unwatch()
     nextTick(_ => {
         if (getObjectLength(eventIds) === 0) return;
         onElDestroy(isComponent ? component.element : component, () => {

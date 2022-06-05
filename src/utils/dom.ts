@@ -6,7 +6,14 @@ export const replaceEl = (oldEl: HTMLElement, newEl: HTMLElement) => {
     dispatchDestroyed(oldEl);
     oldEl.replaceWith(newEl);
 };
+
 export const removeEl = (el: Element) => {
     dispatchDestroyed(el);
     el.remove();
+};
+
+export const insertBefore = (parent: Element, nodeToInsert: Node, relativeNode: Node) => {
+    parent.insertBefore(
+        nodeToInsert, relativeNode
+    );
 };

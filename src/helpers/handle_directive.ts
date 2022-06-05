@@ -16,7 +16,7 @@ export function handleDirective(this: Component, element: HTMLElement, dir, isCo
 
         // call directive async, this will create element faster
         // also nextTick make sure that element is now inserted
-        nextTick(() => {
+        nextTick(_ => {
             if (!directive || !htmlEl.isConnected) return;
 
             if (directive.inserted) {
@@ -39,7 +39,7 @@ export function handleDirective(this: Component, element: HTMLElement, dir, isCo
             onElDestroy(htmlEl, onDestroyed);
             eventsId = props.map((prop, index) => {
                 return this.watch(prop, (newValue) => {
-                    nextTick(_ => {
+                    nextTick(__ => {
                         if (htmlEl.isConnected) {
                             compiledDir.value[index] = newValue;
                             directiveUpdate();

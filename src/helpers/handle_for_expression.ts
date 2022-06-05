@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick } from "../utils";
+import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore } from "../utils";
 import { ERROR_TYPE } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
@@ -89,8 +89,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                         method(value, prop + fromIndex)
                     );
                 });
-                parent.insertBefore(
-                    fragDoc, childNodes[indexOfRef + 1 + fromIndex]
+                insertBefore(
+                    parent as any,
+                    fragDoc,
+                    childNodes[indexOfRef + 1 + fromIndex]
                 );
             },
             reset() {
@@ -114,14 +116,14 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     );
                 });
 
-                parent.insertBefore(
-                    fragDoc, childNodes[nextIndexRef]
+                insertBefore(
+                    parent as any, fragDoc, childNodes[nextIndexRef]
                 );
             },
             add() {
                 const length = getObjectLength(resolvedValue);
                 const newElement = method(params.value, params.key);
-                parent.insertBefore(newElement, childNodes[indexOfRef + length]);
+                insertBefore(parent as any, newElement, childNodes[indexOfRef + length]);
             },
             splice() {
                 // i==1 for comment nodes 
@@ -146,7 +148,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 }
 
                 const nextIndexRef = indexOfRef + 1;
-                parent.insertBefore(frag, childNodes[nextIndexRef + params[0]]);
+                insertBefore(parent as any, frag, childNodes[nextIndexRef + params[0]]);
 
                 // arrange items after insertion
                 const from = (paramLength - 2) + params[0];
@@ -183,21 +185,19 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                             if (fromEl.isEqualNode(toEl)) {
                                 return false;
                             }
-                            nextTick(_ => {
-                                const fromEvs: Map<string, Function> = fromEl[EVENTS];
-                                if (fromEvs) {
-                                    fromEvs.forEach((ev, name) => {
-                                        fromEl.removeEventListener(name, ev as any);
-                                    });
-                                }
-                                const toEvs: Map<string, Function> = toEl[EVENTS];
-                                if (toEvs) {
-                                    toEvs.forEach((ev, name) => {
-                                        fromEl.addEventListener(name, ev as any);
-                                    });
-                                }
-                                fromEl[EVENTS] = toEvs;
-                            });
+                            const fromEvs: Map<string, Function> = fromEl[EVENTS];
+                            if (fromEvs) {
+                                fromEvs.forEach((ev, name) => {
+                                    fromEl.removeEventListener(name, ev as any);
+                                });
+                            }
+                            const toEvs: Map<string, Function> = toEl[EVENTS];
+                            if (toEvs) {
+                                toEvs.forEach((ev, name) => {
+                                    fromEl.addEventListener(name, ev as any);
+                                });
+                            }
+                            fromEl[EVENTS] = toEvs;
                             return true;
                         },
                         onBeforeNodeDiscarded(node) {

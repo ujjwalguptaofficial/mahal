@@ -1,8 +1,8 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
-import { defaultSlotName, EL_REPLACED, EVENTS } from "../constant";
+import { DEFAULT_SLOT_NAME, EL_REPLACED, EVENTS } from "../constant";
 import { handleAttribute } from "./handle_attribute";
-import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload, nextTick, removeEl } from "../utils";
+import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload, nextTick, removeEl, insertBefore } from "../utils";
 import { executeEvents } from "./execute_events";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
@@ -15,13 +15,11 @@ const loadComponent = (componentClass) => {
         return componentClass.then(comp => {
             return comp.default;
         });
-        // return createCommentNode();
     }
     else if (componentClass.isLazy) {
         return loadComponent(
             (componentClass as ILazyComponentPayload).component()
         );
-        // return createCommentNode();
     }
     return componentClass;
 };
@@ -80,12 +78,14 @@ export function registerEvents(element, events) {
 }
 
 function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
+    const attribute = option.attr;
+
     switch (tag) {
         case "slot":
         case "target":
-            if (!option.attr.name) {
-                option.attr.name = {
-                    v: defaultSlotName
+            if (!attribute.name) {
+                attribute.name = {
+                    v: DEFAULT_SLOT_NAME
                 };
             }
     }
@@ -95,7 +95,7 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
         element.appendChild(item);
     });
 
-    handleAttribute.call(this, element, option.attr, false);
+    handleAttribute.call(this, element, attribute, false);
     registerEvents.call(this, element, option.on);
     handleDirective.call(this, element, option.dir, false);
     return element;
@@ -135,15 +135,14 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
                     if (targetSlotParent) {
                         // nodeType -3 : TextNode
                         if (item.nodeType === 3) {
-                            targetSlotParent.insertBefore(item, targetSlot.nextSibling);
+                            insertBefore(targetSlotParent, item, targetSlot.nextSibling);
                         }
                         else {
                             item.childNodes.forEach(child => {
-                                targetSlotParent.insertBefore(child, targetSlot.nextSibling);
+                                insertBefore(targetSlotParent, child, targetSlot.nextSibling);
                             });
                         }
                         removeEl(targetSlot);
-                        // targetSlotParent.removeChild(targetSlot);
                     }
                     else {
                         element = component.element = item;
