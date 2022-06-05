@@ -28,7 +28,9 @@ import ObjectResetModel from "./object_reset_model";
 // `)
 @Template(`
 <div>
-<Student/>
+    <div :for(item in items)>
+        <div @click="incrementCounter">{{item}}</div>
+    </div>
 </div>
 `)
 @Children({

@@ -28,14 +28,12 @@ export function handleDirective(this: Component, element: HTMLElement, dir, isCo
             if (props.length === 0 || directiveUpdate == null) return;
             let eventsId: number[];
             const onDestroyed = () => {
-                nextTick(_ => {
-                    props.forEach((prop, index) => {
-                        this.unwatch(prop, eventsId[index]);
-                    });
-                    if (directive.destroyed) {
-                        directive.destroyed();
-                    }
+                props.forEach((prop, index) => {
+                    this.unwatch(prop, eventsId[index]);
                 });
+                if (directive.destroyed) {
+                    directive.destroyed();
+                }
             };
 
             onElDestroy(htmlEl, onDestroyed);

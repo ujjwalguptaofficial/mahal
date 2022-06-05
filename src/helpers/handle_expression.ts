@@ -33,16 +33,14 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
             return this.watch(item, watchCallBack);
         });
         const onElDestroyed = () => {
-            nextTick(_ => {
-                keys.forEach((item, index) => {
-                    this.unwatch(item, keysId[index]);
-                });
-                const replacedEl = el[EL_REPLACED];
-                if (replacedEl) {
-                    el = replacedEl;
-                    handleChange();
-                }
+            keys.forEach((item, index) => {
+                this.unwatch(item, keysId[index]);
             });
+            const replacedEl = el[EL_REPLACED];
+            if (replacedEl) {
+                el = replacedEl;
+                handleChange();
+            }
         };
         onElDestroy(el, onElDestroyed);
         if (changesQueue.length > 0) {
