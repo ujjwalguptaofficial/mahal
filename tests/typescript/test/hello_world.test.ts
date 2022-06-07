@@ -131,7 +131,7 @@ describe('HelloWorld', function () {
                 expect(component.element).equal(null);
                 expect(component.__eventBus__).equal(null);
                 expect(component.__ob__).equal(null);
-                expect(component.__watchBus__._events).equal(null);
+                expect(component.__watchBus__._events).deep.equal({});
                 // expect(component.dependency_).equal(null);
                 // expect(getObjectLength(component.dependency_)).equal(0);
                 // expect(getObjectLength(component.watchList_)).equal(0);

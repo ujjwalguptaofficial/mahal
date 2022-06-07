@@ -152,10 +152,9 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
 
                 // arrange items after insertion
                 const from = (paramLength - 2) + params[0];
-                // const sliced = resolvedValue.slice(from);
+
                 const spliceRefIndex = nextIndexRef + params[0] + paramLength - 2;
 
-                // sliced.forEach((item, itemIndex) => {
                 for (let itemIndex = 0, length = resolvedValue.length - from; itemIndex < length; itemIndex++) {
                     const actualIndex = from + itemIndex;
                     const item = resolvedValue[actualIndex];
@@ -167,7 +166,6 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                         replaceEl(el as any, newEl);
                     }
                 }
-                // });
             },
             update() {
                 let paramKey = params.key;
@@ -205,7 +203,6 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                             return true;
                         }
                     });
-                    // replaceEl(, newElement);
                 }
             }
         };

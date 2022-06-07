@@ -5,9 +5,12 @@ const dispatchDestroyedEv = (node: Node) => {
     node.childNodes.forEach(item => {
         dispatchDestroyedEv(item);
     });
-    if ((node as any).onDestroy) {
-        node.dispatchEvent(new window.CustomEvent(LIFECYCLE_EVENT.Destroy));
-    }
+    nextTick(_ => {
+        if ((node as any).onDestroy) {
+            node.dispatchEvent(new window.CustomEvent(LIFECYCLE_EVENT.Destroy));
+        }
+    });
+
 };
 
 export const dispatchDestroyed = (node: Node) => {

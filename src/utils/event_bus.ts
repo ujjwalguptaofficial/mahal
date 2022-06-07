@@ -1,3 +1,4 @@
+import { emptyObj } from "../constant";
 import { promiseResolve } from "./promise_resolve";
 
 export class EventBus {
@@ -133,7 +134,8 @@ export class EventBus {
     }
 
     destroy() {
-        this._ctx = this._events = this._eventsId = null;
+        this._ctx = this._eventsId = null;
+        this._events = emptyObj;
     }
 
     getEvent(eventName: string) {
