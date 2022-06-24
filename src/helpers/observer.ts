@@ -23,7 +23,7 @@ export class Observer {
         const hashkeys = hashifyArray(keys);
         const registerChild = (key, newValue, oldValue) => {
             const objectValKeyWithPrefix = `${prefix}${key}.`;
-            nextTick(() => {
+            nextTick(_ => {
                 if (oldValue != null) {
                     const mergedNewValue = merge(oldValue, newValue || {});
                     for (const valKey in mergedNewValue) {

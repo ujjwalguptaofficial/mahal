@@ -11,6 +11,7 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
         return handleForExp.call(this, keys[0], method);
     }
     let el = method();
+    if (keys.length === 0) return el;
     const changesQueue = [];
     const handleChange = () => {
         changesQueue.shift();

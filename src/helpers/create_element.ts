@@ -59,10 +59,8 @@ export function registerEvents(element, events) {
         else {
             ev.handlers.forEach(methods.push);
         }
-        const cb = methods.length > 1 ? (e) => {
+        const cb = methods.length === 1 ? methods[0].bind(this) : (e) => {
             executeEvents.call(this, methods, e);
-        } : (e) => {
-            methods[0].call(this, e);
         };
         (element as HTMLDivElement).addEventListener(
             eventName, cb,
