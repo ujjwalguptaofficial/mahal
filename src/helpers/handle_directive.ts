@@ -2,7 +2,6 @@ import { Component } from "../abstracts";
 import { forEach, nextTick } from "../utils";
 import { IDirectiveBinding, IDirective } from "../interface";
 import { onElDestroy } from "./on_el_destroy";
-import { emitUpdate } from "./emit_update";
 
 export function handleDirective(this: Component, element: HTMLElement, dir, isComponent) {
     if (!dir) return;
@@ -44,9 +43,6 @@ export function handleDirective(this: Component, element: HTMLElement, dir, isCo
                         if (htmlEl.isConnected) {
                             compiledDir.value[index] = newValue;
                             directiveUpdate();
-                            // nextTick(() => {
-                            //     emitUpdate(this);
-                            // });
                         }
                     });
                 });
