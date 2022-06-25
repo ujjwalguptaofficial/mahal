@@ -29,21 +29,25 @@ export function registerEvents(element, events) {
     const eventListeners = new Map<string, Function>();
     for (const eventName in events) {
         const ev = events[eventName];
-        const methods = [];
-        ev.modifiers.forEach(item => {
-            switch (item) {
-                case 'prevent':
-                    methods.push((e) => {
-                        e.preventDefault();
-                        return e;
-                    }); break;
-                case 'stop':
-                    methods.push((e) => {
-                        e.stopPropagation();
-                        return e;
-                    }); break;
-            }
-        });
+        let methods = ev.handlers;
+        if (ev.modifiers.length > 0) {
+            const modifiersCb = [];
+            ev.modifiers.forEach(item => {
+                switch (item) {
+                    case 'prevent':
+                        modifiersCb.push((e) => {
+                            e.preventDefault();
+                            return e;
+                        }); break;
+                    case 'stop':
+                        modifiersCb.push((e) => {
+                            e.stopPropagation();
+                            return e;
+                        }); break;
+                }
+            });
+            methods = [...modifiersCb, ...methods];
+        }
         if (process.env.NODE_ENV !== 'production') {
             ev.handlers.forEach(item => {
                 if (typeof item !== 'function') {
@@ -53,9 +57,6 @@ export function registerEvents(element, events) {
                 }
             });
         }
-        ev.handlers.forEach(item => {
-            methods.push(item);
-        });
         const cb = methods.length === 1 ? methods[0].bind(this) : (e) => {
             executeEvents.call(this, methods, e);
         };
