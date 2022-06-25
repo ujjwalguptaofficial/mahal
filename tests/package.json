@@ -9,10 +9,14 @@
     "dev:todo": "webpack-dev-server --config todo/webpack.config.js",
     "install:dev": " npm run install:lib && npm run dev",
     "install:test": " npm run install:lib && npm run test",
+    "install:test:prod": " npm run install:lib && npm run test:prod",
     "start": "npm run dev",
     "test": "npm run test:unit && npm run test:typescript",
-    "test:typescript": "cd typescript && npm run test:browser",
-    "test:unit": "cd unit_test && npm run test:browser",
+    "test:prod": "npm run test:unit:prod && npm run test:typescript:prod",
+    "test:typescript": "cd typescript && npm run test",
+    "test:typescript:prod": "cd typescript && npm run test:prod",
+    "test:unit": "cd unit_test && npm run test",
+    "test:unit:prod": "cd unit_test && npm run test:prod",
     "test:mochapack": "cross-env NODE_ENV=test mochapack --require ./typescript/test/setup.js --webpack-config typescript/webpack.config.test.js \"typescript/test/**/*.test.ts\""
   },
   "dependencies": {

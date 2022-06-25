@@ -66,24 +66,27 @@ describe('Mutate prop in custom TextBox', function () {
         expect(component.name).equal('random');
     });
 
-    it('assert prop check error', function (done) {
+    if (process.env.NODE_ENV !== 'production') {
 
-        const consoleSpy = spy(console, "error");
 
-        const el = (component.find('input'));
-        const value = "jee";
-        el.setValue(value);
+        it('assert prop check error', function (done) {
 
-        nextTick(() => {
-            const args = consoleSpy.args[0];
-            expect(args).length(2);
-            expect(args[0]).to.equal("{Mahal error}:");
-            expect(args[1]).to.equal(' Do not mutate prop "value" directly. Instead use a reactive property.\n\nfound in -\n\n<div>Standard Text Area box <input type="text"></div>\n\ntype : mutating_prop');
-            expect(component.name).to.equal(value);
-            consoleSpy.restore();
-            done();
-        })
-    });
+            const consoleSpy = spy(console, "error");
 
+            const el = (component.find('input'));
+            const value = "jee";
+            el.setValue(value);
+
+            nextTick(() => {
+                const args = consoleSpy.args[0];
+                expect(args).length(2);
+                expect(args[0]).to.equal("{Mahal error}:");
+                expect(args[1]).to.equal(' Do not mutate prop "value" directly. Instead use a reactive property.\n\nfound in -\n\n<div>Standard Text Area box <input type="text"></div>\n\ntype : mutating_prop');
+                expect(component.name).to.equal(value);
+                consoleSpy.restore();
+                done();
+            })
+        });
+    }
 });
 

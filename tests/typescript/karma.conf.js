@@ -2,6 +2,7 @@ const webpack = require("webpack");
 const path = require("path");
 process.env.CHROME_BIN = require('puppeteer').executablePath();
 
+const nodeEnv = process.env.NODE_ENV || "development";
 module.exports = function (config) {
     config.set({
         frameworks: ["mocha"],
@@ -15,7 +16,7 @@ module.exports = function (config) {
             "**/*.js": "webpack"
         },
         webpack: {
-            mode: "development",
+            mode: 'development',
             module: {
                 rules: [{
                     test: /\.tsx?$/,
@@ -32,7 +33,8 @@ module.exports = function (config) {
             },
             plugins: [
                 new webpack.DefinePlugin({
-                    'process.env.NODE_ENV': "'test'"
+                    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+                    'process.env.BUILD_ENV': "'test'"
                 })
             ],
             devtool: 'inline-source-map'

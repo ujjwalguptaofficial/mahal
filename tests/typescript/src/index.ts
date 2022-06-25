@@ -3,7 +3,7 @@ import Main from "./components/main";
 import Btn from "./components/btn";
 import MahalTest from "mahal-test-utils";
 import { createRenderer } from "mahal-html-compiler";
-if (process.env.NODE_ENV != "test") {
+if (process.env.BUILD_ENV != "test") {
     require("flexboot");
 }
 
@@ -16,7 +16,7 @@ app.extend.formatter("dollar", (value: string) => {
 app.extend.component("Btn", Btn);
 // app.extend.component("fragment", FragmentComponent);
 (Mahal as any).createRenderer = createRenderer;
-if (process.env.NODE_ENV !== "test") {
+if (process.env.BUILD_ENV !== "test") {
     app.create().catch(err => {
         console.log("err", err)
     })

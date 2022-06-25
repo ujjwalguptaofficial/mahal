@@ -46,19 +46,16 @@ export function registerEvents(element, events) {
         });
         if (process.env.NODE_ENV !== 'production') {
             ev.handlers.forEach(item => {
-                if (typeof item === 'function') {
-                    methods.push(item);
-                }
-                else {
+                if (typeof item !== 'function') {
                     new Logger(ERROR_TYPE.InvalidEventHandler, {
                         ev: eventName,
                     }).throwPlain();
                 }
             });
         }
-        else {
-            ev.handlers.forEach(methods.push);
-        }
+        ev.handlers.forEach(item => {
+            methods.push(item);
+        });
         const cb = methods.length === 1 ? methods[0].bind(this) : (e) => {
             executeEvents.call(this, methods, e);
         };
