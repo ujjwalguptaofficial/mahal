@@ -129,4 +129,44 @@ describe("object state", () => {
         checkFruitValue(veggie);
         return promise;
     })
+
+    it('reset state', async () => {
+        debugger;
+        const promise1 = new Promise<void>((res) => {
+            const eventId = component.watch("fruits.potato", (newValue, oldValue) => {
+                expect(newValue).eql(undefined);
+                expect(oldValue).eql('potato');
+                res();
+                component.unwatch("fruits.potato", eventId);
+            });
+        })
+        const promise2 = new Promise<void>((res) => {
+            const eventId = component.watch("fruits.brinjal", (newValue, oldValue) => {
+                expect(newValue).eql(undefined);
+                expect(oldValue).eql('brinjal');
+                res();
+                component.unwatch("fruits.brinjal", eventId);
+            });
+        })
+        const promise3 = new Promise<void>((res) => {
+            const eventId = component.watch("fruits.peas", (newValue, oldValue) => {
+                expect(newValue).eql(undefined);
+                expect(oldValue).eql('peas');
+                res();
+                component.unwatch("fruits.peas", eventId);
+            });
+        })
+        const promise4 = new Promise<void>((res) => {
+            const eventId = component.watch("fruits.spinach", (newValue, oldValue) => {
+                expect(newValue).eql(undefined);
+                expect(oldValue).eql('spinach');
+                res();
+                component.unwatch("fruits.spinach", eventId);
+            });
+        })
+        component.fruits = {};
+        return Promise.all([
+            promise1, promise2, promise3, promise4
+        ]);
+    });
 })

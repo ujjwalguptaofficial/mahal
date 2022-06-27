@@ -25,9 +25,13 @@ export class Observer {
             const objectValKeyWithPrefix = `${prefix}${key}.`;
             nextTick(_ => {
                 if (oldValue != null) {
-                    const mergedNewValue = merge(oldValue, newValue || {});
+                    newValue = newValue || {};
+                    const mergedNewValue = merge(oldValue, newValue);
                     for (const valKey in mergedNewValue) {
-                        onChange(`${objectValKeyWithPrefix}${valKey}`, mergedNewValue[valKey], oldValue[valKey]);
+                        onChange(`${objectValKeyWithPrefix}${valKey}`,
+                            newValue[valKey],
+                            oldValue[valKey]
+                        );
                     }
                 }
             });
