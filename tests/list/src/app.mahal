@@ -74,7 +74,19 @@ export default class extends Component {
     selected = 0;
 
     onInit() {
+        this.run();
         window["comp"] = this;
+        this.on("mount", async () => {
+            await this.timer.timeout(0);
+            const table = document.querySelector("table");
+            console.log(table);
+            new MutationObserver((mutations) => {
+                console.log(mutations);
+            }).observe(table, {
+                childList: true,
+                subtree: true,
+            });
+        });
     }
 
     add() {
@@ -82,7 +94,7 @@ export default class extends Component {
     }
 
     run() {
-        this.setState("data", buildData(10));
+        this.setState("data", buildData(1000));
         this.setState("selected", 0);
     }
 
@@ -121,13 +133,17 @@ export default class extends Component {
     }
 
     swapRows() {
-        const data = this.data;
+        const data = this.data.slice();
         if (data.length > 998) {
             let temp = data[1];
-            this.setState("data.1", data[998]);
-            this.setState("data.998", temp);
+            data[1] = data[998];
+            data[998] = temp;
+            // this.setState("data.1", data[998]);
+            // this.setState("data.998", temp);
             // data[1] = data[998];
             // data[998] = temp;
+
+            this.setState("data", data);
         }
     }
 }

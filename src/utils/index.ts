@@ -25,3 +25,4 @@ export * from "./promise_resolve";
 export * from "./lazy_component";
 export * from "./emit_state_change";
 export * from "./for_each";
+export * from "./patch_node";

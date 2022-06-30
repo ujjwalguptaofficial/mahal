@@ -5,7 +5,6 @@ import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { getAttributeValue } from "./get_expression_value";
 import { Logger } from "./logger";
-import { KEY, MAHAL_KEY } from "../constant";
 import { onElDestroy } from "./on_el_destroy";
 
 
@@ -24,10 +23,11 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
         if (!attr) return htmlAttributes;
         for (const key in attr) {
             const value: IAttrItem = attr[key];
-            if (component.__props__[key]) {
+            const propDescription = component.__props__[key];
+            if (propDescription) {
                 const attrValue = getAttributeValue(value, value.v);
-                if (component.__props__[key].type) {
-                    const expected = component.__props__[key].type;
+                if (propDescription.type) {
+                    const expected = propDescription.type;
                     const received = getDataype(attrValue);
                     if (expected !== received) {
                         this.waitFor(LIFECYCLE_EVENT.Mount).then(_ => {
@@ -46,7 +46,7 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                 component[key] = clone(attrValue);
                 const attributeKey = value.k;
                 if (attributeKey) {
-                    eventIds[attributeKey] = this.watch(attributeKey, (newValue, oldValue) => {
+                    eventIds[attributeKey] = this.watch(attributeKey, (newValue) => {
                         Component.shouldCheckProp = false;
                         component.setState(key, getAttributeValue(value, newValue));
                         Component.shouldCheckProp = true;
@@ -65,12 +65,7 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
 
     forOwn(attr, (key, attrItem) => {
         const attrValue = getAttributeValue(attrItem, attrItem.v);
-        if (key === KEY) {
-            component[MAHAL_KEY] = attrValue;
-        }
-        else {
-            setAttribute(component, key, attrValue);
-        }
+        setAttribute(component, key, attrValue);
         const attributeKey = attrItem.k;
         if (attributeKey) {
             eventIds[attributeKey] = this.watch(attributeKey, (newValue) => {

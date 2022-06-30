@@ -1,6 +1,6 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
-import { DEFAULT_SLOT_NAME, EL_REPLACED, EVENTS } from "../constant";
+import { DEFAULT_SLOT_NAME, EL_REPLACED, EVENTS, KEY } from "../constant";
 import { handleAttribute } from "./handle_attribute";
 import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload, nextTick, removeEl, insertBefore } from "../utils";
 import { executeEvents } from "./execute_events";

@@ -1,16 +1,14 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore } from "../utils";
+import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, patchNode } from "../utils";
 import { ERROR_TYPE } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
 import { Logger } from "./logger";
 import { indexOf } from "./index_of";
 import { getElementKey } from "./get_el_key";
-import { ARRAY_MUTABLE_METHODS, EVENTS } from "../constant";
+import { ARRAY_MUTABLE_METHODS } from "../constant";
 import { onElDestroy } from "./on_el_destroy";
-import morphdom from "morphdom";
-import { dispatchDestroyed } from "./dispatch_destroy";
 
 const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 
@@ -24,10 +22,12 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             new Logger(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
         }
     }
-
+    const elKeyStore: Map<string, HTMLElement> = new Map();
     forEach(resolvedValue, (value, prop) => {
-        els.push(
-            (method as any)(value, prop)
+        const el = (method as any)(value, prop);
+        els.push(el);
+        elKeyStore.set(
+            getElementKey(el), el
         );
     });
 
@@ -85,8 +85,12 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const fragDoc = document.createDocumentFragment();
                 const fromIndex = getObjectLength(resolvedValue) - pushedValue.length;
                 forEach(pushedValue, (value, prop) => {
+                    const el = method(value, prop + fromIndex);
                     fragDoc.appendChild(
-                        method(value, prop + fromIndex)
+                        el
+                    );
+                    elKeyStore.set(
+                        getElementKey(el), el
                     );
                 });
                 insertBefore(
@@ -100,29 +104,58 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 resolvedValue = params[1];
 
                 const nextIndexRef = indexOfRef + 1;
-
-                // remove all nodes
-                for (let i = 0, len = getObjectLength(oldValue); i < len; i++) {
-                    // parent.removeChild(cmNode.nextSibling);
-                    removeEl(childNodes[nextIndexRef] as any);
-                }
-
-                if (getObjectLength(resolvedValue) === 0) return;
-
-                const fragDoc = document.createDocumentFragment();
+                let index = 0;
                 forEach(resolvedValue, (value, prop) => {
-                    fragDoc.appendChild(
-                        method(value, prop)
-                    );
+                    const el = method(value, prop);
+                    const newElkey = getElementKey(el);
+                    const oldValueAtProp = oldValue[prop];
+                    if (!oldValueAtProp) {
+                        insertBefore(parent as any, el, childNodes[nextIndexRef + index]);
+                        elKeyStore.set(newElkey, el);
+                    }
+                    else {
+                        const oldElKey = method(oldValueAtProp, prop, true) as any;
+                        const oldEl = elKeyStore.get(oldElKey);
+                        if (elKeyStore.has(newElkey)) {
+                            // old elements might need update
+                            if (newElkey !== oldElKey) {
+                                // swap needs to be done
+                                const storedEl = elKeyStore.get(newElkey);
+                                insertBefore(parent as any, storedEl, childNodes[nextIndexRef + index + 1]);
+                            }
+                            else {
+                                // here patch needs to be done
+                                patchNode(oldEl, el);
+                                // elKeyStore.set(key, el);
+                            }
+                        }
+                        else { // old elements needs to be deleted and newElement needs to inserted
+                            // delete old element if any
+                            elKeyStore.delete(oldElKey);
+                            replaceEl(oldEl, el);
+                            elKeyStore.set(newElkey, el);
+                        }
+                    }
+                    ++index;
                 });
+                const resolvedValueCount = getObjectLength(resolvedValue);
+                const oldValueCount = getObjectLength(oldValue);
 
-                insertBefore(
-                    parent as any, fragDoc, childNodes[nextIndexRef]
-                );
+                // remove rest nodes
+                for (let i = resolvedValueCount, len = oldValueCount; i < len; i++) {
+                    const el = childNodes[nextIndexRef + resolvedValueCount] as any;
+                    removeEl(el);
+                    elKeyStore.delete(
+                        getElementKey(el)
+                    );
+                }
             },
             add() {
                 const length = getObjectLength(resolvedValue);
                 const newElement = method(params.value, params.key);
+                elKeyStore.set(
+                    getElementKey(newElement), newElement
+                );
                 insertBefore(parent as any, newElement, childNodes[indexOfRef + length]);
             },
             splice() {
@@ -134,6 +167,9 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     const child = childNodes[nextRelativeIndex];
                     if (child) {
                         removeEl(child as any);
+                        elKeyStore.delete(
+                            getElementKey(child)
+                        );
                     }
                 }
 
@@ -142,9 +178,15 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 // add new elements from splice third arguments
                 const frag = document.createDocumentFragment();
                 const paramLength = params.length;
+                const keyInserted = new Map();
                 for (let i = 2, j = params[0]; i < paramLength; i++, j++) {
                     const newElement = method(params[i], j);
                     frag.appendChild(newElement);
+                    const newElKey = getElementKey(newElement);
+                    elKeyStore.set(
+                        getElementKey(newElement), newElement
+                    );
+                    keyInserted.set(newElKey, true);
                 }
 
                 const nextIndexRef = indexOfRef + 1;
@@ -164,6 +206,13 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     if (elKey !== newElKey) {
                         const newEl = method(item, actualIndex);
                         replaceEl(el as any, newEl);
+                        elKeyStore.set(
+                            newElKey as any, newEl
+                        );
+                        keyInserted.set(newElKey, true);
+                        if (!keyInserted.has(elKey)) {
+                            elKeyStore.delete(elKey);
+                        }
                     }
                 }
             },
@@ -177,32 +226,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     index = indexOf(resolvedValue, paramKey);
                 }
                 if (index >= 0) {
+                    const currentEl = childNodes[indexOfRef + 1 + index] as any;
                     const newElement = method(params.value, paramKey);
-                    morphdom(childNodes[indexOfRef + 1 + index] as any, newElement, {
-                        onBeforeElUpdated(fromEl, toEl) {
-                            if (fromEl.isEqualNode(toEl)) {
-                                return false;
-                            }
-                            const fromEvs: Map<string, Function> = fromEl[EVENTS];
-                            if (fromEvs) {
-                                fromEvs.forEach((ev, name) => {
-                                    fromEl.removeEventListener(name, ev as any);
-                                });
-                            }
-                            const toEvs: Map<string, Function> = toEl[EVENTS];
-                            if (toEvs) {
-                                toEvs.forEach((ev, name) => {
-                                    fromEl.addEventListener(name, ev as any);
-                                });
-                            }
-                            fromEl[EVENTS] = toEvs;
-                            return true;
-                        },
-                        onBeforeNodeDiscarded(node) {
-                            dispatchDestroyed(node);
-                            return true;
-                        }
-                    });
+
+                    patchNode(currentEl, newElement);
                 }
             }
         };
