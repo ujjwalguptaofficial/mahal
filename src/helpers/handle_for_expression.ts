@@ -106,10 +106,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const nextIndexRef = indexOfRef + 1;
                 let index = 0;
                 forEach(resolvedValue, (value, prop) => {
-                    const el = method(value, prop);
-                    const newElkey = getElementKey(el);
+                    const newElkey = method(value, prop, true) as any;
                     const oldValueAtProp = oldValue[prop];
                     if (!oldValueAtProp) {
+                        const el = method(value, prop);
                         insertBefore(parent as any, el, childNodes[nextIndexRef + index]);
                         elKeyStore.set(newElkey, el);
                     }
@@ -118,12 +118,13 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                         const oldEl = elKeyStore.get(oldElKey);
                         if (elKeyStore.has(newElkey)) {
                             // old elements might need update
+                            const storedEl = elKeyStore.get(newElkey);
                             if (newElkey !== oldElKey) {
                                 // swap needs to be done
-                                const storedEl = elKeyStore.get(newElkey);
                                 insertBefore(parent as any, storedEl, childNodes[nextIndexRef + index + 1]);
                             }
                             else {
+                                const el = method(value, prop);
                                 // here patch needs to be done
                                 patchNode(oldEl, el);
                                 // elKeyStore.set(key, el);
@@ -132,6 +133,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                         else { // old elements needs to be deleted and newElement needs to inserted
                             // delete old element if any
                             elKeyStore.delete(oldElKey);
+                            const el = method(value, prop);
                             replaceEl(oldEl, el);
                             elKeyStore.set(newElkey, el);
                         }
@@ -142,7 +144,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const oldValueCount = getObjectLength(oldValue);
 
                 // remove rest nodes
-                for (let i = resolvedValueCount, len = oldValueCount; i < len; i++) {
+                for (let i = resolvedValueCount; i < oldValueCount; i++) {
                     const el = childNodes[nextIndexRef + resolvedValueCount] as any;
                     removeEl(el);
                     elKeyStore.delete(

@@ -70,7 +70,9 @@ export function registerEvents(element, events) {
         );
         eventListeners.set(eventName, cb);
     }
-    element[EVENTS] = eventListeners;
+    if (eventListeners) {
+        element[EVENTS] = eventListeners;
+    }
 }
 
 function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
