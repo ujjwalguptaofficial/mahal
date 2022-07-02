@@ -9,13 +9,13 @@ import { onElDestroy } from "./on_el_destroy";
 
 
 export function handleAttribute(this: Component, component, attr, isComponent) {
-    const eventIds = {};
+    const eventIds = new Map<string, number>();
     nextTick(_ => {
-        if (getObjectLength(eventIds) === 0) return;
+        if (eventIds.size === 0) return;
         onElDestroy(isComponent ? component.element : component, () => {
-            for (const evName in eventIds) {
-                this.unwatch(evName, eventIds[evName]);
-            }
+            eventIds.forEach((eventId, evName) => {
+                this.unwatch(evName, eventId);
+            });
         });
     });
     if (isComponent) {
@@ -68,10 +68,10 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
         setAttribute(component, key, attrValue);
         const attributeKey = attrItem.k;
         if (attributeKey) {
-            eventIds[attributeKey] = this.watch(attributeKey, (newValue) => {
+            eventIds.set(attributeKey, this.watch(attributeKey, (newValue) => {
                 setAttribute(component, key, getAttributeValue(attrItem, newValue));
                 emitUpdate(this);
-            });
+            }));
         }
     });
 }
