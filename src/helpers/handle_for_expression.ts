@@ -53,7 +53,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             handleChange("splice", [0, 0, newValue]);
         },
         [`${key}.reverse`]: () => {
-            handleChange("reset", [resolvedValue, resolvedValue]);
+            handleChange("reset", [resolvedValue, []]);
+            handleChange("reset", [[], resolvedValue]);
         },
         [`${key}.splice`]: (newValue) => {
             handleChange("splice", newValue);
@@ -102,46 +103,54 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             reset() {
                 const oldValue = params[0];
                 resolvedValue = params[1];
-
+                const oldValueCount = elKeyStore.size;
                 const nextIndexRef = indexOfRef + 1;
-                let index = 0;
-                forEach(resolvedValue, (value, prop) => {
-                    const newElkey = method(value, prop, true) as any;
-                    const oldValueAtProp = oldValue[prop];
-                    if (!oldValueAtProp) {
-                        const el = method(value, prop);
-                        insertBefore(parent as any, el, childNodes[nextIndexRef + index]);
-                        elKeyStore.set(newElkey, el);
+                const resolvedValueCount = getObjectLength(resolvedValue);
+                if (resolvedValueCount > 0) {
+                    if (oldValueCount === 0) {
+                        params = resolvedValue;
+                        return methods.push();
                     }
-                    else {
-                        const oldElKey = method(oldValueAtProp, prop, true) as any;
-                        const oldEl = elKeyStore.get(oldElKey);
-                        if (elKeyStore.has(newElkey)) {
-                            // old elements might need update
-                            const storedEl = elKeyStore.get(newElkey);
-                            if (newElkey !== oldElKey) {
-                                // swap needs to be done
-                                insertBefore(parent as any, storedEl, childNodes[nextIndexRef + index + 1]);
-                            }
-                            else {
-                                const el = method(value, prop);
-                                // here patch needs to be done
-                                patchNode(oldEl, el);
-                                // elKeyStore.set(key, el);
-                            }
-                        }
-                        else { // old elements needs to be deleted and newElement needs to inserted
-                            // delete old element if any
-                            elKeyStore.delete(oldElKey);
+                    let index = 0;
+
+                    forEach(resolvedValue, (value, prop) => {
+                        const newElkey = method(value, prop, true) as any;
+                        const oldValueAtProp = oldValue[prop];
+                        if (!oldValueAtProp) {
                             const el = method(value, prop);
-                            replaceEl(oldEl, el);
+                            insertBefore(parent as any, el, childNodes[nextIndexRef + index]);
                             elKeyStore.set(newElkey, el);
                         }
-                    }
-                    ++index;
-                });
-                const resolvedValueCount = getObjectLength(resolvedValue);
-                const oldValueCount = getObjectLength(oldValue);
+                        else {
+                            const oldElKey = method(oldValueAtProp, prop, true) as any;
+                            const oldEl = elKeyStore.get(oldElKey);
+                            if (elKeyStore.has(newElkey)) {
+                                if (value !== oldValueAtProp) {
+                                    // old elements might need update
+                                    const storedEl = elKeyStore.get(newElkey);
+                                    if (newElkey !== oldElKey) {
+                                        // swap needs to be done
+                                        insertBefore(parent as any, storedEl, childNodes[nextIndexRef + index + 1]);
+                                    }
+                                    else {
+                                        const el = method(value, prop);
+                                        // here patch needs to be done
+                                        patchNode(oldEl, el);
+                                        // elKeyStore.set(key, el);
+                                    }
+                                }
+                            }
+                            else { // old elements needs to be deleted and newElement needs to inserted
+                                // delete old element if any
+                                elKeyStore.delete(oldElKey);
+                                const el = method(value, prop);
+                                replaceEl(oldEl, el);
+                                elKeyStore.set(newElkey, el);
+                            }
+                        }
+                        ++index;
+                    });
+                }
 
                 // remove rest nodes
                 for (let i = resolvedValueCount; i < oldValueCount; i++) {
