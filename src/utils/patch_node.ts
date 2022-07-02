@@ -1,5 +1,6 @@
 import morphdom from "morphdom";
 import { EVENTS } from "../constant";
+import { dispatchDestroyed } from "../helpers";
 import { nextTick } from "./next_tick";
 
 export const patchNode = (currentEl: HTMLElement, newElement: HTMLElement) => {
@@ -23,6 +24,10 @@ export const patchNode = (currentEl: HTMLElement, newElement: HTMLElement) => {
                 }
                 fromEl[EVENTS] = toEvs;
             });
+            return true;
+        },
+        onBeforeNodeDiscarded(node) {
+            dispatchDestroyed(node);
             return true;
         }
     });

@@ -2,7 +2,7 @@ import { Component } from "./abstracts";
 import { isString, initComponent, isObject, executeRender, getDataype, createComponent, EventBus, promiseResolve, nextTick } from "./utils";
 import { LIFECYCLE_EVENT } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective, htmlDirective } from "./ready_made";
-import { dispatchDestroyed, Logger } from "./helpers";
+import { Logger } from "./helpers";
 
 
 export class Mahal {
@@ -32,16 +32,16 @@ export class Mahal {
                 Logger.warn("Provided element or element selector is not valid. Using 'mahal-app' as default")
             }
         }
-        new window.MutationObserver((mutations) => {
-            mutations.forEach(mutation => {
-                mutation.removedNodes.forEach(removedNode => {
-                    dispatchDestroyed(removedNode);
-                });
-            });
-        }).observe(this.element, {
-            childList: true,
-            subtree: true,
-        })
+        // new window.MutationObserver((mutations) => {
+        //     mutations.forEach(mutation => {
+        //         mutation.removedNodes.forEach(removedNode => {
+        //             dispatchDestroyed(removedNode);
+        //         });
+        //     });
+        // }).observe(this.element, {
+        //     childList: TRUE,
+        //     subtree: TRUE,
+        // })
 
         // register global directive
         const extendDirective = this.extend.directive;

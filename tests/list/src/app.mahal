@@ -75,18 +75,18 @@ export default class extends Component {
 
     onInit() {
         this.run();
-        // window["comp"] = this;
-        // this.on("mount", async () => {
-        //     await this.timer.timeout(0);
-        //     const table = document.querySelector("table");
-        //     console.log(table);
-        //     new MutationObserver((mutations) => {
-        //         console.log(mutations);
-        //     }).observe(table, {
-        //         childList: true,
-        //         subtree: true,
-        //     });
-        // });
+        window["comp"] = this;
+        this.on("mount", async () => {
+            await this.timer.timeout(0);
+            const table = document.querySelector("table");
+            console.log(table);
+            new MutationObserver((mutations) => {
+                console.log(mutations);
+            }).observe(table, {
+                childList: true,
+                subtree: true,
+            });
+        });
     }
 
     add() {

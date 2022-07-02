@@ -1,21 +1,20 @@
+import { LIFECYCLE_EVENT } from "../enums";
 import { nextTick } from "../utils";
 
-
-
-// const dispatchDestroyedEv = (node: Node) => {
-
-
-// };
-
-export const dispatchDestroyed = (node: Node) => {
-    node.childNodes.forEach(dispatchDestroyed);
-    const destroyEvs = (node as any).__destroyev__;
-    if (destroyEvs) {
+const dispatchDestroyedEv = (node: Node) => {
+    node.childNodes.forEach(item => {
+        dispatchDestroyedEv(item);
+    });
+    if ((node as any).onDestroy) {
         nextTick(_ => {
-            // node.dispatchEvent(new window.CustomEvent(LIFECYCLE_EVENT.Destroy));
-            destroyEvs.forEach(ev => {
-                ev();
-            });
+            node.dispatchEvent(new window.CustomEvent(LIFECYCLE_EVENT.Destroy));
         });
     }
+
+};
+
+export const dispatchDestroyed = (node: Node) => {
+    nextTick(_ => {
+        dispatchDestroyedEv(node);
+    });
 };
