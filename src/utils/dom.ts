@@ -3,12 +3,12 @@ import { dispatchDestroyed } from "../helpers";
 
 export const replaceEl = (oldEl: HTMLElement, newEl: HTMLElement) => {
     oldEl[EL_REPLACED] = newEl;
-    dispatchDestroyed(oldEl);
+    // dispatchDestroyed(oldEl);
     oldEl.replaceWith(newEl);
 };
 
 export const removeEl = (el: Element) => {
-    dispatchDestroyed(el);
+    // dispatchDestroyed(el);
     el.remove();
 };
 
@@ -17,3 +17,4 @@ export const insertBefore = (parent: Element, nodeToInsert: Node, relativeNode: 
         nodeToInsert, relativeNode
     );
 };
+
