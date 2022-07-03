@@ -60,12 +60,13 @@ export function registerEvents(element, events) {
         const cb = methods.length === 1 ? methods[0].bind(this) : (e) => {
             executeEvents.call(this, methods, e);
         };
+        const evOption = ev.option;
         (element as HTMLDivElement).addEventListener(
             eventName, cb,
             {
-                capture: isKeyExist(ev.option, 'capture'),
-                once: isKeyExist(ev.option, 'once'),
-                passive: isKeyExist(ev.option, 'passive'),
+                capture: isKeyExist(evOption, 'capture'),
+                once: isKeyExist(evOption, 'once'),
+                passive: isKeyExist(evOption, 'passive'),
             }
         );
         eventListeners.set(eventName, cb);
@@ -165,7 +166,6 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
             const el = createCommentNode();
             compPromise.then(comp => {
                 const newEl = renderComponent(comp);
-                el[EL_REPLACED] = newEl;
                 replaceEl(
                     el as any,
                     newEl,

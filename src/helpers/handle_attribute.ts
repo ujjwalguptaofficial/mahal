@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { IAttrItem } from "../interface";
-import { getDataype, clone, forOwn, setAttribute, nextTick, getObjectLength } from "../utils";
+import { getDataype, clone, forOwn, setAttribute, nextTick } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { getAttributeValue } from "./get_expression_value";
