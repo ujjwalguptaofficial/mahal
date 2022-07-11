@@ -46,11 +46,14 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                 component[key] = clone(attrValue);
                 const attributeKey = value.k;
                 if (attributeKey) {
-                    eventIds[attributeKey] = this.watch(attributeKey, (newValue) => {
-                        Component.shouldCheckProp = false;
-                        component.setState(key, getAttributeValue(value, newValue));
-                        Component.shouldCheckProp = true;
-                    });
+                    eventIds.set(
+                        attributeKey,
+                        this.watch(attributeKey, (newValue) => {
+                            Component.shouldCheckProp = false;
+                            component.setState(key, getAttributeValue(value, newValue));
+                            Component.shouldCheckProp = true;
+                        })
+                    );
                 }
             }
             else {
