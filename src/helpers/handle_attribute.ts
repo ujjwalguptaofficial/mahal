@@ -10,14 +10,17 @@ import { onElDestroy } from "./on_el_destroy";
 
 export function handleAttribute(this: Component, component, attr, isComponent) {
     const eventIds = new Map<string, number>();
-    nextTick(_ => {
-        if (eventIds.size === 0) return;
-        onElDestroy(isComponent ? component.element : component, () => {
+    const subscribeToDestroy = (el: HTMLElement) => {
+        onElDestroy(el, () => {
             eventIds.forEach((eventId, evName) => {
                 this.unwatch(evName, eventId);
             });
         });
-    });
+    }
+    // nextTick(_ => {
+    //     if (eventIds.size === 0) return;
+    //     const el: HTMLElement = isComponent ? component.element : component;
+    // });
     if (isComponent) {
         const htmlAttributes = [];
         if (!attr) return htmlAttributes;
@@ -63,6 +66,11 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                 });
             }
         }
+        if (eventIds.size > 0) {
+            nextTick(_ => {
+                subscribeToDestroy(component.element);
+            })
+        }
         return htmlAttributes;
     }
 
@@ -77,4 +85,9 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
             }));
         }
     });
+
+    if (eventIds.size > 0) {
+        subscribeToDestroy(component);
+    }
+
 }
