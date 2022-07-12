@@ -1,11 +1,10 @@
 import { Component } from "../abstracts";
 import { forEach, nextTick } from "../utils";
 import { IDirectiveBinding, IDirective } from "../interface";
-import { onElDestroy } from "./on_el_destroy";
+import { onElDestroy } from "../helpers";
 
 export function handleDirective(this: Component, element: HTMLElement, dir, isComponent) {
     if (!dir) return;
-    const htmlEl = isComponent ? (element as any as Component).element : element;
     forEach(dir, (compiledDir: IDirectiveBinding, name) => {
         const storedDirective = this['__directive__'][name] || this['__app__']['_directives'][name];
         if (!storedDirective) return;
@@ -17,6 +16,7 @@ export function handleDirective(this: Component, element: HTMLElement, dir, isCo
         // call directive async, this will create element faster
         // also nextTick make sure that element is now inserted
         nextTick(_ => {
+            const htmlEl = isComponent ? (element as any as Component).element : element;
             if (!directive || !htmlEl.isConnected) return;
 
             if (directive.inserted) {

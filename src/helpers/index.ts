@@ -1,5 +1,4 @@
 export * from "./observer";
-export * from "./do_nothing";
 export * from "./create_coment_node";
 export * from "./execute_events";
 export * from "./create_text_node";
@@ -16,5 +15,4 @@ export * from "./logger";
 export * from "./index_of";
 export * from "./replace_if_null";
 export * from "./get_el_key";
-export * from "./dispatch_destroy";
-export * from "./on_el_destroy";
+export * from "./destroy_helper";

@@ -5,7 +5,7 @@ import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { getAttributeValue } from "./get_expression_value";
 import { Logger } from "./logger";
-import { onElDestroy } from "./on_el_destroy";
+import { onElDestroy } from "./destroy_helper";
 
 
 export function handleAttribute(this: Component, component, attr, isComponent) {
@@ -17,10 +17,6 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
             });
         });
     }
-    // nextTick(_ => {
-    //     if (eventIds.size === 0) return;
-    //     const el: HTMLElement = isComponent ? component.element : component;
-    // });
     if (isComponent) {
         const htmlAttributes = [];
         if (!attr) return htmlAttributes;

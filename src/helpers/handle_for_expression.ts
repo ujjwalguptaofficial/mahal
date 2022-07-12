@@ -8,7 +8,7 @@ import { Logger } from "./logger";
 import { indexOf } from "./index_of";
 import { getElementKey } from "./get_el_key";
 import { ARRAY_MUTABLE_METHODS } from "../constant";
-import { onElDestroy } from "./on_el_destroy";
+import { onElDestroy } from "../helpers";
 
 const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 

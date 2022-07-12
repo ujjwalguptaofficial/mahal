@@ -1,10 +1,10 @@
-import { nextTick, replaceEl } from "../utils";
+import { replaceEl } from "../utils";
 import { Component } from "../abstracts";
 import { handleForExp } from "./handle_for_expression";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
 import { EL_REPLACED } from "../constant";
-import { onElDestroy } from "./on_el_destroy";
+import { onElDestroy } from "../helpers";
 
 export function handleExpression(this: Component, method: () => HTMLElement, keys: string[], type?: string) {
     if (type === "for") {
