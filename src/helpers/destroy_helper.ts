@@ -5,7 +5,7 @@ export const ON_DESTROY = "__onDestroy__";
 
 const setElementDestroy = (el: HTMLElement) => {
     el[ON_DESTROY] = true;
-}
+};
 
 export const onElDestroy = (el: HTMLElement | Comment, cb: () => void) => {
     nextTick(_ => {
@@ -19,7 +19,7 @@ export const onElDestroy = (el: HTMLElement | Comment, cb: () => void) => {
             el[DESTROYED_EVENTS] = evs = [];
         }
         evs.push(cb);
-    })
+    });
 };
 
 const dispatchDestroyedEv = (node: Node) => {
@@ -27,11 +27,11 @@ const dispatchDestroyedEv = (node: Node) => {
     node.childNodes.forEach(item => {
         dispatchDestroyedEv(item);
     });
-    let evs: Function[] = node[DESTROYED_EVENTS];
+    const evs: Function[] = node[DESTROYED_EVENTS];
     if (evs) {
         evs.forEach(ev => {
             ev();
-        })
+        });
     }
 };
 

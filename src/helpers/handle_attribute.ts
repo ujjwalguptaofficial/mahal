@@ -16,7 +16,7 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                 this.unwatch(evName, eventId);
             });
         });
-    }
+    };
     if (isComponent) {
         const htmlAttributes = [];
         if (!attr) return htmlAttributes;
@@ -65,7 +65,7 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
         if (eventIds.size > 0) {
             nextTick(_ => {
                 subscribeToDestroy(component.element);
-            })
+            });
         }
         return htmlAttributes;
     }
