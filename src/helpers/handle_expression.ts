@@ -30,12 +30,12 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
             }
         };
 
-        const keysId = keys.map(item => {
-            return this.watch(item, watchCallBack);
+        keys.forEach(item => {
+            this.watch(item, watchCallBack);
         });
         const onElDestroyed = () => {
-            keys.forEach((item, index) => {
-                this.unwatch(item, keysId[index]);
+            keys.forEach((item) => {
+                this.unwatch(item, watchCallBack);
             });
             const replacedEl = el[EL_REPLACED];
             if (replacedEl) {

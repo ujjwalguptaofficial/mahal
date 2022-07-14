@@ -10,11 +10,7 @@ export class EventBus {
     private _ctx;
 
     private _events: {
-        [key: string]: Map<number, Function>
-    } = {};
-
-    private _eventsId: {
-        [key: string]: number
+        [key: string]: Map<Function, Boolean>
     } = {};
 
     /**
@@ -29,12 +25,10 @@ export class EventBus {
         let events = this._events[event];
         if (events == null) {
             events = this._events[event] = new Map();
-            this._eventsId[event] = 0;
         }
 
-        const eventId = ++this._eventsId[event];
-        events.set(eventId, cb);
-        return eventId;
+        events.set(cb, true);
+        return cb;
     }
 
     /**
@@ -43,22 +37,22 @@ export class EventBus {
      * if callback is provided, then only callback is removed otherwise all events subscriber for that event
      *
      * @param {string} event
-     * @param {Function} cb
+     * @param {Function} eventListener
      * @memberof EventBus
      */
-    off(event: string, eventId: number) {
+    off(event: string, eventListener: Function) {
         const events = this._events[event];
         if (events) {
-            events.delete(eventId);
+            events.delete(eventListener);
         }
     }
 
-    eachEvent(events: Map<number, Function>, cb) {
+    eachEvent(events: Map<Function, any>, cb) {
         const size = events.size;
         let index = 0;
-        events.forEach((value) => {
+        events.forEach((_, listener) => {
             if (index++ < size) {
-                cb(value);
+                cb(listener);
             }
         });
     }
@@ -108,18 +102,18 @@ export class EventBus {
         const results = [];
         const items = events.entries();
         const callMethod = (eventCb) => {
-            if (eventCb) {
-                const result = eventCb.call(this._ctx, ...args);
-                return result && result.then ? result : promiseResolve(result);
-            }
-            return promiseResolve(null);
+            if (!eventCb) return promiseResolve(null);
+
+            const result = eventCb.call(this._ctx, ...args);
+            return result && result.then ? result : promiseResolve(result);
+
         };
 
         return new Promise<any[]>((res) => {
             const checkAndCall = () => {
                 const eventCb = items.next();
                 if (!eventCb.done) {
-                    callMethod(eventCb.value[1]).then(result => {
+                    callMethod(eventCb.value[0]).then(result => {
                         results.push(result);
                         checkAndCall();
                     });
@@ -134,7 +128,7 @@ export class EventBus {
     }
 
     destroy() {
-        this._ctx = this._eventsId = null;
+        this._ctx = null;
         this._events = emptyObj;
     }
 

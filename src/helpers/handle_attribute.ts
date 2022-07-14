@@ -9,11 +9,11 @@ import { onElDestroy } from "./destroy_helper";
 
 
 export function handleAttribute(this: Component, component, attr, isComponent) {
-    const eventIds = new Map<string, number>();
+    const methods = new Map<string, Function>();
     const subscribeToDestroy = (el: HTMLElement) => {
         onElDestroy(el, () => {
-            eventIds.forEach((eventId, evName) => {
-                this.unwatch(evName, eventId);
+            methods.forEach((eventCb, evName) => {
+                this.unwatch(evName, eventCb);
             });
         });
     };
@@ -45,14 +45,13 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                 component[key] = clone(attrValue);
                 const attributeKey = value.k;
                 if (attributeKey) {
-                    eventIds.set(
-                        attributeKey,
-                        this.watch(attributeKey, (newValue) => {
-                            Component.shouldCheckProp = false;
-                            component.setState(key, getAttributeValue(value, newValue));
-                            Component.shouldCheckProp = true;
-                        })
-                    );
+                    const method = (newValue) => {
+                        Component.shouldCheckProp = false;
+                        component.setState(key, getAttributeValue(value, newValue));
+                        Component.shouldCheckProp = true;
+                    };
+                    this.watch(attributeKey, method);
+                    methods.set(attributeKey, method);
                 }
             }
             else {
@@ -62,7 +61,7 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                 });
             }
         }
-        if (eventIds.size > 0) {
+        if (methods.size > 0) {
             nextTick(_ => {
                 subscribeToDestroy(component.element);
             });
@@ -75,14 +74,16 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
         setAttribute(component, key, attrValue);
         const attributeKey = attrItem.k;
         if (attributeKey) {
-            eventIds.set(attributeKey, this.watch(attributeKey, (newValue) => {
+            const method = (newValue) => {
                 setAttribute(component, key, getAttributeValue(attrItem, newValue));
                 emitUpdate(this);
-            }));
+            };
+            this.watch(attributeKey, method);
+            methods.set(attributeKey, method);
         }
     });
 
-    if (eventIds.size > 0) {
+    if (methods.size > 0) {
         subscribeToDestroy(component);
     }
 

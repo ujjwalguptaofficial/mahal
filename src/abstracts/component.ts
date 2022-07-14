@@ -155,8 +155,8 @@ export abstract class Component {
      * @return {*} 
      * @memberof Component
      */
-    unwatch(propName: string, eventId: number) {
-        this.__watchBus__.off(propName, eventId);
+    unwatch(propName: string, eventListener: Function) {
+        this.__watchBus__.off(propName, eventListener);
     }
 
     /**
@@ -178,8 +178,8 @@ export abstract class Component {
      * @param {Function} cb
      * @memberof Component
      */
-    off(event: string, eventId: number) {
-        this.__eventBus__.off(event, eventId);
+    off(event: string, eventListener: Function) {
+        this.__eventBus__.off(event, eventListener);
     }
 
     /**

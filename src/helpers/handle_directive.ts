@@ -26,10 +26,10 @@ export function handleDirective(this: Component, element: HTMLElement, dir, isCo
             const props = compiledDir.props;
             const directiveUpdate = directive.valueUpdated;
             if (props.length === 0 || directiveUpdate == null) return;
-            let eventsId: number[];
+            const methods = [];
             const onDestroyed = () => {
                 props.forEach((prop, index) => {
-                    this.unwatch(prop, eventsId[index]);
+                    this.unwatch(prop, methods[index]);
                 });
                 if (directive.destroyed) {
                     directive.destroyed();
@@ -37,15 +37,17 @@ export function handleDirective(this: Component, element: HTMLElement, dir, isCo
             };
 
             onElDestroy(htmlEl, onDestroyed);
-            eventsId = props.map((prop, index) => {
-                return this.watch(prop, (newValue) => {
+            props.forEach((prop, index) => {
+                const method = (newValue) => {
                     nextTick(__ => {
                         if (htmlEl.isConnected) {
                             compiledDir.value[index] = newValue;
                             directiveUpdate();
                         }
                     });
-                });
+                };
+                this.watch(prop, method);
+                methods.push(method);
             });
         });
     });
