@@ -167,7 +167,9 @@ export abstract class Component {
      * @return {*} 
      * @memberof Component
      */
-    on(event: string, cb: Function) {
+    on(event: "destroy" | "mount" | "create" | "update" | "error", cb: Function);
+    on(event: string, cb: Function);
+    on(event: any, cb: Function) {
         return this.__eventBus__.on(event, cb);
     }
 

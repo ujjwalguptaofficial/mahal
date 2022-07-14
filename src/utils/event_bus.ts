@@ -10,7 +10,7 @@ export class EventBus {
     private _ctx;
 
     private _events: {
-        [key: string]: Map<Function, Boolean>
+        [key: string]: Map<Function, boolean>
     } = {};
 
     /**
