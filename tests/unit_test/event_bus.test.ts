@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { EventBus, Timer } from "mahal"
+import { createSandbox } from "sinon";
 
 describe('event bus', () => {
     const eventBus = new EventBus();
@@ -81,4 +82,53 @@ describe('event bus', () => {
             return 15;
         })
     });
+
+    it('off without method', () => {
+        try {
+            eventBus.off('ev', null);
+            throw new Error('there should be some exception');
+        }
+        catch (ex) {
+            if (process.env.NODE_ENV !== 'production') {
+                expect(ex.message).equal("no event listener is provided in event bus 'off' for event ev");
+            }
+            else {
+                expect(ex.message).equal('there should be some exception');
+            }
+        }
+    })
+
+    it('off with invalid method', () => {
+        try {
+            eventBus.off('ev', () => {
+
+            });
+            throw new Error('there should be some exception');
+        }
+        catch (ex) {
+            if (process.env.NODE_ENV !== 'production') {
+                expect(ex.message).equal("supplied event listener is not found for event 'ev'. Please provide same method which was used to subscribe the event.");
+            }
+            else {
+                expect(ex.message).equal('there should be some exception');
+            }
+        }
+    })
+
+    it('off with invalid method which is not stored in events', () => {
+        try {
+            eventBus.off('dsafrgte', () => {
+
+            });
+            throw new Error('there should be some exception');
+        }
+        catch (ex) {
+            if (process.env.NODE_ENV !== 'production') {
+                expect(ex.message).equal("supplied event listener is not found for event 'dsafrgte'. Please provide same method which was used to subscribe the event.");
+            }
+            else {
+                expect(ex.message).equal('there should be some exception');
+            }
+        }
+    })
 })

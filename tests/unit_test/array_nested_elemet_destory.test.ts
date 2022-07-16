@@ -60,12 +60,12 @@ const ARRAY_MUTABLE_METHODS = ["push", "pop", "splice", "shift", "unshift", "rev
 describe("Array nested element destroy", () => {
     let component: ArrayComp;
     before(async () => {
+        debugger;
         component = await mount<ArrayComp>(ArrayComp);
     })
 
     it("count events", async () => {
         await component.timer.timeout(1000);
-        debugger;
         expect(Object.keys(component['__watchBus__']._events)).length(12);
         ARRAY_MUTABLE_METHODS.forEach(name => {
             expect(component['__watchBus__']._events[`fruits.${name}`]).length(1);

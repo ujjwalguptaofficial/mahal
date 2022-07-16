@@ -55,7 +55,7 @@ export abstract class Component {
         this.__reactives__ = replaceIfNull(this.__reactives__, {});
     }
 
-    render?(context: IRenderContext): Promise<HTMLElement>;
+    render?(context: IRenderContext): HTMLElement;
 
     /**
      * called just after the constructor - can be used to listen events
@@ -198,9 +198,9 @@ export abstract class Component {
             eventCallback = () => {
                 res(null);
             };
-            return this.on(eventName, eventCallback);
-        }).then(eventId => {
-            this.off(eventName, eventId as any);
+            this.on(eventName, eventCallback);
+        }).then(() => {
+            this.off(eventName, eventCallback);
         });
     }
 

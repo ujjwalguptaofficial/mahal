@@ -41,9 +41,28 @@ export class EventBus {
      * @memberof EventBus
      */
     off(event: string, eventListener: Function) {
+        if (process.env.NODE_ENV !== 'production') {
+            if (!eventListener) {
+                throw new Error(
+                    `no event listener is provided in event bus 'off' for event ${event}`
+                );
+            }
+        }
         const events = this._events[event];
         if (events) {
+            if (process.env.NODE_ENV !== 'production') {
+                if (!events.has(eventListener)) {
+                    throw new Error(
+                        `supplied event listener is not found for event '${event}'. Please provide same method which was used to subscribe the event.`
+                    );
+                }
+            }
             events.delete(eventListener);
+        }
+        else if (process.env.NODE_ENV !== 'production') {
+            throw new Error(
+                `supplied event listener is not found for event '${event}'. Please provide same method which was used to subscribe the event.`
+            );
         }
     }
 
