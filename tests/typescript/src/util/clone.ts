@@ -1,5 +1,6 @@
-import { isObject } from "./is_object";
-import { isArray } from "./is_array";
+import { isArray, isObject } from "mahal";
+
+
 export const clone = (obj) => {
     if (isObject(obj)) {
         // if (isArray(obj)) {

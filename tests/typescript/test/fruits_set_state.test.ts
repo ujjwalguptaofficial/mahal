@@ -1,7 +1,7 @@
 import FruitComponent from "../src/components/fruits_set_state";
 import { app } from "../src/index";
-import { nextTick, clone } from "mahal";
 import { expect } from "chai";
+import { clone } from "../src/util";
 
 describe('Fruit with set state', function () {
 

@@ -1,4 +1,3 @@
-import { Component, Template, Reactive, clone } from "mahal";
 import BaseFruits from "./base_fruits";
 
 

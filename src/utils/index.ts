@@ -15,7 +15,6 @@ export * from "./get_data_type";
 export * from "./event_bus";
 export * from "./get_attribute";
 export * from "./dom";
-export * from "./clone";
 export * from "./exeute_render";
 export * from "./init_component";
 export * from "./timer";

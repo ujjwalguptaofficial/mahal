@@ -1,5 +1,5 @@
-import { Component, Template, Reactive, clone } from "mahal";
-
+import { Component, Template, Reactive } from "mahal";
+import { clone } from "../util";
 
 @Template(`
 <div>

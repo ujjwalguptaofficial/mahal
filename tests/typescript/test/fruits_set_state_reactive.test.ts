@@ -1,7 +1,7 @@
 import FruitComponent from "../src/components/fruits";
 import { app } from "../src/index";
-import { nextTick, clone } from "mahal";
 import { expect } from "chai";
+import { clone } from "../src/util";
 
 describe('Fruit with set state but reactive', function () {
 

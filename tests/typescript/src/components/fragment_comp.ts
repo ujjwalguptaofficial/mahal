@@ -7,7 +7,7 @@ export class FragmentComponent extends Component {
         this.template = `<slot></slot>`
     }
 
-    render(renderer: IRenderContext): Promise<HTMLElement> {
+    render(renderer: IRenderContext): HTMLElement {
         const ctx = this;
         const ce = renderer.createElement;
         return ce.call(ctx, 'slot', [], {}) as any;

@@ -1,6 +1,5 @@
 import FragmentComponent from "../src/components/fragment";
 import { app } from "../src/index";
-import { nextTick, clone } from "mahal";
 import { expect } from "chai";
 import { setInputValue } from "mahal-test-utils";
 

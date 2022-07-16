@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { IAttrItem } from "../interface";
-import { getDataype, clone, forOwn, setAttribute, nextTick } from "../utils";
+import { getDataype, forOwn, setAttribute, nextTick } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { getAttributeValue } from "./get_expression_value";
@@ -42,7 +42,7 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
                     }
                 }
 
-                component[key] = clone(attrValue);
+                component[key] = attrValue;
                 const attributeKey = value.k;
                 if (attributeKey) {
                     const method = (newValue) => {

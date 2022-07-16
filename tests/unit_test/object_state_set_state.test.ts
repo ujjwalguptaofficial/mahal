@@ -1,6 +1,8 @@
 import { expect } from "chai";
-import { Component, Reactive, clone, Computed, Template } from "mahal";
+import { Component, Reactive,  Computed, Template } from "mahal";
 import { initiate, } from "mahal-test-utils";
+import { clone } from "../typescript/src/util";
+
 @Template(`
 <div></div>
 `)
