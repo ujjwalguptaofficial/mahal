@@ -66,11 +66,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             handleChange("update", newValue);
         }
     };
-    const eventsId = {};
     const onElDestroyed = () => {
         cmNode = null;
         for (const ev in callBacks) {
-            this.unwatch(ev, eventsId[ev]);
+            this.unwatch(ev, callBacks[ev]);
         }
     };
     onElDestroy(
@@ -130,13 +129,16 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                                     const storedEl = elKeyStore.get(newElkey);
                                     if (newElkey !== oldElKey) {
                                         // swap needs to be done
-                                        insertBefore(parent as any, storedEl, childNodes[nextIndexRef + index + 1]);
+                                        insertBefore(
+                                            parent as any,
+                                            storedEl,
+                                            childNodes[nextIndexRef + index + 1]
+                                        );
                                     }
                                     else {
                                         const el = method(value, prop);
                                         // here patch needs to be done
                                         patchNode(oldEl, el);
-                                        // elKeyStore.set(key, el);
                                     }
                                 }
                             }
@@ -253,10 +255,10 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             emitError.call(this, err);
         }
     };
-    eventsId[key] = this.watch(key, callBacks[key]);
+    this.watch(key, callBacks[key]);
     forExpMethods.forEach(methodName => {
         const methodKey = `${key}.${methodName}`;
-        eventsId[methodKey] = this.watch(methodKey, callBacks[methodKey]);
+        this.watch(methodKey, callBacks[methodKey]);
     });
     nextTick(_ => {
         els = null;
