@@ -76,6 +76,7 @@ export default class extends Component {
     onInit() {
         this.run();
         window["comp"] = this;
+        window['buildData'] = buildData;
         // this.on("mount", async () => {
         //     await this.timer.timeout(0);
         //     const table = document.querySelector("table");
@@ -99,6 +100,23 @@ export default class extends Component {
     }
 
     runLots() {
+        // const data: string[] = buildData(10000).map((q) => q.label);
+        // // console.log('data', data[0])
+        // const set = new Set();
+        // const map = new Map<string, boolean>();
+        // console.time("map");
+        // data.forEach((item) => {
+        //     map.set(item, true);
+        // });
+        // console.timeEnd("map");
+
+        // console.time("set");
+        // data.forEach((item) => {
+        //     set.add(item);
+        // });
+        // console.timeEnd("set");
+        
+        // return;
         this.setState("data", buildData(10000));
         this.setState("selected", 0);
     }
