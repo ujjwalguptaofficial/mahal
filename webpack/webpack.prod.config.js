@@ -2,6 +2,7 @@ const path = require('path');
 const baseConfig = require('./webpack.base.config');
 const { merge } = require('webpack-merge');
 const webpack = require("webpack");
+const CompressionPlugin = require("compression-webpack-plugin");
 
 const libraryTarget = [{
     type: "var",
@@ -23,7 +24,14 @@ function getConfigForTaget(target) {
         plugins: [
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': "'production'",
-            })
+            }),
+            ...(
+                target.type === 'var' ?
+                    [new CompressionPlugin({
+                        test:/mahal/
+                    })] :
+                    []
+            )
         ]
     }
 }
