@@ -1,6 +1,6 @@
 import { Component } from "./abstracts";
 import { isString, initComponent, isObject, executeRender, getDataype, createComponent, EventBus, promiseResolve } from "./utils";
-import { LIFECYCLE_EVENT } from "./enums";
+import { HTML_TAG, LIFECYCLE_EVENT } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective, htmlDirective } from "./ready_made";
 import { Logger } from "./helpers";
 
@@ -105,6 +105,9 @@ export class Mahal {
         },
         set renderer(val) {
             (Mahal as any).createRenderer = val;
+        },
+        tag(name: string) {
+            HTML_TAG.set(name, true);
         }
     }
 

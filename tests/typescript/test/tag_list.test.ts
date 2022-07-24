@@ -1,17 +1,19 @@
 import { expect } from "chai";
 import { createComponent } from "./create_component";
-import { mount } from "mahal-test-utils";
-import { Component, HTML_TAG } from "mahal";
+import { mount, getMount } from "mahal-test-utils";
+import { Component } from "mahal";
+import { app } from "../src/index";
 
 
-describe('simple', function () {
+describe('Tag', function () {
 
     const testTag = async (text: string, expectedTag: string) => {
         const compClass = createComponent(`
         ${text}
              `)
-
-        const component = await mount<Component>(compClass);
+        app.extend.tag('custom');
+        const appMount = getMount(app);
+        const component = await appMount<Component>(compClass);
         const btn = component.element;
         expect(btn.tagName).equal(expectedTag);
         return btn;
@@ -64,7 +66,6 @@ describe('simple', function () {
     })
 
     it('custom tag', () => {
-        HTML_TAG['custom'] = true;
         const text = `
 			<custom class="img-fluid img-profile rounded-circle mx-auto mb-2" src="img/profile.png" alt="profile" />
 `;

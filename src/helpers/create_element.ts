@@ -71,9 +71,7 @@ export function registerEvents(element, events) {
         );
         eventListeners.set(eventName, cb);
     }
-    if (eventListeners) {
-        element[EVENTS] = eventListeners;
-    }
+    element[EVENTS] = eventListeners;
 }
 
 function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
@@ -110,7 +108,7 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
         option.attr = {};
     }
 
-    if (HTML_TAG[tag]) {
+    if (HTML_TAG.has(tag)) {
         return createNativeComponent.call(this, tag, childs, option);
     }
     const savedComponent = this.children[tag] || this['__app__']['_components'][tag];
