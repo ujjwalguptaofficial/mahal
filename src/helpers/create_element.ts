@@ -1,6 +1,6 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
-import { DEFAULT_SLOT_NAME, EL_REPLACED, EVENTS, KEY } from "../constant";
+import { DEFAULT_SLOT_NAME, EVENTS, } from "../constant";
 import { handleAttribute } from "./handle_attribute";
 import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload, nextTick, removeEl, insertBefore } from "../utils";
 import { executeEvents } from "./execute_events";
@@ -177,12 +177,10 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
         }
         return renderComponent(compPromise);
     }
-    else if (tag === "in-place") {
+    if (tag === "in-place") {
         return handleInPlace.call(this, childs, option);
     }
-    else {
-        new Logger(ERROR_TYPE.InvalidComponent, {
-            tag: tag
-        }).throwPlain();
-    }
+    new Logger(ERROR_TYPE.InvalidComponent, {
+        tag: tag
+    }).throwPlain();
 }

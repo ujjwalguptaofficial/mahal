@@ -13,6 +13,5 @@ export * from "./get_expression_value";
 export * from "./emit_error";
 export * from "./logger";
 export * from "./index_of";
-export * from "./replace_if_null";
 export * from "./get_el_key";
 export * from "./destroy_helper";

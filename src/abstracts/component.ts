@@ -1,5 +1,5 @@
 import { ERROR_TYPE } from "../enums";
-import { Observer, Logger, indexOf, replaceIfNull, emitError } from "../helpers";
+import { Observer, Logger, indexOf, emitError } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
 import { isArray, EventBus, Timer, emitStateChange } from "../utils";
 import { Mahal } from "../mahal";
@@ -47,12 +47,12 @@ export abstract class Component {
     isMounted = false;
 
     constructor() {
-        this.children = replaceIfNull(this.children, {});
-        this.__formatters__ = replaceIfNull(this.__formatters__, {});
-        this.__directive__ = replaceIfNull(this.__directive__, {});
-        this.__props__ = replaceIfNull(this.__props__, {});
-        this.__computed__ = replaceIfNull(this.__computed__, {});
-        this.__reactives__ = replaceIfNull(this.__reactives__, {});
+        this.children = this.children || {};
+        this.__formatters__ = this.__formatters__ || {};
+        this.__directive__ = this.__directive__ || {};
+        this.__props__ = this.__props__ || {};
+        this.__computed__ = this.__computed__ || {};
+        this.__reactives__ = this.__reactives__ || {};
     }
 
     render?(context: IRenderContext): HTMLElement;
