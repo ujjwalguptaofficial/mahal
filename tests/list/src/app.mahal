@@ -95,7 +95,7 @@ export default class extends Component {
     }
 
     run() {
-        this.setState("data", buildData(1));
+        this.setState("data", buildData(1000));
         this.setState("selected", 0);
     }
 

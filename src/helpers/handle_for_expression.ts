@@ -25,14 +25,14 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
     const elKeyStore: Map<string, HTMLElement> = new Map();
     const createEl = (value, prop) => {
         const el = method(value, prop);
+        elKeyStore.set(
+            getElementKey(el), el
+        );
         return el;
     }
     forEach(resolvedValue, (value, prop) => {
         const el = createEl(value, prop);
         els.push(el);
-        elKeyStore.set(
-            getElementKey(el), el
-        );
     });
 
     const isValueArray = isArray(resolvedValue);
@@ -92,9 +92,6 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     const el = createEl(value, prop + fromIndex);
                     fragDoc.appendChild(
                         el
-                    );
-                    elKeyStore.set(
-                        getElementKey(el), el
                     );
                 });
                 insertBefore(
@@ -170,9 +167,6 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             add() {
                 const length = getObjectLength(resolvedValue);
                 const newElement = createEl(params.value, params.key);
-                elKeyStore.set(
-                    getElementKey(newElement), newElement
-                );
                 insertBefore(parent as any, newElement, childNodes[indexOfRef + length]);
             },
             splice() {
