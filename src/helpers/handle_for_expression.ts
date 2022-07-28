@@ -8,7 +8,7 @@ import { Logger } from "./logger";
 import { indexOf } from "./index_of";
 import { getElementKey } from "./get_el_key";
 import { ARRAY_MUTABLE_METHODS } from "../constant";
-import { onElDestroy } from "../helpers";
+import { onElDestroy, subscriveToDestroyFromChild } from "../helpers";
 
 const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 
@@ -28,6 +28,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         elKeyStore.set(
             getElementKey(el), el
         );
+        subscriveToDestroyFromChild(el);
         return el;
     }
     forEach(resolvedValue, (value, prop) => {
@@ -146,9 +147,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                             else { // old elements needs to be deleted and newElement needs to inserted
                                 // delete old element if any
                                 elKeyStore.delete(oldElKey);
-                                const el = method(value, prop);
+                                const el = createEl(value, prop);
                                 replaceEl(oldEl, el);
-                                elKeyStore.set(newElkey, el);
                             }
                         }
                         ++index;
@@ -215,11 +215,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     const el = childNodes[spliceRefIndex + itemIndex];
                     const elKey = getElementKey(el);
                     if (elKey !== newElKey) {
-                        const newEl = method(item, actualIndex);
+                        const newEl = createEl(item, actualIndex);
                         replaceEl(el as any, newEl);
-                        elKeyStore.set(
-                            newElKey as any, newEl
-                        );
                         keyInserted.set(newElKey, true);
                         if (!keyInserted.has(elKey)) {
                             elKeyStore.delete(elKey);

@@ -139,7 +139,7 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
                                 insertBefore(targetSlotParent, child, targetSlot.nextSibling);
                             });
                         }
-                        removeEl(targetSlot);
+                        targetSlot.remove();
                     }
                     else {
                         element = component.element = item;
