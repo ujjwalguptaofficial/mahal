@@ -15,7 +15,7 @@ const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 
 export function handleForExp(this: Component, key: string, method: (...args) => HTMLElement) {
     let cmNode = createCommentNode();
-    let els = [cmNode];
+    let els: HTMLElement[] = [cmNode as any];
     let resolvedValue = this.getState(key);
     if (process.env.NODE_ENV !== 'production') {
         if (isPrimitive(resolvedValue) || isNull(resolvedValue)) {
@@ -23,8 +23,12 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         }
     }
     const elKeyStore: Map<string, HTMLElement> = new Map();
+    const createEl = (value, prop) => {
+        const el = method(value, prop);
+        return el;
+    }
     forEach(resolvedValue, (value, prop) => {
-        const el = (method as any)(value, prop);
+        const el = createEl(value, prop);
         els.push(el);
         elKeyStore.set(
             getElementKey(el), el
@@ -85,7 +89,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const fragDoc = document.createDocumentFragment();
                 const fromIndex = getObjectLength(resolvedValue) - pushedValue.length;
                 forEach(pushedValue, (value, prop) => {
-                    const el = method(value, prop + fromIndex);
+                    const el = createEl(value, prop + fromIndex);
                     fragDoc.appendChild(
                         el
                     );
@@ -165,7 +169,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
             },
             add() {
                 const length = getObjectLength(resolvedValue);
-                const newElement = method(params.value, params.key);
+                const newElement = createEl(params.value, params.key);
                 elKeyStore.set(
                     getElementKey(newElement), newElement
                 );

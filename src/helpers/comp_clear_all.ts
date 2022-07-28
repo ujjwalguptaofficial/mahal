@@ -3,6 +3,7 @@ import { Component } from "../abstracts";
 
 const destroyEvent = LIFECYCLE_EVENT.Destroy;
 export function clearAll(this: Component) {
+    this.element['_comp_destroyed_'] = true;
     // need to emit before clearing events
     this.emit(destroyEvent).then(_ => {
         this['__eventBus__'].destroy();

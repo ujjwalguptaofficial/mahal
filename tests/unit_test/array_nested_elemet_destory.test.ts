@@ -7,9 +7,13 @@ import { clone } from "../typescript/src/util";
 <div>
     <div :if(flag)>
         <div>
-            <div :for(item in fruits)>
+            <div>
                 <div>
-                    <div :dirTest(selected)>{{item}}</div>
+                    <div :for(item in fruits)>
+                        <div>
+                            <div :dirTest(selected)>{{item}}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,6 +83,7 @@ describe("Array nested element destroy", () => {
         component.flag = false;
         component.selected = false;
         await component.waitFor('update');
+        await component.timer.timeout(100);
         // expect(Object.keys(component['__watchBus__']._events)).length(2);
         ARRAY_MUTABLE_METHODS.forEach(name => {
             expect(component['__watchBus__']._events[`fruits.${name}`]).length(0);

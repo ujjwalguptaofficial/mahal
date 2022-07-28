@@ -1,19 +1,10 @@
 import { nextTick } from "../utils";
 
-export const DESTROYED_EVENTS = '__destroyEvents__';
-export const ON_DESTROY = "__onDestroy__";
+const DESTROYED_EVENTS = '__destroyEvents__';
 
-const setElementDestroy = (el: HTMLElement) => {
-    el[ON_DESTROY] = true;
-};
 
 export const onElDestroy = (el: HTMLElement | Comment, cb: () => void) => {
     nextTick(_ => {
-        setElementDestroy(el as HTMLElement);
-        const parentElement = el.parentElement;
-        if (parentElement && !parentElement[ON_DESTROY]) {
-            setElementDestroy(parentElement);
-        }
         let evs = el[DESTROYED_EVENTS];
         if (!evs) {
             el[DESTROYED_EVENTS] = evs = [];
@@ -22,20 +13,20 @@ export const onElDestroy = (el: HTMLElement | Comment, cb: () => void) => {
     });
 };
 
-const dispatchDestroyedEv = (node: Node) => {
-    if (!node[ON_DESTROY]) return;
-    node.childNodes.forEach(item => {
-        dispatchDestroyedEv(item);
-    });
+const dispatchDestroyedEv = function (node: Node) {
     const evs: Function[] = node[DESTROYED_EVENTS];
     if (evs) {
         evs.forEach(ev => {
             ev();
         });
+        if (node['_comp_destroyed_']) return;
     }
+    node.childNodes.forEach(item => {
+        dispatchDestroyedEv(item);
+    });
 };
 
-export const dispatchDestroyed = (node: Node) => {
+export const dispatchDestroyed = function (node: Node) {
     nextTick(_ => {
         dispatchDestroyedEv(node);
     });
