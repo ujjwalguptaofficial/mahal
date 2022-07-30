@@ -1,6 +1,6 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
-import { DEFAULT_SLOT_NAME, EVENTS, } from "../constant";
+import { DEFAULT_SLOT_NAME } from "../constant";
 import { handleAttribute } from "./handle_attribute";
 import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload, nextTick, removeEl, insertBefore } from "../utils";
 import { executeEvents } from "./execute_events";
@@ -26,7 +26,6 @@ const loadComponent = (componentClass) => {
 
 export function registerEvents(element, events) {
     if (!events) return;
-    const eventListeners = new Map<string, Function>();
     for (const eventName in events) {
         const ev = events[eventName];
         let methods = ev.handlers;
@@ -69,9 +68,7 @@ export function registerEvents(element, events) {
                 passive: isKeyExist(evOption, 'passive'),
             }
         );
-        eventListeners.set(eventName, cb);
     }
-    element[EVENTS] = eventListeners;
 }
 
 function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): HTMLElement {

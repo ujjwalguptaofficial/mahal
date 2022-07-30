@@ -33,7 +33,7 @@ class ArrayComp extends Component {
     }
 }
 
-describe("Fruit", () => {
+describe("Array State", () => {
     let component: ArrayComp;
     before(async () => {
         component = await initiate<ArrayComp>(ArrayComp);
@@ -94,7 +94,7 @@ describe("Fruit", () => {
         component.initializeFruit();
         const promise = new Promise<void>((res) => {
             const cb = (newValue) => {
-                expect(newValue).eql({ key: '0', value: 'amrud' });
+                expect(newValue).eql({ key: '0', value: 'amrud', oldValue: 'Banana' });
                 checkFruitValue(fruits);
                 component.unwatch("fruits.update", eventId);
                 res();
@@ -245,7 +245,7 @@ describe("Fruit", () => {
         const fruits = clone(component.initialFruits);
         const promise = new Promise<void>((res) => {
             const cb = (newValue) => {
-                expect(newValue).eql({ key: '0', value: 'lichi' });
+                expect(newValue).eql({ key: '0', value: 'lichi', oldValue: 'Banana' });
                 // console.log("fruits", fruits);
                 // console.log("component.fruits", component.fruits);
                 checkFruitValue(fruits);

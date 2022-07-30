@@ -6,9 +6,9 @@ import { emitError } from "./emit_error";
 import { EL_REPLACED } from "../constant";
 import { onElDestroy, subscriveToDestroyFromChild } from "../helpers";
 
-export function handleExpression(this: Component, method: () => HTMLElement, keys: string[], type?: string) {
+export function handleExpression(this: Component, method: () => HTMLElement, keys: string[], type: string, forVarInfo) {
     if (type === "for") {
-        return handleForExp.call(this, keys[0], method);
+        return handleForExp.call(this, keys[0], method, forVarInfo);
     }
     let el = method();
     if (keys.length === 0) return el;

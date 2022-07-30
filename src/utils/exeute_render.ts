@@ -15,6 +15,16 @@ function getRender(this: Component): () => Promise<HTMLElement> {
     })();
 }
 
+function addRc(this: object, key, el) {
+    if (!this[key]) {
+        this[key] = [el];
+    }
+    else {
+        this[key].push(el);
+    }
+    return el;
+}
+
 export const executeRender = (comp: Component, children?) => {
     const renderFn = getRender.call(comp);
     const el: HTMLElement = renderFn.call(comp, {
@@ -22,7 +32,8 @@ export const executeRender = (comp: Component, children?) => {
         createTextNode: createTextNode.bind(comp),
         format: comp.format.bind(comp),
         runExp: handleExpression.bind(comp),
-        children: children || []
+        children: children || [],
+        addRc: addRc
         // runForExp: this.handleForExp_.bind(this)
     } as IRenderContext);
     comp.element = el;

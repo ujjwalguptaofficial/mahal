@@ -28,9 +28,7 @@ import ObjectResetModel from "./object_reset_model";
 // `)
 @Template(`
 <div>
-    <div :for(item in items)>
-        <div @click="incrementCounter">{{item}}</div>
-    </div>
+    <Fragment/>
 </div>
 `)
 @Children({

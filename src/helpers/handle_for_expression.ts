@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, patchNode } from "../utils";
+import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, resolveValue, isObject } from "../utils";
 import { ERROR_TYPE } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
@@ -12,8 +12,9 @@ import { onElDestroy, subscriveToDestroyFromChild } from "../helpers";
 
 const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 
+const REACTIVE_CHILD = '_rc_';
 
-export function handleForExp(this: Component, key: string, method: (...args) => HTMLElement) {
+export function handleForExp(this: Component, key: string, method: (...args) => HTMLElement, forVar: string) {
     let cmNode = createCommentNode();
     let els: HTMLElement[] = [cmNode as any];
     let resolvedValue = this.getState(key);
@@ -30,7 +31,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         );
         subscriveToDestroyFromChild(el);
         return el;
-    }
+    };
     forEach(resolvedValue, (value, prop) => {
         const el = createEl(value, prop);
         els.push(el);
@@ -67,8 +68,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         [`${key}.delete`]: (args) => {
             handleChange("splice", [args.index, 1]);
         },
-        [`${key}.update`]: (newValue) => {
-            handleChange("update", newValue);
+        [`${key}.update`]: (param) => {
+            handleChange("update", param);
         }
     };
     const onElDestroyed = () => {
@@ -138,9 +139,13 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                                         );
                                     }
                                     else {
-                                        const el = method(value, prop);
                                         // here patch needs to be done
-                                        patchNode(oldEl, el);
+                                        params = {
+                                            key: prop,
+                                            value: value,
+                                            oldValue: oldValueAtProp
+                                        }
+                                        methods.update();
                                     }
                                 }
                             }
@@ -233,11 +238,36 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 else {
                     index = indexOf(resolvedValue, paramKey);
                 }
-                if (index >= 0) {
-                    const currentEl = childNodes[indexOfRef + 1 + index] as any;
-                    const newElement = method(params.value, paramKey);
+                if (index < 0) return;
 
-                    patchNode(currentEl, newElement);
+                const currentEl = childNodes[indexOfRef + 1 + index] as any;
+                const reactiveChild = currentEl[REACTIVE_CHILD];
+                const oldValue = params.oldValue;
+                const newValue = params.value;
+                const newElement = method(newValue, paramKey);
+                for (const reactiveChildKey in reactiveChild) {
+                    let shouldUpdate;
+                    if (reactiveChildKey === forVar) {
+                        shouldUpdate = oldValue !== newValue;
+                    }
+                    else {
+                        shouldUpdate = oldValue === newValue ? isObject(oldValue) :
+                            resolveValue(reactiveChildKey, oldValue) !== resolveValue(reactiveChildKey, newValue);
+                    }
+                    if (shouldUpdate) {
+                        const oldReactiveEls: HTMLElement[] = reactiveChild[reactiveChildKey];
+                        const newReactiveEls = newElement[REACTIVE_CHILD][reactiveChildKey];
+                        if (newReactiveEls) {
+                            oldReactiveEls.forEach((el, i) => {
+                                if (!el.isConnected) return;
+                                replaceEl(
+                                    el,
+                                    newReactiveEls[i]
+                                );
+                            });
+                        }
+                        reactiveChild[reactiveChildKey] = newReactiveEls || [];
+                    }
                 }
             }
         };

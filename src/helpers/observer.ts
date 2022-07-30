@@ -50,8 +50,9 @@ export class Observer {
                     return Reflect.get(target, prop, receiver);
                 },
                 set: (target, prop: string, newValue, receiver) => {
+                    const oldValue = target[prop];
                     const setValue = Reflect.set(target, prop, newValue, receiver);
-                    onChange(`${prefix}update`, { key: prop, value: newValue });
+                    onChange(`${prefix}update`, { key: prop, value: newValue, oldValue });
                     return setValue;
                 }
             });
@@ -84,7 +85,7 @@ export class Observer {
                     isValueSetted = setValue();
                     onChange(prefix + (prop as string), newValue, oldValue);
                     if (prefix) {
-                        onChange(`${prefix}update`, { key: prop, value: newValue });
+                        onChange(`${prefix}update`, { key: prop, value: newValue, oldValue });
                     }
                     return isValueSetted;
                 }
@@ -93,7 +94,7 @@ export class Observer {
                     isValueSetted = setValue();
                     if (oldValue !== undefined) {
                         if (target.hasOwnProperty(prop)) {
-                            onChange(`${prefix}update`, { key: prop, value: newValue });
+                            onChange(`${prefix}update`, { key: prop, value: newValue, oldValue });
                         }
                     } else {
                         onChange(`${prefix}add`, {

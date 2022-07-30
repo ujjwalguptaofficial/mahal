@@ -108,7 +108,7 @@ export abstract class Component {
                 oldValue = target && target[prop];
                 target[prop] = firstValue;
                 if (oldValue !== undefined) {
-                    emitChange(`${prefix}update`, { key: prop, value: firstValue });
+                    emitChange(`${prefix}update`, { key: prop, value: firstValue, oldValue });
                 } else {
                     emitChange(`${prefix}add`, {
                         value: firstValue,

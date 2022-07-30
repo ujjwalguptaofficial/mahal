@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Component, Reactive,  Computed, Template } from "mahal";
+import { Component, Reactive, Computed, Template } from "mahal";
 import { initiate, } from "mahal-test-utils";
 import { clone } from "../typescript/src/util";
 
@@ -68,7 +68,7 @@ describe("object state using set state", () => {
     it("update value", async function () {
         const promise = new Promise<void>((res) => {
             const cb = (newValue) => {
-                expect(newValue).eql({ value: 'POTATO', key: 'potato' });
+                expect(newValue).eql({ value: 'POTATO', key: 'potato', oldValue: 'potato' });
                 res();
                 component.unwatch("fruits.update", eventId);
             };
@@ -102,7 +102,7 @@ describe("object state using set state", () => {
     it("update value after add", async function () {
         const promise = new Promise<void>((res) => {
             const eventId = component.watch("fruits.update", (newValue) => {
-                expect(newValue).eql({ value: 'Amrud', key: 'amrud' });
+                expect(newValue).eql({ value: 'Amrud', key: 'amrud', oldValue: 'amrud' });
                 res();
                 component.unwatch("fruits.update", eventId);
             });
