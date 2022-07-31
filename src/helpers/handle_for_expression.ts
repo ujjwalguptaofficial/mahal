@@ -9,6 +9,7 @@ import { indexOf } from "./index_of";
 import { getElementKey } from "./get_el_key";
 import { ARRAY_MUTABLE_METHODS } from "../constant";
 import { onElDestroy, subscriveToDestroyFromChild } from "../helpers";
+import { TYPE_RC_STORAGE } from "../types";
 
 const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 
@@ -144,7 +145,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                                             key: prop,
                                             value: value,
                                             oldValue: oldValueAtProp
-                                        }
+                                        };
                                         methods.update();
                                     }
                                 }
@@ -241,22 +242,21 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 if (index < 0) return;
 
                 const currentEl = childNodes[indexOfRef + 1 + index] as any;
-                const reactiveChild = currentEl[REACTIVE_CHILD];
+                const reactiveChild: TYPE_RC_STORAGE = currentEl[REACTIVE_CHILD];
                 const oldValue = params.oldValue;
                 const newValue = params.value;
-                const newElement = method(newValue, paramKey);
-                for (const reactiveChildKey in reactiveChild) {
+                const reactiveChildForNewProp = (method(newValue, paramKey)[REACTIVE_CHILD] as TYPE_RC_STORAGE)
+                reactiveChild.forEach((oldReactiveEls, reactiveChildProp) => {
                     let shouldUpdate;
-                    if (reactiveChildKey === forVar) {
+                    if (reactiveChildProp === forVar) {
                         shouldUpdate = oldValue !== newValue;
                     }
                     else {
                         shouldUpdate = oldValue === newValue ? isObject(oldValue) :
-                            resolveValue(reactiveChildKey, oldValue) !== resolveValue(reactiveChildKey, newValue);
+                            resolveValue(reactiveChildProp, oldValue) !== resolveValue(reactiveChildProp, newValue);
                     }
                     if (shouldUpdate) {
-                        const oldReactiveEls: HTMLElement[] = reactiveChild[reactiveChildKey];
-                        const newReactiveEls = newElement[REACTIVE_CHILD][reactiveChildKey];
+                        const newReactiveEls = reactiveChildForNewProp.get(reactiveChildProp);
                         if (newReactiveEls) {
                             oldReactiveEls.forEach((el, i) => {
                                 if (!el.isConnected) return;
@@ -266,9 +266,9 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                                 );
                             });
                         }
-                        reactiveChild[reactiveChildKey] = newReactiveEls || [];
+                        reactiveChild.set(reactiveChildProp, newReactiveEls || []);
                     }
-                }
+                })
             }
         };
         try {

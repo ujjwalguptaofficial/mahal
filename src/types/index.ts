@@ -1,0 +1,1 @@
+export type TYPE_RC_STORAGE = Map<string, HTMLElement[]>;

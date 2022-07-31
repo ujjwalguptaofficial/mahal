@@ -6,4 +6,4 @@ export const subscriveToDestroyFromChild = (el: HTMLElement) => {
         e.stopImmediatePropagation();
         el[EMIT_DESTROY] = true;
     });
-}
+};

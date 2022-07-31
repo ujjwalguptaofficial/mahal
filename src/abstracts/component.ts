@@ -1,7 +1,7 @@
 import { ERROR_TYPE } from "../enums";
 import { Observer, Logger, indexOf, emitError } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
-import { isArray, EventBus, Timer, emitStateChange } from "../utils";
+import { isArray, EventBus, Timer, emitStateChange, resolveValue } from "../utils";
 import { Mahal } from "../mahal";
 
 // do not rename this, this has been done to merge Component
@@ -299,6 +299,7 @@ export abstract class Component {
      * @memberof Component
      */
     getState(path) {
+        return resolveValue(path, this);
         const properties = isArray(path) ? path : path.split(".");
         return properties.reduce((prev, curr) => prev && prev[curr], this);
     }

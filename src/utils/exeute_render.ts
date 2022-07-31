@@ -15,12 +15,13 @@ function getRender(this: Component): () => Promise<HTMLElement> {
     })();
 }
 
-function addRc(this: object, key, el) {
-    if (!this[key]) {
-        this[key] = [el];
+function addRc(this: Map<string, HTMLElement[]>, key, el) {
+    const val = this.get(key);
+    if (!val) {
+        this.set(key, [el]);
     }
     else {
-        this[key].push(el);
+        val.push(el);
     }
     return el;
 }
