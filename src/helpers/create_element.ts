@@ -27,8 +27,7 @@ const loadComponent = (componentClass) => {
 export function registerEvents(element, events) {
     if (!events) return;
     for (const eventName in events) {
-        const ev = events[eventName];
-        let methods = ev.handlers;
+        const methods = events[eventName];
         // if (ev.modifiers.length > 0) {
         //     const modifiersCb = [];
         //     ev.modifiers.forEach(item => {
@@ -48,7 +47,7 @@ export function registerEvents(element, events) {
         //     methods = [...modifiersCb, ...methods];
         // }
         if (process.env.NODE_ENV !== 'production') {
-            ev.handlers.forEach(item => {
+            methods.forEach(item => {
                 if (typeof item !== 'function') {
                     new Logger(ERROR_TYPE.InvalidEventHandler, {
                         ev: eventName,
@@ -74,10 +73,8 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
         element.appendChild(item);
     });
 
-    const attribute = option.attr;
-    if (attribute) {
-        handleAttribute.call(this, element, attribute, false);
-    }
+
+    handleAttribute.call(this, element, option.attr, false);
     registerEvents.call(this, element, option.on);
     handleDirective.call(this, element, option.dir, false);
     return element;

@@ -28,7 +28,7 @@ import ObjectResetModel from "./object_reset_model";
 // `)
 @Template(`
 <div>
-    <div :event('click',incrementCounter,{once:'true'})/>
+    <ModelComponent/>
 </div>
 `)
 @Children({
@@ -44,7 +44,7 @@ export default class Main extends Component {
 
 
     @Directive('event')
-    eventDirective(el: HTMLElement, binding: IDirectiveBinding) {
+    eventDirective(el: HTMLElement, binding) {
         // const params = binding.;
         debugger;
         // el.addEventListener(params[0])

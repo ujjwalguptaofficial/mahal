@@ -9,6 +9,7 @@ import { onElDestroy } from "./destroy_helper";
 
 
 export function handleAttribute(this: Component, component, attr, isComponent) {
+    if (!attr) return;
     const methods = new Map<string, Function>();
     const subscribeToDestroy = (el: HTMLElement) => {
         onElDestroy(el, () => {
