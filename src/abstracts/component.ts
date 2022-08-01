@@ -273,11 +273,14 @@ export abstract class Component {
     format(formatterName: string, value) {
         const globalFormatter = this.__app__['_formatter'];
         try {
-            if (globalFormatter[formatterName]) {
-                return globalFormatter[formatterName](value);
+            const savedGlobalFormatter = globalFormatter[formatterName];
+            if (savedGlobalFormatter) {
+                return savedGlobalFormatter(value);
             }
-            else if (this.__formatters__[formatterName]) {
-                return this.__formatters__[formatterName](value);
+            const localFormatters = this.__formatters__;
+            const savedFormatter = localFormatters[formatterName];
+            if (savedFormatter) {
+                return savedFormatter(value);
             }
         } catch (error) {
             return emitError.call(this, error, true);
@@ -300,8 +303,6 @@ export abstract class Component {
      */
     getState(path) {
         return resolveValue(path, this);
-        const properties = isArray(path) ? path : path.split(".");
-        return properties.reduce((prev, curr) => prev && prev[curr], this);
     }
 
     /**

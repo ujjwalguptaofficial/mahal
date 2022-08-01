@@ -28,24 +28,6 @@ export function registerEvents(element, events) {
     if (!events) return;
     for (const eventName in events) {
         const methods = events[eventName];
-        // if (ev.modifiers.length > 0) {
-        //     const modifiersCb = [];
-        //     ev.modifiers.forEach(item => {
-        //         switch (item) {
-        //             case 'prevent':
-        //                 modifiersCb.push((e) => {
-        //                     e.preventDefault();
-        //                     return e;
-        //                 }); break;
-        //             case 'stop':
-        //                 modifiersCb.push((e) => {
-        //                     e.stopPropagation();
-        //                     return e;
-        //                 }); break;
-        //         }
-        //     });
-        //     methods = [...modifiersCb, ...methods];
-        // }
         if (process.env.NODE_ENV !== 'production') {
             methods.forEach(item => {
                 if (typeof item !== 'function') {
@@ -58,7 +40,6 @@ export function registerEvents(element, events) {
         const cb = methods.length === 1 ? methods[0].bind(this) : (e) => {
             executeEvents.call(this, methods, e);
         };
-        // const evOption = ev.option;
         addEventListener(
             element, eventName, cb,
         );

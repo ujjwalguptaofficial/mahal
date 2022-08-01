@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, resolveValue, isObject } from "../utils";
+import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, resolveValue } from "../utils";
 import { ERROR_TYPE } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
