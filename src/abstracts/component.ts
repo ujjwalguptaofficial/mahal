@@ -1,7 +1,7 @@
 import { ERROR_TYPE } from "../enums";
 import { Observer, Logger, indexOf, emitError } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
-import { isArray, EventBus, Timer, emitStateChange } from "../utils";
+import { isArray, EventBus, Timer, emitStateChange, resolveValue } from "../utils";
 import { Mahal } from "../mahal";
 
 // do not rename this, this has been done to merge Component
@@ -108,7 +108,7 @@ export abstract class Component {
                 oldValue = target && target[prop];
                 target[prop] = firstValue;
                 if (oldValue !== undefined) {
-                    emitChange(`${prefix}update`, { key: prop, value: firstValue });
+                    emitChange(`${prefix}update`, { key: prop, value: firstValue, oldValue });
                 } else {
                     emitChange(`${prefix}add`, {
                         value: firstValue,
@@ -273,11 +273,14 @@ export abstract class Component {
     format(formatterName: string, value) {
         const globalFormatter = this.__app__['_formatter'];
         try {
-            if (globalFormatter[formatterName]) {
-                return globalFormatter[formatterName](value);
+            const savedGlobalFormatter = globalFormatter[formatterName];
+            if (savedGlobalFormatter) {
+                return savedGlobalFormatter(value);
             }
-            else if (this.__formatters__[formatterName]) {
-                return this.__formatters__[formatterName](value);
+            const localFormatters = this.__formatters__;
+            const savedFormatter = localFormatters[formatterName];
+            if (savedFormatter) {
+                return savedFormatter(value);
             }
         } catch (error) {
             return emitError.call(this, error, true);
@@ -299,8 +302,7 @@ export abstract class Component {
      * @memberof Component
      */
     getState(path) {
-        const properties = isArray(path) ? path : path.split(".");
-        return properties.reduce((prev, curr) => prev && prev[curr], this);
+        return resolveValue(path, this);
     }
 
     /**

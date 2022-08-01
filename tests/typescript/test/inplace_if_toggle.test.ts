@@ -95,7 +95,6 @@ describe('InPlace if toggle', function () {
     })
 
     it('change comp name', async () => {
-        debugger;
         component.name = "HelloWorld";
         await component.waitFor('update');
         testNotExist();

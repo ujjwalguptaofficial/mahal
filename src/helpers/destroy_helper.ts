@@ -15,11 +15,11 @@ export const onElDestroy = (el: HTMLElement | Comment, cb: () => void) => {
             new CustomEvent(CHILD_DESTROY, {
                 bubbles: true
             })
-        )
+        );
     });
 };
 
-const dispatchDestroyedEv = function (node: Node, shouldEmitToChildren?) {
+const dispatchDestroyedEv = (node: Node, shouldEmitToChildren?) => {
     const evs: Function[] = node[DESTROYED_EVENTS];
     if (evs) {
         evs.forEach(ev => {
@@ -34,7 +34,7 @@ const dispatchDestroyedEv = function (node: Node, shouldEmitToChildren?) {
     }
 };
 
-export const dispatchDestroyed = function (node: Node) {
+export const dispatchDestroyed = (node: Node) => {
     nextTick(_ => {
         dispatchDestroyedEv(node,
             node[EMIT_DESTROY]

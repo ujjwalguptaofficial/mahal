@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Component, Template,  Reactive, Computed } from "mahal";
+import { Component, Template, Reactive, Computed } from "mahal";
 import { initiate } from "mahal-test-utils";
 import { clone } from "../typescript/src/util";
 
@@ -30,7 +30,7 @@ class ArrayComp extends Component {
     }
 }
 
-describe("Fruit", () => {
+describe("Array State Set State", () => {
     let component: ArrayComp;
     before(async () => {
         component = await initiate<ArrayComp>(ArrayComp);
@@ -90,7 +90,7 @@ describe("Fruit", () => {
         component.initializeFruit();
         const promise = new Promise<void>((res) => {
             var eventId = component.watch("fruits.update", (newValue) => {
-                expect(newValue).eql({ key: '0', value: 'amrud' });
+                expect(newValue).eql({ key: '0', value: 'amrud', oldValue: 'Banana' });
                 checkFruitValue(fruits);
                 component.unwatch("fruits.update", eventId);
                 res();

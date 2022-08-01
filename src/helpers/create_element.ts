@@ -1,8 +1,8 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
-import { DEFAULT_SLOT_NAME, EVENTS, } from "../constant";
+import { DEFAULT_SLOT_NAME } from "../constant";
 import { handleAttribute } from "./handle_attribute";
-import { isKeyExist, initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload, nextTick, removeEl, insertBefore } from "../utils";
+import { initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload, addEventListener, insertBefore } from "../utils";
 import { executeEvents } from "./execute_events";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
@@ -26,30 +26,10 @@ const loadComponent = (componentClass) => {
 
 export function registerEvents(element, events) {
     if (!events) return;
-    const eventListeners = new Map<string, Function>();
     for (const eventName in events) {
-        const ev = events[eventName];
-        let methods = ev.handlers;
-        if (ev.modifiers.length > 0) {
-            const modifiersCb = [];
-            ev.modifiers.forEach(item => {
-                switch (item) {
-                    case 'prevent':
-                        modifiersCb.push((e) => {
-                            e.preventDefault();
-                            return e;
-                        }); break;
-                    case 'stop':
-                        modifiersCb.push((e) => {
-                            e.stopPropagation();
-                            return e;
-                        }); break;
-                }
-            });
-            methods = [...modifiersCb, ...methods];
-        }
+        const methods = events[eventName];
         if (process.env.NODE_ENV !== 'production') {
-            ev.handlers.forEach(item => {
+            methods.forEach(item => {
                 if (typeof item !== 'function') {
                     new Logger(ERROR_TYPE.InvalidEventHandler, {
                         ev: eventName,
@@ -60,39 +40,22 @@ export function registerEvents(element, events) {
         const cb = methods.length === 1 ? methods[0].bind(this) : (e) => {
             executeEvents.call(this, methods, e);
         };
-        const evOption = ev.option;
-        (element as HTMLDivElement).addEventListener(
-            eventName, cb,
-            {
-                capture: isKeyExist(evOption, 'capture'),
-                once: isKeyExist(evOption, 'once'),
-                passive: isKeyExist(evOption, 'passive'),
-            }
+        addEventListener(
+            element, eventName, cb,
         );
-        eventListeners.set(eventName, cb);
     }
-    element[EVENTS] = eventListeners;
 }
 
 function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
-    const attribute = option.attr;
 
-    switch (tag) {
-        case "slot":
-        case "target":
-            if (!attribute.name) {
-                attribute.name = {
-                    v: DEFAULT_SLOT_NAME
-                };
-            }
-    }
 
     const element = document.createElement(tag) as HTMLElement;
     htmlChilds.forEach(item => {
         element.appendChild(item);
     });
 
-    handleAttribute.call(this, element, attribute, false);
+
+    handleAttribute.call(this, element, option.attr, false);
     registerEvents.call(this, element, option.on);
     handleDirective.call(this, element, option.dir, false);
     return element;
@@ -104,13 +67,27 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
     if (tag == null) {
         return createCommentNode();
     }
-    if (!option.attr) {
-        option.attr = {};
-    }
+
 
     if (HTML_TAG.has(tag)) {
         return createNativeComponent.call(this, tag, childs, option);
     }
+
+    switch (tag) {
+        case "slot":
+        case "target":
+            let attribute = option.attr;
+            if (!attribute) {
+                attribute = option.attr = {};
+            }
+            if (!attribute.name) {
+                attribute.name = {
+                    v: DEFAULT_SLOT_NAME
+                };
+            }
+            return createNativeComponent.call(this, tag, childs, option);
+    }
+
     const savedComponent = this.children[tag] || this['__app__']['_components'][tag];
     if (savedComponent) {
 

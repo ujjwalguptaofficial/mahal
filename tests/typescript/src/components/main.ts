@@ -1,4 +1,4 @@
-import { Component, Template, Children, Reactive, nextTick, lazyComponent } from "mahal";
+import { Component, Template, Children, Reactive, Directive, nextTick, lazyComponent } from "mahal";
 import ModelComponent from "./component_model";
 
 import HelloWorld from "./hello_world";
@@ -28,9 +28,7 @@ import ObjectResetModel from "./object_reset_model";
 // `)
 @Template(`
 <div>
-    <div :for(item in items)>
-        <div @click="incrementCounter">{{item}}</div>
-    </div>
+    <Student/>
 </div>
 `)
 @Children({
@@ -42,6 +40,16 @@ import ObjectResetModel from "./object_reset_model";
     // Btn1: lazyComponent(() => Promise.reject('dd'))
 })
 export default class Main extends Component {
+
+
+
+    @Directive('event')
+    eventDirective(el: HTMLElement, binding) {
+        // const params = binding.;
+        debugger;
+        // el.addEventListener(params[0])
+    };
+
 
     @Reactive
     users = [{

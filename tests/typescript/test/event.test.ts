@@ -18,7 +18,6 @@ class Temp extends Component {
     withoutMethodCalled = false;
 
     onClickWithoutMethod(arg) {
-        debugger;
         if (arg === 'first') {
             this.withoutMethodCalled = true;
         }

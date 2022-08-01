@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, patchNode } from "../utils";
+import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, resolveValue } from "../utils";
 import { ERROR_TYPE } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
@@ -9,9 +9,11 @@ import { indexOf } from "./index_of";
 import { getElementKey } from "./get_el_key";
 import { ARRAY_MUTABLE_METHODS } from "../constant";
 import { onElDestroy, subscriveToDestroyFromChild } from "../helpers";
+import { TYPE_RC_STORAGE } from "../types";
 
 const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 
+const REACTIVE_CHILD = '_rc_';
 
 export function handleForExp(this: Component, key: string, method: (...args) => HTMLElement) {
     let cmNode = createCommentNode();
@@ -30,7 +32,14 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         );
         subscriveToDestroyFromChild(el);
         return el;
-    }
+    };
+    const removeElFromCache = (el) => {
+        removeEl(el);
+        elKeyStore.delete(
+            getElementKey(el)
+        );
+    };
+
     forEach(resolvedValue, (value, prop) => {
         const el = createEl(value, prop);
         els.push(el);
@@ -67,8 +76,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         [`${key}.delete`]: (args) => {
             handleChange("splice", [args.index, 1]);
         },
-        [`${key}.update`]: (newValue) => {
-            handleChange("update", newValue);
+        [`${key}.update`]: (param) => {
+            handleChange("update", param);
         }
     };
     const onElDestroyed = () => {
@@ -138,9 +147,13 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                                         );
                                     }
                                     else {
-                                        const el = method(value, prop);
                                         // here patch needs to be done
-                                        patchNode(oldEl, el);
+                                        params = {
+                                            key: prop,
+                                            value: value,
+                                            oldValue: oldValueAtProp
+                                        };
+                                        methods.update();
                                     }
                                 }
                             }
@@ -158,10 +171,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 // remove rest nodes
                 for (let i = resolvedValueCount; i < oldValueCount; i++) {
                     const el = childNodes[nextIndexRef + resolvedValueCount] as any;
-                    removeEl(el);
-                    elKeyStore.delete(
-                        getElementKey(el)
-                    );
+                    removeElFromCache(el);
                 }
             },
             add() {
@@ -177,10 +187,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 for (let i = 1; i <= params[1]; i++) {
                     const child = childNodes[nextRelativeIndex];
                     if (child) {
-                        removeEl(child as any);
-                        elKeyStore.delete(
-                            getElementKey(child)
-                        );
+                        removeElFromCache(child);
                     }
                 }
 
@@ -233,22 +240,38 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 else {
                     index = indexOf(resolvedValue, paramKey);
                 }
-                if (index >= 0) {
-                    const currentEl = childNodes[indexOfRef + 1 + index] as any;
-                    const newElement = method(params.value, paramKey);
+                if (index < 0) return;
 
-                    patchNode(currentEl, newElement);
-                }
+                const currentEl = childNodes[indexOfRef + 1 + index] as any;
+                const reactiveChild: TYPE_RC_STORAGE = currentEl[REACTIVE_CHILD];
+                const oldValue = params.oldValue;
+                const newValue = params.value;
+                const reactiveChildForNewProp = (method(newValue, paramKey)[REACTIVE_CHILD] as TYPE_RC_STORAGE);
+                reactiveChild.forEach((oldReactiveEls, reactiveChildProp) => {
+                    const shouldUpdate = resolveValue(reactiveChildProp, oldValue) !== resolveValue(reactiveChildProp, newValue);
+                    if (!shouldUpdate) return;
+                    const newReactiveEls = reactiveChildForNewProp.get(reactiveChildProp);
+                    if (newReactiveEls) {
+                        oldReactiveEls.forEach((el, i) => {
+                            if (!el.isConnected) return;
+                            replaceEl(
+                                el,
+                                newReactiveEls[i]
+                            );
+                        });
+                    }
+                    reactiveChild.set(reactiveChildProp, newReactiveEls || []);
+                });
             }
         };
-        try {
-            nextTick(_ => {
+        nextTick(_ => {
+            try {
                 methods[methodName]();
                 emitUpdate(this);
-            });
-        } catch (err) {
-            emitError.call(this, err);
-        }
+            } catch (err) {
+                emitError.call(this, err);
+            }
+        });
     };
     this.watch(key, callBacks[key]);
     forExpMethods.forEach(methodName => {

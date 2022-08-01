@@ -8,12 +8,12 @@ export function initComponent(this: Component, component: Component, option) {
 
     const htmlAttributes = handleAttribute.call(this, component, option.attr, true);
     handleDirective.call(this, component, option.dir, true);
-    if (option.on) {
-        const events = option.on;
+    const events = option.on;
+    if (events) {
         for (const eventName in events) {
-            const ev = events[eventName];
+            const methods = events[eventName];
             if (process.env.NODE_ENV !== 'production') {
-                ev.handlers.forEach(item => {
+                methods.forEach(item => {
                     if (typeof item !== 'function') {
                         new Logger(ERROR_TYPE.InvalidEventHandler, {
                             eventName,
@@ -21,7 +21,7 @@ export function initComponent(this: Component, component: Component, option) {
                     }
                 });
             }
-            const methods = ev.handlers;
+
             const cb = methods.length > 1 ? (e) => {
                 executeEvents.call(this, methods, e);
             } : (e) => {

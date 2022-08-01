@@ -6,6 +6,7 @@
     "install:build": "npm run install:lib && npm run build",
     "build": "webpack",
     "dev": "webpack-dev-server --config webpack.config.js",
+    "dev:prod": "webpack-dev-server --config webpack.config.js",
     "install:dev": " npm run install:lib && npm run dev",
     "install:test": " npm run install:lib && npm run test",
     "start": "npm run dev",
