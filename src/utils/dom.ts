@@ -20,4 +20,4 @@ export const insertBefore = (parent: Element, nodeToInsert: Node, relativeNode: 
 
 export const addEventListener = (el: Element, event: string, eventListener: Function, option?: any) => {
     el.addEventListener(event, eventListener as any, option);
-}
+};

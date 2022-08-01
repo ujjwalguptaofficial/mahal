@@ -246,7 +246,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const reactiveChild: TYPE_RC_STORAGE = currentEl[REACTIVE_CHILD];
                 const oldValue = params.oldValue;
                 const newValue = params.value;
-                const reactiveChildForNewProp = (method(newValue, paramKey)[REACTIVE_CHILD] as TYPE_RC_STORAGE)
+                const reactiveChildForNewProp = (method(newValue, paramKey)[REACTIVE_CHILD] as TYPE_RC_STORAGE);
                 reactiveChild.forEach((oldReactiveEls, reactiveChildProp) => {
                     const shouldUpdate = resolveValue(reactiveChildProp, oldValue) !== resolveValue(reactiveChildProp, newValue);
                     if (!shouldUpdate) return;
@@ -261,7 +261,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                         });
                     }
                     reactiveChild.set(reactiveChildProp, newReactiveEls || []);
-                })
+                });
             }
         };
         nextTick(_ => {

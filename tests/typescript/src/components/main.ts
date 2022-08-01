@@ -28,7 +28,7 @@ import ObjectResetModel from "./object_reset_model";
 // `)
 @Template(`
 <div>
-    <Fruits/>
+    <Student/>
 </div>
 `)
 @Children({
