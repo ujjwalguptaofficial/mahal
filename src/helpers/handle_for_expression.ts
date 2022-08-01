@@ -15,7 +15,7 @@ const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 
 const REACTIVE_CHILD = '_rc_';
 
-export function handleForExp(this: Component, key: string, method: (...args) => HTMLElement, forVar: string) {
+export function handleForExp(this: Component, key: string, method: (...args) => HTMLElement) {
     let cmNode = createCommentNode();
     let els: HTMLElement[] = [cmNode as any];
     let resolvedValue = this.getState(key);
@@ -248,8 +248,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const newValue = params.value;
                 const reactiveChildForNewProp = (method(newValue, paramKey)[REACTIVE_CHILD] as TYPE_RC_STORAGE)
                 reactiveChild.forEach((oldReactiveEls, reactiveChildProp) => {
-                    const shouldUpdate = reactiveChildProp === forVar ? true :
-                        resolveValue(reactiveChildProp, oldValue) !== resolveValue(reactiveChildProp, newValue);
+                    const shouldUpdate = resolveValue(reactiveChildProp, oldValue) !== resolveValue(reactiveChildProp, newValue);
                     if (!shouldUpdate) return;
                     const newReactiveEls = reactiveChildForNewProp.get(reactiveChildProp);
                     if (newReactiveEls) {
