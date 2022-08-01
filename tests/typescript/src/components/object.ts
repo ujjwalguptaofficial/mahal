@@ -80,14 +80,18 @@ export default class extends Component {
     }
 
     updateStudent(index) {
-        const value = Object.assign(
-            this.students[index],
-            {
-                name: this.editName,
-                isEdit: false
-            }
-        );
-        this.students[index] = value;
+        // const value = Object.assign(
+        //     this.students[index],
+        //     {
+        //         name: this.editName,
+        //         isEdit: false
+        //     }
+        // );
+        // this.students[index] = value;
+        this.students[index] = {
+            name: this.editName,
+            isEdit: false
+        }
         // debugger;
         // this.students[index] = {
         //     name: this.editName,

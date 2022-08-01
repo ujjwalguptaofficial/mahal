@@ -64,7 +64,8 @@ describe('Fragment', function () {
 
     it("edit data", function (done) {
         const trs = component.findAll('tr');
-        component.students.every((student, index) => {
+        const students = component.students;
+        students.every((student, index) => {
             let tds = trs[index].querySelectorAll('td');
             expect(tds[0].innerText).equal(student.id.toString());
             let btn = tds[2].querySelector('button');
@@ -86,7 +87,7 @@ describe('Fragment', function () {
                     const td = component.findAll('tr')[index].querySelectorAll('td')[2];
                     btn = td.querySelector('button');
                     expect(btn.innerText).equal("Edit");
-                    expect(student.name).equal(text);
+                    expect(students[index].name).equal(text);
                     done();
                 });
                 return false;

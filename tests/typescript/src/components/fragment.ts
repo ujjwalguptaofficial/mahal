@@ -49,16 +49,18 @@ export default class extends Component {
         console.log('student', student);
         const index = this.students.findIndex(q => q.id === student.id);
         const savedStudent = this.students[index];
-        savedStudent.isEdit = false;
-        this.students[index] = savedStudent;
+        this.students[index] = Object.assign({}, savedStudent, {
+            isEdit: false
+        });
         // this.setAndReact(this.students, index, savedStudent);
     }
 
     edit(student) {
         const index = this.students.findIndex(q => q.id === student.id);
         const savedStudent = this.students[index];
-        savedStudent.isEdit = true;
-        this.students[index] = savedStudent;
+        this.students[index] = Object.assign({}, savedStudent, {
+            isEdit: true
+        });
         // this.setAndReact(this.students, index, savedStudent);
     }
 

@@ -33,6 +33,13 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         subscriveToDestroyFromChild(el);
         return el;
     };
+    const removeElFromCache = (el) => {
+        removeEl(el);
+        elKeyStore.delete(
+            getElementKey(el)
+        );
+    };
+
     forEach(resolvedValue, (value, prop) => {
         const el = createEl(value, prop);
         els.push(el);
@@ -164,10 +171,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 // remove rest nodes
                 for (let i = resolvedValueCount; i < oldValueCount; i++) {
                     const el = childNodes[nextIndexRef + resolvedValueCount] as any;
-                    removeEl(el);
-                    elKeyStore.delete(
-                        getElementKey(el)
-                    );
+                    removeElFromCache(el);
                 }
             },
             add() {
@@ -183,10 +187,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 for (let i = 1; i <= params[1]; i++) {
                     const child = childNodes[nextRelativeIndex];
                     if (child) {
-                        removeEl(child as any);
-                        elKeyStore.delete(
-                            getElementKey(child)
-                        );
+                        removeElFromCache(child);
                     }
                 }
 
@@ -247,38 +248,31 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const newValue = params.value;
                 const reactiveChildForNewProp = (method(newValue, paramKey)[REACTIVE_CHILD] as TYPE_RC_STORAGE)
                 reactiveChild.forEach((oldReactiveEls, reactiveChildProp) => {
-                    let shouldUpdate;
-                    if (reactiveChildProp === forVar) {
-                        shouldUpdate = oldValue !== newValue;
+                    const shouldUpdate = reactiveChildProp === forVar ? true :
+                        resolveValue(reactiveChildProp, oldValue) !== resolveValue(reactiveChildProp, newValue);
+                    if (!shouldUpdate) return;
+                    const newReactiveEls = reactiveChildForNewProp.get(reactiveChildProp);
+                    if (newReactiveEls) {
+                        oldReactiveEls.forEach((el, i) => {
+                            if (!el.isConnected) return;
+                            replaceEl(
+                                el,
+                                newReactiveEls[i]
+                            );
+                        });
                     }
-                    else {
-                        shouldUpdate = oldValue === newValue ? isObject(oldValue) :
-                            resolveValue(reactiveChildProp, oldValue) !== resolveValue(reactiveChildProp, newValue);
-                    }
-                    if (shouldUpdate) {
-                        const newReactiveEls = reactiveChildForNewProp.get(reactiveChildProp);
-                        if (newReactiveEls) {
-                            oldReactiveEls.forEach((el, i) => {
-                                if (!el.isConnected) return;
-                                replaceEl(
-                                    el,
-                                    newReactiveEls[i]
-                                );
-                            });
-                        }
-                        reactiveChild.set(reactiveChildProp, newReactiveEls || []);
-                    }
+                    reactiveChild.set(reactiveChildProp, newReactiveEls || []);
                 })
             }
         };
-        try {
-            nextTick(_ => {
+        nextTick(_ => {
+            try {
                 methods[methodName]();
                 emitUpdate(this);
-            });
-        } catch (err) {
-            emitError.call(this, err);
-        }
+            } catch (err) {
+                emitError.call(this, err);
+            }
+        });
     };
     this.watch(key, callBacks[key]);
     forExpMethods.forEach(methodName => {
