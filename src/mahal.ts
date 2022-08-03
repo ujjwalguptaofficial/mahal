@@ -6,15 +6,24 @@ import { Logger } from "./helpers";
 
 
 export class Mahal {
-    private __eventBus__ = new EventBus();
-    private __componentClass__: typeof Component;
+    private _evBus_ = new EventBus();
+
+    /**
+     * component class
+     *
+     * @private
+     * @type {typeof Component}
+     * @memberof Mahal
+     */
+    private _comp_: typeof Component;
+
     component: Component;
     element: HTMLElement;
 
     global: { [key: string]: any } = {};
 
     constructor(component: typeof Component, element) {
-        this.__componentClass__ = component;
+        this._comp_ = component;
         this.element = isString(element) ? document.querySelector(element) : element;
         if (this.element == null) {
             const defaultId = 'mahal-app';
@@ -55,7 +64,7 @@ export class Mahal {
     }
 
     create() {
-        let componentInstance: Component = createComponent(this.__componentClass__, this);
+        let componentInstance: Component = createComponent(this._comp_, this);
         initComponent.call(this, componentInstance, {});
         this.emit(LIFECYCLE_EVENT.Create);
         const el = executeRender(componentInstance);
@@ -69,16 +78,16 @@ export class Mahal {
     }
 
     on(event: string, cb: Function) {
-        this.__eventBus__.on(event, cb);
+        this._evBus_.on(event, cb);
         return this;
     }
 
     off(event: string, eventListener: Function) {
-        this.__eventBus__.off(event, eventListener);
+        this._evBus_.off(event, eventListener);
     }
 
     emit(event: string, ...args) {
-        return this.__eventBus__.emit(event, ...args);
+        return this._evBus_.emit(event, ...args);
     }
 
     extend = {

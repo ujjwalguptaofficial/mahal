@@ -16,3 +16,4 @@ export * from "./index_of";
 export * from "./get_el_key";
 export * from "./destroy_helper";
 export * from "./subscribe_to_emit_destory";
+export * from "./for_each_event";

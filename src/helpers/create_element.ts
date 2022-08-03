@@ -2,13 +2,13 @@ import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
 import { DEFAULT_SLOT_NAME } from "../constant";
 import { handleAttribute } from "./handle_attribute";
-import { initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, promiseResolve, ILazyComponentPayload, addEventListener, insertBefore } from "../utils";
-import { executeEvents } from "./execute_events";
+import { initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, ILazyComponentPayload, addEventListener, insertBefore } from "../utils";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
 import { emitError } from "./emit_error";
 import { Logger } from "./logger";
+import { forEachEvent } from "./for_each_event";
 
 const loadComponent = (componentClass) => {
     if (componentClass instanceof Promise) {
@@ -24,27 +24,6 @@ const loadComponent = (componentClass) => {
     return componentClass;
 };
 
-export function registerEvents(element, events) {
-    if (!events) return;
-    for (const eventName in events) {
-        const methods = events[eventName];
-        if (process.env.NODE_ENV !== 'production') {
-            methods.forEach(item => {
-                if (typeof item !== 'function') {
-                    new Logger(ERROR_TYPE.InvalidEventHandler, {
-                        ev: eventName,
-                    }).throwPlain();
-                }
-            });
-        }
-        const cb = methods.length === 1 ? methods[0].bind(this) : (e) => {
-            executeEvents.call(this, methods, e);
-        };
-        addEventListener(
-            element, eventName, cb,
-        );
-    }
-}
 
 function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
 
@@ -56,7 +35,14 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
 
 
     handleAttribute.call(this, element, option.attr, false);
-    registerEvents.call(this, element, option.on);
+
+    // register events
+    forEachEvent.call(this, option.on, (eventName, listener) => {
+        addEventListener(
+            element, eventName, listener,
+        );
+    });
+
     handleDirective.call(this, element, option.dir, false);
     return element;
 }

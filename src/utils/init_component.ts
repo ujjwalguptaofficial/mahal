@@ -1,35 +1,19 @@
 import { Component } from "../abstracts";
 import { ARRAY_MUTABLE_METHODS } from "../constant";
-import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
-import { handleAttribute, handleDirective, executeEvents, Logger } from "../helpers";
+import { LIFECYCLE_EVENT } from "../enums";
+import { handleAttribute, handleDirective, forEachEvent } from "../helpers";
 import { getDataype } from "./get_data_type";
 
 export function initComponent(this: Component, component: Component, option) {
 
     const htmlAttributes = handleAttribute.call(this, component, option.attr, true);
     handleDirective.call(this, component, option.dir, true);
-    const events = option.on;
-    if (events) {
-        for (const eventName in events) {
-            const methods = events[eventName];
-            if (process.env.NODE_ENV !== 'production') {
-                methods.forEach(item => {
-                    if (typeof item !== 'function') {
-                        new Logger(ERROR_TYPE.InvalidEventHandler, {
-                            eventName,
-                        }).throwPlain();
-                    }
-                });
-            }
 
-            const cb = methods.length > 1 ? (e) => {
-                executeEvents.call(this, methods, e);
-            } : (e) => {
-                methods[0].call(this, e);
-            };
-            component.on(eventName, cb);
-        }
-    }
+    // register events
+    forEachEvent.call(this, option.on, (eventName, listener) => {
+        component.on(eventName, listener);
+    });
+
     const computed = component['__computed__'];
     for (const key in computed) {
         const data = computed[key];
