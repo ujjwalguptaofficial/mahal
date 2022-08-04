@@ -1,5 +1,5 @@
 import { Component } from "../abstracts";
-import { ARRAY_MUTABLE_METHODS } from "../constant";
+import { ARRAY_MUTABLE_METHODS, OBJECT_MUTABLE_METHODS } from "../constant";
 import { LIFECYCLE_EVENT } from "../enums";
 import { handleAttribute, handleDirective, forEachEvent } from "../helpers";
 import { getDataype } from "./get_data_type";
@@ -36,7 +36,7 @@ export function initComponent(this: Component, component: Component, option) {
                     eventsToWatch = eventsToWatch.concat(evs); break;
                 case "object":
                     eventsToWatch = eventsToWatch.concat(
-                        ["add", "update", "delete"].map(ev => {
+                        OBJECT_MUTABLE_METHODS.map(ev => {
                             return `${arg}.${ev}`;
                         })
                     ); break;

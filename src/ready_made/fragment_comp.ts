@@ -8,8 +8,7 @@ export class FragmentComponent extends Component {
     }
 
     render(renderer: IRenderContext) {
-        const ctx = this;
         const ce = renderer.createElement;
-        return ce.call(ctx, 'slot', [], {}) as any;
+        return ce.call(this, 'slot', [], {}) as any;
     }
 }

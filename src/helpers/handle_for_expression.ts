@@ -7,11 +7,9 @@ import { emitError } from "./emit_error";
 import { Logger } from "./logger";
 import { indexOf } from "./index_of";
 import { getElementKey } from "./get_el_key";
-import { ARRAY_MUTABLE_METHODS } from "../constant";
+import { OBJECT_MUTABLE_METHODS } from "../constant";
 import { onElDestroy, subscriveToDestroyFromChild } from "../helpers";
 import { TYPE_RC_STORAGE } from "../types";
-
-const forExpMethods = ARRAY_MUTABLE_METHODS.concat(['add', 'update', 'delete']);
 
 const REACTIVE_CHILD = '_rc_';
 
@@ -274,7 +272,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         });
     };
     this.watch(key, callBacks[key]);
-    forExpMethods.forEach(methodName => {
+    OBJECT_MUTABLE_METHODS.forEach(methodName => {
         const methodKey = `${key}.${methodName}`;
         this.watch(methodKey, callBacks[methodKey]);
     });
