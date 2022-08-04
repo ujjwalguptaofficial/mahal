@@ -16,7 +16,6 @@ export * from "./get_attribute";
 export * from "./dom";
 export * from "./exeute_render";
 export * from "./init_component";
-export * from "./timer";
 export * from "./create_component";
 export * from "./hashify_array";
 export * from "./promise_resolve";

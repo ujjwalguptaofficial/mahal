@@ -65,12 +65,13 @@ const ARRAY_MUTABLE_METHODS = ["push", "pop", "splice", "shift", "unshift", "rev
 describe("Array nested element destroy", () => {
     let component: ArrayComp;
     before(async () => {
-        debugger;
         component = await mount<ArrayComp>(ArrayComp);
     })
 
     it("count events", async () => {
-        await component.timer.timeout(1000);
+        await new Promise(res => {
+            setTimeout(res, 100)
+        });
         expect(Object.keys(component['__watchBus__']._events)).length(12);
         ARRAY_MUTABLE_METHODS.forEach(name => {
             expect(component['__watchBus__']._events[`fruits.${name}`]).length(1);
@@ -83,7 +84,9 @@ describe("Array nested element destroy", () => {
         component.flag = false;
         component.selected = false;
         await component.waitFor('update');
-        await component.timer.timeout(100);
+        await new Promise(res => {
+            setTimeout(res, 100)
+        });
         // expect(Object.keys(component['__watchBus__']._events)).length(2);
         ARRAY_MUTABLE_METHODS.forEach(name => {
             expect(component['__watchBus__']._events[`fruits.${name}`]).length(0);

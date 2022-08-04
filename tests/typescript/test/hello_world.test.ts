@@ -1,6 +1,6 @@
 import HelloWorld from "../src/components/hello_world";
 import { app } from "../src/index";
-import { nextTick, getObjectLength, Timer } from "mahal";
+import { nextTick } from "mahal";
 import { expect } from "chai";
 import { createSandbox, spy } from "sinon";
 
@@ -125,7 +125,9 @@ describe('HelloWorld', function () {
 
     it("destroy", function (done) {
         component.on("destroy", () => {
-            new Timer().timeout(20).then(_ => {
+            new Promise(res => {
+                setTimeout(res, 20)
+            }).then(_ => {
                 expect(component.element).equal(null);
                 expect(component.__eventBus__).equal(null);
                 expect(component.__ob__).equal(null);

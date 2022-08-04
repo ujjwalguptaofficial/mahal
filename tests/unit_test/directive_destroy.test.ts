@@ -55,14 +55,18 @@ describe("Directive destroy", () => {
 
     it("set selected to true", async () => {
         component.selected = true;
-        await component.timer.timeout(1000);
+        await new Promise(res => {
+            setTimeout(res, 100)
+        });
         expect(component.updateCount).equal(1);
     })
 
     it('set flag to false', async () => {
         component.flag = false;
         component.selected = false;
-        await component.timer.timeout(1000);
+        await new Promise(res => {
+            setTimeout(res, 100)
+        });
         expect(component.updateCount).equal(1);
     })
 

@@ -1,7 +1,6 @@
 import { app } from "../src/index";
 import { lazyComponent, Computed, Template, Component, Prop, Children, Reactive } from "mahal";
 import { expect } from "chai";
-import HelloWorld from "../src/components/hello_world";
 
 @Children({
     Btn: lazyComponent(() => import('../src/components/btn')),
@@ -98,7 +97,9 @@ describe('InPlace if toggle', function () {
         component.name = "HelloWorld";
         await component.waitFor('update');
         testNotExist();
-        await component.timer.timeout(1000);
+        await new Promise(res => {
+            setTimeout(res, 100)
+        });
         expect(
             (component.element.querySelectorAll('.hello-world'))
         ).length(1);

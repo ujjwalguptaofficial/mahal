@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { EventBus, Timer } from "mahal"
+import { EventBus } from "mahal"
 import { createSandbox } from "sinon";
 
 describe('event bus', () => {
@@ -39,14 +39,18 @@ describe('event bus', () => {
         let isFirstCompleted = false;
         let isSecondCompleted = false;
         const evId1 = eventBus.on('ev', () => {
-            return new Timer().timeout(500).then(_ => {
+            return new Promise(res => {
+                setTimeout(res, 500)
+            }).then(_ => {
                 isFirstCompleted = true;
                 return 5;
             })
         })
         const evId2 = eventBus.on('ev', () => {
             expect(isFirstCompleted).equal(true);
-            return new Timer().timeout(100).then(_ => {
+            return new Promise(res => {
+                setTimeout(res, 100)
+            }).then(_ => {
                 isSecondCompleted = true;
                 return Promise.resolve(10);
             })
@@ -62,12 +66,16 @@ describe('event bus', () => {
     it('emitLinear with removing a event in execution', (done) => {
 
         const evId1 = eventBus.on('ev', () => {
-            return new Timer().timeout(500).then(_ => {
+            return new Promise(res => {
+                setTimeout(res, 500)
+            }).then(_ => {
                 return 5;
             })
         })
         const cb = () => {
-            return new Timer().timeout(100).then(_ => {
+            return new Promise(res => {
+                setTimeout(res, 100)
+            }).then(_ => {
                 return Promise.resolve(10);
             })
         };

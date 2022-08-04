@@ -1,7 +1,7 @@
 import { ERROR_TYPE } from "../enums";
 import { Observer, Logger, indexOf, emitError } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
-import { isArray, EventBus, Timer, emitStateChange, resolveValue } from "../utils";
+import { EventBus, emitStateChange, resolveValue } from "../utils";
 import { Mahal } from "../mahal";
 
 // do not rename this, this has been done to merge Component
@@ -356,7 +356,10 @@ export abstract class Component {
 
     // tslint:disable-next-line
     private __computed__;
-    timer = new Timer();
+
+    // tslint:disable-next-line
+    private __timerId__;
+
     static shouldCheckProp = true;
 
     getMethod(methodName: string) {

@@ -65,15 +65,18 @@ describe('Async event test', function () {
     it("click", async function () {
         const btn = component.find('#async');
         btn.click();
-        await component.timer.timeout(1000);
+        await new Promise(res => {
+            setTimeout(res, 1000)
+        });
         expect(component.isFinalCalled).equal(true);
     });
 
     it("withoutMethod", async function () {
         const btn = component.find('#withoutMethod');
         btn.click();
-        await component.timer.timeout(1000);
-
+        await new Promise(res => {
+            setTimeout(res, 100)
+        });
         expect(component.withoutMethodCalled).equal(true);
     });
 });
