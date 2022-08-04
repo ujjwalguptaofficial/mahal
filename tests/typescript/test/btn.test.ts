@@ -15,7 +15,6 @@ describe('Btn prop test', function () {
                 label: false
             }
         });
-        await nextTick();
         const args = consoleSpy.args[0];
         expect(args).length(2);
         expect(args[0]).to.equal("{Mahal error}:");

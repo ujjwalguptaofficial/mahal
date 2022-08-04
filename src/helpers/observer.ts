@@ -1,16 +1,16 @@
 import { Component } from "../abstracts";
 import { ARRAY_MUTABLE_METHODS } from "../constant";
-import { isArray, getObjectLength, isObject, merge, hashifyArray, nextTick } from "../utils";
+import { isArray, isObject, merge, hashifyArray, nextTick } from "../utils";
 import { indexOf } from "./index_of";
 
 export class Observer {
 
     onChange: (key: string, newValue, oldValue?) => void;
-    component: Component;
+    comp: Component;
 
     constructor(onChange, component: Component) {
         this.onChange = onChange;
-        this.component = component;
+        this.comp = component;
     }
 
     create(input: object, keys?: string[], prefix = "") {
@@ -18,7 +18,7 @@ export class Observer {
         const isInputArray = isArray(input);
         keys = keys || (isInputArray ? ARRAY_MUTABLE_METHODS : Object.keys(input));
         keys.forEach(key => {
-            this.component['__reactives__'][prefix + key] = true;
+            this.comp['__reactives__'][prefix + key] = true;
         });
         const hashkeys = hashifyArray(keys);
         const registerChild = (key, newValue, oldValue) => {

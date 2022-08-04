@@ -21,7 +21,6 @@ describe('HelloWorld', function () {
             }
         });
         expect(component.isMounted).equal(true);
-        await nextTick();
         expect(consoleSpy.args).length(3);
         const args1 = consoleSpy.args[0];
         expect(args1).length(3);
@@ -89,7 +88,6 @@ describe('HelloWorld', function () {
         sandbox.stub(component, "emit");
         component.find('#count').click();
         // await component.waitFor("update");
-        await nextTick();
         sandbox.assert.calledOnceWithExactly(component.emit as any, "click");
         sandbox.restore();
     });

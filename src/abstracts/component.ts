@@ -294,7 +294,7 @@ export abstract class Component {
      * resolve a state by string path 
      * 
      * useful for nested object 
-     * e.g - this.resolve('user.name.first')
+     * `e.g - this.resolve('user.name.first')`
      * 
      *
      * @param {*} path
@@ -357,7 +357,6 @@ export abstract class Component {
     // tslint:disable-next-line
     private __computed__;
     timer = new Timer();
-
     static shouldCheckProp = true;
 
     getMethod(methodName: string) {
