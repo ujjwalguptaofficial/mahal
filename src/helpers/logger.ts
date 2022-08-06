@@ -6,11 +6,11 @@ const libName = "Mahal";
 const newLine = "\n\n";
 
 export class Logger implements IError {
-    type: ERROR_TYPE;
+    type: string;
     msg: string;
     private info_: any;
 
-    constructor(type: ERROR_TYPE, info?: any) {
+    constructor(type: string, info?: any) {
         this.type = type;
         this.info_ = info;
         this.msg = this.getMsg_();

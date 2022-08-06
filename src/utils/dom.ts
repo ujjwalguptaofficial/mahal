@@ -2,7 +2,8 @@ import { EL_REPLACED } from "../constant";
 import { dispatchDestroyed } from "../helpers";
 
 export const replaceEl = (oldEl: HTMLElement, newEl: HTMLElement) => {
-    if (oldEl.nodeType === 3 && newEl.nodeType === 3) {
+    const nodeType = oldEl.nodeType;
+    if (nodeType === 3 && newEl.nodeType === nodeType) {
         oldEl.nodeValue = newEl.nodeValue;
         return true;
     }
