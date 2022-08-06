@@ -19,8 +19,14 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
         const onChange = () => {
             try {
                 const newEl = method();
-                subscriveToDestroyFromChild(newEl);
-                replaceEl(el, newEl);
+                const isPatched = replaceEl(el, newEl);
+                if (isPatched) {
+                    changesQueue.shift();
+                    emitUpdate(this);
+                }
+                else {
+                    subscriveToDestroyFromChild(newEl);
+                }
             } catch (err) {
                 emitError.call(this, err);
             }

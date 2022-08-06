@@ -252,10 +252,13 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     if (newReactiveEls) {
                         oldReactiveEls.forEach((el, i) => {
                             if (!el.isConnected) return;
-                            replaceEl(
+                            const isPatched = replaceEl(
                                 el,
                                 newReactiveEls[i]
                             );
+                            if (isPatched) {
+                                newReactiveEls[i] = el;
+                            }
                         });
                     }
                     reactiveChild.set(reactiveChildProp, newReactiveEls || []);

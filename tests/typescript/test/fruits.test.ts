@@ -44,6 +44,18 @@ describe('Fruits', function () {
         checkFruitValue(fruits);
     })
 
+    it("update multiple times", async function () {
+        component.setInitial();
+        await component.waitFor('update');
+        component.fruits[component.fruits.length - 1] = 'dfghhh'
+        component.fruits[component.fruits.length - 1] = 'dfggg'
+        component.fruits[component.fruits.length - 1] = 'frgg'
+        await component.waitFor('update');
+        const fruits = component.initialFruits;
+        fruits[fruits.length - 1] = 'frgg'
+        checkFruitValue(fruits);
+    })
+
     it("splice value by 0,1", async function () {
         component.setInitial();
         await component.waitFor('update');

@@ -1,5 +1,5 @@
 import { app } from "../src/index";
-import { nextTick, Template, Component, Prop, Children, lazyComponent, Timer } from "mahal";
+import { nextTick, Template, Component, Prop, Children, lazyComponent } from "mahal";
 import { expect } from "chai";
 import { spy } from "sinon";
 
