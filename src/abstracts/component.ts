@@ -1,4 +1,4 @@
-import { DATA_TYPE, ERROR_TYPE } from "../enums";
+import { ERROR_TYPE } from "../enums";
 import { Observer, Logger, indexOf, emitError } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
 import { EventBus, emitStateChange, resolveValue, replaceNullProp, getDataype } from "../utils";
@@ -100,7 +100,7 @@ export abstract class Component {
             const targetKey = splittedKey.join(".");
             const prefix = targetKey + ".";
             const target = ctx.getState(targetKey);
-            if (getDataype(storedValue) === DATA_TYPE.Function) {
+            if (getDataype(storedValue) === 'function') {
                 const result = target[prop](...args);
                 emitChange(
                     prefix + prop,

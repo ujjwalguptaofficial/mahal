@@ -1,13 +1,12 @@
-import { DATA_TYPE } from "../enums";
 import { isArray } from "./is_array";
 
 export const getDataype = (value) => {
     if (value == null) {
-        return DATA_TYPE.Null;
+        return "null";
     }
     const type = typeof value;
     switch (type) {
-        case DATA_TYPE.Object:
+        case "object":
             if (isArray(value)) {
                 return "array";
             }

@@ -1,5 +1,4 @@
 import { IPropOption } from "../interface";
-import { DATA_TYPE } from "../enums";
 import { getDataype, replaceNullProp } from "../utils";
 
 
@@ -7,11 +6,9 @@ import { getDataype, replaceNullProp } from "../utils";
 export const Prop = (options?: IPropOption | any) => {
     return (target, key: string) => {
         replaceNullProp(target, '__props__', {});
-        if (getDataype(options) === DATA_TYPE.Function) {
+        if (getDataype(options) === "function") {
             const name = options.name;
-            if (DATA_TYPE[name]) {
-                options = name.toLowerCase();
-            }
+            options = name.toLowerCase();
         }
         if (options && !options.type) {
             options = {

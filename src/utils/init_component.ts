@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { OBJECT_MUTABLE_METHODS } from "../constant";
-import { DATA_TYPE, LIFECYCLE_EVENT } from "../enums";
+import { LIFECYCLE_EVENT } from "../enums";
 import { handleAttribute, handleDirective, forEachEvent } from "../helpers";
 import { getDataype } from "./get_data_type";
 
@@ -29,8 +29,8 @@ export function initComponent(this: Component, component: Component, option) {
         data.args.forEach(arg => {
             let eventsToWatch = [arg];
             switch (getDataype(component[arg])) {
-                case DATA_TYPE.Array:
-                case DATA_TYPE.Object:
+                case "array":
+                case "object":
                     eventsToWatch = eventsToWatch.concat(
                         OBJECT_MUTABLE_METHODS.map(ev => {
                             return `${arg}.${ev}`;

@@ -1,7 +1,7 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
 import { isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, resolveValue, createDocumentFragment } from "../utils";
-import { DATA_TYPE, ERROR_TYPE } from "../enums";
+import { ERROR_TYPE } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
 import { Logger } from "./logger";
@@ -22,7 +22,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         const isPrimitive = (value) => {
             switch (typeof value) {
                 case 'undefined':
-                case DATA_TYPE.Object:
+                case 'object':
                     return false;
             }
             return true;
