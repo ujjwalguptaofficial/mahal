@@ -1,6 +1,6 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
-import { COMPONENT_APP, DEFAULT_SLOT_NAME } from "../constant";
+import { DEFAULT_SLOT_NAME } from "../constant";
 import { handleAttribute } from "./handle_attribute";
 import { initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, ILazyComponentPayload, addEventListener, insertBefore } from "../utils";
 import { handleDirective } from "./handle_directive";
@@ -76,11 +76,11 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
             return createNativeComponent.call(ctx, tag, childs, option);
     }
 
-    const savedComponent = ctx.children[tag] || ctx[COMPONENT_APP]['_components'][tag];
+    const savedComponent = ctx.children[tag] || ctx['__app__']['_components'][tag];
     if (savedComponent) {
 
         const renderComponent = (comp) => {
-            const component: Component = createComponent(comp, ctx[COMPONENT_APP]);
+            const component: Component = createComponent(comp, ctx['__app__']);
             const htmlAttributes = initComponent.call(ctx, component as any, option);
             executeRender(component, childs);
             let element = component.element;

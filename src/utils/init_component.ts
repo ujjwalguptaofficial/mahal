@@ -1,5 +1,5 @@
 import { Component } from "../abstracts";
-import { ARRAY_MUTABLE_METHODS, COMPONENT_COMPUTED, OBJECT_MUTABLE_METHODS } from "../constant";
+import { ARRAY_MUTABLE_METHODS, OBJECT_MUTABLE_METHODS } from "../constant";
 import { DATA_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { handleAttribute, handleDirective, forEachEvent } from "../helpers";
 import { getDataype } from "./get_data_type";
@@ -14,7 +14,7 @@ export function initComponent(this: Component, component: Component, option) {
         component.on(eventName, listener);
     });
 
-    const computed = component[COMPONENT_COMPUTED];
+    const computed = component['__computed__'];
     for (const key in computed) {
         const data = computed[key];
         let computedValue = data.fn.call(component);

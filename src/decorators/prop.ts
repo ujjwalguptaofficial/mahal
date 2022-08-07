@@ -1,13 +1,12 @@
 import { IPropOption } from "../interface";
 import { DATA_TYPE } from "../enums";
-import { COMPONENT_PROPS } from "../constant";
 import { getDataype, replaceNullProp } from "../utils";
 
 
 // tslint:disable-next-line
 export const Prop = (options?: IPropOption | any) => {
     return (target, key: string) => {
-        replaceNullProp(target, COMPONENT_PROPS, {});
+        replaceNullProp(target, '__props__', {});
         if (getDataype(options) === DATA_TYPE.Function) {
             const name = options.name;
             if (DATA_TYPE[name]) {
@@ -19,6 +18,6 @@ export const Prop = (options?: IPropOption | any) => {
                 type: options
             };
         }
-        target[COMPONENT_PROPS][key] = options || {};
+        target.__props__[key] = options || {};
     };
 };

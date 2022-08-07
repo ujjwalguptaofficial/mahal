@@ -3,7 +3,7 @@ import { Observer, Logger, indexOf, emitError } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
 import { EventBus, emitStateChange, resolveValue, replaceNullProp, getDataype } from "../utils";
 import { Mahal } from "../mahal";
-import { COMPONENT_APP, COMPONENT_COMPUTED, COMPONENT_PROPS, COMPONENT_REACTIVES, emptyObj } from "../constant";
+import { emptyObj } from "../constant";
 
 // do not rename this, this has been done to merge Component
 // // tslint:disable-next-line
@@ -52,9 +52,9 @@ export abstract class Component {
         replaceNullProp(ctx, 'children', emptyObj);
         replaceNullProp(ctx, '__formatters__', emptyObj);
         replaceNullProp(ctx, '__directive__', emptyObj);
-        replaceNullProp(ctx, COMPONENT_PROPS, emptyObj);
-        replaceNullProp(ctx, COMPONENT_COMPUTED, emptyObj);
-        replaceNullProp(ctx, COMPONENT_REACTIVES, emptyObj);
+        replaceNullProp(ctx, '__props__', emptyObj);
+        replaceNullProp(ctx, '__computed__', emptyObj);
+        replaceNullProp(ctx, '__reactives__', emptyObj);
     }
 
     render?(context: IRenderContext): HTMLElement;
@@ -80,7 +80,7 @@ export abstract class Component {
         const splittedKey = key.split(".");
         const ctx = this;
         const emitChange = (propToEmit, value1, value2?) => {
-            if (ctx[COMPONENT_REACTIVES][key]) return;
+            if (ctx['__reactives__'][key]) return;
             if (process.env.NODE_ENV !== "production") {
                 const componentProps = ctx.__props__;
                 if (Component.shouldCheckProp && componentProps[key]) {
@@ -275,7 +275,7 @@ export abstract class Component {
      * @memberof Component
      */
     format(formatterName: string, value) {
-        const globalFormatter = this[COMPONENT_APP]['_formatter'];
+        const globalFormatter = this.__app__['_formatter'];
         try {
             const savedGlobalFormatter = globalFormatter[formatterName];
             if (savedGlobalFormatter) {
@@ -316,7 +316,7 @@ export abstract class Component {
      * @memberof Component
      */
     get global() {
-        return this[COMPONENT_APP].global;
+        return this.__app__.global;
     }
 
     /**
