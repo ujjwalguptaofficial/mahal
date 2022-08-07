@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, resolveValue } from "../utils";
+import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, resolveValue, createDocumentFragment } from "../utils";
 import { ERROR_TYPE } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
@@ -80,9 +80,13 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
     };
     const onElDestroyed = () => {
         cmNode = null;
-        for (const ev in callBacks) {
-            this.unwatch(ev, callBacks[ev]);
-        }
+        // for (const ev in callBacks) {
+        //     this.unwatch(ev, callBacks[ev]);
+        // }
+
+        forEach(callBacks, (value, ev) => {
+            this.unwatch(ev, value);
+        });
     };
     onElDestroy(
         cmNode, onElDestroyed
@@ -94,7 +98,7 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         const methods = {
             push() {
                 const pushedValue = params;
-                const fragDoc = document.createDocumentFragment();
+                const fragDoc = createDocumentFragment();
                 const fromIndex = getObjectLength(resolvedValue) - pushedValue.length;
                 forEach(pushedValue, (value, prop) => {
                     const el = createEl(value, prop + fromIndex);
@@ -192,16 +196,13 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 if (!isValueArray) return;
 
                 // add new elements from splice third arguments
-                const frag = document.createDocumentFragment();
+                const frag = createDocumentFragment();
                 const paramLength = params.length;
                 const keyInserted = new Map();
                 for (let i = 2, j = params[0]; i < paramLength; i++, j++) {
-                    const newElement = method(params[i], j);
+                    const newElement = createEl(params[i], j);
                     frag.appendChild(newElement);
                     const newElKey = getElementKey(newElement);
-                    elKeyStore.set(
-                        getElementKey(newElement), newElement
-                    );
                     keyInserted.set(newElKey, true);
                 }
 
