@@ -3,7 +3,7 @@ import { IAttrItem } from "../interface";
 import { getDataype, forOwn, setAttribute, nextTick } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
-import { getAttributeValue } from "./get_expression_value";
+import { getAttributeValue } from "./get_attribute_value";
 import { Logger } from "./logger";
 import { onElDestroy } from "./destroy_helper";
 

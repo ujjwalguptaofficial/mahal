@@ -5,6 +5,6 @@ export interface IRenderContext {
     createTextNode: typeof createTextNode;
     format: (value: any) => any;
     runExp: typeof handleExpression;
-    children: Array<Promise<HTMLElement>>;
+    children: Array<HTMLElement>;
 }
 

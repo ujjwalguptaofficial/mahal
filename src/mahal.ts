@@ -1,6 +1,6 @@
 import { Component } from "./abstracts";
-import { isString, initComponent, isObject, executeRender, getDataype, createComponent, EventBus, promiseResolve } from "./utils";
-import { HTML_TAG, LIFECYCLE_EVENT } from "./enums";
+import { initComponent, isObject, executeRender, getDataype, createComponent, EventBus, promiseResolve } from "./utils";
+import { DATA_TYPE, HTML_TAG, LIFECYCLE_EVENT } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective, htmlDirective, eventDirective } from "./ready_made";
 import { Logger } from "./helpers";
 
@@ -24,7 +24,7 @@ export class Mahal {
 
     constructor(component: typeof Component, element) {
         this._comp_ = component;
-        this.element = isString(element) ? document.querySelector(element) : element;
+        this.element = getDataype(element) === DATA_TYPE.String ? document.querySelector(element) : element;
         if (this.element == null) {
             const defaultId = 'mahal-app';
             let el: HTMLElement = document.querySelector(defaultId);

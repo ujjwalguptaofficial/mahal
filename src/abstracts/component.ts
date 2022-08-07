@@ -1,7 +1,7 @@
 import { ERROR_TYPE } from "../enums";
 import { Observer, Logger, indexOf, emitError } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
-import { EventBus, emitStateChange, resolveValue } from "../utils";
+import { EventBus, emitStateChange, resolveValue, replaceNullProp } from "../utils";
 import { Mahal } from "../mahal";
 import { COMPONENT_APP, COMPONENT_COMPUTED, COMPONENT_PROPS, emptyObj } from "../constant";
 
@@ -49,12 +49,12 @@ export abstract class Component {
 
     constructor() {
         const ctx = this;
-        ctx.children = ctx.children || emptyObj;
-        ctx.__formatters__ = ctx.__formatters__ || emptyObj;
-        ctx.__directive__ = ctx.__directive__ || emptyObj;
-        ctx[COMPONENT_PROPS] = ctx[COMPONENT_PROPS] || emptyObj;
-        ctx[COMPONENT_COMPUTED] = ctx[COMPONENT_COMPUTED] || emptyObj;
-        ctx.__reactives__ = ctx.__reactives__ || emptyObj;
+        replaceNullProp(ctx, 'children', emptyObj);
+        replaceNullProp(ctx, '__formatters__', emptyObj);
+        replaceNullProp(ctx, '__directive__', emptyObj);
+        replaceNullProp(ctx, COMPONENT_PROPS, emptyObj);
+        replaceNullProp(ctx, COMPONENT_COMPUTED, emptyObj);
+        replaceNullProp(ctx, '__reactives__', emptyObj);
     }
 
     render?(context: IRenderContext): HTMLElement;

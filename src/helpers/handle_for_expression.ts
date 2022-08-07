@@ -1,7 +1,7 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isPrimitive, isNull, isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, resolveValue, createDocumentFragment } from "../utils";
-import { ERROR_TYPE } from "../enums";
+import { isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, resolveValue, createDocumentFragment } from "../utils";
+import { DATA_TYPE, ERROR_TYPE } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
 import { Logger } from "./logger";
@@ -19,7 +19,15 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
     let els: HTMLElement[] = [cmNode as any];
     let resolvedValue = ctx.getState(key);
     if (process.env.NODE_ENV !== 'production') {
-        if (isPrimitive(resolvedValue) || isNull(resolvedValue)) {
+        const isPrimitive = (value) => {
+            switch (typeof value) {
+                case 'undefined':
+                case DATA_TYPE.Object:
+                    return false;
+            }
+            return true;
+        };
+        if (isPrimitive(resolvedValue) || resolvedValue == null) {
             new Logger(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
         }
     }
