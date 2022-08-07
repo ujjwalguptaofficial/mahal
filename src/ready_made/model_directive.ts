@@ -12,16 +12,19 @@ export function createModelDirective(eventName, propToUse) {
                 v: binding[propToUse][0]
             } as IAttrItem
         }, isComponent);
+        const setComponentValue = (value) => {
+            binding.value = [value];
+        }
         if (isComponent) {
             (el as any).on(eventName, (val) => {
-                binding.value = [val];
+                setComponentValue(val);
             });
         }
         else {
             el.oninput = (event) => {
-                binding.value = [
+                setComponentValue(
                     (event.target as any)[propToUse]
-                ];
+                );
             };
         }
     };

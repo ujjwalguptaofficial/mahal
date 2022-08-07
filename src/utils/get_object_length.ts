@@ -1,3 +1,5 @@
+import { getObjectKeys } from "./get_object_keys";
+
 export const getObjectLength = (value) => {
-    return value.length || Object.keys(value).length;
+    return value.length || getObjectKeys(value).length;
 };

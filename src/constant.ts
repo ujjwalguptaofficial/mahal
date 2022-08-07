@@ -6,3 +6,6 @@ export const OBJECT_MUTABLE_METHODS = ARRAY_MUTABLE_METHODS.concat(['add', 'upda
 export const EMIT_DESTROY = "__emit_destroy__";
 export const CHILD_DESTROY = "__child_destroy__";
 export const emptyObj = Object.freeze({});
+export const COMPONENT_COMPUTED = '__computed__';
+export const COMPONENT_PROPS = '__props__';
+export const COMPONENT_APP = '__app__';

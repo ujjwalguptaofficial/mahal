@@ -14,9 +14,10 @@ import { TYPE_RC_STORAGE } from "../types";
 const REACTIVE_CHILD = '_rc_';
 
 export function handleForExp(this: Component, key: string, method: (...args) => HTMLElement) {
+    const ctx = this;
     let cmNode = createCommentNode();
     let els: HTMLElement[] = [cmNode as any];
-    let resolvedValue = this.getState(key);
+    let resolvedValue = ctx.getState(key);
     if (process.env.NODE_ENV !== 'production') {
         if (isPrimitive(resolvedValue) || isNull(resolvedValue)) {
             new Logger(ERROR_TYPE.ForOnPrimitiveOrNull, key).throwPlain();
@@ -81,11 +82,11 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
     const onElDestroyed = () => {
         cmNode = null;
         // for (const ev in callBacks) {
-        //     this.unwatch(ev, callBacks[ev]);
+        //     ctx.unwatch(ev, callBacks[ev]);
         // }
 
         forEach(callBacks, (value, ev) => {
-            this.unwatch(ev, value);
+            ctx.unwatch(ev, value);
         });
     };
     onElDestroy(
@@ -269,16 +270,16 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
         nextTick(_ => {
             try {
                 methods[methodName]();
-                emitUpdate(this);
+                emitUpdate(ctx);
             } catch (err) {
-                emitError.call(this, err);
+                emitError.call(ctx, err);
             }
         });
     };
-    this.watch(key, callBacks[key]);
+    ctx.watch(key, callBacks[key]);
     OBJECT_MUTABLE_METHODS.forEach(methodName => {
         const methodKey = `${key}.${methodName}`;
-        this.watch(methodKey, callBacks[methodKey]);
+        ctx.watch(methodKey, callBacks[methodKey]);
     });
     nextTick(_ => {
         els = null;

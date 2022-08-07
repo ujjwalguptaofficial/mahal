@@ -3,6 +3,7 @@ import { Observer, Logger, indexOf, emitError } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
 import { EventBus, emitStateChange, resolveValue } from "../utils";
 import { Mahal } from "../mahal";
+import { COMPONENT_APP, COMPONENT_COMPUTED, COMPONENT_PROPS, emptyObj } from "../constant";
 
 // do not rename this, this has been done to merge Component
 // // tslint:disable-next-line
@@ -47,12 +48,13 @@ export abstract class Component {
     isMounted = false;
 
     constructor() {
-        this.children = this.children || {};
-        this.__formatters__ = this.__formatters__ || {};
-        this.__directive__ = this.__directive__ || {};
-        this.__props__ = this.__props__ || {};
-        this.__computed__ = this.__computed__ || {};
-        this.__reactives__ = this.__reactives__ || {};
+        const ctx = this;
+        ctx.children = ctx.children || emptyObj;
+        ctx.__formatters__ = ctx.__formatters__ || emptyObj;
+        ctx.__directive__ = ctx.__directive__ || emptyObj;
+        ctx[COMPONENT_PROPS] = ctx[COMPONENT_PROPS] || emptyObj;
+        ctx[COMPONENT_COMPUTED] = ctx[COMPONENT_COMPUTED] || emptyObj;
+        ctx.__reactives__ = ctx.__reactives__ || emptyObj;
     }
 
     render?(context: IRenderContext): HTMLElement;
@@ -236,9 +238,10 @@ export abstract class Component {
      * @memberof Component
      */
     find(selector: string) {
+        const element = this.element;
         // nodetype 8 is comment
-        if (this.element.nodeType === 8) return;
-        return this.element.querySelector<HTMLElement>(selector);
+        if (element.nodeType === 8) return;
+        return element.querySelector<HTMLElement>(selector);
     }
 
     /**
@@ -271,7 +274,7 @@ export abstract class Component {
      * @memberof Component
      */
     format(formatterName: string, value) {
-        const globalFormatter = this.__app__['_formatter'];
+        const globalFormatter = this[COMPONENT_APP]['_formatter'];
         try {
             const savedGlobalFormatter = globalFormatter[formatterName];
             if (savedGlobalFormatter) {
@@ -312,7 +315,7 @@ export abstract class Component {
      * @memberof Component
      */
     get global() {
-        return this.__app__.global;
+        return this[COMPONENT_APP].global;
     }
 
     /**

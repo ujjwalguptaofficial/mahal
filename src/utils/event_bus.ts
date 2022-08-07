@@ -67,12 +67,8 @@ export class EventBus {
     }
 
     eachEvent(events: Map<Function, any>, cb) {
-        // const size = events.size;
-        // let index = 0;
         events.forEach((_, listener) => {
-            // if (index++ < size) {
             cb(listener);
-            // }
         });
     }
 

@@ -1,10 +1,8 @@
 export * from "./is_primitive";
 export * from "./is_null";
 export * from "./is_array";
-export * from "./is_array_index";
 export * from "./is_object";
 export * from "./is_string";
-export * from "./get_from_window";
 export * from "./next_tick";
 export * from "./get_object_length";
 export * from "./merge";
@@ -23,3 +21,4 @@ export * from "./lazy_component";
 export * from "./emit_state_change";
 export * from "./for_each";
 export * from "./resolve_path";
+export * from "./get_object_keys";

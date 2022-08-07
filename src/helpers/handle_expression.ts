@@ -7,8 +7,9 @@ import { EL_REPLACED } from "../constant";
 import { onElDestroy, subscriveToDestroyFromChild } from "../helpers";
 
 export function handleExpression(this: Component, method: () => HTMLElement, keys: string[], type: string) {
+    const ctx = this;
     if (type === "for") {
-        return handleForExp.call(this, keys[0], method);
+        return handleForExp.call(ctx, keys[0], method);
     }
     let el = method();
     if (keys.length === 0) return el;
@@ -22,13 +23,13 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
                 const isPatched = replaceEl(el, newEl);
                 if (isPatched) {
                     changesQueue.shift();
-                    emitUpdate(this);
+                    emitUpdate(ctx);
                 }
                 else {
                     subscriveToDestroyFromChild(newEl);
                 }
             } catch (err) {
-                emitError.call(this, err);
+                emitError.call(ctx, err);
             }
         };
         const watchCallBack = () => {
@@ -39,11 +40,11 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
         };
 
         keys.forEach(item => {
-            this.watch(item, watchCallBack);
+            ctx.watch(item, watchCallBack);
         });
         const onElDestroyed = () => {
             keys.forEach((item) => {
-                this.unwatch(item, watchCallBack);
+                ctx.unwatch(item, watchCallBack);
             });
             const replacedEl = el[EL_REPLACED];
             if (replacedEl) {
@@ -55,7 +56,7 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
         if (changesQueue.length > 0) {
             onChange();
         }
-        emitUpdate(this);
+        emitUpdate(ctx);
     };
     handleChange();
     return el;

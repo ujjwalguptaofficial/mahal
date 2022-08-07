@@ -2,11 +2,12 @@ import { Component } from "../abstracts";
 import { forEach, nextTick } from "../utils";
 import { IDirectiveBinding, IDirective } from "../interface";
 import { onElDestroy } from "../helpers";
+import { COMPONENT_APP } from "../constant";
 
 export function handleDirective(this: Component, element: HTMLElement, dir, isComponent) {
     if (!dir) return;
     forEach(dir, (compiledDir: IDirectiveBinding, name) => {
-        const storedDirective = this['__directive__'][name] || this['__app__']['_directives'][name];
+        const storedDirective = this['__directive__'][name] || this[COMPONENT_APP]['_directives'][name];
         if (!storedDirective) return;
 
         compiledDir.isComponent = isComponent;
