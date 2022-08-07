@@ -1,9 +1,9 @@
-import { ERROR_TYPE } from "../enums";
+import { DATA_TYPE, ERROR_TYPE } from "../enums";
 import { Observer, Logger, indexOf, emitError } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
-import { EventBus, emitStateChange, resolveValue, replaceNullProp } from "../utils";
+import { EventBus, emitStateChange, resolveValue, replaceNullProp, getDataype } from "../utils";
 import { Mahal } from "../mahal";
-import { COMPONENT_APP, COMPONENT_COMPUTED, COMPONENT_PROPS, emptyObj } from "../constant";
+import { COMPONENT_APP, COMPONENT_COMPUTED, COMPONENT_PROPS, COMPONENT_REACTIVES, emptyObj } from "../constant";
 
 // do not rename this, this has been done to merge Component
 // // tslint:disable-next-line
@@ -54,7 +54,7 @@ export abstract class Component {
         replaceNullProp(ctx, '__directive__', emptyObj);
         replaceNullProp(ctx, COMPONENT_PROPS, emptyObj);
         replaceNullProp(ctx, COMPONENT_COMPUTED, emptyObj);
-        replaceNullProp(ctx, '__reactives__', emptyObj);
+        replaceNullProp(ctx, COMPONENT_REACTIVES, emptyObj);
     }
 
     render?(context: IRenderContext): HTMLElement;
@@ -78,28 +78,29 @@ export abstract class Component {
      */
     setState(key: string, ...args) {
         const splittedKey = key.split(".");
+        const ctx = this;
         const emitChange = (propToEmit, value1, value2?) => {
-            if (this.__reactives__[key]) return;
+            if (ctx[COMPONENT_REACTIVES][key]) return;
             if (process.env.NODE_ENV !== "production") {
-                const componentProps = this.__props__;
+                const componentProps = ctx.__props__;
                 if (Component.shouldCheckProp && componentProps[key]) {
                     new Logger(ERROR_TYPE.MutatingProp, {
-                        html: this.outerHTML,
+                        html: ctx.outerHTML,
                         key: key
                     }).logPlainError();
                 }
             }
-            emitStateChange.call(this, propToEmit, value1, value2);
+            emitStateChange.call(ctx, propToEmit, value1, value2);
         };
         const firstValue = args[0];
         let oldValue;
         if (splittedKey.length > 1) {
-            const storedValue = this.getState(key);
+            const storedValue = ctx.getState(key);
             const prop = splittedKey.pop();
             const targetKey = splittedKey.join(".");
             const prefix = targetKey + ".";
-            const target = this.getState(targetKey);
-            if (typeof storedValue === "function") {
+            const target = ctx.getState(targetKey);
+            if (getDataype(storedValue) === DATA_TYPE.Function) {
                 const result = target[prop](...args);
                 emitChange(
                     prefix + prop,
@@ -121,8 +122,8 @@ export abstract class Component {
             }
             return;
         }
-        oldValue = this[key];
-        this[key] = firstValue;
+        oldValue = ctx[key];
+        ctx[key] = firstValue;
         emitChange(key, firstValue, oldValue);
     }
 

@@ -1,5 +1,5 @@
 import { Component } from "../abstracts";
-import { ARRAY_MUTABLE_METHODS } from "../constant";
+import { ARRAY_MUTABLE_METHODS, COMPONENT_REACTIVES } from "../constant";
 import { isArray, isObject, merge, hashifyArray, nextTick, getObjectKeys } from "../utils";
 import { indexOf } from "./index_of";
 
@@ -18,7 +18,7 @@ export class Observer {
         const isInputArray = isArray(input);
         keys = keys || (isInputArray ? ARRAY_MUTABLE_METHODS : getObjectKeys(input));
         keys.forEach(key => {
-            this.comp['__reactives__'][prefix + key] = true;
+            this.comp[COMPONENT_REACTIVES][prefix + key] = true;
         });
         const hashkeys = hashifyArray(keys);
         const registerChild = (key, newValue, oldValue) => {

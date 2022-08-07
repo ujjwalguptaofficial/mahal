@@ -6,6 +6,7 @@ import { emitUpdate } from "./emit_update";
 import { getAttributeValue } from "./get_attribute_value";
 import { Logger } from "./logger";
 import { onElDestroy } from "./destroy_helper";
+import { COMPONENT_PROPS } from "../constant";
 
 
 export function handleAttribute(this: Component, component, attr, isComponent) {
@@ -23,7 +24,7 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
         if (!attr) return htmlAttributes;
         for (const key in attr) {
             const value: IAttrItem = attr[key];
-            const propDescription = component.__props__[key];
+            const propDescription = component[COMPONENT_PROPS][key];
             if (propDescription) {
                 const attrValue = getAttributeValue(value, value.v);
                 if (propDescription.type) {

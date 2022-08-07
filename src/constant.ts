@@ -9,3 +9,4 @@ export const emptyObj = Object.freeze({});
 export const COMPONENT_COMPUTED = '__computed__';
 export const COMPONENT_PROPS = '__props__';
 export const COMPONENT_APP = '__app__';
+export const COMPONENT_REACTIVES = '__reactives__';
