@@ -1,4 +1,6 @@
+import { DATA_TYPE } from "../enums";
 import { ILazyComponent } from "../interface";
+import { getDataype } from "./get_data_type";
 
 export interface ILazyComponentPayload {
     component: () => Promise<any>;
@@ -12,10 +14,10 @@ export interface ILazyComponentPayload {
     timeout: number;
 }
 export const lazyComponent = (component: Function | ILazyComponentPayload): ILazyComponent => {
-    if (typeof component === 'function') {
+    if (getDataype(component) === DATA_TYPE.Function) {
         return {
             isLazy: true,
-            component: component
+            component: component as any
         };
     }
 };

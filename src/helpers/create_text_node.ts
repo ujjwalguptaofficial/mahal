@@ -1,5 +1,3 @@
-import { Component } from "../abstracts";
-
-export function createTextNode(val) {
+export const createTextNode = (val) => {
     return document.createTextNode(val);
-}
+};

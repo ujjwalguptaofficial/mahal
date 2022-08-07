@@ -1,5 +1,5 @@
 import { Component } from "../abstracts";
-import { ARRAY_MUTABLE_METHODS, OBJECT_MUTABLE_METHODS } from "../constant";
+import { OBJECT_MUTABLE_METHODS } from "../constant";
 import { DATA_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { handleAttribute, handleDirective, forEachEvent } from "../helpers";
 import { getDataype } from "./get_data_type";
