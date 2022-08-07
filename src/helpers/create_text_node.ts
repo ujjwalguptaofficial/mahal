@@ -1,5 +1,5 @@
 import { Component } from "../abstracts";
 
-export function createTextNode(this: Component, val) {
+export function createTextNode(val) {
     return document.createTextNode(val);
 }

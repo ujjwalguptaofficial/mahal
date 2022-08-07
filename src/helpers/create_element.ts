@@ -33,17 +33,18 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
         element.appendChild(item);
     });
 
+    const ctx = this;
 
-    handleAttribute.call(this, element, option.attr, false);
+    handleAttribute.call(ctx, element, option.attr, false);
 
     // register events
-    forEachEvent.call(this, option.on, (eventName, listener) => {
+    forEachEvent.call(ctx, option.on, (eventName, listener) => {
         addEventListener(
             element, eventName, listener,
         );
     });
 
-    handleDirective.call(this, element, option.dir, false);
+    handleDirective.call(ctx, element, option.dir, false);
     return element;
 }
 
@@ -54,9 +55,10 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
         return createCommentNode();
     }
 
+    const ctx = this;
 
     if (HTML_TAG.has(tag)) {
-        return createNativeComponent.call(this, tag, childs, option);
+        return createNativeComponent.call(ctx, tag, childs, option);
     }
 
     switch (tag) {
@@ -71,15 +73,15 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
                     v: DEFAULT_SLOT_NAME
                 };
             }
-            return createNativeComponent.call(this, tag, childs, option);
+            return createNativeComponent.call(ctx, tag, childs, option);
     }
 
-    const savedComponent = this.children[tag] || this[COMPONENT_APP]['_components'][tag];
+    const savedComponent = ctx.children[tag] || ctx[COMPONENT_APP]['_components'][tag];
     if (savedComponent) {
 
         const renderComponent = (comp) => {
-            const component: Component = createComponent(comp, this[COMPONENT_APP]);
-            const htmlAttributes = initComponent.call(this, component as any, option);
+            const component: Component = createComponent(comp, ctx[COMPONENT_APP]);
+            const htmlAttributes = initComponent.call(ctx, component as any, option);
             executeRender(component, childs);
             let element = component.element;
             let targetSlot = component.find(`slot[name='default']`) || (element.tagName.match(/slot/i) ? element : null);
@@ -132,14 +134,14 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
                     newEl,
                 );
             }).catch((err) => {
-                emitError.call(this, err, true);
+                emitError.call(ctx, err, true);
             });
             return el;
         }
         return renderComponent(compPromise);
     }
     if (tag === "in-place") {
-        return handleInPlace.call(this, childs, option);
+        return handleInPlace.call(ctx, childs, option);
     }
     new Logger(ERROR_TYPE.InvalidComponent, {
         tag: tag
