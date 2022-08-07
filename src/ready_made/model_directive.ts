@@ -14,7 +14,7 @@ export function createModelDirective(eventName, propToUse) {
         }, isComponent);
         const setComponentValue = (value) => {
             binding.value = [value];
-        }
+        };
         if (isComponent) {
             (el as any).on(eventName, (val) => {
                 setComponentValue(val);

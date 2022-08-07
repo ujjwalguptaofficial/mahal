@@ -29,4 +29,4 @@ export const addEventListener = (el: Element, event: string, eventListener: Func
 
 export const createDocumentFragment = () => {
     return document.createDocumentFragment();
-}
+};

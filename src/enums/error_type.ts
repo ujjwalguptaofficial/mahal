@@ -1,4 +1,4 @@
-import { IErrorType } from "../interface"
+import { IErrorType } from "../interface";
 
 export const ERROR_TYPE = {
     InvalidComponent: 'invalid_component',
@@ -13,5 +13,5 @@ if (process.env.NODE_ENV !== 'production') {
         InvalidEventHandler: "invalid_event_handler",
         SetSameValue: "set_same_value",
         MutatingProp: "mutating_prop",
-    })
+    });
 }
