@@ -28,7 +28,7 @@
     "pack:test": "npm pack && npm run test",
     "pack:test:prod": "npm pack && npm run test:prod",
     "build:all": "npm run webpack:dev && npm run webpack:prod && npm run webpack:test",
-    "install:compiler@latest": "cd tests && npm i mahal-html-compiler@latest",
+    "install:compiler@latest": "cd tests && npm i @mahaljs/html-compiler@latest",
     "install:util@latest": "cd tests && npm i @mahaljs/util@latest",
     "install:ci@latest": "npm run install:compiler@latest && npm run install:util@latest",
     "build:ci": "npm run lint && npm run build:all && npm pack && npm run install:ci@latest && npm run pack:test && npm run pack:test:prod",
