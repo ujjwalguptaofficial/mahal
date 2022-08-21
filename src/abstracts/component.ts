@@ -49,19 +49,20 @@ export abstract class Component {
 
     constructor() {
         const ctx = this;
-        replaceNullProp(ctx, 'children', emptyObj);
-        replaceNullProp(ctx, '__formatters__', emptyObj);
-        replaceNullProp(ctx, '__directive__', emptyObj);
-        replaceNullProp(ctx, '__props__', emptyObj);
-        replaceNullProp(ctx, '__computed__', emptyObj);
-        replaceNullProp(ctx, '__reactives__', emptyObj);
-        replaceNullProp(ctx, '__watchBus__', new EventBus());
+        const getValue = () => emptyObj;
+        replaceNullProp(ctx, 'children', getValue);
+        replaceNullProp(ctx, '__formatters__', getValue);
+        replaceNullProp(ctx, '__directive__', getValue);
+        replaceNullProp(ctx, '__props__', getValue);
+        replaceNullProp(ctx, '__computed__', getValue);
+        replaceNullProp(ctx, '__reactives__', getValue);
     }
 
     render?(context: IRenderContext): HTMLElement;
 
     /**
      * called just after the constructor - can be used to listen events
+     * 
      *
      * @memberof Component
      */
@@ -336,7 +337,7 @@ export abstract class Component {
      * @memberof Component
      */
     // tslint:disable-next-line
-    private __watchBus__: EventBus;
+    private __watchBus__: EventBus = new EventBus();
 
     // tslint:disable-next-line
     private __app__: Mahal;
@@ -355,6 +356,12 @@ export abstract class Component {
 
     // tslint:disable-next-line
     private __reactives__: { [key: string]: boolean };
+
+    // tslint:disable-next-line
+    private __watchers__: Map<string, Function>;
+
+    // tslint:disable-next-line
+    private __events__: Map<string, Function>;
 
     // tslint:disable-next-line
     private __file__;

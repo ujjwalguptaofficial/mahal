@@ -19,7 +19,6 @@ import Fruits from "./fruits";
 import Fragment from "./fragment";
 import ArrayModel from "./array_model";
 import ObjectResetModel from "./object_reset_model";
-import WatchDecorator from "../../../unit_test/watch_decorator";
 
 // @Template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
@@ -29,7 +28,7 @@ import WatchDecorator from "../../../unit_test/watch_decorator";
 // `)
 @Template(`
 <div>
-    <WatchDecorator/>
+    <HelloWorld/>
 </div>
 `)
 @Children({
@@ -38,7 +37,7 @@ import WatchDecorator from "../../../unit_test/watch_decorator";
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed,
     Fragment, ArrayModel, ObjectResetModel,
     Btn: lazyComponent(() => import('./fruits_set_state')),
-    WatchDecorator
+     
     // Btn1: lazyComponent(() => Promise.reject('dd'))
 })
 export default class Main extends Component {
@@ -133,7 +132,7 @@ export default class Main extends Component {
         alert("hello world clicked")
     }
 
-    @Watch('flag')
+    // @Watch('flag')
     onFlagChange(newValue, oldValue) {
         console.log('onFlagChange', newValue, oldValue);
     }
