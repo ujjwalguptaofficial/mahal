@@ -2,7 +2,7 @@ import ArrayComponent from "../src/components/array";
 import { app } from "../src/index";
 import { Component, nextTick } from "mahal";
 import { expect } from "chai";
-import { setInputValue } from "mahal-test-utils";
+import { setInputValue } from "@mahaljs/test-utils";
 
 describe('Array', function () {
 

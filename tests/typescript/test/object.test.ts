@@ -2,7 +2,7 @@ import ObjectComponent from "../src/components/object";
 import { app } from "../src/index";
 import { nextTick, getObjectLength } from "mahal";
 import { expect } from "chai";
-import { setInputValue } from "mahal-test-utils";
+import { setInputValue } from "@mahaljs/test-utils";
 
 describe('Object', function () {
 

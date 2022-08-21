@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { createComponent } from "./create_component";
-import { mount, getMount } from "mahal-test-utils";
+import { mount, getMount } from "@mahaljs/test-utils";
 import { Component } from "mahal";
 import { app } from "../src/index";
 

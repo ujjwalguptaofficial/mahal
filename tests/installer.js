@@ -11,13 +11,13 @@ const packageInfo = JSON.parse(content);
 // const compilerContent = readFileSync(`${compilerFolderLocation}/package.json`);
 // const compilerPackageInfo = JSON.parse(compilerContent);
 
-// const testUtilsFolderLocation = path.join(__dirname, "../../mahal-test-utils");
+// const testUtilsFolderLocation = path.join(__dirname, "../../@mahaljs/test-utils");
 // console.log("testUtilsFolderLocation", testUtilsFolderLocation);
 // const testUtilsContent = readFileSync(`${testUtilsFolderLocation}/package.json`);
 // const testUtilsPackageInfo = JSON.parse(testUtilsContent);
 
  // execSync(`npm i ${compilerFolderLocation}/mahal-html-compiler-${compilerPackageInfo.version}.tgz`);
-    // execSync(`npm i ../../mahal-test-utils/mahal-test-utils-${testUtilsPackageInfo.version}.tgz`);
+    // execSync(`npm i ../../@mahaljs/test-utils/@mahaljs/test-utils-${testUtilsPackageInfo.version}.tgz`);
 
 if (packageInfo) {
     const version = packageInfo.version;

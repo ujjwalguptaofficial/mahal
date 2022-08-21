@@ -1,5 +1,5 @@
 import { Component } from "mahal";
-import { createRenderer } from "mahal-html-compiler";
+import { createRenderer } from "@mahaljs/html-compiler";
 
 export function createComponent(template: string, scoped?) {
     const result = createRenderer(template, scoped);

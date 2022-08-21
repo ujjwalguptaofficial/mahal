@@ -1,7 +1,7 @@
 import MahalComponent from "../src/components/array_model";
 import { app } from "../src/index";
 import { expect } from "chai";
-import { setInputValue } from "mahal-test-utils";
+import { setInputValue } from "@mahaljs/test-utils";
 
 
 describe('Array Model', function () {

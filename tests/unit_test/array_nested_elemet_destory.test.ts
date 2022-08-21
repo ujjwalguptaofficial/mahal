@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { Component, Reactive, Directive } from "mahal";
-import { initiate, mount } from "mahal-test-utils";
+import { initiate, mount } from "@mahaljs/test-utils";
 import { clone } from "../typescript/src/util";
 import { Template, Watch } from "@mahaljs/util";
 

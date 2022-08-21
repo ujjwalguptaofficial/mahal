@@ -16,7 +16,7 @@ if (packageInfo) {
     console.log('version', version);
     execSync(`npm i ../../mahal-${version}.tgz`);
     execSync(`npm i ${compilerFolderLocation}/mahal-html-compiler-${compilerPackageInfo.version}.tgz`);
-    execSync(`npm i ../../../mahal-test-utils/mahal-test-utils-0.1.0.tgz --no-save`);
+    execSync(`npm i ../../../@mahaljs/test-utils/@mahaljs/test-utils-0.1.0.tgz --no-save`);
 }
 else {
     throw "no package found";

@@ -1,8 +1,8 @@
 import { Mahal } from "mahal";
 import Main from "./components/main";
 import Btn from "./components/btn";
-import MahalTest from "mahal-test-utils";
-import { createRenderer } from "mahal-html-compiler";
+import MahalTest from "@mahaljs/test-utils";
+import { createRenderer } from "@mahaljs/html-compiler";
 if (process.env.BUILD_ENV != "test") {
     require("flexboot");
 }
