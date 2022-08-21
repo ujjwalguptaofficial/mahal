@@ -129,7 +129,7 @@ describe('HelloWorld', function () {
                 setTimeout(res, 20)
             }).then(_ => {
                 expect(component.element).equal(null);
-                expect(component.__eventBus__).equal(null);
+                expect(component.__evBus__).equal(null);
                 expect(component.__ob__).equal(null);
                 expect(component.__watchBus__._events).deep.equal({});
                 // expect(component.dependency_).equal(null);

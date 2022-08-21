@@ -62,7 +62,7 @@ export abstract class Component {
 
     /**
      * called just after the constructor - can be used to listen events
-     * 
+     * this is similar to constructor but `this` value is proxified
      *
      * @memberof Component
      */
@@ -120,7 +120,6 @@ export abstract class Component {
                         key: prop,
                     });
                 }
-                // emitChange(prefix + (prop as string), firstValue, oldValue);
             }
             return;
         }
@@ -175,7 +174,7 @@ export abstract class Component {
     on(event: "destroy" | "mount" | "create" | "update" | "error", cb: Function);
     on(event: string, cb: Function);
     on(event: any, cb: Function) {
-        return this.__eventBus__.on(event, cb);
+        return this.__evBus__.on(event, cb);
     }
 
     /**
@@ -186,7 +185,7 @@ export abstract class Component {
      * @memberof Component
      */
     off(event: string, eventListener: Function) {
-        this.__eventBus__.off(event, eventListener);
+        this.__evBus__.off(event, eventListener);
     }
 
     /**
@@ -201,7 +200,7 @@ export abstract class Component {
         let eventCallback: Function;
         return new Promise<T>((res) => {
             eventCallback = () => {
-                res(null);
+                (res as any)();
             };
             this.on(eventName, eventCallback);
         }).then(() => {
@@ -218,7 +217,7 @@ export abstract class Component {
      * @memberof Component
      */
     emit(event: string, ...args) {
-        return this.__eventBus__.emit(event, ...args);
+        return this.__evBus__.emit(event, ...args);
     }
 
     /**
@@ -230,7 +229,7 @@ export abstract class Component {
      * @memberof Component
      */
     emitLinear(event: string, ...args) {
-        return this.__eventBus__.emitLinear(event, ...args);
+        return this.__evBus__.emitLinear(event, ...args);
     }
 
     /**
@@ -328,7 +327,7 @@ export abstract class Component {
      * @memberof Component
      */
     // tslint:disable-next-line
-    private __eventBus__ = new EventBus();
+    private __evBus__ = new EventBus();
 
     /**
      * used for property watching

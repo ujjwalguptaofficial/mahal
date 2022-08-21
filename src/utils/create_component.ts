@@ -14,7 +14,7 @@ export const createComponent = (componentConstructor, app: Mahal) => {
         component = new Observer(emitStateChange.bind(component), component).
             create(component, keys) as Component;
     }
-    component['__eventBus__']['_ctx'] = component;
+    component['__evBus__']['_ctx'] = component;
     component['__watchBus__']['_ctx'] = component;
     if (watchers) {
         watchers.forEach((fn, propToWatch) => {
