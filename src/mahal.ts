@@ -117,7 +117,7 @@ export class Mahal {
             (Mahal as any).createRenderer = val;
         },
         tag(name: string) {
-            HTML_TAG.set(name, true);
+            HTML_TAG.set(name, 1);
         }
     }
 

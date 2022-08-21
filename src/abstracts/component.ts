@@ -55,6 +55,7 @@ export abstract class Component {
         replaceNullProp(ctx, '__props__', emptyObj);
         replaceNullProp(ctx, '__computed__', emptyObj);
         replaceNullProp(ctx, '__reactives__', emptyObj);
+        replaceNullProp(ctx, '__watchBus__', new EventBus());
     }
 
     render?(context: IRenderContext): HTMLElement;
@@ -80,7 +81,7 @@ export abstract class Component {
         const splittedKey = key.split(".");
         const ctx = this;
         const emitChange = (propToEmit, value1, value2?) => {
-            if (ctx['__reactives__'][key]) return;
+            if (ctx.__reactives__[key]) return;
             if (process.env.NODE_ENV !== "production") {
                 const componentProps = ctx.__props__;
                 if (Component.shouldCheckProp && componentProps[key]) {
@@ -335,7 +336,7 @@ export abstract class Component {
      * @memberof Component
      */
     // tslint:disable-next-line
-    private __watchBus__ = new EventBus();
+    private __watchBus__: EventBus;
 
     // tslint:disable-next-line
     private __app__: Mahal;

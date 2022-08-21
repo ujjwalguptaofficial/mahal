@@ -5,3 +5,4 @@ export * from "./formatter";
 export * from "./reactive";
 export * from "./directive";
 export * from "./computed";
+export * from "./watch";

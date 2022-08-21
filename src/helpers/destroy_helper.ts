@@ -3,7 +3,6 @@ import { nextTick } from "../utils";
 
 const DESTROYED_EVENTS = '__destroyEvents__';
 
-
 export const onElDestroy = (el: HTMLElement | Comment, cb: () => void) => {
     nextTick(_ => {
         let evs = el[DESTROYED_EVENTS];
@@ -12,7 +11,7 @@ export const onElDestroy = (el: HTMLElement | Comment, cb: () => void) => {
         }
         evs.push(cb);
         el.dispatchEvent(
-            new CustomEvent(CHILD_DESTROY, {
+            new window.CustomEvent(CHILD_DESTROY, {
                 bubbles: true
             })
         );

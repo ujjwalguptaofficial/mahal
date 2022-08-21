@@ -1,4 +1,4 @@
-import { Component, Template, Children, Reactive, Directive, nextTick, lazyComponent } from "mahal";
+import { Component, Template, Children, Watch, Reactive, Directive, nextTick, lazyComponent } from "mahal";
 import ModelComponent from "./component_model";
 
 import HelloWorld from "./hello_world";
@@ -18,7 +18,7 @@ import Fruits from "./fruits";
 import Fragment from "./fragment";
 import ArrayModel from "./array_model";
 import ObjectResetModel from "./object_reset_model";
-// import {Temp} from "../../test/inplace_if_toggle.test";
+import WatchDecorator from "../../../unit_test/watch_decorator";
 
 // @Template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
@@ -28,7 +28,7 @@ import ObjectResetModel from "./object_reset_model";
 // `)
 @Template(`
 <div>
-    <Student/>
+    <WatchDecorator/>
 </div>
 `)
 @Children({
@@ -37,6 +37,7 @@ import ObjectResetModel from "./object_reset_model";
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed,
     Fragment, ArrayModel, ObjectResetModel,
     Btn: lazyComponent(() => import('./fruits_set_state')),
+    WatchDecorator
     // Btn1: lazyComponent(() => Promise.reject('dd'))
 })
 export default class Main extends Component {
@@ -129,5 +130,10 @@ export default class Main extends Component {
 
     onHelloWordClick() {
         alert("hello world clicked")
+    }
+
+    @Watch('flag')
+    onFlagChange(newValue, oldValue) {
+        console.log('onFlagChange', newValue, oldValue);
     }
 }
