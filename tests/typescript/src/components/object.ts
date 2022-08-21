@@ -1,5 +1,5 @@
-import { Component, Template, Reactive, LIFECYCLE_EVENT, Computed } from "mahal";
-
+import { Component, Reactive, LIFECYCLE_EVENT, Computed } from "mahal";
+import { Template } from "@mahaljs/util";
 
 @Template(`
 <div>

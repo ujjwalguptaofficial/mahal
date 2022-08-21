@@ -1,4 +1,6 @@
-import { Component, Template, Computed, Reactive } from "mahal";
+import { Component, Computed, Reactive } from "mahal";
+import { Template } from "@mahaljs/util";
+
 @Template(`
     <div :ref(el)>
         {{fullName}}
@@ -19,7 +21,7 @@ export default class extends Component {
 
     constructor() {
         super();
-        this.on("mount",function(){
+        this.on("mount", function () {
             console.log("mounted", this);
         })
         window['comp'] = this;

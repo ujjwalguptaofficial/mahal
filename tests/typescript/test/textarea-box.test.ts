@@ -1,7 +1,8 @@
 import Component from "../src/components/textarea_box";
 import { app } from "../src/index";
-import { nextTick, Children, Template, Reactive } from "mahal";
+import { nextTick, Children, Reactive } from "mahal";
 import { expect } from "chai";
+import { Template } from "@mahaljs/util";
 
 @Children({
     TextArea: Component

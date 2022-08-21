@@ -1,6 +1,7 @@
 import { app } from "../src/index";
-import { nextTick, Template, Component, Prop, Children, Reactive } from "mahal";
+import { nextTick, Component, Prop, Children, Reactive } from "mahal";
 import { expect } from "chai";
+import { Template } from "@mahaljs/util";
 
 @Template(`
     <div :if(cond)>

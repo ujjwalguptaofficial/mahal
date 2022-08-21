@@ -1,5 +1,6 @@
-import { Component, Template, Reactive, Children } from "mahal";
+import { Component, Reactive, Children } from "mahal";
 import TextBox from "./text-box";
+import { Template } from "@mahaljs/util";
 
 @Template(`
 <div>

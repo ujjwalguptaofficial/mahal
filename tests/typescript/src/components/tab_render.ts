@@ -1,6 +1,7 @@
-import { Component, Template, Children, Reactive } from "mahal";
+import { Component, Children, Reactive } from "mahal";
 import Users from "./users";
 import Tabs from "./tabs";
+import { Template } from "@mahaljs/util";
 
 @Template(`<div>
 <div class="tab-name">{{activeTab}}</div>

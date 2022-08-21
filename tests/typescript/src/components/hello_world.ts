@@ -1,4 +1,5 @@
-import { Component, removeEl, Template, Prop, Formatter, Reactive } from "mahal";
+import { Component, removeEl, Prop, Formatter, Reactive } from "mahal";
+import { Template } from "@mahaljs/util";
 
 @Template(`
 <div class='hello-world'>

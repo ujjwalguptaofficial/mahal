@@ -1,6 +1,7 @@
 import { app } from "../src/index";
-import { nextTick, Template, Component, Prop, Children, Formatter, Reactive } from "mahal";
+import { nextTick, Component, Prop, Children, Formatter, Reactive } from "mahal";
 import { expect } from "chai";
+import { Template } from "@mahaljs/util";
 
 
 @Children({
@@ -11,7 +12,7 @@ import { expect } from "chai";
 </div>
 `)
 class Temp extends Component {
-    
+
     @Reactive
     content = "Button"
 

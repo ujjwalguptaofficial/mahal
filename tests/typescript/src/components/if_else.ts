@@ -1,4 +1,5 @@
-import { Component, Template, Prop, Formatter, Reactive } from "mahal";
+import { Component, Prop, Formatter, Reactive } from "mahal";
+import { Template } from "@mahaljs/util";
 
 @Template(`
 <div :stateAttr="state" :class({'state-0':state===0,'state-1':state===1,'state-gt-10':state>10,'nested-3':nested.nested1.nested2.nested3==0})>

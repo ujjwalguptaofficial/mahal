@@ -1,7 +1,8 @@
 import { app } from "../src/index";
-import { Reactive, Template, Component, Formatter } from "mahal";
+import { Reactive, Component, Formatter } from "mahal";
 import { expect } from "chai";
 import { mount, getMount } from "mahal-test-utils";
+import { Template } from "@mahaljs/util";
 
 
 

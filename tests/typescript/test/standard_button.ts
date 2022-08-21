@@ -1,4 +1,5 @@
-import { Component, Template } from "mahal";
+import { Component } from "mahal";
+import { Template } from "@mahaljs/util";
 
 @Template(`
     <button>

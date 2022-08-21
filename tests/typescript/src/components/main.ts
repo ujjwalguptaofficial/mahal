@@ -1,5 +1,6 @@
-import { Component, Template, Children, Watch, Reactive, Directive, nextTick, lazyComponent } from "mahal";
+import { Component, Children, Reactive, Directive, nextTick, lazyComponent } from "mahal";
 import ModelComponent from "./component_model";
+import { Template, Watch } from "@mahaljs/util";
 
 import HelloWorld from "./hello_world";
 import Student from "./array";

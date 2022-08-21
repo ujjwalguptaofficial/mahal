@@ -1,6 +1,7 @@
 import { expect } from "chai";
-import { Component, Template, Directive, Reactive, Computed } from "mahal";
+import { Component, Directive, Reactive, Computed } from "mahal";
 import { initiate, mount } from "mahal-test-utils";
+import { Template, Watch } from "@mahaljs/util";
 
 @Template(`
 <div class='dd'>

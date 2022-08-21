@@ -1,5 +1,7 @@
-import { Component, Template, Directive, Reactive } from "mahal";
+import { Component, Directive, Reactive } from "mahal";
 import { IDirective } from "mahal/dist/ts/interface";
+import { Template } from "@mahaljs/util";
+
 
 @Template(`
 <div>

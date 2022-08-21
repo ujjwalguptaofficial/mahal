@@ -1,4 +1,5 @@
-import { Component, Template, Prop, Reactive } from "mahal";
+import { Component, Prop, Reactive } from "mahal";
+import { Template } from "@mahaljs/util";
 
 @Template(`
 <div>

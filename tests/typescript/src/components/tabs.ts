@@ -1,4 +1,5 @@
-import { Component, Template, Prop } from "mahal";
+import { Component, Prop } from "mahal";
+import { Template } from "@mahaljs/util";
 
 
 @Template(`
@@ -22,7 +23,7 @@ export default class extends Component {
     @Prop(String)
     value;
 
-    onTabClick(value){
+    onTabClick(value) {
         this.emit('input', value);
     }
 }

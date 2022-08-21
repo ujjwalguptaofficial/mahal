@@ -1,4 +1,5 @@
-import { Component, Template, Prop, Formatter, Reactive } from "mahal";
+import { Component, Prop, Formatter, Reactive } from "mahal";
+import { Template } from "@mahaljs/util";
 
 // @Template(`<div>
 // <fragment #for(student in students)>

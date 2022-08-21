@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { nextTick, Template, Directive, Reactive, Computed } from "mahal";
-import { initiate, mount } from "mahal-test-utils";
+import { nextTick} from "mahal";
+
 
 
 describe("Next tick", () => {

@@ -1,6 +1,7 @@
 import { app } from "../src/index";
-import { lazyComponent, Computed, Template, Component, Prop, Children, Reactive } from "mahal";
+import { lazyComponent, Computed, Component, Prop, Children, Reactive } from "mahal";
 import { expect } from "chai";
+import { Template } from "@mahaljs/util";
 
 @Children({
     Btn: lazyComponent(() => import('../src/components/btn')),

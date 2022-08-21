@@ -1,5 +1,6 @@
 import { expect } from "chai";
-import { Component, Template, Watch, Computed } from "mahal";
+import { Component, Computed } from "mahal";
+import { Template, Watch } from "@mahaljs/util";
 import { initiate, mount } from "mahal-test-utils";
 import { createSandbox, spy } from "sinon";
 import { clone } from "../typescript/src/util";

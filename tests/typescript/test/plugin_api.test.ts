@@ -1,5 +1,6 @@
 import { app } from "../src/index";
-import { nextTick, Children, Template, Reactive, Component, Prop, Plugin, Mahal } from "mahal";
+import { nextTick, Children, Reactive, Component, Prop, Plugin, Mahal } from "mahal";
+import { Template } from "@mahaljs/util";
 import { expect } from "chai";
 class TextPlugin extends Plugin {
     setup() {
