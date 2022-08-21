@@ -4,7 +4,7 @@ import { ILazyComponent, IRenderContext, } from "../interface";
 import { EventBus, emitStateChange, resolveValue, replaceNullProp, getDataype } from "../utils";
 import { Mahal } from "../mahal";
 import { emptyObj } from "../constant";
-import { TYPE_EVENT_STORE } from "../types";
+import { TYPE_ALL_LIFE_CYCLE_EVENT, TYPE_EVENT_STORE } from "../types";
 
 // do not rename this, this has been done to merge Component
 // // tslint:disable-next-line
@@ -175,7 +175,7 @@ export abstract class Component {
      * @return {*} 
      * @memberof Component
      */
-    on(event: "destroy" | "mount" | "create" | "update" | "error", cb: Function);
+    on(event: TYPE_ALL_LIFE_CYCLE_EVENT, cb: Function);
     on(event: string, cb: Function);
     on(event: any, cb: Function) {
         return this.__evBus__.on(event, cb);
