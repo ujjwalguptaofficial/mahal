@@ -13,7 +13,7 @@ import { TYPE_ALL_LIFE_CYCLE_EVENT, TYPE_EVENT_STORE } from "../types";
 // }
 
 
-export abstract class Component {
+export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
 
     /**
      * children components
@@ -58,8 +58,8 @@ export abstract class Component {
         replaceNullProp(ctx, '__computed__', getValue);
         replaceNullProp(ctx, '__reactives__', getValue);
 
-        ctx.__evBus__ = new EventBus(ctx.__events__)
-        ctx.__watchBus__ = new EventBus(ctx.__watchers__)
+        ctx.__evBus__ = new EventBus(ctx.__events__);
+        ctx.__watchBus__ = new EventBus(ctx.__watchers__);
     }
 
     render?(context: IRenderContext): HTMLElement;
@@ -321,7 +321,7 @@ export abstract class Component {
      * @memberof Component
      */
     get global() {
-        return this.__app__.global;
+        return this.__app__.global as GLOBAL_TYPE;
     }
 
     /**

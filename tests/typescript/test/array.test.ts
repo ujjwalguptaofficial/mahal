@@ -2,10 +2,11 @@ import ArrayComponent from "../src/components/array";
 import { app } from "../src/index";
 import { Component, nextTick } from "mahal";
 import { expect } from "chai";
+import { setInputValue } from "mahal-test-utils";
 
 describe('Array', function () {
 
-    let component;
+    let component: ArrayComponent;
 
     before(async function () {
         component = await (app as any).initiate(ArrayComponent);
@@ -25,7 +26,7 @@ describe('Array', function () {
     }
 
     it("check global value", function () {
-        expect(component.global.authorName).to.equal("ujjwal");
+        expect((component).global.authorName).to.equal("ujjwal");
     })
 
     it("check list", function () {
@@ -89,7 +90,10 @@ describe('Array', function () {
         expect(component.students).length(1);
         component.find('#btnEditStudent').click();
         component.waitFor("update").then(() => {
-            component.find('.edit-student-input input').setValue("hello");
+            setInputValue(
+                component.find('.edit-student-input input'),
+                "hello"
+            );
             component.find('#btnUpdateStudent').click();
         }).then(() => {
             expect(component.students[0].name).equal('hello');

@@ -19,6 +19,7 @@ import Fruits from "./fruits";
 import Fragment from "./fragment";
 import ArrayModel from "./array_model";
 import ObjectResetModel from "./object_reset_model";
+import { IAppGlobal } from "../interfaces";
 
 // @Template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
@@ -40,7 +41,7 @@ import ObjectResetModel from "./object_reset_model";
      
     // Btn1: lazyComponent(() => Promise.reject('dd'))
 })
-export default class Main extends Component {
+export default class Main extends Component<IAppGlobal> {
 
 
 

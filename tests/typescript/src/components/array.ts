@@ -1,5 +1,6 @@
 import { Component, Reactive, Computed } from "mahal";
 import { Template } from "@mahaljs/util";
+import { IAppGlobal } from "../interfaces";
 
 
 @Template(`
@@ -29,7 +30,7 @@ import { Template } from "@mahaljs/util";
     </table>
 </div>
 `)
-export default class extends Component {
+export default class extends Component<IAppGlobal> {
 
     @Reactive
     students = []
