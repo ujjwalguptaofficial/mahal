@@ -1,9 +1,8 @@
 export * from "./utils";
 export * from "./abstracts";
 export * from "./decorators"
-export * from "./enums";
 export * from "./mahal";
-export * from "./types";
+export { TYPE_ALL_LIFE_CYCLE_EVENT } from "./types";
 
 
 

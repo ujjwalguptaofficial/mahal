@@ -126,7 +126,7 @@ export default class extends Component {
     constructor() {
         super();
         window['comp'] = this;
-        this.on(LIFECYCLE_EVENT.Update, () => {
+        this.on("update", () => {
             console.log("updated");
         })
     }
