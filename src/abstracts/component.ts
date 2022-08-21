@@ -4,6 +4,7 @@ import { ILazyComponent, IRenderContext, } from "../interface";
 import { EventBus, emitStateChange, resolveValue, replaceNullProp, getDataype } from "../utils";
 import { Mahal } from "../mahal";
 import { emptyObj } from "../constant";
+import { TYPE_EVENT_STORE } from "../types";
 
 // do not rename this, this has been done to merge Component
 // // tslint:disable-next-line
@@ -56,6 +57,9 @@ export abstract class Component {
         replaceNullProp(ctx, '__props__', getValue);
         replaceNullProp(ctx, '__computed__', getValue);
         replaceNullProp(ctx, '__reactives__', getValue);
+
+        ctx.__evBus__ = new EventBus(ctx.__events__)
+        ctx.__watchBus__ = new EventBus(ctx.__watchers__)
     }
 
     render?(context: IRenderContext): HTMLElement;
@@ -327,7 +331,7 @@ export abstract class Component {
      * @memberof Component
      */
     // tslint:disable-next-line
-    private __evBus__ = new EventBus();
+    private __evBus__: EventBus;
 
     /**
      * used for property watching
@@ -336,7 +340,7 @@ export abstract class Component {
      * @memberof Component
      */
     // tslint:disable-next-line
-    private __watchBus__: EventBus = new EventBus();
+    private __watchBus__: EventBus;
 
     // tslint:disable-next-line
     private __app__: Mahal;
@@ -357,10 +361,10 @@ export abstract class Component {
     private __reactives__: { [key: string]: boolean };
 
     // tslint:disable-next-line
-    private __watchers__: Map<string, Function>;
+    private __watchers__: TYPE_EVENT_STORE;
 
     // tslint:disable-next-line
-    private __events__: Map<string, Function>;
+    private __events__: TYPE_EVENT_STORE;
 
     // tslint:disable-next-line
     private __file__;

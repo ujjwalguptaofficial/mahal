@@ -1,17 +1,16 @@
 import { emptyObj } from "../constant";
+import { TYPE_EVENT_STORE } from "../types";
 import { promiseResolve } from "./promise_resolve";
 
 export class EventBus {
 
-    constructor(ctx?) {
-        this._ctx = ctx;
+    constructor(events?) {
+        this._events_ = events || {};
     }
 
-    private _ctx;
+    private _ctx_;
 
-    private _events: {
-        [key: string]: Map<Function, boolean>
-    } = {};
+    private _events_: TYPE_EVENT_STORE;
 
     /**
      * subscribe to event
@@ -22,9 +21,9 @@ export class EventBus {
      * @memberof EventBus
      */
     on(event: string, cb: Function) {
-        let events = this._events[event];
+        let events = this._events_[event];
         if (events == null) {
-            events = this._events[event] = new Map();
+            events = this._events_[event] = new Map();
         }
 
         events.set(cb, true);
@@ -48,7 +47,7 @@ export class EventBus {
                 );
             }
         }
-        const events = this._events[event];
+        const events = this._events_[event];
         if (events) {
             if (process.env.NODE_ENV !== 'production') {
                 if (!events.has(eventListener)) {
@@ -76,7 +75,7 @@ export class EventBus {
         const events = this.getEvent(event);
         if (!events) return;
         this.eachEvent(events, (cb) => {
-            const result = cb.call(this._ctx, ...args);
+            const result = cb.call(this._ctx_, ...args);
             return result;
         });
     }
@@ -94,7 +93,7 @@ export class EventBus {
         if (!events) return promiseResolve<any[]>([]);
         const promises = [];
         this.eachEvent(events, (cb) => {
-            const result = cb.call(this._ctx, ...args);
+            const result = cb.call(this._ctx_, ...args);
             promises.push(result);
         });
         return Promise.all(
@@ -119,7 +118,7 @@ export class EventBus {
         const callMethod = (eventCb) => {
             if (!eventCb) return promiseResolve(null);
 
-            const result = eventCb.call(this._ctx, ...args);
+            const result = eventCb.call(this._ctx_, ...args);
             return result && result.then ? result : promiseResolve(result);
 
         };
@@ -143,11 +142,11 @@ export class EventBus {
     }
 
     destroy() {
-        this._ctx = null;
-        this._events = emptyObj;
+        this._ctx_ = null;
+        this._events_ = emptyObj;
     }
 
     getEvent(eventName: string) {
-        return this._events[eventName];
+        return this._events_[eventName];
     }
 }

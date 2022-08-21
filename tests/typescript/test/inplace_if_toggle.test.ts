@@ -81,7 +81,7 @@ describe('InPlace if toggle', function () {
     // }
 
     it("check watchlist length", function () {
-        expect(component['__watchBus__']._events["name"]).length(1);
+        expect(component['__watchBus__']._events_["name"]).length(1);
         expect(window['error']).to.equal(undefined);
     });
 

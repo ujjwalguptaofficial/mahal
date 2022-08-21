@@ -73,11 +73,11 @@ describe("Array nested element destroy", () => {
         await new Promise(res => {
             setTimeout(res, 100)
         });
-        expect(Object.keys(component['__watchBus__']._events)).length(12);
+        expect(Object.keys(component['__watchBus__']._events_)).length(12);
         ARRAY_MUTABLE_METHODS.forEach(name => {
-            expect(component['__watchBus__']._events[`fruits.${name}`]).length(1);
+            expect(component['__watchBus__']._events_[`fruits.${name}`]).length(1);
         })
-        expect(component['__watchBus__']._events[`fruits`]).length(1);
+        expect(component['__watchBus__']._events_[`fruits`]).length(1);
         expect(component.updateCount).equal(4);
     })
 
@@ -88,11 +88,11 @@ describe("Array nested element destroy", () => {
         await new Promise(res => {
             setTimeout(res, 100)
         });
-        // expect(Object.keys(component['__watchBus__']._events)).length(2);
+        // expect(Object.keys(component['__watchBus__']._events_)).length(2);
         ARRAY_MUTABLE_METHODS.forEach(name => {
-            expect(component['__watchBus__']._events[`fruits.${name}`]).length(0);
+            expect(component['__watchBus__']._events_[`fruits.${name}`]).length(0);
         })
-        expect(component['__watchBus__']._events[`fruits`]).length(0);
+        expect(component['__watchBus__']._events_[`fruits`]).length(0);
         expect(component.updateCount).equal(4);
     })
 

@@ -34,10 +34,10 @@ describe('Watch', function () {
             expect(newVal).equal(newName);
             expect(oldVal).equal("");
             component.unwatch(prop, eventId);
-            expect(component['__watchBus__']._events[prop]).length(0);
+            expect(component['__watchBus__']._events_[prop]).length(0);
             done();
         });
-        expect(component['__watchBus__']._events[prop]).length(1);
+        expect(component['__watchBus__']._events_[prop]).length(1);
         component.name = newName;
     });
 
@@ -48,10 +48,10 @@ describe('Watch', function () {
             expect(newVal).equal(newValue);
             expect(oldVal).length(0);
             component.unwatch(prop, eventId);
-            expect(component['__watchBus__']._events[prop]).length(0);
+            expect(component['__watchBus__']._events_[prop]).length(0);
             done();
         });
-        expect(component['__watchBus__']._events[prop]).length(1);
+        expect(component['__watchBus__']._events_[prop]).length(1);
         component[prop] = newVal;
     });
 
@@ -62,11 +62,11 @@ describe('Watch', function () {
             expect(newValue).eql([valueToAdd]);
             expect(oldVal).equal(undefined);
             component.unwatch(prop, eventId);
-            expect(component['__watchBus__']._events[prop]).length(0);
+            expect(component['__watchBus__']._events_[prop]).length(0);
             expect(component.users).length(2);
             done();
         });
-        expect(component['__watchBus__']._events[prop]).length(1);
+        expect(component['__watchBus__']._events_[prop]).length(1);
         component.users.push(valueToAdd);
     });
 
@@ -77,11 +77,11 @@ describe('Watch', function () {
             expect(newValue).eql([valueToAdd, valueToAdd]);
             expect(oldVal).equal(undefined);
             component.unwatch(prop, eventId);
-            expect(component['__watchBus__']._events[prop]).length(0);
+            expect(component['__watchBus__']._events_[prop]).length(0);
             expect(component.users).length(4);
             done();
         });
-        expect(component['__watchBus__']._events[prop]).length(1);
+        expect(component['__watchBus__']._events_[prop]).length(1);
         component.users.push(valueToAdd, valueToAdd);
     });
 });
