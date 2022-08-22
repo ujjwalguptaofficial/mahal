@@ -129,9 +129,9 @@ describe('HelloWorld', function () {
                 setTimeout(res, 20)
             }).then(_ => {
                 expect(component.element).equal(null);
-                expect(component.__evBus__).equal(null);
-                expect(component.__ob__).equal(null);
-                expect(component.__watchBus__._events_).deep.equal({});
+                expect(component._evBus_).equal(null);
+                expect(component._ob_).equal(null);
+                expect(component._watchBus_._events_).deep.equal({});
                 done();
             })
         });

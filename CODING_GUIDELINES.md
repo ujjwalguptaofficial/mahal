@@ -6,7 +6,7 @@ We follow strict set of coding guidelines and use linter to make sure no mistake
 
 * Class Name must be in PascalCase.
 * Class public or protect member should be in camelCase.
-* Class private member should be in camelCase having '_' in the first.
+* Class private member should be in camelCase having '_' in the first and last. e.g - `_member_`
 * A file name should be in snake case.
 
 ## Static Member
@@ -31,6 +31,8 @@ class Main{
 }
 
 ```
+
+this allows to see class member as one of the member and if there is anything changed in future, then private member will be able to handle without changing in each code using static member call.
 
 ## TypeScript guidelines
 

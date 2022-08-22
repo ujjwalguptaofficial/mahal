@@ -52,14 +52,14 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
         const ctx = this;
         const getValue = () => emptyObj;
         replaceNullProp(ctx, 'children', getValue);
-        replaceNullProp(ctx, '__formatters__', getValue);
-        replaceNullProp(ctx, '__directive__', getValue);
-        replaceNullProp(ctx, '__props__', getValue);
-        replaceNullProp(ctx, '__computed__', getValue);
-        replaceNullProp(ctx, '__reactives__', getValue);
+        replaceNullProp(ctx, '_formatters_', getValue);
+        replaceNullProp(ctx, '_directive_', getValue);
+        replaceNullProp(ctx, '_props_', getValue);
+        replaceNullProp(ctx, '_computed_', getValue);
+        replaceNullProp(ctx, '_reactives_', getValue);
 
-        ctx.__evBus__ = new EventBus(ctx.__events__);
-        ctx.__watchBus__ = new EventBus(ctx.__watchers__);
+        ctx._evBus_ = new EventBus(ctx._events_);
+        ctx._watchBus_ = new EventBus(ctx._watchers_);
     }
 
     render?(context: IRenderContext): HTMLElement;
@@ -86,9 +86,9 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
         const splittedKey = key.split(".");
         const ctx = this;
         const emitChange = (propToEmit, value1, value2?) => {
-            if (ctx.__reactives__[key]) return;
+            if (ctx._reactives_[key]) return;
             if (process.env.NODE_ENV !== "production") {
-                const componentProps = ctx.__props__;
+                const componentProps = ctx._props_;
                 if (Component.shouldCheckProp && componentProps[key]) {
                     new Logger(ERROR_TYPE.MutatingProp, {
                         html: ctx.outerHTML,
@@ -152,7 +152,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
      * @memberof Component
      */
     watch(propName: string, cb: (newValue, oldValue) => void) {
-        return this.__watchBus__.on(propName, cb);
+        return this._watchBus_.on(propName, cb);
     }
 
     /**
@@ -164,7 +164,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
      * @memberof Component
      */
     unwatch(propName: string, eventListener: Function) {
-        this.__watchBus__.off(propName, eventListener);
+        this._watchBus_.off(propName, eventListener);
     }
 
     /**
@@ -178,7 +178,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
     on(event: TYPE_ALL_LIFE_CYCLE_EVENT, cb: Function);
     on(event: string, cb: Function);
     on(event: any, cb: Function) {
-        return this.__evBus__.on(event, cb);
+        return this._evBus_.on(event, cb);
     }
 
     /**
@@ -189,7 +189,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
      * @memberof Component
      */
     off(event: string, eventListener: Function) {
-        this.__evBus__.off(event, eventListener);
+        this._evBus_.off(event, eventListener);
     }
 
     /**
@@ -221,7 +221,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
      * @memberof Component
      */
     emit(event: string, ...args) {
-        return this.__evBus__.emit(event, ...args);
+        return this._evBus_.emit(event, ...args);
     }
 
     /**
@@ -233,7 +233,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
      * @memberof Component
      */
     emitLinear(event: string, ...args) {
-        return this.__evBus__.emitLinear(event, ...args);
+        return this._evBus_.emitLinear(event, ...args);
     }
 
     /**
@@ -280,13 +280,13 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
      * @memberof Component
      */
     format(formatterName: string, value) {
-        const globalFormatter = this.__app__['_formatter'];
+        const globalFormatter = this._app_['_formatter'];
         try {
             const savedGlobalFormatter = globalFormatter[formatterName];
             if (savedGlobalFormatter) {
                 return savedGlobalFormatter(value);
             }
-            const localFormatters = this.__formatters__;
+            const localFormatters = this._formatters_;
             const savedFormatter = localFormatters[formatterName];
             if (savedFormatter) {
                 return savedFormatter(value);
@@ -321,7 +321,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
      * @memberof Component
      */
     get global() {
-        return this.__app__.global as GLOBAL_TYPE;
+        return this._app_.global as GLOBAL_TYPE;
     }
 
     /**
@@ -331,7 +331,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
      * @memberof Component
      */
     // tslint:disable-next-line
-    private __evBus__: EventBus;
+    private _evBus_: EventBus;
 
     /**
      * used for property watching
@@ -340,40 +340,40 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
      * @memberof Component
      */
     // tslint:disable-next-line
-    private __watchBus__: EventBus;
+    private _watchBus_: EventBus;
 
     // tslint:disable-next-line
-    private __app__: Mahal;
+    private _app_: Mahal;
 
     // tslint:disable-next-line
-    private __ob__: Observer;
+    private _ob_: Observer;
 
     // tslint:disable-next-line
-    private __directive__;
+    private _directive_;
 
     // tslint:disable-next-line
-    private __formatters__;
+    private _formatters_;
 
     // tslint:disable-next-line
-    private __props__;
+    private _props_;
 
     // tslint:disable-next-line
-    private __reactives__: { [key: string]: boolean };
+    private _reactives_: { [key: string]: boolean };
 
     // tslint:disable-next-line
-    private __watchers__: TYPE_EVENT_STORE;
+    private _watchers_: TYPE_EVENT_STORE;
 
     // tslint:disable-next-line
-    private __events__: TYPE_EVENT_STORE;
+    private _events_: TYPE_EVENT_STORE;
 
     // tslint:disable-next-line
     private __file__;
 
     // tslint:disable-next-line
-    private __computed__;
+    private _computed_;
 
     // tslint:disable-next-line
-    private __timerId__;
+    private _timerId_;
 
     static shouldCheckProp = true;
 

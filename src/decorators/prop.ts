@@ -6,7 +6,7 @@ import { getDataype, replaceNullProp } from "../utils";
 export const Prop = (options?: IPropOption | any) => {
     return (target, key: string) => {
         const obj = {};
-        replaceNullProp(target, '__props__', () => obj);
+        replaceNullProp(target, '_props_', () => obj);
         if (getDataype(options) === "function") {
             const name = options.name;
             options = name.toLowerCase();
@@ -16,6 +16,6 @@ export const Prop = (options?: IPropOption | any) => {
                 type: options
             };
         }
-        target.__props__[key] = options || {};
+        target._props_[key] = options || {};
     };
 };

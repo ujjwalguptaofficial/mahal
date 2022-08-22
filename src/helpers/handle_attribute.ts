@@ -23,7 +23,7 @@ export function handleAttribute(this: Component, component, attr, isComponent) {
         if (!attr) return htmlAttributes;
         for (const key in attr) {
             const value: IAttrItem = attr[key];
-            const propDescription = component.__props__[key];
+            const propDescription = component._props_[key];
             if (propDescription) {
                 const attrValue = getAttributeValue(value, value.v);
                 if (propDescription.type) {

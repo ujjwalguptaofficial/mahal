@@ -14,7 +14,7 @@ export function initComponent(this: Component, component: Component, option) {
         component.on(eventName, listener);
     });
 
-    const computed = component['__computed__'];
+    const computed = component['_computed_'];
     for (const key in computed) {
         const data = computed[key];
         let computedValue = data.fn.call(component);

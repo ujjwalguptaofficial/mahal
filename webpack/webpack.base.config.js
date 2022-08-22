@@ -23,7 +23,7 @@ module.exports = [{
         new webpack.BannerPlugin(banner),
         new CopyPlugin({
             patterns: [
-                { from: 'build_helper', to: '' },
+                { from: 'build_helper/npm.export.js', to: '' },
             ],
         }),
     ],

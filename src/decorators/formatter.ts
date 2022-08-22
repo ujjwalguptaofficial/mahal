@@ -4,7 +4,7 @@ import { replaceNullProp } from "../utils";
 export const Formatter = (name?: string): MethodDecorator => {
     return ((target: any, methodName: string, descriptor: PropertyDescriptor) => {
         const obj = {};
-        replaceNullProp(target, '__formatters__', () => obj);
-        target.__formatters__[name || methodName] = target[methodName];
+        replaceNullProp(target, '_formatters_', () => obj);
+        target._formatters_[name || methodName] = target[methodName];
     });
 };

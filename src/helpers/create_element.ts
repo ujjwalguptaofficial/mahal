@@ -76,11 +76,11 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
             return createNativeComponent.call(ctx, tag, childs, option);
     }
 
-    const savedComponent = ctx.children[tag] || ctx['__app__']['_components'][tag];
+    const savedComponent = ctx.children[tag] || ctx['_app_']['_components'][tag];
     if (savedComponent) {
 
         const renderComponent = (comp) => {
-            const component: Component = createComponent(comp, ctx['__app__']);
+            const component: Component = createComponent(comp, ctx['_app_']);
             const htmlAttributes = initComponent.call(ctx, component as any, option);
             executeRender(component, childs);
             let element = component.element;

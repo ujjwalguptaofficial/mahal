@@ -5,8 +5,8 @@ export const Directive = (name?: string): MethodDecorator => {
     return ((target: any, methodName: string, descriptor: PropertyDescriptor) => {
         const obj = {};
 
-        replaceNullProp(target, '__directive__', () => obj);
+        replaceNullProp(target, '_directive_', () => obj);
 
-        target.__directive__[name || methodName] = target[methodName];
+        target._directive_[name || methodName] = target[methodName];
     });
 };

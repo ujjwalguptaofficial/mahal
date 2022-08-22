@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { Component, Computed } from "mahal";
 import { Template, Watch } from "@mahaljs/util";
 import { initiate, mount } from "@mahaljs/test-utils";

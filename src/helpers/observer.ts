@@ -18,7 +18,7 @@ export class Observer {
         const isInputArray = isArray(input);
         keys = keys || (isInputArray ? ARRAY_MUTABLE_METHODS : getObjectKeys(input));
         keys.forEach(key => {
-            this.comp['__reactives__'][prefix + key] = true;
+            this.comp['_reactives_'][prefix + key] = true;
         });
         const hashkeys = hashifyArray(keys);
         const registerChild = (key, newValue, oldValue) => {

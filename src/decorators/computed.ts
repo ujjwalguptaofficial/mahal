@@ -4,8 +4,8 @@ import { replaceNullProp } from "../utils";
 export const Computed = (...args): MethodDecorator => {
     return ((target: any, methodName: string, descriptor: PropertyDescriptor) => {
         const obj = {};
-        replaceNullProp(target, '__computed__', () => obj);
+        replaceNullProp(target, '_computed_', () => obj);
 
-        target.__computed__[methodName] = { args, fn: descriptor.value || descriptor.get };
+        target._computed_[methodName] = { args, fn: descriptor.value || descriptor.get };
     });
 };
