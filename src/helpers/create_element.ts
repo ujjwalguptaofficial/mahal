@@ -76,7 +76,7 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
             return createNativeComponent.call(ctx, tag, childs, option);
     }
 
-    const savedComponent = ctx.children[tag] || ctx['_app_']['_components'][tag];
+    const savedComponent = ctx.children[tag] || ctx['_app_']['_component_'][tag];
     if (savedComponent) {
 
         const renderComponent = (comp) => {

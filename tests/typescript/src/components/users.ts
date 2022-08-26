@@ -1,4 +1,4 @@
-import { Component, Prop, Children, Reactive, LIFECYCLE_EVENT } from "mahal";
+import { Component, Prop, Children, Reactive } from "mahal";
 import User from "./user";
 import { Template } from "@mahaljs/util";
 

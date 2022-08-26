@@ -6,7 +6,7 @@ import { onElDestroy } from "../helpers";
 export function handleDirective(this: Component, element: HTMLElement, dir, isComponent) {
     if (!dir) return;
     forEach(dir, (compiledDir: IDirectiveBinding, name) => {
-        const storedDirective = this['_directive_'][name] || this['_app_']['_directives'][name];
+        const storedDirective = this['_directive_'][name] || this['_app_']['_directive_'][name];
         if (!storedDirective) return;
 
         compiledDir.isComponent = isComponent;

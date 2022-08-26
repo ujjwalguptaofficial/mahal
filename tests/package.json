@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "install:lib": "node installer.js",
+    "install:mahal:util": "npm i ../../mahaljs-util/mahaljs-util-1.4.2.tgz",
     "install:build": "npm run install:lib && npm run build",
     "build:typescript": "webpack --config typescript/webpack.config.js",
     "dev": "webpack-dev-server --config typescript/webpack.config.js",

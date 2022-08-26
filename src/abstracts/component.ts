@@ -280,7 +280,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
      * @memberof Component
      */
     format(formatterName: string, value) {
-        const globalFormatter = this._app_['_formatter'];
+        const globalFormatter = this._app_['_formatter_'];
         try {
             const savedGlobalFormatter = globalFormatter[formatterName];
             if (savedGlobalFormatter) {
