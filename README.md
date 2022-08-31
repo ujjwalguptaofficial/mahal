@@ -5,7 +5,16 @@
 [![GitHub version](https://badge.fury.io/gh/ujjwalguptaofficial%2Fmahal.svg)](https://badge.fury.io/gh/ujjwalguptaofficial%2Fmahal) [![CI](https://github.com/ujjwalguptaofficial/mahal/actions/workflows/ci.yml/badge.svg)](https://github.com/ujjwalguptaofficial/mahal/actions/workflows/ci.yml) [![npm version](https://badge.fury.io/js/mahal.svg)](https://badge.fury.io/js/mahal)
 # Mahal
 
-Simple, modern web application framework for UI development.
+Event based modern web application framework for UI development.
+
+## Features
+
+* Works without virtual DOM
+* Small in size but powerful - 7kb (minified + gzipped)
+* Truly reactive with two way binding
+* Better documenting - you can write documentation with yml syntax inside components
+* Event based architecture
+* Uses modern approach - class based components, decorators etc
 
 # Install
 
