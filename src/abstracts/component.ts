@@ -5,7 +5,7 @@ import { EventBus, emitStateChange, resolveValue, replaceNullProp, getDataype } 
 import { Mahal } from "../mahal";
 import { emptyObj } from "../constant";
 import { TYPE_ALL_LIFE_CYCLE_EVENT, TYPE_EVENT_STORE } from "../types";
-import { Computed, Reactive } from "../decorators";
+import { computed, reactive } from "../decorators";
 
 // do not rename this, this has been done to merge Component
 // // tslint:disable-next-line

@@ -3,7 +3,7 @@ import { getDataype, replaceNullProp } from "../utils";
 
 
 // tslint:disable-next-line
-export const Prop = (options?: IPropOption | any) => {
+export const prop = (options?: IPropOption | any) => {
     return (target, key: string) => {
         const obj = {};
         replaceNullProp(target, '_props_', () => obj);

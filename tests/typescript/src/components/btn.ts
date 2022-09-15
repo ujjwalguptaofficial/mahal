@@ -1,4 +1,4 @@
-import { Component, Prop, Formatter, Reactive } from "mahal";
+import { Component, prop, formatter, reactive } from "mahal";
 import { Template } from "@mahaljs/util";
 
 @Template(`
@@ -7,14 +7,14 @@ import { Template } from "@mahaljs/util";
 
 export default class extends Component {
 
-    @Prop(String)
+    @prop(String)
     label;
 
     handleClick() {
         this.emit('click');
     }
 
-    @Formatter('toUpper')
+    @formatter('toUpper')
     toUpper(value) {
         return value.toUpperCase();
     }

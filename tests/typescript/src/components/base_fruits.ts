@@ -1,4 +1,4 @@
-import { Component, Reactive } from "mahal";
+import { Component, reactive } from "mahal";
 import { clone } from "../util";
 import { Template } from "@mahaljs/util";
 
@@ -27,7 +27,7 @@ export default class extends Component {
 
     setInitial() {
         const newFruits = clone(this.initialFruits);
-        if (this.isReactive) {
+        if (this.isreactive) {
             this.fruits = newFruits;
         }
         else {
@@ -35,6 +35,6 @@ export default class extends Component {
         }
     }
 
-    isReactive = true;
+    isreactive = true;
 }
 

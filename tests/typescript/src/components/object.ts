@@ -1,4 +1,4 @@
-import { Component, Reactive, Computed } from "mahal";
+import { Component, reactive, computed } from "mahal";
 import { Template } from "@mahaljs/util";
 
 @Template(`
@@ -31,18 +31,18 @@ import { Template } from "@mahaljs/util";
 `)
 export default class extends Component {
 
-    @Reactive
+    @reactive
     students: any = {
 
     }
 
-    @Reactive
+    @reactive
     name = "";
 
-    @Reactive
+    @reactive
     editName = "";
 
-    @Computed('students')
+    @computed('students')
     get students_length() {
         return Object.keys(
             this.students

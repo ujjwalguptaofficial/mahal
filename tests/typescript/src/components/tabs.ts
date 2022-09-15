@@ -1,4 +1,4 @@
-import { Component, Prop } from "mahal";
+import { Component, prop } from "mahal";
 import { Template } from "@mahaljs/util";
 
 
@@ -17,10 +17,10 @@ import { Template } from "@mahaljs/util";
 `)
 export default class extends Component {
 
-    @Prop(Array)
+    @prop(Array)
     tabs = [];
 
-    @Prop(String)
+    @prop(String)
     value;
 
     onTabClick(value) {

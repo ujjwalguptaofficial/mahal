@@ -4,7 +4,7 @@ import { expect } from "chai";
 import { nextTick } from "mahal";
 import { createSandbox } from "sinon";
 
-describe('Directive', function () {
+describe('directive', function () {
 
     let component;
 

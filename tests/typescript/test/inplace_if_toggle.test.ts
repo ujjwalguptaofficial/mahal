@@ -1,9 +1,9 @@
 import { app } from "../src/index";
-import { lazyComponent, Computed, Component, Prop, Children, Reactive } from "mahal";
+import { lazyComponent, computed, Component, prop, children, reactive } from "mahal";
 import { expect } from "chai";
 import { Template } from "@mahaljs/util";
 
-@Children({
+@children({
     Btn: lazyComponent(() => import('../src/components/btn')),
     HelloWorld: lazyComponent(() => import('../src/components/hello_world'))
 })
@@ -20,16 +20,16 @@ import { Template } from "@mahaljs/util";
 export class Temp extends Component {
     content = "Button"
 
-    @Reactive
+    @reactive
     flag1 = true;
 
-    @Reactive
+    @reactive
     flag2 = false;
 
-    @Reactive
+    @reactive
     name = "Btn"
 
-    @Computed('name', 'flag1')
+    @computed('name', 'flag1')
     componentName() {
         return this.flag1 ? this.name : null;
     }

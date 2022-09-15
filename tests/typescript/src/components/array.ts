@@ -1,4 +1,4 @@
-import { Component, Reactive, Computed } from "mahal";
+import { Component, reactive, computed } from "mahal";
 import { Template } from "@mahaljs/util";
 import { IAppGlobal } from "../interfaces";
 
@@ -32,16 +32,16 @@ import { IAppGlobal } from "../interfaces";
 `)
 export default class extends Component<IAppGlobal> {
 
-    @Reactive
+    @reactive
     students = []
 
-    @Reactive
+    @reactive
     name = "";
 
-    @Reactive
+    @reactive
     editName = "";
 
-    @Computed('students')
+    @computed('students')
     get studentsLength() {
         return this.students.length;
     }

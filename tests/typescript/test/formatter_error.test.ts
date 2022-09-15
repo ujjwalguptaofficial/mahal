@@ -1,5 +1,5 @@
 import { app } from "../src/index";
-import { Reactive, Component, Formatter } from "mahal";
+import { reactive, Component, formatter } from "mahal";
 import { expect } from "chai";
 import { mount, getMount } from "@mahaljs/test-utils";
 import { Template } from "@mahaljs/util";
@@ -12,7 +12,7 @@ import { Template } from "@mahaljs/util";
 </div>
 `)
 class Temp extends Component {
-    @Reactive
+    @reactive
     content = "Button"
 
     error: string;
@@ -26,13 +26,13 @@ class Temp extends Component {
         })
     }
 
-    @Formatter()
+    @formatter()
     toUpper(value) {
         return value.toUpperCase();
     }
 }
 
-describe('Formatter run time error', function () {
+describe('formatter run time error', function () {
 
     let component: Temp;
 

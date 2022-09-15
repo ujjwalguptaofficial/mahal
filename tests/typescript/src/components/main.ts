@@ -1,4 +1,4 @@
-import { Component, Children, Reactive, Directive, nextTick, lazyComponent } from "mahal";
+import { Component, children, reactive, directive, nextTick, lazyComponent } from "mahal";
 import ModelComponent from "./component_model";
 import { Template, Watch } from "@mahaljs/util";
 
@@ -14,7 +14,7 @@ import Form from "./form";
 import Users from "./users";
 import TabRender from "./tab_render";
 import ObjectProp from "./object_prop";
-import Computed from "./computed";
+import computed from "./computed";
 import Fruits from "./fruits";
 import Fragment from "./fragment";
 import ArrayModel from "./array_model";
@@ -32,10 +32,10 @@ import { IAppGlobal } from "../interfaces";
     <HelloWorld/>
 </div>
 `)
-@Children({
+@children({
     // Temp,
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
-    Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, Computed,
+    Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, computed,
     Fragment, ArrayModel, ObjectResetModel,
     Btn: lazyComponent(() => import('./fruits_set_state')),
      
@@ -45,7 +45,7 @@ export default class Main extends Component<IAppGlobal> {
 
 
 
-    @Directive('event')
+    @directive('event')
     eventDirective(el: HTMLElement, binding) {
         // const params = binding.;
         debugger;
@@ -53,16 +53,16 @@ export default class Main extends Component<IAppGlobal> {
     };
 
 
-    @Reactive
+    @reactive
     users = [{
         name: "Ujjwal kumar",
         gender: "Male"
     }]
 
-    @Reactive
+    @reactive
     flag = false;
 
-    @Reactive
+    @reactive
     name = "Btn"
 
     flagOne = false
@@ -76,7 +76,7 @@ export default class Main extends Component<IAppGlobal> {
         this.flagTwo = !this.flagTwo
     }
 
-    @Reactive
+    @reactive
     counter = 0;
 
     incrementCounter() {
@@ -97,7 +97,7 @@ export default class Main extends Component<IAppGlobal> {
         this.name = "name changed";
     }
 
-    @Reactive
+    @reactive
     items = ["hello", "world"]
 
     constructor() {

@@ -13,19 +13,19 @@ dateCreated: April 24, 2022
 </div>
 </html>
 <script>
-import { Component, Reactive, Children } from "mahal";
+import { Component, reactive, children } from "mahal";
 import Todo from "@/components/todo.mahal";
 import NewTodo from "@/components/new_todo.mahal";
 import "flexstyle";
 
-@Children({
+@children({
     Todo,
     NewTodo,
 })
 export default class App extends Component {
     uniqueId = 0;
 
-    // @Reactive
+    // @reactive
     tasks = [];
 
     constructor() {

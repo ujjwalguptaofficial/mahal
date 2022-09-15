@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Component, Directive, Reactive, Computed } from "mahal";
+import { Component, directive, reactive, computed } from "mahal";
 import { initiate, mount } from "@mahaljs/test-utils";
 import { Template, Watch } from "@mahaljs/util";
 
@@ -14,15 +14,15 @@ import { Template, Watch } from "@mahaljs/util";
 `)
 class ArrayComp extends Component {
 
-    @Reactive
+    @reactive
     selected = true;
 
-    @Reactive
+    @reactive
     flag = true;
 
     updateCount = 0;
 
-    @Directive()
+    @directive()
     dirTest() {
         ++this.updateCount;
         return {
@@ -44,7 +44,7 @@ class ArrayComp extends Component {
 }
 
 
-describe("Directive destroy", () => {
+describe("directive destroy", () => {
     let component: ArrayComp;
     before(async () => {
         component = await mount<ArrayComp>(ArrayComp);

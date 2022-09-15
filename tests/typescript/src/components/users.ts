@@ -1,4 +1,4 @@
-import { Component, Prop, Children, Reactive } from "mahal";
+import { Component, prop, children, reactive } from "mahal";
 import User from "./user";
 import { Template } from "@mahaljs/util";
 
@@ -14,19 +14,19 @@ import { Template } from "@mahaljs/util";
     </User>
 </div>
 `)
-@Children({
+@children({
     User
 })
 
 export default class extends Component {
 
-    @Prop(Array)
+    @prop(Array)
     users = [{
         name: "Ujjwal",
         gender: "Male"
     }]
 
-    @Reactive
+    @reactive
     reactiveUsers = [{
         name: "Ujjwal",
         gender: "Male"

@@ -1,4 +1,4 @@
-import { Component, Prop, Formatter, Reactive } from "mahal";
+import { Component, prop, formatter, reactive } from "mahal";
 import { Template } from "@mahaljs/util";
 
 // @Template(`<div>
@@ -33,7 +33,7 @@ import { Template } from "@mahaljs/util";
 
 export default class extends Component {
 
-    @Reactive
+    @reactive
     students = [
         {
             name: 'ujjwal',

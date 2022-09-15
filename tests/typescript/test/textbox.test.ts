@@ -1,10 +1,10 @@
 import Component from "../src/components/text-box";
 import { app } from "../src/index";
-import { nextTick, Children, Reactive } from "mahal";
+import { nextTick, children, reactive } from "mahal";
 import { expect } from "chai";
 import { Template } from "@mahaljs/util";
 
-@Children({
+@children({
     TextArea: Component
 })
 @Template(`
@@ -14,7 +14,7 @@ import { Template } from "@mahaljs/util";
 </div>
 `)
 class Temp extends Component {
-    @Reactive
+    @reactive
     name = ""
 }
 

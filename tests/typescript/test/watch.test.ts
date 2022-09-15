@@ -1,5 +1,5 @@
 import { app } from "../src/index";
-import { nextTick, Children, Reactive, Component } from "mahal";
+import { nextTick, children, reactive, Component } from "mahal";
 import { expect } from "chai";
 import { Template } from "@mahaljs/util";
 
@@ -11,10 +11,10 @@ import { Template } from "@mahaljs/util";
 `)
 class Temp extends Component {
 
-    @Reactive
+    @reactive
     name = ""
 
-    @Reactive
+    @reactive
     users = []
 
 }

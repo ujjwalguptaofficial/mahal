@@ -3,7 +3,7 @@ import { app } from "../src/index";
 import { expect } from "chai";
 
 
-describe('Invalid Formatter', function () {
+describe('Invalid formatter', function () {
 
     let component;
 
@@ -11,7 +11,7 @@ describe('Invalid Formatter', function () {
         try {
             component = await (app as any).initiate(InvalidFilter);
         } catch (error) {
-            expect(error).equal(`{Mahal throw}: Can not find Formatter "invalid". Make sure you have registered formatter either in component or globally.\n\ntype : invalid_formatter`)
+            expect(error).equal(`{Mahal throw}: Can not find formatter "invalid". Make sure you have registered formatter either in component or globally.\n\ntype : invalid_formatter`)
         }
     });
 });

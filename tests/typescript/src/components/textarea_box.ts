@@ -1,4 +1,4 @@
-import { Component, Prop, Reactive, } from "mahal";
+import { Component, prop, reactive, } from "mahal";
 import { Template } from "@mahaljs/util";
 
 @Template(`
@@ -11,10 +11,10 @@ Standard Text Area box
 
 export default class extends Component {
 
-    @Prop()
+    @prop()
     value;
 
-    @Reactive
+    @reactive
     text = "";
 
     onInit() {

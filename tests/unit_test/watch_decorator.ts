@@ -1,4 +1,4 @@
-import { Component, Computed } from "mahal";
+import { Component, computed } from "mahal";
 import { Template, Watch } from "@mahaljs/util";
 import { initiate, mount } from "@mahaljs/test-utils";
 import { createSandbox, spy } from "sinon";
@@ -16,12 +16,12 @@ export default class WatchDecorators extends Component {
         window['fruitsComp'] = this;
     }
 
-    @Computed('fruits')
+    @computed('fruits')
     fruitsLength() {
         return this.fruits.length;
     }
 
-    @Computed('fruits')
+    @computed('fruits')
     fruitsObject() {
         const obj = {};
         this.fruits.forEach(fruit => {

@@ -23,13 +23,13 @@ dateCreated: April 24, 2022
 </html>
 
 <script>
-import { Component, Reactive } from "mahal";
+import { Component, reactive } from "mahal";
 
 export default class extends Component {
-    @Reactive
+    @reactive
     title = "";
 
-    @Reactive
+    @reactive
     description = "";
 
     validate() {

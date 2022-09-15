@@ -44,7 +44,7 @@ export class Logger implements IError {
         const info = this.info_;
         const prodErrors = {
             [ERROR_TYPE.PropDataTypeMismatch]() {
-                let str = `Expected Data type of property ${info.prop} is ${info.exp} but received ${info.got}.${newLine}`;
+                let str = `Expected datatype of property ${info.prop} is ${info.exp} but received ${info.got}.${newLine}`;
                 if (info.template) {
                     str += `in template -${newLine}"${info.html}"${newLine}`;
                 }
@@ -57,7 +57,7 @@ export class Logger implements IError {
                 return `Component "${info.tag}" is not registered. Make sure you have registered component either in parent component or globally.`;
             },
             [ERROR_TYPE.InvalidFormatter]() {
-                return `Can not find Formatter "${info.formatter}". Make sure you have registered formatter either in component or globally.`;
+                return `Can not find formatter "${info.formatter}". Make sure you have registered formatter either in component or globally.`;
             },
         };
 

@@ -1,4 +1,4 @@
-import { Component, Reactive } from "mahal";
+import { Component, reactive } from "mahal";
 import { Template } from "@mahaljs/util";
 
 @Template(`
@@ -9,7 +9,7 @@ import { Template } from "@mahaljs/util";
 
 export default class extends Component {
 
-    @Reactive
+    @reactive
     text;
 
 }

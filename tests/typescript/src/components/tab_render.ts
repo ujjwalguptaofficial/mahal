@@ -1,4 +1,4 @@
-import { Component, Children, Reactive } from "mahal";
+import { Component, children, reactive } from "mahal";
 import Users from "./users";
 import Tabs from "./tabs";
 import { Template } from "@mahaljs/util";
@@ -11,14 +11,14 @@ import { Template } from "@mahaljs/util";
     </target>
 </Tabs>
 </div>`)
-@Children({
+@children({
     Users, Tabs
 })
 export default class extends Component {
 
     tabs = ["Users", "Btn"];
 
-    @Reactive
+    @reactive
     activeTab = "Btn";
 
     users = [{

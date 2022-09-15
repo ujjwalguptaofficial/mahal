@@ -1,4 +1,4 @@
-import { Component, Prop, Formatter, Reactive } from "mahal";
+import { Component, prop, formatter, reactive } from "mahal";
 import { Template } from "@mahaljs/util";
 
 @Template(`
@@ -15,7 +15,7 @@ import { Template } from "@mahaljs/util";
 
 export default class extends Component {
 
-    @Reactive
+    @reactive
     nested = {
         nested1: {
             nested2: {
@@ -24,10 +24,10 @@ export default class extends Component {
         }
     }
 
-    @Reactive
+    @reactive
     state;
 
-    @Reactive
+    @reactive
     anotherState = 10;
 
     name = "ujjwal"

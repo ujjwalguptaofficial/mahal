@@ -1,5 +1,5 @@
 import { app } from "../src/index";
-import { nextTick, Component, Prop, Children, Reactive } from "mahal";
+import { nextTick, Component, prop, children, reactive } from "mahal";
 import { expect } from "chai";
 import { Template } from "@mahaljs/util";
 

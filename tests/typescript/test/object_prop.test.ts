@@ -1,5 +1,5 @@
 import { app } from "../src/index";
-import { nextTick, Children, Reactive, Component, Prop } from "mahal";
+import { nextTick, children, reactive, Component, prop } from "mahal";
 import { expect } from "chai";
 import { Template } from "@mahaljs/util";
 
@@ -10,11 +10,11 @@ import { Template } from "@mahaljs/util";
 `)
 class User extends Component {
 
-    @Prop()
+    @prop()
     value;
 }
 
-@Children({
+@children({
     User
 })
 @Template(`
@@ -24,16 +24,16 @@ class User extends Component {
 </div>
 `)
 class Temp extends Component {
-    @Reactive
+    @reactive
     user = {
         name: "ujjwal"
     };
 
-    @Reactive
+    @reactive
     flag = true;
 }
 
-describe('Object Prop', function () {
+describe('Object prop', function () {
 
     let component;
 

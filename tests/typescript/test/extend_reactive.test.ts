@@ -1,20 +1,20 @@
 import { app } from "../src/index";
-import { Component, Children, Reactive } from "mahal";
+import { Component, children, reactive } from "mahal";
 import { expect } from "chai";
 import { Template } from "@mahaljs/util";
 
 class BaseClient extends Component {
-    @Reactive
+    @reactive
     state1 = 1;
 }
 
 class MoreBaseClient extends BaseClient {
-    @Reactive
+    @reactive
     state2 = 2;
 }
 
 
-@Children({
+@children({
 })
 @Template(`
 <div>
@@ -26,10 +26,10 @@ class MoreBaseClient extends BaseClient {
 `)
 class Temp1 extends MoreBaseClient {
 
-    @Reactive
+    @reactive
     state3 = 3;
 
-    @Reactive
+    @reactive
     state4 = 4;
 
 }

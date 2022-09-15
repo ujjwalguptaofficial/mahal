@@ -1,4 +1,4 @@
-import { Component, Computed, Reactive } from "mahal";
+import { Component, computed, reactive } from "mahal";
 import { Template } from "@mahaljs/util";
 
 @Template(`
@@ -8,13 +8,13 @@ import { Template } from "@mahaljs/util";
 `)
 export default class extends Component {
 
-    @Reactive
+    @reactive
     firstName = "ujjwal";
 
-    @Reactive
+    @reactive
     lastName = "gupta";
 
-    @Computed("firstName", "lastName")
+    @computed("firstName", "lastName")
     get fullName() {
         return this.firstName + " " + this.lastName;
     }
@@ -28,15 +28,15 @@ export default class extends Component {
     }
 
     gendergetCounter = 0;
-    @Reactive gender = "male";
+    @reactive gender = "male";
 
-    @Computed("gender")
+    @computed("gender")
     get genderDetail() {
         this.gendergetCounter++;
         return `I am ${this.gender}`;
     }
 
-    @Computed("gender")
+    @computed("gender")
     genderDetailCopy() {
         return `I am ${this.gender}`;
     }

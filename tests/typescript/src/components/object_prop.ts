@@ -1,4 +1,4 @@
-import { Children, Component, Prop } from "mahal";
+import { children, Component, prop } from "mahal";
 import { Template } from "@mahaljs/util";
 
 @Template(`
@@ -9,11 +9,11 @@ import { Template } from "@mahaljs/util";
 
 export class Test extends Component {
 
-    @Prop()
+    @prop()
     value;
 }
 
-@Children({
+@children({
     Test
 })
 @Template(`

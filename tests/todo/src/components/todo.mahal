@@ -14,9 +14,9 @@ dateCreated: April 24, 2022
 </div>
 </html>
 <script>
-import { Prop, Component } from "mahal";
+import { prop, Component } from "mahal";
 export default class extends Component {
-    @Prop("object")
+    @prop("object")
     task;
 
     remove() {

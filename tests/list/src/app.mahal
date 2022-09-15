@@ -64,10 +64,10 @@ dateCreated:
 </html>
 
 <script>
-import { Component, Children, nextTick } from "mahal";
+import { Component, children, nextTick } from "mahal";
 import { buildData } from "@/utils/build_data";
 
-@Children({})
+@children({})
 export default class extends Component {
     rowId = 1;
     data = [];

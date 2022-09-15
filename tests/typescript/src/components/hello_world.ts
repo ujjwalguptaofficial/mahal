@@ -1,4 +1,4 @@
-import { Component, removeEl, Prop, Formatter, Reactive } from "mahal";
+import { Component, removeEl, prop, formatter, reactive } from "mahal";
 import { Template } from "@mahaljs/util";
 
 @Template(`
@@ -21,17 +21,17 @@ class BaseComponent extends Component {
 
 export default class HelloWorld extends BaseComponent {
 
-    @Prop(Number)
+    @prop(Number)
     count;
 
-    // @Prop("as")
-    @Reactive
+    // @prop("as")
+    @reactive
     myHtml = "<b>BOLD</b>"
 
-    @Reactive
+    @reactive
     name = "ujjwal gupta" // leave value in lower case
 
-    @Reactive
+    @reactive
     flag = false;
 
     constructor() {
@@ -59,7 +59,7 @@ export default class HelloWorld extends BaseComponent {
         this.emit("click");
     }
 
-    @Formatter("toUpper")
+    @formatter("toUpper")
     upperCase(value: string) {
         return value.toUpperCase();
     }

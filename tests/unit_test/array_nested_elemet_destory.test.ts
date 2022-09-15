@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Component, Reactive, Directive } from "mahal";
+import { Component, reactive, directive } from "mahal";
 import { initiate, mount } from "@mahaljs/test-utils";
 import { clone } from "../typescript/src/util";
 import { Template, Watch } from "@mahaljs/util";
@@ -22,13 +22,13 @@ import { Template, Watch } from "@mahaljs/util";
 </div>
 `)
 export class ArrayComp extends Component {
-    @Reactive
+    @reactive
     fruits = [];
 
-    @Reactive
+    @reactive
     flag = true;
 
-    @Reactive
+    @reactive
     selected = true;
 
     initialFruits = ["Banana", "Orange", "Apple", "Mango"]
@@ -46,7 +46,7 @@ export class ArrayComp extends Component {
 
     updateCount = 0;
 
-    @Directive()
+    @directive()
     dirTest() {
         ++this.updateCount;
         return {

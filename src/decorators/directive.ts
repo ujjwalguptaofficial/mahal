@@ -1,7 +1,7 @@
 import { replaceNullProp } from "../utils";
 
 // tslint:disable-next-line
-export const Directive = (name?: string): MethodDecorator => {
+export const directive = (name?: string): MethodDecorator => {
     return ((target: any, methodName: string, descriptor: PropertyDescriptor) => {
         const obj = {};
 

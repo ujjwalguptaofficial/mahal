@@ -1,7 +1,6 @@
 import { replaceNullProp } from "../utils";
 
-// tslint:disable-next-line
-export const Reactive = (target, key: string) => {
+export const reactive = (target, key: string) => {
     const obj = {};
     replaceNullProp(target, '_reactives_', () => obj);
     target._reactives_[key] = true;

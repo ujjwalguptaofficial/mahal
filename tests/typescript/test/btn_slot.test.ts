@@ -1,12 +1,12 @@
 import { app } from "../src/index";
-import { nextTick, Component, Prop, Children } from "mahal";
+import { nextTick, Component, prop, children } from "mahal";
 import { expect } from "chai";
 import { spy } from "sinon";
 import { Template } from "@mahaljs/util";
 
 
 
-@Children({
+@children({
     Btn: import('./standard_button')
 })
 @Template(`

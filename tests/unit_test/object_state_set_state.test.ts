@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Component, Reactive, Computed } from "mahal";
+import { Component, reactive, computed } from "mahal";
 import { initiate, } from "@mahaljs/test-utils";
 import { clone } from "../typescript/src/util";
 import { Template, Watch } from "@mahaljs/util";
@@ -17,12 +17,12 @@ class ObjComp extends Component {
         }
     }
 
-    @Computed('fruits')
+    @computed('fruits')
     fruitsLength() {
         return Object.keys(this.fruits).length;
     }
 
-    @Computed('fruits')
+    @computed('fruits')
     fruitsArray() {
         return Object.values(this.fruits);
     }

@@ -1,12 +1,12 @@
 import { app } from "../src/index";
-import { nextTick, Component, Prop, Children, lazyComponent } from "mahal";
+import { nextTick, Component, prop, children, lazyComponent } from "mahal";
 import { expect } from "chai";
 import { spy } from "sinon";
 import { Template } from "@mahaljs/util";
 
 
 
-@Children({
+@children({
     Btn: lazyComponent(() => Promise.reject('load failed'))
 })
 @Template(`

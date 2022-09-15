@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Component, Reactive, Computed } from "mahal";
+import { Component, reactive, computed } from "mahal";
 import { initiate } from "@mahaljs/test-utils";
 import { clone } from "../typescript/src/util";
 import { Template, Watch } from "@mahaljs/util";
@@ -12,12 +12,12 @@ class ArrayComp extends Component {
 
     initialFruits = ["Banana", "Orange", "Apple", "Mango"]
 
-    @Computed('fruits')
+    @computed('fruits')
     fruitsLength() {
         return this.fruits.length;
     }
 
-    @Computed('fruits')
+    @computed('fruits')
     fruitsObject() {
         const obj = {};
         this.fruits.forEach(fruit => {

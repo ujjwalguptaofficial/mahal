@@ -1,13 +1,13 @@
-import Computed from "../src/components/computed";
+import computed from "../src/components/computed";
 import { app } from "../src/index";
 import { expect } from "chai";
 
-describe('Computed', function () {
+describe('computed', function () {
 
     let component;
 
     before(async function () {
-        component = await (app as any).mount(Computed);
+        component = await (app as any).mount(computed);
         expect(component.fullName).equal('ujjwal gupta');
     });
 

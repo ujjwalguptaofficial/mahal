@@ -1,4 +1,4 @@
-import { Component, Prop, Reactive } from "mahal";
+import { Component, prop, reactive } from "mahal";
 import { Template } from "@mahaljs/util";
 
 @Template(`
@@ -10,10 +10,10 @@ Standard Text box
 
 export default class extends Component {
 
-    @Prop()
+    @prop()
     value;
 
-    @Prop()
+    @prop()
     textBoxId;
 
     onInput(e) {

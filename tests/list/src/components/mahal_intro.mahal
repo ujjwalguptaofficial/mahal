@@ -20,10 +20,10 @@ dateCreated:
 </html>
 
 <script>
-import { Reactive, Component } from "mahal";
+import { reactive, Component } from "mahal";
 
 export default class extends Component {
-    @Reactive appName = "Mahal";
+    @reactive appName = "Mahal";
 
     importantLinks = [
         {

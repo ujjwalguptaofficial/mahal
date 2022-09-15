@@ -1,4 +1,4 @@
-import { Component, Reactive, Children } from "mahal";
+import { Component, reactive, children } from "mahal";
 import TextBox from "./text-box";
 import { Template } from "@mahaljs/util";
 
@@ -7,13 +7,13 @@ import { Template } from "@mahaljs/util";
    <TextBox on:update="onUpdate" :id="txtStandardCheckBox" :model(text) />
 </div>
 `)
-@Children({ TextBox })
+@children({ TextBox })
 export default class extends Component {
 
-    @Reactive
+    @reactive
     text = "initial"
 
-    @Reactive
+    @reactive
     id = "txtStandardCheckBox"
 
     onUpdate() {

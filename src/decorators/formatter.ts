@@ -1,7 +1,7 @@
 import { replaceNullProp } from "../utils";
 
 // tslint:disable-next-line
-export const Formatter = (name?: string): MethodDecorator => {
+export const formatter = (name?: string): MethodDecorator => {
     return ((target: any, methodName: string, descriptor: PropertyDescriptor) => {
         const obj = {};
         replaceNullProp(target, '_formatters_', () => obj);

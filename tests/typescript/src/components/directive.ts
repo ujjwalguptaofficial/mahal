@@ -1,4 +1,4 @@
-import { Component, Directive, Reactive } from "mahal";
+import { Component, directive, reactive } from "mahal";
 import { IDirective } from "mahal/dist/ts/interface";
 import { Template } from "@mahaljs/util";
 
@@ -20,24 +20,24 @@ export default class extends Component {
 
     counter = 0;
 
-    @Reactive
+    @reactive
     counterFlag = true;
 
-    @Reactive
+    @reactive
     counterParam = 0;
 
-    // @Reactive
+    // @reactive
     // counterDirectiveOutput = 0;
 
-    @Reactive name = 'hello';
+    @reactive name = 'hello';
 
-    @Reactive
+    @reactive
     backgroundColor = 'red';
 
-    @Reactive
+    @reactive
     color = 'blue';
 
-    @Reactive
+    @reactive
     el7 = true;
 
     isDirectiveDestoyedCalled;
@@ -47,13 +47,13 @@ export default class extends Component {
         window['comp'] = this;
     }
 
-    @Directive('name')
+    @directive('name')
     nameDirective(el, binding) {
         const value = binding.value[0]
         el.setAttribute('data-name', value || 'taj');
     }
 
-    @Directive('highlight')
+    @directive('highlight')
     highlightDirective(el, binding, component) {
         function handle() {
             const [backgroundColor, color] = binding.value;
@@ -69,7 +69,7 @@ export default class extends Component {
         }
     }
 
-    @Directive()
+    @directive()
     logCount(): IDirective {
         ++this.counter;
 

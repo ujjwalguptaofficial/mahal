@@ -1,5 +1,5 @@
 import { app } from "../src/index";
-import { nextTick, Children, Reactive, Component, Prop } from "mahal";
+import { nextTick, children, reactive, Component, prop } from "mahal";
 import { expect } from "chai";
 import { createSandbox, spy } from "sinon";
 import { Template } from "@mahaljs/util";
@@ -14,7 +14,7 @@ Standard Text Area box
 
 export class TextBox extends Component {
 
-    @Prop()
+    @prop()
     value;
 
     constructor() {
@@ -28,7 +28,7 @@ export class TextBox extends Component {
     }
 }
 
-@Children({
+@children({
     TextArea: TextBox
 })
 @Template(`
@@ -38,7 +38,7 @@ export class TextBox extends Component {
 </div>
 `)
 class Temp extends Component {
-    @Reactive
+    @reactive
     name = ""
 }
 
