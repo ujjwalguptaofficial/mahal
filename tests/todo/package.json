@@ -12,8 +12,7 @@
   "license": "",
   "private": "true",
   "dependencies": {
-    "flexstyle": "^1.0.3",
-    "mahal-html-compiler": "^1.1.4"
+    "flexstyle": "^1.0.3"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^4.0.0",

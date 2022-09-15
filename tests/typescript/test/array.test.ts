@@ -74,13 +74,13 @@ describe('Array', function () {
     it("add students using btn", function (done) {
         expect(component.students).length(0);
         const newName = "ujjwal gupta";
-        component.find('#name').setValue(newName);
+        setInputValue(component.find('#name'), newName);
         expect(component.name).equal(newName);
         component.find("#btnAdd").click();
         component.waitFor("update").then(() => {
             expect(component.students).length(1);
             expect(component.students[0].name).equal(newName);
-            expect(component.find("#name").value).equal('');
+            expect((component.find("#name") as HTMLInputElement).value).equal('');
             expect(component.findAll(".tr-list")).length(1);
             done();
         })

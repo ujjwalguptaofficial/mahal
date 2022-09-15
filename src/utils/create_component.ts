@@ -2,7 +2,6 @@ import { Component } from "../abstracts";
 import { Observer } from "../helpers";
 import { Mahal } from "../mahal";
 import { emitStateChange } from "./emit_state_change";
-import { EventBus } from "./event_bus";
 import { getObjectKeys } from "./get_object_keys";
 
 export const createComponent = (componentConstructor, app: Mahal) => {

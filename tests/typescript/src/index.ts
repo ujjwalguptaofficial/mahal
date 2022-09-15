@@ -10,7 +10,7 @@ if (process.env.BUILD_ENV != "test") {
 }
 
 
-export const app = new Mahal(Main, document.querySelector('#app'));
+export const app = new Mahal(Main as any, document.querySelector('#app'));
 app.global.authorName = "ujjwal";
 app.extend.formatter("dollar", (value: string) => {
     return "$" + value;
