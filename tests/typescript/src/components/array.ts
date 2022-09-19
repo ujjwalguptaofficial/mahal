@@ -1,9 +1,9 @@
 import { Component, reactive, computed } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 import { IAppGlobal } from "../interfaces";
 
 
-@Template(`
+@template(`
 <div>
 <button on:click="()=>{reset()}">Reset</button>
     <table>

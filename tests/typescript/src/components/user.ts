@@ -1,7 +1,7 @@
 import { Component, reactive } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`
+@template(`
 <div class="user-comp">
     User info
     <div class="name">

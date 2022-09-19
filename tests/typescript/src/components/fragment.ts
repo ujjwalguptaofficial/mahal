@@ -1,13 +1,13 @@
 import { Component, prop, formatter, reactive } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-// @Template(`<div>
+// @template(`<div>
 // <fragment #for(student in students)>
 // {{student.name}}
 // </fragment>
 // </div>
 // `)
-@Template(`<div>
+@template(`<div>
     <table>
         <fragment :for(student in students)>
             <tr :if(student.isEdit)>

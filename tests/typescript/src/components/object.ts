@@ -1,7 +1,7 @@
 import { Component, reactive, computed } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`
+@template(`
 <div>
 <button on:click="reset">Reset</button>
 

@@ -1,10 +1,10 @@
 import { app } from "../src/index";
 import { nextTick, children, reactive, Component } from "mahal";
 import { expect } from "chai";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
 
-@Template(`
+@template(`
 <div>
      
 </div>
@@ -19,7 +19,7 @@ class Temp extends Component {
 
 }
 
-describe('Watch', function () {
+describe('watch', function () {
 
     let component: Temp;
 

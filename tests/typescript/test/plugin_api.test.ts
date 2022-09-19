@@ -1,6 +1,6 @@
 import { app } from "../src/index";
 import { nextTick, children, reactive, Component, prop, Plugin, Mahal } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 import { expect } from "chai";
 class TextPlugin extends Plugin {
     setup() {
@@ -18,7 +18,7 @@ class TextPlugin extends Plugin {
 
 app.extend.plugin(TextPlugin);
 
-@Template(`
+@template(`
 <div>
     <div class="name">{{name}}</div>
 </div>

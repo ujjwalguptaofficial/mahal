@@ -1,9 +1,9 @@
 import { app } from "../src/index";
 import { nextTick, children, reactive, Component, prop } from "mahal";
 import { expect } from "chai";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`
+@template(`
     <div class="user">
         <div class="name">{{name}}</div>
     </div>
@@ -21,7 +21,7 @@ class User extends Component {
 @children({
     User
 })
-@Template(`
+@template(`
 <div>
     <User :value="user" :if(flag)/>
     <div class="flag">{{flag}}</div>

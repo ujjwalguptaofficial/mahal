@@ -1,7 +1,7 @@
 import { Component, computed, reactive } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`
+@template(`
     <div :ref(el)>
         {{fullName}}
     </div>

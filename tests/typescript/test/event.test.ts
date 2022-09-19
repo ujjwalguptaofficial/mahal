@@ -1,12 +1,12 @@
 import { app } from "../src/index";
 import { nextTick, Component, prop, children, formatter, reactive } from "mahal";
 import { expect } from "chai";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
 
 @children({
 })
-@Template(`
+@template(`
 <div>
     <button id="withoutMethod" @click="onClickWithoutMethod(FIRST)">Hello</button>
     <button id="async" @click={'first' | 'second' | 'third' | 'fourth'}>Click me</button>

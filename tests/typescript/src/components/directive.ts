@@ -1,9 +1,9 @@
 import { Component, directive, reactive } from "mahal";
 import { IDirective } from "mahal/dist/ts/interface";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
 
-@Template(`
+@template(`
 <div>
   <div id="el1" :name('ujjwal') :fu>Hey</div>
   <div id="el2" :name(name)>Hey</div>

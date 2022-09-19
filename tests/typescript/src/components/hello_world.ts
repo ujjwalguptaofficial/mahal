@@ -1,7 +1,7 @@
 import { Component, removeEl, prop, formatter, reactive } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`
+@template(`
 <div class='hello-world'>
     <span :if(count>0) :show(flag===true) id="testFilter">
         {{"string" | toUpper}}

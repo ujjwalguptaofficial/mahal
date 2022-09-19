@@ -1,8 +1,8 @@
 import { Component, prop, children, reactive } from "mahal";
 import User from "./user";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`
+@template(`
 <div>
     <User class="users" :for(user in users)>
         <target>{{user.name}}</target>

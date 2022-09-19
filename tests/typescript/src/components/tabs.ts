@@ -1,8 +1,8 @@
 import { Component, prop } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
 
-@Template(`
+@template(`
     <div>
         <div class="row">
             <div :class({ 'active' : value===tab }) on:click="()=>{onTabClick(tab)}" class="tab margin-right-10px" :for(tab in tabs) >

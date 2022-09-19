@@ -1,7 +1,7 @@
 import { Component, prop, formatter, reactive } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`<div>
+@template(`<div>
 <input :model(email) type="text" />
 <button id="btnSubmit" on:click={"validate" | "submit"}>Submit</button>
 </div>

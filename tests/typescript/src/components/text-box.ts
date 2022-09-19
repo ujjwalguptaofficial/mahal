@@ -1,7 +1,7 @@
 import { Component, prop, reactive } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`
+@template(`
 <div>
 Standard Text box
    <input type="text" :value="value" on:input="onInput" />

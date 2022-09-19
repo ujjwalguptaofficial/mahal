@@ -1,7 +1,7 @@
 import { children, Component, prop } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`
+@template(`
 <div>
     <p :for(val,key in value) :class(key)>{{val}}</p>
 </div>
@@ -16,7 +16,7 @@ export class Test extends Component {
 @children({
     Test
 })
-@Template(`
+@template(`
 <div>
     <Test :value="{name:'ujjwal',gender:'male'}" />
 </div>

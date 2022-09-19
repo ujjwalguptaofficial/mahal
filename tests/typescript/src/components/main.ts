@@ -1,6 +1,6 @@
 import { Component, children, reactive, directive, nextTick, lazyComponent } from "mahal";
 import ModelComponent from "./component_model";
-import { Template, Watch } from "@mahaljs/util";
+import { template, watch } from "@mahaljs/util";
 
 import HelloWorld from "./hello_world";
 import Student from "./array";
@@ -21,13 +21,13 @@ import ArrayModel from "./array_model";
 import ObjectResetModel from "./object_reset_model";
 import { IAppGlobal } from "../interfaces";
 
-// @Template(`<div >
+// @template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
 // </div>`)
-// @Template(`
+// @template(`
 //     <TabRender :label="flag" :count="counter" on:click="incrementCounter" />
 // `)
-@Template(`
+@template(`
 <div>
     <HelloWorld/>
 </div>
@@ -133,7 +133,7 @@ export default class Main extends Component<IAppGlobal> {
         alert("hello world clicked")
     }
 
-    // @Watch('flag')
+    // @watch('flag')
     onFlagChange(newValue, oldValue) {
         console.log('onFlagChange', newValue, oldValue);
     }

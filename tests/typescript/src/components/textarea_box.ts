@@ -1,7 +1,7 @@
 import { Component, prop, reactive, } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`
+@template(`
 <div>
 Standard Text Area box
    <input type="text" :model(text) />

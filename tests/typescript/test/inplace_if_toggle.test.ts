@@ -1,18 +1,18 @@
 import { app } from "../src/index";
 import { lazyComponent, computed, Component, prop, children, reactive } from "mahal";
 import { expect } from "chai";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
 @children({
     Btn: lazyComponent(() => import('../src/components/btn')),
     HelloWorld: lazyComponent(() => import('../src/components/hello_world'))
 })
-// @Template(`
+// @template(`
 // <div>
 //     <in-place :of="name" #if(flag1 && flag2) label="as"/>
 // </div>
 // `)
-@Template(`
+@template(`
 <div>
     <in-place :of="componentName" label="as"/>
 </div>

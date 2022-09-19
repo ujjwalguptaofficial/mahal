@@ -1,13 +1,13 @@
 import { Component, prop, formatter, reactive } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-// @Template(`<div>
+// @template(`<div>
 // <fragment #for(student in students)>
 // {{student.name}}
 // </fragment>
 // </div>
 // `)
-@Template(`<div>
+@template(`<div>
     <div class="fruit-row" :for(fruit,i in fruits)>
         <input type="text" :model(fruit) />
         <span :fruit="fruit">{{fruit}}</span>

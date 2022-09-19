@@ -1,7 +1,7 @@
 import { Component, prop, formatter, reactive } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`
+@template(`
 <button class="btn" on:click="handleClick">Click</button>
 `)
 

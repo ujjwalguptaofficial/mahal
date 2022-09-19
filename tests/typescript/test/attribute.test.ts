@@ -1,12 +1,12 @@
 import { app } from "../src/index";
 import { nextTick, Component, prop, children, formatter, reactive } from "mahal";
 import { expect } from "chai";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
 
 @children({
 })
-@Template(`
+@template(`
 <div>
     <div class="name" :name ="content | toUpper"></div>
 </div>

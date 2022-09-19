@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import { Component, directive, reactive, computed } from "mahal";
 import { initiate, mount } from "@mahaljs/test-utils";
-import { Template, Watch } from "@mahaljs/util";
+import { template, watch } from "@mahaljs/util";
 
-@Template(`
+@template(`
 <div class='dd'>
     <div :if(flag)>
         <div>

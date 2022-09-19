@@ -1,8 +1,8 @@
 import { Component, reactive } from "mahal";
 import { clone } from "../util";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`
+@template(`
 <div>
 <p :for(fruit,index in fruits)>
  {{index}}-{{fruit}}

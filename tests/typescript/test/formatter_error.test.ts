@@ -2,11 +2,11 @@ import { app } from "../src/index";
 import { reactive, Component, formatter } from "mahal";
 import { expect } from "chai";
 import { mount, getMount } from "@mahaljs/test-utils";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
 
 
-@Template(`
+@template(`
 <div>
     <button>{{content | toUpper}}</button>
 </div>

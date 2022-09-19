@@ -1,7 +1,7 @@
 import { app } from "../src/index";
 import { Component, children, reactive } from "mahal";
 import { expect } from "chai";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
 class BaseClient extends Component {
     @reactive
@@ -16,7 +16,7 @@ class MoreBaseClient extends BaseClient {
 
 @children({
 })
-@Template(`
+@template(`
 <div>
     {{state1}}
     {{state2}}

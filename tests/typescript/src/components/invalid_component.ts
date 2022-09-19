@@ -1,8 +1,8 @@
 import { Component, children, reactive } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
 
-@Template(`<div>
+@template(`<div>
 <IfElse></IfElse>
 </div>`)
 export default class extends Component {

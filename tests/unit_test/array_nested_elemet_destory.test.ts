@@ -2,9 +2,9 @@ import { expect } from "chai";
 import { Component, reactive, directive } from "mahal";
 import { initiate, mount } from "@mahaljs/test-utils";
 import { clone } from "../typescript/src/util";
-import { Template, Watch } from "@mahaljs/util";
+import { template, watch } from "@mahaljs/util";
 
-@Template(`
+@template(`
 <div>
     <div :if(flag)>
         <div>

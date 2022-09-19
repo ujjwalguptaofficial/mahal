@@ -1,7 +1,7 @@
 import { Component } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`
+@template(`
     <button>
         <slot></slot>
     </button>

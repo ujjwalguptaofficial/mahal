@@ -2,10 +2,10 @@ import { app } from "../src/index";
 import { nextTick, children, reactive, Component, prop } from "mahal";
 import { expect } from "chai";
 import { createSandbox, spy } from "sinon";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
 
-@Template(`
+@template(`
 <div>
 Standard Text Area box
    <input type="text" :model(value) />
@@ -31,7 +31,7 @@ export class TextBox extends Component {
 @children({
     TextArea: TextBox
 })
-@Template(`
+@template(`
 <div>
     <TextArea :model(name)/>
     <div class="name">{{name}}</div>

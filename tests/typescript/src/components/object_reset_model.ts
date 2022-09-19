@@ -1,7 +1,7 @@
 import { Component, reactive } from "mahal";
-import { Template } from "@mahaljs/util";
+import { template } from "@mahaljs/util";
 
-@Template(`
+@template(`
 <div>
    <input type="text" :model(student.name) />
    <div class="name">{{student.name}}</div>
