@@ -1,5 +1,5 @@
 import { app } from "../src/index";
-import { nextTick, children, reactive, Component, prop } from "mahal";
+import { nextTick, children, reactive, Component, EventBus } from "mahal";
 import { expect } from "chai";
 import { template } from "@mahaljs/util";
 
@@ -10,6 +10,7 @@ import { template } from "@mahaljs/util";
 				<div>{{item.question}}</div>
 				<i class="fa fa-chevron-down"></i>
 			</b>
+            <p class="items-index">{{items}} {{indexes}}</p>
 			<div class="answer" :show(item.show) :html(item.answer)></div>
 		</div>
 </div>
@@ -19,6 +20,9 @@ export default class Temp extends Component {
     onInit() {
         // window['compD'] = this;
     }
+
+    items = "ujjwal"
+    indexes = "gupta"
 
     @reactive
     list = [
@@ -38,15 +42,17 @@ export default class Temp extends Component {
 
 describe('Directive in for', function () {
 
-    let component;
+    let component: Temp;
 
     before(async function () {
         component = await (app as any).mount(Temp);
     });
 
-    it('should be hidden at mounting', async () => {
+    it('check initial state', async () => {
         const answerEl = component.find('.answer');
         expect(answerEl.style.display).equal('none');
+        expect(component['_watchBus_']._events_["list.0"] || []).length(0);
+        expect(component['_watchBus_']._events_["list.0.show"]).length(1);
     })
 
     it('show answer', async () => {
@@ -68,6 +74,11 @@ describe('Directive in for', function () {
         const answerEl = component.find('.answer');
         const display = answerEl.style.display;
         expect(display).equal('none');
+    })
+
+    it('check items indexes', async () => {
+        const itemsIndexesEl = component.find('.items-index');
+        expect(itemsIndexesEl.innerHTML).equal(`ujjwal gupta`);
     })
 
 });
