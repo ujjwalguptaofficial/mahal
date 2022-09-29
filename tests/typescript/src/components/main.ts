@@ -29,7 +29,7 @@ import Temp from '../../test/directive_in_for.test';
 // `)
 @template(`
 <div>
-    <Fragment/>
+    <Temp/>
 </div>
 `)
 @children({

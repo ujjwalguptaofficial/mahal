@@ -6,7 +6,7 @@ import { template } from "@mahaljs/util";
 @template(`
 <div>
 		<div :for(item,index in list) class="mt-2" :key="item.question">
-			<b  @click="showFAQ(index)" class="question">
+			<b  @click="toggleAnswerFAQ(index)" class="question">
 				<div>{{item.question}}</div>
 				<i class="fa fa-chevron-down"></i>
 			</b>
@@ -16,11 +16,8 @@ import { template } from "@mahaljs/util";
 `)
 export default class Temp extends Component {
 
-    answerEl;
-    questionEl;
-
     onInit() {
-        window['compD'] = this;
+        // window['compD'] = this;
     }
 
     @reactive
@@ -31,37 +28,47 @@ export default class Temp extends Component {
         },
     ];
 
-    showFAQ(index) {
+    toggleAnswerFAQ(index) {
         this.list[index] = {
             ...this.list[index],
-            show: true,
+            show: !Boolean(this.list[index]['show']),
         } as any;
     }
 }
 
-// describe('Directive in for', function () {
+describe('Directive in for', function () {
 
-//     let component;
+    let component;
 
-//     before(async function () {
-//         component = await (app as any).mount(Temp);
-//     });
+    before(async function () {
+        component = await (app as any).mount(Temp);
+    });
 
-//     it('should be hidden at mounting', async () => {
-//         const answerEl = component.find('.answer');
-//         expect(answerEl.style.display).equal('none');
-//     })
+    it('should be hidden at mounting', async () => {
+        const answerEl = component.find('.answer');
+        expect(answerEl.style.display).equal('none');
+    })
 
-//     it('show answer', async () => {
-//         const questionEl = component.find('.question');
-//         questionEl.click();
-//         await component.waitFor('update');
+    it('show answer', async () => {
+        const questionEl = component.find('.question');
+        questionEl.click();
+        await component.waitFor('update');
 
-//         const answerEl = component.find('.answer');
-//         const display = answerEl.style.display;
-//         expect(display).equal('unset');
-//         expect(display).not.equal('none');
-//     })
+        const answerEl = component.find('.answer');
+        const display = answerEl.style.display;
+        expect(display).equal('unset');
+        expect(display).not.equal('none');
+    })
 
-// });
+    it('hide answer', async () => {
+        const questionEl = component.find('.question');
+        questionEl.click();
+        await component.waitFor('update');
+
+        const answerEl = component.find('.answer');
+        const display = answerEl.style.display;
+        expect(display).equal('none');
+    })
+
+});
 
