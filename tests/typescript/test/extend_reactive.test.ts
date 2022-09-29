@@ -43,7 +43,7 @@ describe('Declarative reactive test', function () {
     });
 
     it("check initiated inner html", async function () {
-        expect(component.element.innerHTML).equal('1234');
+        expect(component.element.innerHTML).equal('1 2 3 4');
     });
 
     it("change value", async function () {
@@ -51,7 +51,7 @@ describe('Declarative reactive test', function () {
         component.state2 = 102;
         component.state3 = 103;
         component.state4 = 104;
-        expect(component.element.innerHTML).equal('101102103104');
+        expect(component.element.innerHTML).equal('101 102 103 104');
     });
 
 

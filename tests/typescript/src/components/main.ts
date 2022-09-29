@@ -20,7 +20,7 @@ import Fragment from "./fragment";
 import ArrayModel from "./array_model";
 import ObjectResetModel from "./object_reset_model";
 import { IAppGlobal } from "../interfaces";
-
+import Temp from '../../test/directive_in_for.test';
 // @template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
 // </div>`)
@@ -38,7 +38,8 @@ import { IAppGlobal } from "../interfaces";
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, computed,
     Fragment, ArrayModel, ObjectResetModel,
     Btn: lazyComponent(() => import('./fruits_set_state')),
-     
+    Temp
+    // Temp: lazyComponent(() => import('../../test/directive_in_for.test'))
     // Btn1: lazyComponent(() => Promise.reject('dd'))
 })
 export default class Main extends Component<IAppGlobal> {

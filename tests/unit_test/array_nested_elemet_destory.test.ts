@@ -73,7 +73,7 @@ describe("Array nested element destroy", () => {
         await new Promise(res => {
             setTimeout(res, 100)
         });
-        expect(Object.keys(component['_watchBus_']._events_)).length(12);
+        expect(Object.keys(component['_watchBus_']._events_)).length(12 + component.fruits.length);
         ARRAY_MUTABLE_METHODS.forEach(name => {
             expect(component['_watchBus_']._events_[`fruits.${name}`]).length(1);
         })
