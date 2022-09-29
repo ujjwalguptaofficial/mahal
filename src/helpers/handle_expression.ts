@@ -27,6 +27,7 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
                 }
                 else {
                     subscriveToDestroyFromChild(newEl);
+                    newEl['_setVal_'] = el['_setVal_'];
                 }
             } catch (err) {
                 emitError.call(ctx, err);

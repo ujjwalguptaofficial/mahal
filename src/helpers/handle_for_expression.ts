@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, resolveValue, createDocumentFragment } from "../utils";
+import { isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, resolveValue, createDocumentFragment, isObject, merge, emitStateChange } from "../utils";
 import { ERROR_TYPE } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
@@ -254,10 +254,45 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const reactiveChild: TYPE_RC_STORAGE = currentEl[REACTIVE_CHILD];
                 const oldValue = params.oldValue;
                 const newValue = params.value;
+                if (newValue !== oldValue) {
+                    currentEl._setVal_(newValue);
+                    let prefix = `${key}.${paramKey}`;
+                    const onChange = emitStateChange.bind(ctx);
+                    if (isObject(newValue)) {
+                        const mergedNewValue = merge(oldValue, newValue);
+                        prefix += '.';
+                        for (const valKey in mergedNewValue) {
+                            onChange(`${prefix}${valKey}`,
+                                newValue[valKey],
+                                oldValue[valKey]
+                            );
+                        }
+                    }
+                    else {
+                        onChange(`${prefix}`,
+                            newValue,
+                            oldValue
+                        );
+                    }
+                }
+                return;
                 const reactiveChildForNewProp = (method(newValue, paramKey)[REACTIVE_CHILD] as TYPE_RC_STORAGE);
                 reactiveChild.forEach((oldReactiveEls, reactiveChildProp) => {
                     const shouldUpdate = resolveValue(reactiveChildProp, oldValue) !== resolveValue(reactiveChildProp, newValue);
-                    if (!shouldUpdate) return;
+                    if (!shouldUpdate) {
+                        // if (isObject(newValue)) {
+                        //     const mergedNewValue = merge(oldValue, newValue);
+                        //     const prefix = `${key}.${paramKey}.`;
+                        //     const onChange = emitStateChange.bind(ctx);
+                        //     for (const valKey in mergedNewValue) {
+                        //         onChange(`${prefix}${valKey}`,
+                        //             newValue[valKey],
+                        //             oldValue[valKey]
+                        //         );
+                        //     }
+                        // }
+                        return;
+                    }
                     const newReactiveEls = reactiveChildForNewProp.get(reactiveChildProp);
                     if (newReactiveEls) {
                         oldReactiveEls.forEach((el, i) => {
