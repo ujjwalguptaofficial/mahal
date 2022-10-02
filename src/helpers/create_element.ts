@@ -127,7 +127,7 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
 }
 
 Component.prototype['_createEl_'] = createElement;
-Component.prototype['_createNativeComponent_'] = function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
+Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
 
 
     const element = document.createElement(tag) as HTMLElement;

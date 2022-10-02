@@ -1,10 +1,29 @@
-import { createTextNode, handleExpression, clearAll, Logger, onElDestroy, createElement, addRc } from "../helpers";
+import { createTextNode, clearAll, Logger, onElDestroy, addRc } from "../helpers";
 import { Component } from "../abstracts";
 import { Mahal } from "../mahal";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { IRenderContext } from "../interface";
 
-function getRender(this: Component): () => Promise<HTMLElement> {
+
+
+const renderContext: IRenderContext = {
+    createTextNode: createTextNode,
+    addRc: addRc
+};
+
+export const executeRender = (comp: Component) => {
+    const renderFn = comp['_render_']();
+    const el: HTMLElement = renderFn.call(comp, renderContext);
+    comp.element = el;
+    onElDestroy(el, () => {
+        comp['_clearAll_']();
+    });
+    comp.emit(LIFECYCLE_EVENT.Mount);
+    comp.isMounted = true;
+    return el;
+};
+
+Component.prototype['_render_'] = function (this: Component): () => HTMLElement {
     if (process.env.NODE_ENV !== "production") {
         return this.render || (() => {
             if (!(Mahal as any).createRenderer) {
@@ -18,18 +37,4 @@ function getRender(this: Component): () => Promise<HTMLElement> {
     }
 }
 
-const renderContext: IRenderContext = {
-    createTextNode: createTextNode,
-    addRc: addRc
-};
-
-export const executeRender = (comp: Component) => {
-    const renderFn = getRender.call(comp);
-    const el: HTMLElement = renderFn.call(comp, renderContext);
-    comp.element = el;
-    const clear = clearAll.bind(comp);
-    onElDestroy(el, clear);
-    comp.emit(LIFECYCLE_EVENT.Mount);
-    comp.isMounted = true;
-    return el;
-};
+Component.prototype['_clearAll_'] = clearAll;
