@@ -37,6 +37,10 @@ Component.prototype['_createEl_'] = function (this: Component, tag: string, chil
         return ctx['_createNativeComponent_'](tag, childs, option);
     }
 
+    if (!option) {
+        option = {};
+    }
+
     switch (tag) {
         case "slot":
         case "target":
@@ -125,31 +129,34 @@ Component.prototype['_createEl_'] = function (this: Component, tag: string, chil
 };
 
 
-Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
+Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChilds: HTMLElement[], option?): HTMLElement {
 
     const element = document.createElement(tag) as HTMLElement;
     htmlChilds.forEach(item => {
         element.appendChild(item);
     });
 
-    const ctx = this;
+    if (option) {
+        const ctx = this;
+        ctx['_handleAttr_'](element, option.attr, false);
 
-    ctx['_handleAttr_'](element, option.attr, false);
-
-    // register events
-    forEachEvent.call(ctx, option.on, (eventName, listener) => {
-        addEventListener(
-            element, eventName, listener,
-        );
-    });
-
-    ctx['_handleDir_'](element, option.dir, false);
-    const rc = option.rc;
-    if (rc) {
-        const addRc = rc[1]();
-        forEach(rc[0], (_, key) => {
-            addRc(key, element);
+        // register events
+        forEachEvent.call(ctx, option.on, (eventName, listener) => {
+            addEventListener(
+                element, eventName, listener,
+            );
         });
+
+        ctx['_handleDir_'](element, option.dir, false);
+        const rc = option.rc;
+        if (rc) {
+            const addRc = rc[1]();
+            forEach(rc[0], (_, key) => {
+                addRc(key, element);
+            });
+        }
     }
+
+
     return element;
 };

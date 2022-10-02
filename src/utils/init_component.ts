@@ -6,13 +6,20 @@ import { getDataype } from "./get_data_type";
 
 export function initComponent(this: Component, component: Component, option) {
 
-    const htmlAttributes = this['_handleAttr_'](component, option.attr, true);
-    this['_handleDir_'](component as any, option.dir, true);
+    let htmlAttributes = [];
 
-    // register events
-    forEachEvent.call(this, option.on, (eventName, listener) => {
-        component.on(eventName, listener);
-    });
+    if (option) {
+
+        htmlAttributes = this['_handleAttr_'](component, option.attr, true);
+        this['_handleDir_'](component as any, option.dir, true);
+
+        // register events
+        forEachEvent.call(this, option.on, (eventName, listener) => {
+            component.on(eventName, listener);
+        });
+
+    }
+
 
     const computed = component['_computed_'];
     for (const key in computed) {

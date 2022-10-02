@@ -55,7 +55,7 @@ export class Mahal {
 
     create() {
         let componentInstance: Component = createComponent(this._comp_, this);
-        initComponent.call(this, componentInstance, {});
+        initComponent.call(this, componentInstance);
         this.emit(LIFECYCLE_EVENT.Create);
         const el = executeRender(componentInstance);
         this.element.appendChild(
