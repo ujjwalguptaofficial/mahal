@@ -1,4 +1,4 @@
-import { createTextNode, handleExpression, createElement, clearAll, Logger, onElDestroy } from "../helpers";
+import { createTextNode, handleExpression, clearAll, Logger, onElDestroy, createElement, addRc } from "../helpers";
 import { Component } from "../abstracts";
 import { Mahal } from "../mahal";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
@@ -18,30 +18,16 @@ function getRender(this: Component): () => Promise<HTMLElement> {
     }
 }
 
-export function addRc(this: Map<string, HTMLElement[]>, key, el) {
-    const val = this.get(key);
-    if (!val) {
-        this.set(key, [el]);
-    }
-    else {
-        val.push(el);
-    }
-    return el;
-}
+const renderContext: IRenderContext = {
+    createTextNode: createTextNode,
+    addRc: addRc
+};
 
-export const executeRender = (comp: Component, children?) => {
+export const executeRender = (comp: Component) => {
     const renderFn = getRender.call(comp);
-    const el: HTMLElement = renderFn.call(comp, {
-        createElement: createElement.bind(comp),
-        createTextNode: createTextNode,
-        format: comp.format.bind(comp),
-        runExp: handleExpression.bind(comp),
-        children: children || [],
-        addRc: addRc
-    } as IRenderContext);
+    const el: HTMLElement = renderFn.call(comp, renderContext);
     comp.element = el;
     const clear = clearAll.bind(comp);
-
     onElDestroy(el, clear);
     comp.emit(LIFECYCLE_EVENT.Mount);
     comp.isMounted = true;

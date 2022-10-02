@@ -1,5 +1,4 @@
 import { Component } from "../abstracts/component";
-import { IRenderContext } from "../interface";
 
 export class FragmentComponent extends Component {
     constructor() {
@@ -7,8 +6,7 @@ export class FragmentComponent extends Component {
         this.template = `<slot></slot>`;
     }
 
-    render(renderer: IRenderContext) {
-        const ce = renderer.createElement;
-        return ce.call(this, 'slot', [], {}) as any;
+    render() {
+        return this['_createEl_']('slot', [], {}) as any;
     }
 }

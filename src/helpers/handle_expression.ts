@@ -62,3 +62,5 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
     handleChange();
     return el;
 }
+
+Component.prototype['_handleExp_'] = handleExpression;
