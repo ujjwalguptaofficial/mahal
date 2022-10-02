@@ -51,4 +51,4 @@ Component.prototype['_handleDir_'] = function (this: Component, element: HTMLEle
             });
         });
     });
-}
+};

@@ -33,5 +33,5 @@ Component.prototype['_render_'] = function (this: Component): () => HTMLElement 
     else {
         return this.render || (Mahal as any).createRenderer(this.template);
     }
-}
+};
 

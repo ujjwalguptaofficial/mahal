@@ -122,7 +122,7 @@ Component.prototype['_createEl_'] = function (this: Component, tag: string, chil
     new Logger(ERROR_TYPE.InvalidComponent, {
         tag: tag
     }).throwPlain();
-}
+};
 
 
 Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChilds: HTMLElement[], option): HTMLElement {

@@ -88,4 +88,4 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
         subscribeToDestroy(component);
     }
 
-}
+};
