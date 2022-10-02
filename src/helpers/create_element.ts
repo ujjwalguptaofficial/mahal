@@ -2,7 +2,7 @@ import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
 import { DEFAULT_SLOT_NAME } from "../constant";
 import { handleAttribute } from "./handle_attribute";
-import { initComponent, executeRender, replaceEl, getAttribute, setAttribute, createComponent, ILazyComponentPayload, addEventListener, insertBefore, forEach } from "../utils";
+import { executeRender, replaceEl, getAttribute, setAttribute, createComponent, ILazyComponentPayload, addEventListener, insertBefore, forEach } from "../utils";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
@@ -59,7 +59,7 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
 
         const renderComponent = (comp) => {
             const component: Component = createComponent(comp, ctx['_app_']);
-            const htmlAttributes = initComponent.call(ctx, component as any, option);
+            const htmlAttributes = ctx['_initComp_'](component as any, option);
             executeRender(component);
             let element = component.element;
             let targetSlot = component.find(`slot[name='default']`) || (element.tagName.match(/slot/i) ? element : null);

@@ -9,7 +9,7 @@ export class FragmentComponent extends Component {
 
     render(renderer: IRenderContext): HTMLElement {
         const ctx = this;
-        const ce = renderer.createElement;
+        const ce = this['_createEl_'];
         return ce.call(ctx, 'slot', [], {}) as any;
     }
 }

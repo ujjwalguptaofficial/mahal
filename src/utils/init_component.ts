@@ -50,3 +50,5 @@ export function initComponent(this: Component, component: Component, option) {
     component.emit(LIFECYCLE_EVENT.Create);
     return htmlAttributes;
 }
+
+Component.prototype['_initComp_'] = initComponent;

@@ -1,7 +1,7 @@
 import { ERROR_TYPE } from "../enums";
 import { Observer, Logger, indexOf, emitError, createElement, handleExpression, clearAll } from "../helpers";
 import { ILazyComponent, IRenderContext, } from "../interface";
-import { EventBus, emitStateChange, resolveValue, replaceNullProp, getDataype } from "../utils";
+import { EventBus, emitStateChange, resolveValue, replaceNullProp, getDataype, initComponent } from "../utils";
 import { Mahal } from "../mahal";
 import { emptyObj } from "../constant";
 import { TYPE_ALL_LIFE_CYCLE_EVENT, TYPE_EVENT_STORE } from "../types";
@@ -387,6 +387,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
     private _handleExp_: typeof handleExpression;
     private _render_: () => () => HTMLElement;
     private _clearAll_: typeof clearAll;
+    private _initComp_: typeof initComponent;
 
 }
 
