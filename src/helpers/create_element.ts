@@ -45,6 +45,9 @@ function createNativeComponent(tag: string, htmlChilds: HTMLElement[], option): 
     });
 
     handleDirective.call(ctx, element, option.dir, false);
+    if (option.rc) {
+        option.rc(element);
+    }
     return element;
 }
 

@@ -26,4 +26,10 @@ export default class extends Component {
     onTabClick(value) {
         this.emit('input', value);
     }
+
+    onInit(): void {
+        this.on('mount',()=>{
+            console.log('el',this.element);
+        })
+    }
 }

@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { createCommentNode } from "./create_coment_node";
-import { isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, resolveValue, createDocumentFragment, isObject, merge, emitStateChange } from "../utils";
+import { isArray, getObjectLength, forEach, removeEl, replaceEl, nextTick, insertBefore, resolveValue, createDocumentFragment } from "../utils";
 import { ERROR_TYPE } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { emitError } from "./emit_error";
@@ -9,7 +9,9 @@ import { indexOf } from "./index_of";
 import { getElementKey } from "./get_el_key";
 import { OBJECT_MUTABLE_METHODS } from "../constant";
 import { onElDestroy, subscriveToDestroyFromChild } from "../helpers";
+import { TYPE_RC_STORAGE } from "../types";
 
+const REACTIVE_CHILD = '_rc_';
 
 export function handleForExp(this: Component, key: string, method: (...args) => HTMLElement) {
     const ctx = this;
@@ -87,6 +89,9 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
     };
     const onElDestroyed = () => {
         cmNode = null;
+        // for (const ev in callBacks) {
+        //     ctx.unwatch(ev, callBacks[ev]);
+        // }
 
         forEach(callBacks, (value, ev) => {
             ctx.unwatch(ev, value);
@@ -246,29 +251,28 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 if (index < 0) return;
 
                 const currentEl = childNodes[indexOfRef + 1 + index] as any;
+                const reactiveChild: TYPE_RC_STORAGE = currentEl[REACTIVE_CHILD];
                 const oldValue = params.oldValue;
                 const newValue = params.value;
-                if (newValue !== oldValue) {
-                    currentEl._setVal_(newValue);
-                    let prefix = `${key}.${paramKey}`;
-                    const onChange = emitStateChange.bind(ctx);
-                    if (isObject(newValue)) {
-                        const mergedNewValue = merge(oldValue, newValue);
-                        prefix += '.';
-                        for (const valKey in mergedNewValue) {
-                            onChange(`${prefix}${valKey}`,
-                                newValue[valKey],
-                                oldValue[valKey]
+                const reactiveChildForNewProp = (method(newValue, paramKey)[REACTIVE_CHILD] as TYPE_RC_STORAGE);
+                reactiveChild.forEach((oldReactiveEls, reactiveChildProp) => {
+                    const shouldUpdate = resolveValue(reactiveChildProp, oldValue) !== resolveValue(reactiveChildProp, newValue);
+                    if (!shouldUpdate) return;
+                    const newReactiveEls = reactiveChildForNewProp.get(reactiveChildProp);
+                    if (newReactiveEls) {
+                        oldReactiveEls.forEach((el, i) => {
+                            if (!el.isConnected) return;
+                            const isPatched = replaceEl(
+                                el,
+                                newReactiveEls[i]
                             );
-                        }
+                            if (isPatched) {
+                                newReactiveEls[i] = el;
+                            }
+                        });
                     }
-                    else {
-                        onChange(`${prefix}`,
-                            newValue,
-                            oldValue
-                        );
-                    }
-                }
+                    reactiveChild.set(reactiveChildProp, newReactiveEls || []);
+                });
             }
         };
         nextTick(_ => {

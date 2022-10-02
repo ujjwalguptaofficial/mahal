@@ -18,6 +18,17 @@ function getRender(this: Component): () => Promise<HTMLElement> {
     }
 }
 
+export function addRc(this: Map<string, HTMLElement[]>, key, el) {
+    const val = this.get(key);
+    if (!val) {
+        this.set(key, [el]);
+    }
+    else {
+        val.push(el);
+    }
+    return el;
+}
+
 export const executeRender = (comp: Component, children?) => {
     const renderFn = getRender.call(comp);
     const el: HTMLElement = renderFn.call(comp, {
@@ -26,6 +37,7 @@ export const executeRender = (comp: Component, children?) => {
         format: comp.format.bind(comp),
         runExp: handleExpression.bind(comp),
         children: children || [],
+        addRc: addRc
     } as IRenderContext);
     comp.element = el;
     const clear = clearAll.bind(comp);
