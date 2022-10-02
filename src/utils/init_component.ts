@@ -1,12 +1,12 @@
 import { Component } from "../abstracts";
 import { OBJECT_MUTABLE_METHODS } from "../constant";
 import { LIFECYCLE_EVENT } from "../enums";
-import { handleAttribute, handleDirective, forEachEvent } from "../helpers";
+import { handleDirective, forEachEvent } from "../helpers";
 import { getDataype } from "./get_data_type";
 
 export function initComponent(this: Component, component: Component, option) {
 
-    const htmlAttributes = handleAttribute.call(this, component, option.attr, true);
+    const htmlAttributes = this['_handleAttr_'](component, option.attr, true);
     handleDirective.call(this, component, option.dir, true);
 
     // register events

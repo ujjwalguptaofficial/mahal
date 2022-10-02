@@ -1,6 +1,6 @@
 import { ERROR_TYPE } from "../enums";
 import { Observer, Logger, indexOf, emitError, createElement, handleExpression, clearAll } from "../helpers";
-import { ILazyComponent, IRenderContext, } from "../interface";
+import { IAttrItem, ILazyComponent, IRenderContext, } from "../interface";
 import { EventBus, emitStateChange, resolveValue, replaceNullProp, getDataype, initComponent } from "../utils";
 import { Mahal } from "../mahal";
 import { emptyObj } from "../constant";
@@ -388,6 +388,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
     private _render_: () => () => HTMLElement;
     private _clearAll_: typeof clearAll;
     private _initComp_: typeof initComponent;
+    private _handleAttr_: (component, attr: { [attributeKey: string]: IAttrItem }, isComponent: boolean) => any[];
 
 }
 

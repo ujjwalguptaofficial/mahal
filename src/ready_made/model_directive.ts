@@ -1,12 +1,12 @@
+import { Component } from "../abstracts";
 import { IDirectiveBinding, IAttrItem } from "../interface";
-import { handleAttribute } from "../helpers";
 
 // tslint:disable-next-line
 export function createModelDirective(eventName, propToUse) {
-    return function modelDirective(el: HTMLInputElement, binding: IDirectiveBinding) {
+    return function modelDirective(this: Component, el: HTMLInputElement, binding: IDirectiveBinding) {
         const key = binding.props[0];
         const isComponent = binding.isComponent;
-        handleAttribute.call(this, el, {
+        this['_handleAttr_'](el, {
             value: {
                 k: key,
                 v: binding[propToUse][0]

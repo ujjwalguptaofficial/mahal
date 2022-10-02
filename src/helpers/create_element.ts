@@ -1,7 +1,6 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
 import { DEFAULT_SLOT_NAME } from "../constant";
-import { handleAttribute } from "./handle_attribute";
 import { executeRender, replaceEl, getAttribute, setAttribute, createComponent, ILazyComponentPayload, addEventListener, insertBefore, forEach } from "../utils";
 import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
@@ -9,6 +8,7 @@ import { handleInPlace } from "./handle_in_place";
 import { emitError } from "./emit_error";
 import { Logger } from "./logger";
 import { forEachEvent } from "./for_each_event";
+import "./handle_attribute";
 
 const loadComponent = (componentClass) => {
     if (componentClass instanceof Promise) {
@@ -137,7 +137,7 @@ Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChil
 
     const ctx = this;
 
-    handleAttribute.call(ctx, element, option.attr, false);
+    ctx['_handleAttr_'](element, option.attr, false);
 
     // register events
     forEachEvent.call(ctx, option.on, (eventName, listener) => {

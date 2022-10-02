@@ -8,7 +8,7 @@ import { Logger } from "./logger";
 import { onElDestroy } from "./destroy_helper";
 
 
-export function handleAttribute(this: Component, component, attr, isComponent) {
+Component.prototype['_handleAttr_'] = function (this: Component, component, attr, isComponent) {
     if (!attr) return;
     const methods = new Map<string, Function>();
     const subscribeToDestroy = (el: HTMLElement) => {
