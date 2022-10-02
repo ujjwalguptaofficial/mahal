@@ -62,5 +62,14 @@ describe('TAB RENDER', function () {
         expect(childsLength).equal(1);
     });
 
+    it('check for rc', async () => {
+        const el = component.element as HTMLElement;
+        const tab = el.querySelector('.tab');
+        const rc: Map<string, HTMLElement> = tab['_rc_'];
+        const keys = Array.from(rc.keys());
+        expect(keys).length(1);
+        expect(keys[0]).equal('');
+    })
+
 });
 
