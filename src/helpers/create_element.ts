@@ -9,6 +9,7 @@ import { Logger } from "./logger";
 import { forEachEvent } from "./for_each_event";
 import "./handle_attribute";
 import "./handle_directive";
+import "./handle_expression";
 
 const loadComponent = (componentClass) => {
     if (componentClass instanceof Promise) {
@@ -25,10 +26,7 @@ const loadComponent = (componentClass) => {
 };
 
 
-
-
-
-export function createElement(this: Component, tag: string, childs: HTMLElement[], option): HTMLElement | Comment {
+Component.prototype['_createEl_'] = function (this: Component, tag: string, childs: HTMLElement[], option): HTMLElement | Comment {
     if (tag == null) {
         return createCommentNode();
     }
@@ -126,9 +124,8 @@ export function createElement(this: Component, tag: string, childs: HTMLElement[
     }).throwPlain();
 }
 
-Component.prototype['_createEl_'] = createElement;
-Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
 
+Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChilds: HTMLElement[], option): HTMLElement {
 
     const element = document.createElement(tag) as HTMLElement;
     htmlChilds.forEach(item => {

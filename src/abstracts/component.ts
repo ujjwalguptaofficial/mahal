@@ -1,18 +1,10 @@
 import { ERROR_TYPE } from "../enums";
-import { Observer, Logger, indexOf, emitError, createElement, handleExpression, clearAll } from "../helpers";
+import { Observer, Logger, indexOf, emitError } from "../helpers";
 import { IAttrItem, ILazyComponent, IRenderContext, } from "../interface";
 import { EventBus, emitStateChange, resolveValue, replaceNullProp, getDataype, initComponent } from "../utils";
 import { Mahal } from "../mahal";
 import { emptyObj } from "../constant";
 import { TYPE_ALL_LIFE_CYCLE_EVENT, TYPE_EVENT_STORE } from "../types";
-import { computed, reactive } from "../decorators";
-
-// do not rename this, this has been done to merge Component
-// // tslint:disable-next-line
-// export interface Component {
-
-// }
-
 
 export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
 
@@ -382,11 +374,11 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
         return this[methodName] as Function;
     }
 
-    private _createEl_: typeof createElement;
-    private _createNativeComponent_: typeof createElement;
-    private _handleExp_: typeof handleExpression;
+    private _createEl_: (tag: string, childs: HTMLElement[], option) => HTMLElement | Comment;
+    private _createNativeComponent_: (tag: string, childs: HTMLElement[], option) => HTMLElement
+    private _handleExp_: (method: () => HTMLElement, keys: string[], type?: string) => void;
     private _render_: () => () => HTMLElement;
-    private _clearAll_: typeof clearAll;
+    private _clearAll_: () => void;
     private _initComp_: typeof initComponent;
     private _handleAttr_: (component, attr: { [attributeKey: string]: IAttrItem }, isComponent: boolean) => any[];
     private _handleDir_: (element: HTMLElement, dir, isComponent: boolean) => void;

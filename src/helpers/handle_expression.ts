@@ -6,7 +6,7 @@ import { emitError } from "./emit_error";
 import { EL_REPLACED } from "../constant";
 import { onElDestroy, subscriveToDestroyFromChild } from "../helpers";
 
-export function handleExpression(this: Component, method: () => HTMLElement, keys: string[], type: string) {
+Component.prototype['_handleExp_'] = function (this: Component, method: () => HTMLElement, keys: string[], type?: string) {
     const ctx = this;
     if (type === "for") {
         return handleForExp.call(ctx, keys[0], method);
@@ -61,6 +61,5 @@ export function handleExpression(this: Component, method: () => HTMLElement, key
     };
     handleChange();
     return el;
-}
+};
 
-Component.prototype['_handleExp_'] = handleExpression;
