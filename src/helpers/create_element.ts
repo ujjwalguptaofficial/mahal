@@ -2,13 +2,13 @@ import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
 import { DEFAULT_SLOT_NAME } from "../constant";
 import { executeRender, replaceEl, getAttribute, setAttribute, createComponent, ILazyComponentPayload, addEventListener, insertBefore, forEach } from "../utils";
-import { handleDirective } from "./handle_directive";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
 import { emitError } from "./emit_error";
 import { Logger } from "./logger";
 import { forEachEvent } from "./for_each_event";
 import "./handle_attribute";
+import "./handle_directive";
 
 const loadComponent = (componentClass) => {
     if (componentClass instanceof Promise) {
@@ -146,7 +146,7 @@ Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChil
         );
     });
 
-    handleDirective.call(ctx, element, option.dir, false);
+    ctx['_handleDir_'](element, option.dir, false);
     const rc = option.rc;
     if (rc) {
         const addRc = rc[1]();

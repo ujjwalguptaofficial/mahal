@@ -3,7 +3,7 @@ import { forEach, nextTick } from "../utils";
 import { IDirectiveBinding, IDirective } from "../interface";
 import { onElDestroy } from "../helpers";
 
-export function handleDirective(this: Component, element: HTMLElement, dir, isComponent) {
+Component.prototype['_handleDir_'] = function (this: Component, element: HTMLElement, dir, isComponent) {
     if (!dir) return;
     forEach(dir, (compiledDir: IDirectiveBinding, name) => {
         const storedDirective = this['_directive_'][name] || this['_app_']['_directive_'][name];

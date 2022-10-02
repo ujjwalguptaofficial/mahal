@@ -389,6 +389,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
     private _clearAll_: typeof clearAll;
     private _initComp_: typeof initComponent;
     private _handleAttr_: (component, attr: { [attributeKey: string]: IAttrItem }, isComponent: boolean) => any[];
+    private _handleDir_: (element: HTMLElement, dir, isComponent: boolean) => void;
 
 }
 
