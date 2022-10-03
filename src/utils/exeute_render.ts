@@ -1,6 +1,5 @@
 import { createTextNode, Logger, onElDestroy, addRc, clearAll } from "../helpers";
 import { Component } from "../abstracts";
-import { Mahal } from "../mahal";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { IRenderContext } from "../interface";
 
@@ -24,14 +23,15 @@ export const executeRender = (comp: Component) => {
 Component.prototype['_render_'] = function (this: Component): () => HTMLElement {
     if (process.env.NODE_ENV !== "production") {
         return this.render || (() => {
-            if (!(Mahal as any).createRenderer) {
+            const createRenderer = this['_app_']['_compileTemplate_'];
+            if (!createRenderer) {
                 new Logger(ERROR_TYPE.RendererNotFound).throwPlain();
             }
-            return (Mahal as any).createRenderer(this.template);
+            return createRenderer(this.template);
         })();
     }
     else {
-        return this.render || (Mahal as any).createRenderer(this.template);
+        return this.render || this['_app_']['_compileTemplate_'](this.template);
     }
 };
 

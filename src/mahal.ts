@@ -3,6 +3,8 @@ import { initComponent, isObject, executeRender, getDataype, createComponent, Ev
 import { HTML_TAG, LIFECYCLE_EVENT } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective, htmlDirective, eventDirective } from "./ready_made";
 import { Logger } from "./helpers";
+import { IRenderContext } from "./interface";
+
 
 
 export class Mahal {
@@ -103,13 +105,15 @@ export class Mahal {
         directive: (name: string, directive) => {
             this._directive_[name] = directive;
         },
-        set renderer(val) {
-            (Mahal as any).createRenderer = val;
+        setRenderer: (val) => {
+            this._compileTemplate_ = val;
         },
         tag(name: string) {
             HTML_TAG.set(name, 1);
         }
     }
+
+    private _compileTemplate_: any;
 
     private _evBus_ = new EventBus();
 
