@@ -14,5 +14,3 @@ assignees: ujjwalguptaofficial
 # Description 
 
 // Add your description here
-
-Note: Description should contains the query, the current output & the expected output. You can use idbstudio to generate the example.
