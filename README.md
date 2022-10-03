@@ -15,6 +15,7 @@ Event based modern web application framework for UI development.
 * Better documenting - you can write documentation with yml syntax inside components
 * Event based architecture
 * Uses modern approach - class based components, decorators etc
+* Focuses on simplicity - simple API's and easy to learn 
 
 # Install
 
