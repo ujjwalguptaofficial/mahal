@@ -8,7 +8,7 @@ import { Logger } from "./logger";
 import { onElDestroy } from "./destroy_helper";
 
 
-Component.prototype['_handleAttr_'] = function (this: Component, component, attr, isComponent) {
+Component.prototype['_handleAttr_'] = function (this: Component, component, attr, isComponent, addRc?) {
     if (!attr) return;
     const methods = new Map<string, Function>();
     const subscribeToDestroy = (el: HTMLElement) => {
@@ -70,7 +70,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
         return htmlAttributes;
     }
 
-    forOwn(attr, (key, attrItem) => {
+    forOwn(attr, (key, attrItem: IAttrItem) => {
         const attrValue = getAttributeValue(attrItem, attrItem.v);
         setAttribute(component, key, attrValue);
         const attributeKey = attrItem.k;
@@ -81,6 +81,13 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
             };
             this.watch(attributeKey, method);
             methods.set(attributeKey, method);
+        }
+        const rc = attrItem.rc
+        if (rc) {
+            addRc()(rc, (newValue) => {
+                setAttribute(component, key, getAttributeValue(attrItem, newValue));
+                emitUpdate(this);
+            });
         }
     });
 

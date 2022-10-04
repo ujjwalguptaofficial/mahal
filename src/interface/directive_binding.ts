@@ -6,5 +6,6 @@ export interface IDirectiveBinding {
     value: any;
     // raw param provided
     params: string[];
+    rc: string;
 
 }

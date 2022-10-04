@@ -138,7 +138,7 @@ Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChil
 
     if (option) {
         const ctx = this;
-        ctx['_handleAttr_'](element, option.attr, false);
+        ctx['_handleAttr_'](element, option.attr, false, option.rcm);
 
         // register events
         forEachEvent.call(ctx, option.on, (eventName, listener) => {
@@ -147,14 +147,14 @@ Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChil
             );
         });
 
-        ctx['_handleDir_'](element, option.dir, false);
-        const rc = option.rc;
-        if (rc) {
-            const addRc = rc[1]();
-            forEach(rc[0], (_, key) => {
-                addRc(key, element);
-            });
-        }
+        ctx['_handleDir_'](element, option.dir, false, option.rcm);
+        // const rc = option.rc;
+        // if (rc) {
+        //     const addRc = rc[1]();
+        //     forEach(rc[0], (_, key) => {
+        //         addRc(key, element);
+        //     });
+        // }
     }
 
 

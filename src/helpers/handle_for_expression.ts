@@ -254,13 +254,25 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const reactiveChild: TYPE_RC_STORAGE = currentEl[REACTIVE_CHILD];
                 const oldValue = params.oldValue;
                 const newValue = params.value;
-                const reactiveChildForNewProp = (method(newValue, paramKey)[REACTIVE_CHILD] as TYPE_RC_STORAGE);
+                const newEl = method(newValue, paramKey);
+                if (getElementKey(newEl) != getElementKey(currentEl)) {
+                    replaceEl(
+                        currentEl,
+                        newEl
+                    );
+                }
+                const reactiveChildForNewProp = (newEl[REACTIVE_CHILD] as TYPE_RC_STORAGE);
                 reactiveChild.forEach((oldReactiveEls, reactiveChildProp) => {
-                    const shouldUpdate = resolveValue(reactiveChildProp, oldValue) !== resolveValue(reactiveChildProp, newValue);
+                    const newValueAtReactiveChild = resolveValue(reactiveChildProp, newValue);
+                    const shouldUpdate = resolveValue(reactiveChildProp, oldValue) !== newValueAtReactiveChild;
                     if (!shouldUpdate) return;
                     const newReactiveEls = reactiveChildForNewProp.get(reactiveChildProp);
                     if (newReactiveEls) {
                         oldReactiveEls.forEach((el, i) => {
+                            if (typeof el === 'function') {
+                                (el as any)(newValueAtReactiveChild)
+                                return;
+                            }
                             if (!el.isConnected) return;
                             const isPatched = replaceEl(
                                 el,

@@ -5,8 +5,8 @@ import { template } from "@mahaljs/util";
 
 @template(`
 <div>
-		<div :for(item,index in list) class="mt-2" :key="item.question">
-			<b  @click="toggleAnswerFAQ(index)" class="question">
+		<div :for(item,index in list) class="row mt-2" :key="item.question" :question='item.question' :answer='item.answer'>
+			<b  @click="toggleAnswerFAQ(index)" class="question" :question='item.question' :index="index">
 				<div>{{item.question}}</div>
 				<i class="fa fa-chevron-down"></i>
 			</b>
@@ -18,7 +18,7 @@ import { template } from "@mahaljs/util";
 export default class Temp extends Component {
 
     onInit() {
-        // window['compD'] = this;
+        window['compD'] = this;
     }
 
     items = "ujjwal"
@@ -79,6 +79,56 @@ describe('Directive in for', function () {
     it('check items indexes', async () => {
         const itemsIndexesEl = component.find('.items-index');
         expect(itemsIndexesEl.innerHTML).equal(`ujjwal gupta`);
+    })
+
+    it('check props reactivity', async () => {
+
+        const checkQuestionProp = () => {
+            const questionEl = component.find('.question');
+            const questionText = questionEl.getAttribute('question');
+            expect(questionText).equal(component.list[0].question);
+
+            const indexText = questionEl.getAttribute('index');
+            expect(indexText).equal('0');
+
+            const row = component.find('.row');
+
+            const rowText = row.getAttribute('question');
+            expect(rowText).equal(component.list[0].question);
+        }
+
+        checkQuestionProp();
+
+
+        // change question to check reactivity
+        component.list[0] = {
+            ...component.list[0],
+            ...{
+                question: 'Hello',
+            }
+        }
+
+        await component.waitFor('update');
+        checkQuestionProp();
+
+
+        // change answer to check reactivity
+
+        component.list[0] = {
+            ...component.list[0],
+            ...{
+                answer: 'World',
+            }
+        }
+
+        await component.waitFor('update');
+        checkQuestionProp();
+
+        const row = component.find('.row');
+
+        const rowText = row.getAttribute('answer');
+        expect(rowText).equal(component.list[0].answer);
+
     })
 
 });
