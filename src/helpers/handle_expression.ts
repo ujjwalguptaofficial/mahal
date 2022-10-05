@@ -27,6 +27,7 @@ Component.prototype['_handleExp_'] = function (this: Component, method: () => HT
                 }
                 else {
                     subscriveToDestroyFromChild(newEl);
+                    // newEl['_setVal_'] = el['_setVal_'];
                 }
             } catch (err) {
                 emitError.call(ctx, err);

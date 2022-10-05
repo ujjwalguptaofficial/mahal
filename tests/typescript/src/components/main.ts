@@ -20,7 +20,7 @@ import Fragment from "./fragment";
 import ArrayModel from "./array_model";
 import ObjectResetModel from "./object_reset_model";
 import { IAppGlobal } from "../interfaces";
-import Temp from '../../test/directive_in_for.test';
+// import Temp from '../../test/directive_in_for.test';
 // @template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
 // </div>`)
@@ -29,11 +29,11 @@ import Temp from '../../test/directive_in_for.test';
 // `)
 @template(`
 <div>
-    <Temp/>
+    <Fragment/>
 </div>
 `)
 @children({
-    Temp,
+    // Temp,
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, computed,
     Fragment, ArrayModel, ObjectResetModel,

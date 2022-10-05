@@ -255,35 +255,37 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const oldValue = params.oldValue;
                 const newValue = params.value;
                 const newEl = method(newValue, paramKey);
-                if (getElementKey(newEl) != getElementKey(currentEl)) {
-                    replaceEl(
-                        currentEl,
-                        newEl
-                    );
-                }
+                // if (getElementKey(newEl) != getElementKey(currentEl)) {
+                //     replaceEl(
+                //         currentEl,
+                //         newEl
+                //     );
+                //     return;
+                // }
+                currentEl['_setVal_'](newValue);
                 const reactiveChildForNewProp = (newEl[REACTIVE_CHILD] as TYPE_RC_STORAGE);
                 reactiveChild.forEach((oldReactiveEls, reactiveChildProp) => {
                     const newValueAtReactiveChild = resolveValue(reactiveChildProp, newValue);
                     const shouldUpdate = resolveValue(reactiveChildProp, oldValue) !== newValueAtReactiveChild;
                     if (!shouldUpdate) return;
-                    const newReactiveEls = reactiveChildForNewProp.get(reactiveChildProp);
-                    if (newReactiveEls) {
-                        oldReactiveEls.forEach((el, i) => {
-                            if (typeof el === 'function') {
-                                (el as any)(newValueAtReactiveChild)
-                                return;
-                            }
-                            if (!el.isConnected) return;
-                            const isPatched = replaceEl(
-                                el,
-                                newReactiveEls[i]
-                            );
-                            if (isPatched) {
-                                newReactiveEls[i] = el;
-                            }
-                        });
-                    }
-                    reactiveChild.set(reactiveChildProp, newReactiveEls || []);
+                    // const newReactiveEls = reactiveChildForNewProp.get(reactiveChildProp);
+                    // if (newReactiveEls) {
+                    oldReactiveEls.forEach((el, i) => {
+                        if (typeof el === 'function') {
+                            (el as any)(newValueAtReactiveChild)
+                            // return;
+                        }
+                        // if (!el.isConnected) return;
+                        // const isPatched = replaceEl(
+                        //     el,
+                        //     newReactiveEls[i]
+                        // );
+                        // if (isPatched) {
+                        //     newReactiveEls[i] = el;
+                        // }
+                    });
+                    // }
+                    // reactiveChild.set(reactiveChildProp, newReactiveEls || []);
                 });
             }
         };
