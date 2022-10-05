@@ -11,6 +11,20 @@ import { onElDestroy } from "./destroy_helper";
 Component.prototype['_handleAttr_'] = function (this: Component, component, attr, isComponent, addRc?) {
     if (!attr) return;
 
+    const handleDynamicAttribute = isComponent ? (key: string, attrItem: IAttrItem) => {
+        return (newValue) => {
+            Component.shouldCheckProp = false;
+            component.setState(key, getAttributeValue(attrItem, newValue));
+            Component.shouldCheckProp = true;
+        }
+    } : (key: string, attrItem: IAttrItem) => {
+        return (newValue) => {
+            setAttribute(component, key, getAttributeValue(attrItem, newValue));
+            emitUpdate(this);
+        }
+    }
+
+
     // store watchcallback
     const methods = new Map<string, Function>();
 
@@ -26,9 +40,11 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
         const rc = attrItem.rc
         if (rc) {
             addRc()(rc, (newValue, el) => {
-                setAttribute(el, key, getAttributeValue(attrItem, newValue));
-                emitUpdate(this);
-            }, component);
+                // setAttribute(el, key, getAttributeValue(attrItem, newValue));
+                // emitUpdate(this);
+                handleDynamicAttribute(key, attrItem)(newValue);
+                // handleDynamicAttribute(newValue)(key, attrItem);
+            }, isComponent ? component.element : component);
         }
     }
     if (isComponent) {
@@ -67,7 +83,9 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
                     this.watch(attributeKey, method);
                     methods.set(attributeKey, method);
                 }
-                handleAttributeRc(key, value);
+                nextTick(() => {
+                    handleAttributeRc(key, value);
+                })
             }
             else {
                 htmlAttributes.push({

@@ -2,6 +2,7 @@ import { app } from "../src/index";
 import { nextTick, children, reactive, Component, EventBus } from "mahal";
 import { expect } from "chai";
 import { template } from "@mahaljs/util";
+import Btn from "../src/components/btn";
 
 @template(`
 <div>
@@ -12,9 +13,13 @@ import { template } from "@mahaljs/util";
 			</b>
             <p class="items-index">{{items}} {{indexes}}</p>
 			<div class="answer" :show(item.show) :html(item.answer) :answer="item.answer"></div>
-		</div>
+		<Btn :label="item.answer"/>
+        </div>
 </div>
 `)
+@children({
+    Btn
+})
 export default class Temp extends Component {
 
     onInit() {
@@ -97,6 +102,8 @@ describe('Directive in for', function () {
             expect(rowText).equal(component.list[0].question);
         }
 
+        // check questions
+
         checkQuestionProp();
 
 
@@ -111,7 +118,32 @@ describe('Directive in for', function () {
         await component.waitFor('update');
         checkQuestionProp();
 
+        const checkAnswer = () => {
+            const newAnswer = component.list[0].answer;
 
+            const row = component.find('.row');
+
+            const rowText = row.getAttribute('answer');
+            expect(rowText).equal(newAnswer);
+
+            // check for attribute
+            const answerEl = component.find('.answer');
+            const answerElAttributeAnswer = answerEl.getAttribute('answer');
+            expect(answerElAttributeAnswer).equal(newAnswer);
+
+            // check for inner html
+            expect(answerEl.innerHTML).equal(newAnswer);
+
+            // check for btn
+
+            const answerBtn = component.find('button.btn');
+            expect(answerBtn.innerText).equal(
+                newAnswer.toUpperCase()
+            );
+        }
+
+
+        checkAnswer();
         // change answer to check reactivity
 
         component.list[0] = {
@@ -123,21 +155,7 @@ describe('Directive in for', function () {
 
         await component.waitFor('update');
         checkQuestionProp();
-        const newAnswer = component.list[0].answer;
-
-        const row = component.find('.row');
-
-        const rowText = row.getAttribute('answer');
-        expect(rowText).equal(newAnswer);
-
-        // check for attribute
-        const answerEl = component.find('.answer');
-        const answerElAttributeAnswer = answerEl.getAttribute('answer');
-        expect(answerElAttributeAnswer).equal(newAnswer);
-
-        // check for inner html
-
-        expect(answerEl.innerHTML).equal(newAnswer);
+        checkAnswer();
 
     })
 
