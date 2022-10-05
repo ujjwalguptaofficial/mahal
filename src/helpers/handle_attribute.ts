@@ -18,6 +18,15 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
             });
         });
     };
+    const handleAttributeRc = (key: string, attrItem: IAttrItem) => {
+        const rc = attrItem.rc
+        if (rc) {
+            addRc()(rc, (newValue, el) => {
+                setAttribute(el, key, getAttributeValue(attrItem, newValue));
+                emitUpdate(this);
+            }, component);
+        }
+    }
     if (isComponent) {
         const htmlAttributes = [];
         if (!attr) return htmlAttributes;
@@ -54,6 +63,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
                     this.watch(attributeKey, method);
                     methods.set(attributeKey, method);
                 }
+                handleAttributeRc(key, value);
             }
             else {
                 htmlAttributes.push({
@@ -82,13 +92,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
             this.watch(attributeKey, method);
             methods.set(attributeKey, method);
         }
-        const rc = attrItem.rc
-        if (rc) {
-            addRc()(rc, (newValue, el) => {
-                setAttribute(el, key, getAttributeValue(attrItem, newValue));
-                emitUpdate(this);
-            }, component);
-        }
+        handleAttributeRc(key, attrItem);
     });
 
     if (methods.size > 0) {

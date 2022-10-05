@@ -6,8 +6,8 @@ import { replaceEl } from "./dom";
 import { MAHAL_KEY } from "../constant";
 
 const createTextNodeWithRc = (rcKey, element: Text, addRc_) => {
-    addRc_(rcKey, (newValue, el) => {
-        el.nodeValue = newValue;
+    addRc_(rcKey, (newValue, newEl) => {
+        newEl.nodeValue = newValue;
     }, element);
     return element;
 };
