@@ -11,7 +11,7 @@ import { template } from "@mahaljs/util";
 				<i class="fa fa-chevron-down"></i>
 			</b>
             <p class="items-index">{{items}} {{indexes}}</p>
-			<div class="answer" :show(item.show) :html(item.answer)></div>
+			<div class="answer" :show(item.show) :html(item.answer) :answer="item.answer"></div>
 		</div>
 </div>
 `)
@@ -123,11 +123,21 @@ describe('Directive in for', function () {
 
         await component.waitFor('update');
         checkQuestionProp();
+        const newAnswer = component.list[0].answer;
 
         const row = component.find('.row');
 
         const rowText = row.getAttribute('answer');
-        expect(rowText).equal(component.list[0].answer);
+        expect(rowText).equal(newAnswer);
+
+        // check for attribute
+        const answerEl = component.find('.answer');
+        const answerElAttributeAnswer = answerEl.getAttribute('answer');
+        expect(answerElAttributeAnswer).equal(newAnswer);
+
+        // check for inner html
+
+        expect(answerEl.innerHTML).equal(newAnswer);
 
     })
 

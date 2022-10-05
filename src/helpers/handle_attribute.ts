@@ -10,7 +10,11 @@ import { onElDestroy } from "./destroy_helper";
 
 Component.prototype['_handleAttr_'] = function (this: Component, component, attr, isComponent, addRc?) {
     if (!attr) return;
+
+    // store watchcallback
     const methods = new Map<string, Function>();
+
+    // unwatch the callback
     const subscribeToDestroy = (el: HTMLElement) => {
         onElDestroy(el, () => {
             methods.forEach((eventCb, evName) => {
