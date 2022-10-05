@@ -29,7 +29,7 @@ import { IAppGlobal } from "../interfaces";
 // `)
 @template(`
 <div>
-    <Fragment/>
+    <Fruits/>
 </div>
 `)
 @children({

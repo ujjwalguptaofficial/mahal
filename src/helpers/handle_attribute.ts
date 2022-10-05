@@ -84,10 +84,10 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
         }
         const rc = attrItem.rc
         if (rc) {
-            addRc()(rc, (newValue) => {
-                setAttribute(component, key, getAttributeValue(attrItem, newValue));
+            addRc()(rc, (newValue, el) => {
+                setAttribute(el, key, getAttributeValue(attrItem, newValue));
                 emitUpdate(this);
-            });
+            }, component);
         }
     });
 
