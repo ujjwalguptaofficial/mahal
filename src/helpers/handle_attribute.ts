@@ -40,10 +40,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
         const rc = attrItem.rc
         if (rc) {
             addRc()(rc, (newValue, el) => {
-                // setAttribute(el, key, getAttributeValue(attrItem, newValue));
-                // emitUpdate(this);
                 handleDynamicAttribute(key, attrItem)(newValue);
-                // handleDynamicAttribute(newValue)(key, attrItem);
             }, isComponent ? component.element : component);
         }
     }
@@ -75,11 +72,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
                 component[key] = attrValue;
                 const attributeKey = value.k;
                 if (attributeKey) {
-                    const method = (newValue) => {
-                        Component.shouldCheckProp = false;
-                        component.setState(key, getAttributeValue(value, newValue));
-                        Component.shouldCheckProp = true;
-                    };
+                    const method = handleDynamicAttribute(key, value);
                     this.watch(attributeKey, method);
                     methods.set(attributeKey, method);
                 }
@@ -107,10 +100,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
         setAttribute(component, key, attrValue);
         const attributeKey = attrItem.k;
         if (attributeKey) {
-            const method = (newValue) => {
-                setAttribute(component, key, getAttributeValue(attrItem, newValue));
-                emitUpdate(this);
-            };
+            const method = handleDynamicAttribute(key, attrItem);
             this.watch(attributeKey, method);
             methods.set(attributeKey, method);
         }
