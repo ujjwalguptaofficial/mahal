@@ -38,7 +38,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
     };
     const handleAttributeRc = (key: string, attrItem: IAttrItem) => {
         const rc = attrItem.rc
-        if (rc) {
+        if (rc && key !== 'key') {
             addRc()(rc, (newValue, el) => {
                 handleDynamicAttribute(key, attrItem)(newValue);
             }, isComponent ? component.element : component);
