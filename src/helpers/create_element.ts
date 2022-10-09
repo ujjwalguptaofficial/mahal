@@ -10,6 +10,7 @@ import { forEachEvent } from "./for_each_event";
 import "./handle_attribute";
 import "./handle_directive";
 import "./handle_expression";
+import { IElementOption } from "../interface";
 
 const loadComponent = (componentClass) => {
     if (componentClass instanceof Promise) {
@@ -26,7 +27,7 @@ const loadComponent = (componentClass) => {
 };
 
 
-Component.prototype['_createEl_'] = function (this: Component, tag: string, childs: HTMLElement[], option): HTMLElement | Comment {
+export const createElement = function (this: Component, tag: string, childs: HTMLElement[], option): HTMLElement | Comment {
     if (tag == null) {
         return createCommentNode();
     }
@@ -129,7 +130,7 @@ Component.prototype['_createEl_'] = function (this: Component, tag: string, chil
 };
 
 
-Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChilds: HTMLElement[], option?): HTMLElement {
+Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChilds: HTMLElement[], option?: IElementOption): HTMLElement {
 
     const element = document.createElement(tag) as HTMLElement;
     htmlChilds.forEach(item => {
@@ -137,8 +138,8 @@ Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChil
     });
 
     if (option) {
-        const ctx = this;
-        ctx['_handleAttr_'](element, option.attr, false, option.rcm);
+        const ctx: Component = this;
+        ctx['_handleAttr_'](element, false, option);
 
         // register events
         forEachEvent.call(ctx, option.on, (eventName, listener) => {
@@ -148,13 +149,6 @@ Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChil
         });
 
         ctx['_handleDir_'](element, option.dir, false, option.rcm);
-        // const rc = option.rc;
-        // if (rc) {
-        //     const addRc = rc[1]();
-        //     forEach(rc[0], (_, key) => {
-        //         addRc(key, element);
-        //     });
-        // }
     }
 
 

@@ -1,5 +1,5 @@
 import { Component } from "../abstracts";
-import { IAttrItem } from "../interface";
+import { IAttrItem, IElementOption, IReactiveAttrItem } from "../interface";
 import { getDataype, forOwn, setAttribute, nextTick } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
@@ -7,19 +7,64 @@ import { getAttributeValue } from "./get_attribute_value";
 import { Logger } from "./logger";
 import { onElDestroy } from "./destroy_helper";
 
+Component.prototype['_handleAttr_'] = function (this: Component, component, isComponent, option: IElementOption) {
+    const attr = option.attr;
+    const htmlAttributes = [];
+    const handleAttributeForComponent = (key: string, attrItem: IAttrItem) => {
+        const propDescription = component._props_[key];
+        if (propDescription) {
+            const attrValue = attrItem.v as string;
+            if (propDescription.type) {
+                const expected = propDescription.type;
+                const received = getDataype(attrValue);
+                if (expected !== received) {
+                    this.waitFor(LIFECYCLE_EVENT.Mount).then(_ => {
+                        new Logger(ERROR_TYPE.PropDataTypeMismatch,
+                            {
+                                prop: key,
+                                exp: expected,
+                                got: received,
+                                html: this.outerHTML,
+                                file: (this as any).file_
+                            }).logPlainError();
+                    });
+                }
+            }
+            component[key] = attrValue;
+            return true;
+        }
+        else {
+            htmlAttributes.push({
+                key,
+                value: attrItem.v as any
+            });
+        }
+    }
+    if (attr) {
+        if (isComponent) {
+            forOwn(attr, (key, attrItem: IAttrItem) => {
+                handleAttributeForComponent(key, attrItem);
+            });
+        }
+        else {
+            forOwn(attr, (key, attrItem: IAttrItem) => {
+                setAttribute(component, key, attrItem.v as any);
+            });
+        }
+    }
 
-Component.prototype['_handleAttr_'] = function (this: Component, component, attr, isComponent, addRc?) {
-    if (!attr) return;
+    const reactiveAttr = option.rAttr;
+    if (!reactiveAttr) return;
 
-    const handleDynamicAttribute = isComponent ? (key: string, attrItem: IAttrItem) => {
-        return (newValue) => {
+    const handleReactiveAttribute = isComponent ? (key: string, attrItem: IReactiveAttrItem) => {
+        return (newValue, comp: Component) => {
             Component.shouldCheckProp = false;
-            component.setState(key, getAttributeValue(attrItem, newValue));
+            comp.setState(key, getAttributeValue(attrItem, newValue));
             Component.shouldCheckProp = true;
         }
-    } : (key: string, attrItem: IAttrItem) => {
-        return (newValue) => {
-            setAttribute(component, key, getAttributeValue(attrItem, newValue));
+    } : (key: string, attrItem: IReactiveAttrItem) => {
+        return (newValue, el: HTMLElement) => {
+            setAttribute(el, key, getAttributeValue(attrItem, newValue));
             emitUpdate(this);
         }
     }
@@ -36,57 +81,35 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
             });
         });
     };
-    const handleAttributeRc = (key: string, attrItem: IAttrItem) => {
+    const handleAttributeRc = (key: string, attrItem: IReactiveAttrItem) => {
         const rc = attrItem.rc
-        if (rc && key !== 'key') {
-            addRc()(rc, (newValue, el) => {
-                handleDynamicAttribute(key, attrItem)(newValue);
-            }, isComponent ? component.element : component);
+        if (rc) {
+            if (process.env.NODE_ENV !== 'production' && key === 'key') {
+                throw 'found key within rc';
+            }
+            option.rcm()(rc, (newValue, el) => {
+                handleReactiveAttribute(key, attrItem)(newValue, el);
+            }, component);
         }
     }
-    if (isComponent) {
-        const htmlAttributes = [];
-        if (!attr) return htmlAttributes;
-        for (const key in attr) {
-            const value: IAttrItem = attr[key];
-            const propDescription = component._props_[key];
-            if (propDescription) {
-                const attrValue = getAttributeValue(value, value.v);
-                if (propDescription.type) {
-                    const expected = propDescription.type;
-                    const received = getDataype(attrValue);
-                    if (expected !== received) {
-                        this.waitFor(LIFECYCLE_EVENT.Mount).then(_ => {
-                            new Logger(ERROR_TYPE.PropDataTypeMismatch,
-                                {
-                                    prop: key,
-                                    exp: expected,
-                                    got: received,
-                                    html: this.outerHTML,
-                                    file: (this as any).file_
-                                }).logPlainError();
-                        });
-                    }
-                }
-
-                component[key] = attrValue;
-                const attributeKey = value.k;
-                if (attributeKey) {
-                    const method = handleDynamicAttribute(key, value);
-                    this.watch(attributeKey, method);
-                    methods.set(attributeKey, method);
-                }
-                nextTick(() => {
-                    handleAttributeRc(key, value);
-                })
-            }
-            else {
-                htmlAttributes.push({
-                    key,
-                    value: getAttributeValue(value, value.v)
-                });
-            }
+    const watchAttribute = (key: string, attrItem: IReactiveAttrItem) => {
+        const attributeKey = attrItem.k;
+        if (!attributeKey) return;
+        const m = handleReactiveAttribute(key, attrItem);
+        const method = (newValue) => {
+            m(newValue, component);
         }
+        this.watch(attributeKey, method);
+        methods.set(attributeKey, method);
+
+    }
+    if (isComponent) {
+        forOwn(reactiveAttr, (key, attrItem: IReactiveAttrItem) => {
+            if (handleAttributeForComponent(key, attrItem)) {
+                watchAttribute(key, attrItem);
+            }
+            handleAttributeRc(key, attrItem);
+        });
         if (methods.size > 0) {
             nextTick(_ => {
                 subscribeToDestroy(component.element);
@@ -95,20 +118,14 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, attr
         return htmlAttributes;
     }
 
-    forOwn(attr, (key, attrItem: IAttrItem) => {
+    forOwn(reactiveAttr, (key, attrItem: IReactiveAttrItem) => {
         const attrValue = getAttributeValue(attrItem, attrItem.v);
         setAttribute(component, key, attrValue);
-        const attributeKey = attrItem.k;
-        if (attributeKey) {
-            const method = handleDynamicAttribute(key, attrItem);
-            this.watch(attributeKey, method);
-            methods.set(attributeKey, method);
-        }
+        watchAttribute(key, attrItem);
         handleAttributeRc(key, attrItem);
     });
 
     if (methods.size > 0) {
         subscribeToDestroy(component);
     }
-
 };

@@ -1,6 +1,8 @@
 export interface IAttrItem {
-    k: string;
     v: string | Function;
-    m: boolean;
-    rc: string;
+}
+export interface IReactiveAttrItem extends IAttrItem {
+    k: string;
+    m?: boolean;
+    rc?: string;
 }

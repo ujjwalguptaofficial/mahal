@@ -10,7 +10,7 @@ export function initComponent(this: Component, component: Component, option) {
 
     if (option) {
 
-        htmlAttributes = this['_handleAttr_'](component, option.attr, true, option.rcm);
+        htmlAttributes = this['_handleAttr_'](component, true, option);
         this['_handleDir_'](component as any, option.dir, true);
 
         // register events
