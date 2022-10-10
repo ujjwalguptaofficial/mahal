@@ -29,7 +29,7 @@ import { IAppGlobal } from "../interfaces";
 // `)
 @template(`
 <div>
-    <Student />
+    <Student class="students" />
 </div>
 `)
 @children({

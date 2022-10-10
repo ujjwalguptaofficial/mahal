@@ -39,7 +39,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
                 value: attrItem.v as any
             });
         }
-    }
+    };
     if (attr) {
         if (isComponent) {
             forOwn(attr, (key, attrItem: IAttrItem) => {
@@ -54,20 +54,20 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
     }
 
     const reactiveAttr = option.rAttr;
-    if (!reactiveAttr) return;
+    if (!reactiveAttr) return htmlAttributes;
 
     const handleReactiveAttribute = isComponent ? (key: string, attrItem: IReactiveAttrItem) => {
         return (newValue, comp: Component) => {
             Component.shouldCheckProp = false;
             comp.setState(key, getAttributeValue(attrItem, newValue));
             Component.shouldCheckProp = true;
-        }
+        };
     } : (key: string, attrItem: IReactiveAttrItem) => {
         return (newValue, el: HTMLElement) => {
             setAttribute(el, key, getAttributeValue(attrItem, newValue));
             emitUpdate(this);
-        }
-    }
+        };
+    };
 
 
     // store watchcallback
@@ -82,7 +82,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
         });
     };
     const handleAttributeRc = (key: string, attrItem: IReactiveAttrItem) => {
-        const rc = attrItem.rc
+        const rc = attrItem.rc;
         if (rc) {
             if (process.env.NODE_ENV !== 'production' && key === 'key') {
                 throw 'found key within rc';
@@ -91,18 +91,18 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
                 handleReactiveAttribute(key, attrItem)(newValue, el);
             }, component);
         }
-    }
+    };
     const watchAttribute = (key: string, attrItem: IReactiveAttrItem) => {
         const attributeKey = attrItem.k;
         if (!attributeKey) return;
         const m = handleReactiveAttribute(key, attrItem);
         const method = (newValue) => {
             m(newValue, component);
-        }
+        };
         this.watch(attributeKey, method);
         methods.set(attributeKey, method);
 
-    }
+    };
     if (isComponent) {
         forOwn(reactiveAttr, (key, attrItem: IReactiveAttrItem) => {
             if (handleAttributeForComponent(key, attrItem)) {

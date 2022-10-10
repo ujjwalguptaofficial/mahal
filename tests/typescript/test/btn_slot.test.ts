@@ -11,7 +11,7 @@ import { template } from "@mahaljs/util";
 })
 @template(`
 <div>
-    <Btn>{{content}}</Btn>
+    <Btn class="btn-slot">{{content}}</Btn>
 </div>
 `)
 class Temp extends Component {
@@ -24,8 +24,9 @@ describe('Btn slot test', function () {
 
     it("initiate btn", async function () {
         component = await (app as any).mount(Temp);
-        const btn = component.find('button');
+        const btn: HTMLButtonElement = component.find('button');
         expect(btn.innerHTML).equal(component.content);
+        expect(btn.classList.contains('btn-slot')).equal(true);
     });
 });
 
