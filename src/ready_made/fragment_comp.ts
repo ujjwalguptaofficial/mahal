@@ -1,4 +1,5 @@
 import { Component } from "../abstracts/component";
+import { createElement } from "../helpers";
 
 export class FragmentComponent extends Component {
     constructor() {
@@ -7,6 +8,6 @@ export class FragmentComponent extends Component {
     }
 
     render() {
-        return this['_createEl_']('slot', [], {}) as any;
+        return createElement.call(this, 'slot', [], {}) as any;
     }
 }

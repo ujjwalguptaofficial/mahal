@@ -3,7 +3,7 @@ import { forEach, nextTick } from "../utils";
 import { IDirectiveBinding, IDirective } from "../interface";
 import { onElDestroy } from "../helpers";
 
-Component.prototype['_handleDir_'] = function (this: Component, element: HTMLElement, dir, isComponent) {
+Component.prototype['_handleDir_'] = function (this: Component, element: HTMLElement, dir, isComponent, addRc?) {
     if (!dir) return;
     forEach(dir, (compiledDir: IDirectiveBinding, name) => {
         const storedDirective = this['_directive_'][name] || this['_app_']['_directive_'][name];
@@ -12,6 +12,15 @@ Component.prototype['_handleDir_'] = function (this: Component, element: HTMLEle
         compiledDir.isComponent = isComponent;
 
         const directive: IDirective = storedDirective.call(this, element, compiledDir);
+
+        const rc = compiledDir.rc;
+        if (rc) {
+            const addRc_ = addRc();
+            addRc_(rc, (newValue) => {
+                // compiledDir.value = [newValue];
+                directive.valueUpdated();
+            });
+        }
 
         // call directive async, this will create element faster
         // also nextTick make sure that element is now inserted
@@ -25,6 +34,8 @@ Component.prototype['_handleDir_'] = function (this: Component, element: HTMLEle
 
             const props = compiledDir.props;
             const directiveUpdate = directive.valueUpdated;
+
+
             if (props.length === 0 || directiveUpdate == null) return;
             const methods = [];
             const onDestroyed = () => {
@@ -49,6 +60,8 @@ Component.prototype['_handleDir_'] = function (this: Component, element: HTMLEle
                 this.watch(prop, method);
                 methods.push(method);
             });
+
+
         });
     });
 };

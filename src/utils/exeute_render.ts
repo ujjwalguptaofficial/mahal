@@ -1,13 +1,43 @@
-import { createTextNode, Logger, onElDestroy, addRc, clearAll } from "../helpers";
+import { createTextNode, Logger, onElDestroy, addRc, clearAll, createElement } from "../helpers";
 import { Component } from "../abstracts";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { IRenderContext } from "../interface";
+import { replaceEl } from "./dom";
+import { MAHAL_KEY } from "../constant";
 
+const createTextNodeWithRc = (rcKey, element: Text, addRc_) => {
+    addRc_(rcKey, (newValue) => {
+        element.nodeValue = newValue;
+    });
+    return element;
+};
+
+const handleExpWithRc = (rcKeys: string[], exp: Function, addRc_) => {
+    let element = exp();
+    rcKeys.forEach(rcKey => {
+        addRc_(rcKey, () => {
+            const newElement = exp();
+            const isPatched = replaceEl(element, newElement);
+            if (!isPatched) {
+                if (element['_setVal_']) {
+                    newElement['_setVal_'] = element['_setVal_'];
+                    newElement['_rc_'] = element['_rc_'];
+                    newElement[MAHAL_KEY] = element[MAHAL_KEY];
+                }
+                element = newElement;
+            }
+        });
+    });
+    return element;
+};
 
 
 const renderContext: IRenderContext = {
     createTextNode: createTextNode,
-    addRc: addRc
+    addRc: addRc,
+    createTextNodeWithRc: createTextNodeWithRc,
+    handleExpWithRc: handleExpWithRc,
+    createEl: createElement
 };
 
 export const executeRender = (comp: Component) => {

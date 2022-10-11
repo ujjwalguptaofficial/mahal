@@ -2,23 +2,28 @@ import { app } from "../src/index";
 import { nextTick, children, reactive, Component, EventBus } from "mahal";
 import { expect } from "chai";
 import { template } from "@mahaljs/util";
+import Btn from "../src/components/btn";
 
 @template(`
 <div>
-		<div :for(item,index in list) class="mt-2" :key="item.question">
-			<b  @click="toggleAnswerFAQ(index)" class="question">
+		<div :for(item,index in list) class="row mt-2" :key="item.question" :question='item.question' :answer='item.answer'>
+			<b  @click="toggleAnswerFAQ(index)" class="question" :question='item.question' :index="index">
 				<div>{{item.question}}</div>
 				<i class="fa fa-chevron-down"></i>
 			</b>
             <p class="items-index">{{items}} {{indexes}}</p>
-			<div class="answer" :show(item.show) :html(item.answer)></div>
-		</div>
+			<div class="answer" :show(item.show) :html(item.answer) :answer="item.answer"></div>
+		<Btn :label="item.answer"/>
+        </div>
 </div>
 `)
+@children({
+    Btn
+})
 export default class Temp extends Component {
 
     onInit() {
-        // window['compD'] = this;
+        window['compD'] = this;
     }
 
     items = "ujjwal"
@@ -79,6 +84,79 @@ describe('Directive in for', function () {
     it('check items indexes', async () => {
         const itemsIndexesEl = component.find('.items-index');
         expect(itemsIndexesEl.innerHTML).equal(`ujjwal gupta`);
+    })
+
+    it('check props reactivity', async () => {
+
+        const checkQuestionProp = () => {
+            const questionEl = component.find('.question');
+            const questionText = questionEl.getAttribute('question');
+            expect(questionText).equal(component.list[0].question);
+
+            const indexText = questionEl.getAttribute('index');
+            expect(indexText).equal('0');
+
+            const row = component.find('.row');
+
+            const rowText = row.getAttribute('question');
+            expect(rowText).equal(component.list[0].question);
+        }
+
+        // check questions
+
+        checkQuestionProp();
+
+
+        // change question to check reactivity
+        component.list[0] = {
+            ...component.list[0],
+            ...{
+                question: 'Hello',
+            }
+        }
+
+        await component.waitFor('update');
+        checkQuestionProp();
+
+        const checkAnswer = () => {
+            const newAnswer = component.list[0].answer;
+
+            const row = component.find('.row');
+
+            const rowText = row.getAttribute('answer');
+            expect(rowText).equal(newAnswer);
+
+            // check for attribute
+            const answerEl = component.find('.answer');
+            const answerElAttributeAnswer = answerEl.getAttribute('answer');
+            expect(answerElAttributeAnswer).equal(newAnswer);
+
+            // check for inner html
+            expect(answerEl.innerHTML).equal(newAnswer);
+
+            // check for btn
+
+            const answerBtn = component.find('button.btn');
+            expect(answerBtn.innerText).equal(
+                newAnswer.toUpperCase()
+            );
+        }
+
+
+        checkAnswer();
+        // change answer to check reactivity
+
+        component.list[0] = {
+            ...component.list[0],
+            ...{
+                answer: 'World',
+            }
+        }
+
+        await component.waitFor('update');
+        checkQuestionProp();
+        checkAnswer();
+
     })
 
 });

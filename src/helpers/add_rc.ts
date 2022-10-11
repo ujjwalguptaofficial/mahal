@@ -1,10 +1,11 @@
-export function addRc(this: Map<string, HTMLElement[]>, key, el) {
+export function addRc(this: Map<string, Array<[HTMLElement, Function]>>, key, method: Function) {
     const val = this.get(key);
     if (!val) {
-        this.set(key, [el]);
+        this.set(key, [
+            method as any
+        ]);
     }
     else {
-        val.push(el);
+        val.push(method as any);
     }
-    return el;
 }

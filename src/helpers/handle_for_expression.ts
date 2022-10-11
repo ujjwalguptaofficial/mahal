@@ -254,24 +254,15 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                 const reactiveChild: TYPE_RC_STORAGE = currentEl[REACTIVE_CHILD];
                 const oldValue = params.oldValue;
                 const newValue = params.value;
-                const reactiveChildForNewProp = (method(newValue, paramKey)[REACTIVE_CHILD] as TYPE_RC_STORAGE);
+
+                currentEl['_setVal_'](newValue);
                 reactiveChild.forEach((oldReactiveEls, reactiveChildProp) => {
-                    const shouldUpdate = resolveValue(reactiveChildProp, oldValue) !== resolveValue(reactiveChildProp, newValue);
+                    const newValueAtReactiveChild = resolveValue(reactiveChildProp, newValue);
+                    const shouldUpdate = resolveValue(reactiveChildProp, oldValue) !== newValueAtReactiveChild;
                     if (!shouldUpdate) return;
-                    const newReactiveEls = reactiveChildForNewProp.get(reactiveChildProp);
-                    if (newReactiveEls) {
-                        oldReactiveEls.forEach((el, i) => {
-                            if (!el.isConnected) return;
-                            const isPatched = replaceEl(
-                                el,
-                                newReactiveEls[i]
-                            );
-                            if (isPatched) {
-                                newReactiveEls[i] = el;
-                            }
-                        });
-                    }
-                    reactiveChild.set(reactiveChildProp, newReactiveEls || []);
+                    oldReactiveEls.forEach((handler) => {
+                        (handler as any)(newValueAtReactiveChild);
+                    });
                 });
             }
         };
