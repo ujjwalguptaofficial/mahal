@@ -19,7 +19,7 @@ Component.prototype['_handleDir_'] = function (this: Component, element: HTMLEle
             addRc_(rc, (newValue) => {
                 // compiledDir.value = [newValue];
                 directive.valueUpdated();
-            }, element);
+            });
         }
 
         // call directive async, this will create element faster

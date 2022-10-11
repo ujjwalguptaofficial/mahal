@@ -87,9 +87,9 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
             if (process.env.NODE_ENV !== 'production' && key === 'key') {
                 throw 'found key within rc';
             }
-            option.rcm()(rc, (newValue, el) => {
-                handleReactiveAttribute(key, attrItem)(newValue, el);
-            }, component);
+            option.rcm()(rc, (newValue) => {
+                handleReactiveAttribute(key, attrItem)(newValue, component);
+            });
         }
     };
     const watchAttribute = (key: string, attrItem: IReactiveAttrItem) => {

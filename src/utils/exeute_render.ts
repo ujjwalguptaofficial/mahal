@@ -6,26 +6,27 @@ import { replaceEl } from "./dom";
 import { MAHAL_KEY } from "../constant";
 
 const createTextNodeWithRc = (rcKey, element: Text, addRc_) => {
-    return addRc_(rcKey, (newValue, newEl) => {
-        newEl.nodeValue = newValue;
-    }, element);
+    addRc_(rcKey, (newValue) => {
+        element.nodeValue = newValue;
+    });
+    return element;
 };
 
 const handleExpWithRc = (rcKeys: string[], exp: Function, addRc_) => {
-    const element = exp();
+    let element = exp();
     rcKeys.forEach(rcKey => {
-        addRc_(rcKey, (_, oldEl, rcMeta) => {
+        addRc_(rcKey, () => {
             const newElement = exp();
-            const isPatched = replaceEl(oldEl, newElement);
+            const isPatched = replaceEl(element, newElement);
             if (!isPatched) {
-                if (oldEl['_setVal_']) {
-                    newElement['_setVal_'] = oldEl['_setVal_'];
-                    newElement['_rc_'] = oldEl['_rc_'];
-                    newElement[MAHAL_KEY] = oldEl[MAHAL_KEY];
+                if (element['_setVal_']) {
+                    newElement['_setVal_'] = element['_setVal_'];
+                    newElement['_rc_'] = element['_rc_'];
+                    newElement[MAHAL_KEY] = element[MAHAL_KEY];
                 }
-                rcMeta[0] = newElement;
+                element = newElement;
             }
-        }, element);
+        });
     });
     return element;
 };

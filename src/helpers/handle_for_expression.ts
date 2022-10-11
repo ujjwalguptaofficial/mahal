@@ -260,8 +260,8 @@ export function handleForExp(this: Component, key: string, method: (...args) => 
                     const newValueAtReactiveChild = resolveValue(reactiveChildProp, newValue);
                     const shouldUpdate = resolveValue(reactiveChildProp, oldValue) !== newValueAtReactiveChild;
                     if (!shouldUpdate) return;
-                    oldReactiveEls.forEach((metaInfo) => {
-                        (metaInfo[1] as any)(newValueAtReactiveChild, metaInfo[0], metaInfo);
+                    oldReactiveEls.forEach((handler) => {
+                        (handler as any)(newValueAtReactiveChild);
                     });
                 });
             }
