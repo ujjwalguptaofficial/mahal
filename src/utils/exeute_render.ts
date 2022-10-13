@@ -37,16 +37,14 @@ const renderContext: IRenderContext = {
     addRc: addRc,
     createTextNodeWithRc: createTextNodeWithRc,
     handleExpWithRc: handleExpWithRc,
-    createEl: createElement
+    createEl: createElement,
 };
 
-export const executeRender = (comp: Component) => {
+export const executeRender = (comp: Component, children) => {
     const renderFn = comp['_render_']();
+    renderContext.children = children;
     const el: HTMLElement = renderFn.call(comp, renderContext);
-    comp.element = el;
     onElDestroy(el, clearAll.bind(comp));
-    comp.emit(LIFECYCLE_EVENT.Mount);
-    comp.isMounted = true;
     return el;
 };
 

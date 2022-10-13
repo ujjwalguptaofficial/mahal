@@ -15,6 +15,5 @@ export const createComponent = (componentConstructor, app: Mahal) => {
     }
     component['_watchBus_']['_ctx_'] = component;
     component['_evBus_']['_ctx_'] = component;
-    component.onInit();
     return component;
 };

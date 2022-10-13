@@ -5,6 +5,7 @@ import { forEachEvent } from "../helpers";
 import { getDataype } from "./get_data_type";
 
 export function initComponent(this: Component, component: Component, option) {
+    component.onInit();
 
     let htmlAttributes = [];
 

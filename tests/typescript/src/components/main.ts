@@ -20,16 +20,18 @@ import Fragment from "./fragment";
 import ArrayModel from "./array_model";
 import ObjectResetModel from "./object_reset_model";
 import { IAppGlobal } from "../interfaces";
-// import {Temp} from '../../test/inplace_if_toggle.test';
+import {Temp} from '../../test/inplace_if_toggle.test';
 // @template(`<div >
 // <in-place :of="name" #if(flag) label="as"/>
 // </div>`)
 // @template(`
 //     <TabRender :label="flag" :count="counter" on:click="incrementCounter" />
 // `)
+
+
 @template(`
 <div>
-    <Student class="students" />
+    <Student :label="flag" />
 </div>
 `)
 @children({
@@ -37,7 +39,7 @@ import { IAppGlobal } from "../interfaces";
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, computed,
     Fragment, ArrayModel, ObjectResetModel,
-    Btn: lazyComponent(() => import('../../test/inplace_if_toggle.test')),
+    Btn: lazyComponent(() => import('./btn')),
     // Temp
     // Temp: lazyComponent(() => import('../../test/directive_in_for.test'))
     // Btn1: lazyComponent(() => Promise.reject('dd'))

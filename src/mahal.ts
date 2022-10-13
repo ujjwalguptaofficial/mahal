@@ -3,7 +3,7 @@ import { initComponent, isObject, executeRender, getDataype, createComponent, Ev
 import { HTML_TAG, LIFECYCLE_EVENT } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective, htmlDirective, eventDirective } from "./ready_made";
 import { Logger } from "./helpers";
-import { IRenderContext } from "./interface";
+import { IElementOption, IRenderContext } from "./interface";
 
 
 
@@ -15,7 +15,6 @@ export class Mahal {
     global: { [key: string]: any } = {};
 
     constructor(component: typeof Component, element) {
-        this._comp_ = component;
         this.element = getDataype(element) === 'string' ? document.querySelector(element) : element;
         if (this.element == null) {
             const defaultId = 'mahal-app';
@@ -53,34 +52,43 @@ export class Mahal {
         extendDirective("ref", refDirective);
         extendDirective("html", htmlDirective);
         extendDirective("on", eventDirective);
+
+        this._createComponent_(component);
     }
 
-    create() {
-        let componentInstance: Component = createComponent(this._comp_, this);
-        initComponent.call(this, componentInstance);
-        this.emit(LIFECYCLE_EVENT.Create);
-        const el = executeRender(componentInstance);
+    private _createComponent_(component: typeof Component) {
+        const comp = this.component = createComponent(component, this);
+        this.on = (ev, cb) => {
+            comp.on(ev, cb);
+        }
+        this.off = (ev, cb) => {
+            comp.off(ev, cb);
+        }
+        this.emit = (ev, ...args) => {
+            comp.emit(ev, ...args);
+        }
+    }
+
+    create(option?: IElementOption) {
+        let componentInstance: Component = this.component;
+        initComponent.call(componentInstance, componentInstance, option);
+        const el = executeRender(componentInstance, []);
         this.element.appendChild(
             el
-        )
-        this.emit(LIFECYCLE_EVENT.Mount);
+        );
+        componentInstance.element = el;
+        componentInstance.isMounted = true;
+        componentInstance.emit(LIFECYCLE_EVENT.Mount);
         return promiseResolve(
             componentInstance
         );
     }
 
-    on(event: string, cb: Function) {
-        this._evBus_.on(event, cb);
-        return this;
-    }
+    on: (event: string, cb: Function) => void;
 
-    off(event: string, eventListener: Function) {
-        this._evBus_.off(event, eventListener);
-    }
+    off: (event: string, eventListener: Function) => void;
 
-    emit(event: string, ...args) {
-        return this._evBus_.emit(event, ...args);
-    }
+    emit: (event: string, ...args) => void;
 
     extend = {
         plugin: (plugin, options?) => {
@@ -114,17 +122,6 @@ export class Mahal {
     }
 
     private _compileTemplate_: any;
-
-    private _evBus_ = new EventBus();
-
-    /**
-     * component class
-     *
-     * @private
-     * @type {typeof Component}
-     * @memberof Mahal
-     */
-    private _comp_: typeof Component;
 
     private _plugins_ = [];
     private _component_ = {

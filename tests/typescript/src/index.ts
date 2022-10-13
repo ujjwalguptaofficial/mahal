@@ -20,6 +20,7 @@ app.extend.formatter("toS", toString);
 // app.extend.component("fragment", FragmentComponent);
 // (Mahal as any).createRenderer = createRenderer;
 app.extend.setRenderer(createRenderer);
+window['app'] = app;
 if (process.env.BUILD_ENV !== "test") {
     app.create().catch(err => {
         console.log("err", err)

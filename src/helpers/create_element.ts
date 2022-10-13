@@ -1,5 +1,5 @@
 import { createCommentNode } from "./create_coment_node";
-import { HTML_TAG, ERROR_TYPE } from "../enums";
+import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { DEFAULT_SLOT_NAME } from "../constant";
 import { executeRender, replaceEl, getAttribute, setAttribute, createComponent, ILazyComponentPayload, addEventListener, insertBefore, forEach } from "../utils";
 import { Component } from "../abstracts";
@@ -60,12 +60,13 @@ export const createElement = function (this: Component, tag: string, childs: HTM
     const savedComponent = ctx.children[tag] || ctx['_app_']['_component_'][tag];
     if (savedComponent) {
 
-        const renderComponent = (comp) => {
-            const component: Component = createComponent(comp, ctx['_app_']);
+        const renderComponent = (compClass) => {
+            const component: Component = createComponent(compClass, ctx['_app_']);
             const htmlAttributes = ctx['_initComp_'](component as any, option);
-            executeRender(component);
-            let element = component.element;
-            let targetSlot = component.find(`slot[name='default']`) || (element.tagName.match(/slot/i) ? element : null);
+            let element = executeRender(component, childs);
+            // component.element;
+            component.element = element;
+            let targetSlot = element.querySelector(`slot[name='default']`) || (element.tagName.match(/slot/i) ? element : null);
             if (targetSlot) {
                 childs.forEach(item => {
                     if (item.tagName === "TARGET") {
@@ -103,6 +104,8 @@ export const createElement = function (this: Component, tag: string, childs: HTM
                 }
                 setAttribute(element, item.key, item.value);
             });
+            component.isMounted = true;
+            component.emit(LIFECYCLE_EVENT.Mount);
             return element;
         };
         const compPromise = loadComponent(savedComponent);
