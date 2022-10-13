@@ -18,3 +18,4 @@ export * from "./destroy_helper";
 export * from "./subscribe_to_emit_destory";
 export * from "./for_each_event";
 export * from "./add_rc";
+export * from "./set_component_mount";

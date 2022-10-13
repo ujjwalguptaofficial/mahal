@@ -1,7 +1,7 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { DEFAULT_SLOT_NAME } from "../constant";
-import { executeRender, replaceEl, getAttribute, setAttribute, createComponent, ILazyComponentPayload, addEventListener, insertBefore, forEach } from "../utils";
+import { executeRender, replaceEl, getAttribute, setAttribute, createComponent, ILazyComponentPayload, addEventListener, insertBefore, forEach, findElement } from "../utils";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
 import { emitError } from "./emit_error";
@@ -11,6 +11,7 @@ import "./handle_attribute";
 import "./handle_directive";
 import "./handle_expression";
 import { IElementOption } from "../interface";
+import { setComponentMount } from "./set_component_mount";
 
 const loadComponent = (componentClass) => {
     if (componentClass instanceof Promise) {
@@ -64,27 +65,29 @@ export const createElement = function (this: Component, tag: string, childs: HTM
             const component: Component = createComponent(compClass, ctx['_app_']);
             const htmlAttributes = ctx['_initComp_'](component as any, option);
             let element = executeRender(component, childs);
-            // component.element;
-            component.element = element;
-            let targetSlot = element.querySelector(`slot[name='default']`) || (element.tagName.match(/slot/i) ? element : null);
+
+            let targetSlot = findElement(element, `slot[name='default']`) || (element.tagName.match(/slot/i) ? element : null);
             if (targetSlot) {
                 childs.forEach(item => {
                     if (item.tagName === "TARGET") {
-                        const namedSlot = component.find(`slot[name='${item.getAttribute("name")}']`);
+                        const namedSlot = findElement(element, `slot[name='${item.getAttribute("name")}']`);
                         if (namedSlot) {
                             targetSlot = namedSlot;
                         }
                     }
                     const targetSlotParent = targetSlot.parentElement;
                     if (targetSlotParent) {
+
+                        const insertSlot = (slotEl: HTMLElement) => {
+                            insertBefore(targetSlotParent, slotEl, targetSlot.nextSibling);
+                        }
+
                         // nodeType -3 : TextNode
                         if (item.nodeType === 3) {
-                            insertBefore(targetSlotParent, item, targetSlot.nextSibling);
+                            insertSlot(item);
                         }
                         else {
-                            item.childNodes.forEach(child => {
-                                insertBefore(targetSlotParent, child, targetSlot.nextSibling);
-                            });
+                            item.childNodes.forEach(insertSlot);
                         }
                         targetSlot.remove();
                     }
@@ -104,8 +107,7 @@ export const createElement = function (this: Component, tag: string, childs: HTM
                 }
                 setAttribute(element, item.key, item.value);
             });
-            component.isMounted = true;
-            component.emit(LIFECYCLE_EVENT.Mount);
+            setComponentMount(component, element);
             return element;
         };
         const compPromise = loadComponent(savedComponent);

@@ -1,8 +1,8 @@
 import { Component } from "./abstracts";
-import { initComponent, isObject, executeRender, getDataype, createComponent, EventBus, promiseResolve } from "./utils";
+import { initComponent, isObject, executeRender, getDataype, createComponent, EventBus, promiseResolve, findElement } from "./utils";
 import { HTML_TAG, LIFECYCLE_EVENT } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, classDirective, refDirective, htmlDirective, eventDirective } from "./ready_made";
-import { Logger } from "./helpers";
+import { Logger, setComponentMount } from "./helpers";
 import { IElementOption, IRenderContext } from "./interface";
 
 
@@ -15,10 +15,10 @@ export class Mahal {
     global: { [key: string]: any } = {};
 
     constructor(component: typeof Component, element) {
-        this.element = getDataype(element) === 'string' ? document.querySelector(element) : element;
+        this.element = getDataype(element) === 'string' ? findElement(document as any, element) : element;
         if (this.element == null) {
             const defaultId = 'mahal-app';
-            let el: HTMLElement = document.querySelector(defaultId);
+            let el: HTMLElement = findElement(document as any, defaultId) as HTMLElement;
             if (el) {
                 el.innerHTML = "";
             }
@@ -58,15 +58,12 @@ export class Mahal {
 
     private _createComponent_(component: typeof Component) {
         const comp = this.component = createComponent(component, this);
-        this.on = (ev, cb) => {
-            comp.on(ev, cb);
+        const bindWithComp = (method: Function) => {
+            return method.bind(comp);
         }
-        this.off = (ev, cb) => {
-            comp.off(ev, cb);
-        }
-        this.emit = (ev, ...args) => {
-            comp.emit(ev, ...args);
-        }
+        this.on = bindWithComp(comp.on);
+        this.off = bindWithComp(comp.off);
+        this.emit = bindWithComp(comp.emit);
     }
 
     create(option?: IElementOption) {
@@ -76,9 +73,7 @@ export class Mahal {
         this.element.appendChild(
             el
         );
-        componentInstance.element = el;
-        componentInstance.isMounted = true;
-        componentInstance.emit(LIFECYCLE_EVENT.Mount);
+        setComponentMount(componentInstance, el);
         return promiseResolve(
             componentInstance
         );
