@@ -80,7 +80,7 @@ export const createElement = function (this: Component, tag: string, childs: HTM
 
                         const insertSlot = (slotEl: HTMLElement) => {
                             insertBefore(targetSlotParent, slotEl, targetSlot.nextSibling);
-                        }
+                        };
 
                         // nodeType -3 : TextNode
                         if (item.nodeType === 3) {

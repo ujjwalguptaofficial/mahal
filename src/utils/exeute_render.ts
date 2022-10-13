@@ -1,6 +1,6 @@
 import { createTextNode, Logger, onElDestroy, addRc, clearAll, createElement } from "../helpers";
 import { Component } from "../abstracts";
-import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
+import { ERROR_TYPE } from "../enums";
 import { IRenderContext } from "../interface";
 import { replaceEl } from "./dom";
 import { MAHAL_KEY } from "../constant";
@@ -42,7 +42,6 @@ const renderContext: IRenderContext = {
 
 export const executeRender = (comp: Component, children) => {
     const renderFn = comp['_render_']();
-    renderContext.children = children;
     const el: HTMLElement = renderFn.call(comp, renderContext);
     onElDestroy(el, clearAll.bind(comp));
     return el;

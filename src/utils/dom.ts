@@ -33,4 +33,4 @@ export const createDocumentFragment = () => {
 
 export const findElement = (el: Element, query: string) => {
     return el.querySelector(query);
-}
+};

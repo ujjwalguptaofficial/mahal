@@ -22,10 +22,10 @@
     "test:mochapack": "cross-env NODE_ENV=test mochapack --require ./typescript/test/setup.js --webpack-config typescript/webpack.config.test.js \"typescript/test/**/*.test.ts\""
   },
   "dependencies": {
-    "@mahaljs/html-compiler": "file:../../mahal-html-compiler/mahaljs-html-compiler-1.7.0.tgz",
-    "@mahaljs/test-utils": "file:../../mahal-test-utils/mahaljs-test-utils-1.7.0.tgz",
-    "@mahaljs/util": "^1.7.0",
-    "@mahaljs/webpack-loader": "^1.7.0",
+    "@mahaljs/html-compiler": "^1.7.1",
+    "@mahaljs/test-utils": "^1.7.1",
+    "@mahaljs/util": "^1.7.1",
+    "@mahaljs/webpack-loader": "^1.7.1",
     "chai": "^4.3.4",
     "flexboot": "^1.0.1",
     "jquery": "^3.6.0",

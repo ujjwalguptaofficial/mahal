@@ -6,6 +6,5 @@ export interface IRenderContext {
     createTextNodeWithRc: Function;
     handleExpWithRc: Function;
     createEl: typeof createElement;
-    children?: HTMLElement[];
 }
 
