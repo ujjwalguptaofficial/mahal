@@ -1,8 +1,11 @@
+import { Component } from "../abstracts";
+import { emitUpdate } from "../helpers";
 import { IDirectiveBinding } from "../interface";
 import { isObject } from "../utils";
 
-export const classDirective = (el: HTMLElement, binding: IDirectiveBinding) => {
+export function classDirective(el: HTMLElement, binding: IDirectiveBinding) {
 
+    let element: HTMLElement = el;
     const applyClass = (classes) => {
         if (isObject(classes)) {
             for (const name in classes) {
@@ -10,22 +13,31 @@ export const classDirective = (el: HTMLElement, binding: IDirectiveBinding) => {
                     applyClass(name);
                 }
                 else {
-                    el.classList.remove(name);
+                    element.classList.remove(name);
                 }
             }
         }
         else {
-            el.classList.add(classes);
+            element.classList.add(classes);
         }
     };
 
     const addClass = () => {
         binding.value.forEach(applyClass);
     };
-    addClass();
-    return {
-        valueUpdated() {
+    if (binding.isComponent) {
+        (el as any as Component).waitFor('mount').then(_ => {
+            element = (el as any as Component).element;
             addClass();
+        })
+    }
+    else {
+        addClass();
+    }
+    return {
+        valueUpdated: () => {
+            addClass();
+            emitUpdate(this);
         }
     };
 };

@@ -1,5 +1,5 @@
 import { app } from "../src/index";
-import { nextTick, Component, prop, children } from "mahal";
+import { nextTick, Component, prop, children, reactive } from "mahal";
 import { expect } from "chai";
 import { spy } from "sinon";
 import { template } from "@mahaljs/util";
@@ -11,11 +11,14 @@ import { template } from "@mahaljs/util";
 })
 @template(`
 <div>
-    <Btn class="btn-slot">{{content}}</Btn>
+    <Btn class="btn-slot" :class({active:isActive})>{{content}}</Btn>
 </div>
 `)
 class Temp extends Component {
     content = "Button"
+
+    @reactive
+    isActive = false;
 }
 
 describe('Btn slot test', function () {
@@ -50,5 +53,16 @@ describe('Btn slot test', function () {
 
         consoleSpy.restore();
     });
+
+    it('check for class expression', async () => {
+        const btn: HTMLButtonElement = component.find('.btn-slot');
+        expect(btn.classList.contains('active')).equal(false);
+
+        component.isActive = true;
+
+        await component.waitFor('update');
+        expect(btn.classList.contains('active')).equal(true);
+
+    })
 });
 
