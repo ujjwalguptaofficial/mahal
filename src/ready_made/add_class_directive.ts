@@ -29,7 +29,7 @@ export function classDirective(el: HTMLElement, binding: IDirectiveBinding) {
         (el as any as Component).waitFor('mount').then(_ => {
             element = (el as any as Component).element;
             addClass();
-        })
+        });
     }
     else {
         addClass();
@@ -40,4 +40,4 @@ export function classDirective(el: HTMLElement, binding: IDirectiveBinding) {
             emitUpdate(this);
         }
     };
-};
+}
