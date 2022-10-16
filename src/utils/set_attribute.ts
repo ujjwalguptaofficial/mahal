@@ -2,17 +2,6 @@ import { MAHAL_KEY } from "../constant";
 import { forEach } from "./for_each";
 import { isObject } from "./is_object";
 
-export const evalStyle = (value) => {
-    if (isObject(value)) {
-        let str = '';
-        forEach(value, (styleValue, styleKey) => {
-            str += `${styleKey}:${styleValue};`
-        });
-        return str;
-    }
-    return value;
-}
-
 export const setAttribute = (element: HTMLElement, key: string, value: string) => {
     switch (key) {
         case 'key':
@@ -42,13 +31,15 @@ export const setAttribute = (element: HTMLElement, key: string, value: string) =
             }
             applyClasses(value);
             break;
-        default:
-            switch (key) {
-                case 'style':
-                    value = evalStyle(value);
-                    break;
-
+        case 'style':
+            if (isObject(value)) {
+                let str = '';
+                forEach(value, (styleValue, styleKey) => {
+                    str += `${styleKey}:${styleValue};`
+                });
+                value = str;
             }
+        default:
             element.setAttribute(key, value);
     }
 };

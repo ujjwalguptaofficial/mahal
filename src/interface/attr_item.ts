@@ -1,5 +1,5 @@
 export interface IAttrItem {
-    v: string | Function;
+    v: string;
 }
 export interface IReactiveAttrItem extends IAttrItem {
     k: string[];

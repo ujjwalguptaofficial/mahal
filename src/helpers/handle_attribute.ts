@@ -3,7 +3,6 @@ import { IAttrItem, IElementOption, IReactiveAttrItem } from "../interface";
 import { getDataype, forOwn, setAttribute, nextTick } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
-import { getAttributeValue } from "./get_attribute_value";
 import { Logger } from "./logger";
 import { onElDestroy } from "./destroy_helper";
 
@@ -14,7 +13,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
     const handleAttributeForComponent = (key: string, attrItem: IReactiveAttrItem) => {
         const propDescription = component._props_[key];
         if (propDescription) {
-            const attrValue = getAttributeValue(attrItem, attrItem.v);
+            const attrValue = attrItem.v;
             if (propDescription.type) {
                 const expected = propDescription.type;
                 const received = getDataype(attrValue);
@@ -58,12 +57,12 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
     const handleReactiveAttribute = isComponent ? (key: string, attrItem: IReactiveAttrItem) => {
         return (newValue, comp: Component) => {
             Component.shouldCheckProp = false;
-            comp.setState(key, getAttributeValue(attrItem, newValue));
+            comp.setState(key, attrItem.v);
             Component.shouldCheckProp = true;
         };
     } : (key: string, attrItem: IReactiveAttrItem) => {
         return (newValue, el: HTMLElement) => {
-            setAttribute(el, key, getAttributeValue(attrItem, newValue));
+            setAttribute(el, key, attrItem.v as any);
             emitUpdate(this);
         };
     };
@@ -119,7 +118,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
     }
 
     forOwn(reactiveAttr, (key, attrItem: IReactiveAttrItem) => {
-        const attrValue = getAttributeValue(attrItem, attrItem.v);
+        const attrValue = attrItem.v;
         setAttribute(component, key, attrValue);
         watchAttribute(key, attrItem);
         handleAttributeRc(key, attrItem);

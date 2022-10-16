@@ -1,7 +1,7 @@
 import { createCommentNode } from "./create_coment_node";
-import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
+import { HTML_TAG, ERROR_TYPE } from "../enums";
 import { DEFAULT_SLOT_NAME } from "../constant";
-import { executeRender, replaceEl, getAttribute, setAttribute, createComponent, ILazyComponentPayload, addEventListener, insertBefore, forEach, findElement, evalStyle } from "../utils";
+import { executeRender, replaceEl, createComponent, ILazyComponentPayload, addEventListener, insertBefore, findElement } from "../utils";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
 import { emitError } from "./emit_error";

@@ -9,7 +9,6 @@ export * from "./handle_in_place";
 export * from "./create_element";
 export * from "./emit_update";
 export * from "./comp_clear_all";
-export * from "./get_attribute_value";
 export * from "./emit_error";
 export * from "./logger";
 export * from "./index_of";
