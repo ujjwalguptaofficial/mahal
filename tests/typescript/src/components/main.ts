@@ -31,7 +31,7 @@ import { Temp } from '../../test/inplace_if_toggle.test';
 
 @template(`
 <div>
-    <Student :class({active:flag}) />
+    <div :style="styles" >you</div>
 </div>
 `)
 @children({
@@ -45,6 +45,12 @@ import { Temp } from '../../test/inplace_if_toggle.test';
     // Btn1: lazyComponent(() => Promise.reject('dd'))
 })
 export default class Main extends Component<IAppGlobal> {
+
+    @reactive styles =
+        {
+            width: '30px',
+            height: '30px'
+        }
 
 
 

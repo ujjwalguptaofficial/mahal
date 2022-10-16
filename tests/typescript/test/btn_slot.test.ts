@@ -10,8 +10,8 @@ import { template } from "@mahaljs/util";
     Btn: import('./standard_button')
 })
 @template(`
-<div>
-    <Btn class="btn-slot" :class({active:isActive})>{{content}}</Btn>
+<div :style="styles">
+    <Btn class="btn-slot" :class({active:isActive}) :style="styles">{{content}}</Btn>
 </div>
 `)
 class Temp extends Component {
@@ -19,6 +19,11 @@ class Temp extends Component {
 
     @reactive
     isActive = false;
+
+    @reactive styles = {
+        width: '30px',
+        height: '40px'
+    }
 }
 
 describe('Btn slot test', function () {
@@ -63,6 +68,19 @@ describe('Btn slot test', function () {
         await component.waitFor('update');
         expect(btn.classList.contains('active')).equal(true);
 
+    })
+
+    it('check for expression css on native element', async () => {
+        const btn: HTMLButtonElement = component.element;
+        expect(btn.style.width).equal('30px');
+        expect(btn.style.height).equal('40px');
+
+        component.styles = {
+            width: '30px',
+            height: '50px'
+        }
+        component.waitFor('update');
+        expect(btn.style.height).equal('50px');
     })
 });
 
