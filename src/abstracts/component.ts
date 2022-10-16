@@ -380,7 +380,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
     private _render_: () => () => HTMLElement;
     private _clearAll_: () => void;
     private _initComp_: typeof initComponent;
-    private _handleAttr_: (component, isComponent, option: IElementOption) => any[];
+    private _handleAttr_: (component, isComponent, option: IElementOption) => IElementOption;
     private _handleDir_: (element: HTMLElement, dir, isComponent: boolean, addRc?: Function) => void;
 
 }

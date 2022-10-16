@@ -1,7 +1,7 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { DEFAULT_SLOT_NAME } from "../constant";
-import { executeRender, replaceEl, getAttribute, setAttribute, createComponent, ILazyComponentPayload, addEventListener, insertBefore, forEach, findElement } from "../utils";
+import { executeRender, replaceEl, getAttribute, setAttribute, createComponent, ILazyComponentPayload, addEventListener, insertBefore, forEach, findElement, evalStyle } from "../utils";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
 import { emitError } from "./emit_error";
@@ -63,7 +63,7 @@ export const createElement = function (this: Component, tag: string, childs: HTM
 
         const renderComponent = (compClass) => {
             const component: Component = createComponent(compClass, ctx['_app_']);
-            const htmlAttributes = ctx['_initComp_'](component as any, option);
+            const componentOption = ctx['_initComp_'](component as any, option);
             let element = executeRender(component, childs);
 
             let targetSlot = findElement(element, `slot[name='default']`) || (element.tagName.match(/slot/i) ? element : null);
@@ -97,16 +97,9 @@ export const createElement = function (this: Component, tag: string, childs: HTM
                 });
             }
 
-            (htmlAttributes || []).forEach(item => {
-                switch (item.key) {
-                    case 'class':
-                        item.value = (getAttribute(element, item.key) || '') + ' ' + item.value;
-                        break;
-                    case 'style':
-                        item.value = (getAttribute(element, item.key) || '') + item.value;
-                }
-                setAttribute(element, item.key, item.value);
-            });
+            ctx['_handleAttr_'](
+                element, false, componentOption
+            );
             setComponentMount(component, element);
             return element;
         };

@@ -82,5 +82,18 @@ describe('Btn slot test', function () {
         component.waitFor('update');
         expect(btn.style.height).equal('50px');
     })
+
+    it('check for expression css on custom element', async () => {
+        const btn: HTMLButtonElement = component.find('.btn-slot');
+        expect(btn.style.width).equal('30px');
+        expect(btn.style.height).equal('50px');
+
+        component.styles = {
+            width: '40px',
+            height: '50px'
+        }
+        component.waitFor('update');
+        expect(btn.style.width).equal('40px');
+    })
 });
 

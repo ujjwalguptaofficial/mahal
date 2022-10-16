@@ -31,7 +31,7 @@ import { Temp } from '../../test/inplace_if_toggle.test';
 
 @template(`
 <div>
-    <div :style="styles" >you</div>
+    <HelloWorld :style="styles"></HelloWorld>
 </div>
 `)
 @children({

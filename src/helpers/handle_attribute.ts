@@ -9,8 +9,9 @@ import { onElDestroy } from "./destroy_helper";
 
 Component.prototype['_handleAttr_'] = function (this: Component, component, isComponent, option: IElementOption) {
     const attr = option.attr;
-    const htmlAttributes = [];
-    const handleAttributeForComponent = (key: string, attrItem: IAttrItem) => {
+    // const htmlAttributes = [];
+    const componentOption: IElementOption = { attr: {} };
+    const handleAttributeForComponent = (key: string, attrItem: IReactiveAttrItem) => {
         const propDescription = component._props_[key];
         if (propDescription) {
             const attrValue = attrItem.v as string;
@@ -34,16 +35,13 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
             return true;
         }
         else {
-            htmlAttributes.push({
-                key,
-                value: attrItem.v as any
-            });
+            componentOption[attrItem.k ? 'rAttr' : 'attr'][key] = attrItem as any;
         }
     };
     if (attr) {
         if (isComponent) {
             forOwn(attr, (key, attrItem: IAttrItem) => {
-                handleAttributeForComponent(key, attrItem);
+                handleAttributeForComponent(key, attrItem as any);
             });
         }
         else {
@@ -54,7 +52,8 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
     }
 
     const reactiveAttr = option.rAttr;
-    if (!reactiveAttr) return htmlAttributes;
+    if (!reactiveAttr) return componentOption;
+    componentOption.rAttr = {};
 
     const handleReactiveAttribute = isComponent ? (key: string, attrItem: IReactiveAttrItem) => {
         return (newValue, comp: Component) => {
@@ -115,7 +114,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
                 subscribeToDestroy(component.element);
             });
         }
-        return htmlAttributes;
+        return componentOption;
     }
 
     forOwn(reactiveAttr, (key, attrItem: IReactiveAttrItem) => {
