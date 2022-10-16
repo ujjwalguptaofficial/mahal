@@ -96,7 +96,9 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
         const m = handleReactiveAttribute(key, attrItem);
         attributeKeys.forEach(attributeKey => {
             const method = (newValue) => {
-                m(newValue, component);
+                nextTick(_ => {
+                    m(newValue, component);
+                });
             };
             this.watch(attributeKey, method);
             methods.set(attributeKey, method);

@@ -79,7 +79,7 @@ describe('Btn slot test', function () {
             width: '30px',
             height: '50px'
         }
-        component.waitFor('update');
+        await component.waitFor('update');
         expect(btn.style.height).equal('50px');
     })
 
@@ -92,7 +92,7 @@ describe('Btn slot test', function () {
             width: '40px',
             height: '50px'
         }
-        component.waitFor('update');
+        await component.waitFor('update');
         expect(btn.style.width).equal('40px');
     })
 });

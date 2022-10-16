@@ -34,6 +34,7 @@ describe('Attribute test', function () {
 
     it("change data", async function () {
         component.content = 'ujjwal';
+        await component.waitFor('update');
         const btn = component.find('.name');
         expect(btn.getAttribute('name')).equal(component.upperCase(component.content));
     });

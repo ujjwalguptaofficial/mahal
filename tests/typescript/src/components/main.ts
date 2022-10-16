@@ -31,7 +31,7 @@ import { Temp } from '../../test/inplace_if_toggle.test';
 
 @template(`
 <div>
-    <ModelComponent   />
+    <HelloWorld  :style="styles" />
 </div>
 `)
 @children({
@@ -132,6 +132,9 @@ export default class Main extends Component<IAppGlobal> {
         window['mainComp'] = this;
         this.on('create', () => {
             console.log('created');
+        })
+        this.on('update', () => {
+            console.log('updated');
         })
         this.on('error', (err) => {
             console.error('error occured', err);

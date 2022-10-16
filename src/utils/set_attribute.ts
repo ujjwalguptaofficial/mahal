@@ -4,6 +4,16 @@ import { isObject } from "./is_object";
 
 export const setAttribute = (element: HTMLElement, key: string, value: string) => {
     switch (key) {
+        case 'class':
+            if (typeof value === 'string') {
+                element.className = element.classList.length > 0 ? element.className + ' ' + value : value;
+            }
+            else {
+                forEach(value, (isTrue, className) => {
+                    element.classList[isTrue ? 'add' : 'remove'](className);
+                });
+            }
+            break;
         case 'key':
             element[MAHAL_KEY] = value;
             break;
@@ -13,24 +23,6 @@ export const setAttribute = (element: HTMLElement, key: string, value: string) =
                 (element as HTMLInputElement).value = value;
                 break;
             }
-        case 'class':
-            const applyClasses = (classes) => {
-                if (isObject(classes)) {
-                    forEach(classes, (isTrue, className) => {
-                        if (isTrue) {
-                            applyClasses(className);
-                        }
-                        else {
-                            element.classList.remove(className);
-                        }
-                    });
-                }
-                else {
-                    element.className = element.classList.length > 0 ? element.className + ' ' + classes : classes;
-                }
-            }
-            applyClasses(value);
-            break;
         case 'style':
             if (isObject(value)) {
                 let str = '';
