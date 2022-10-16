@@ -12,7 +12,7 @@ import { IAppGlobal } from "../interfaces";
         <td><button id="btnAdd" on:click="addStudent">Add Student</button></td>
         <td></td>
     </tr>
-    <tr class="tr-list" :for(student,index in students) :class({'gt-0':index>0})>
+    <tr class="tr-list" :for(student,index in students) :class="{'gt-0':index>0}">
     <td>{{index}}</td>
     <td class="edit-student-input" :if(student.isEdit) >
        <input :model(editName) />

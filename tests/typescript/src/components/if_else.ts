@@ -2,8 +2,8 @@ import { Component, prop, formatter, reactive } from "mahal";
 import { template } from "@mahaljs/util";
 
 @template(`
-<div :stateAttr="state" :class({'state-0':state===0,'state-1':state===1,'state-gt-10':state>10,'nested-3':nested.nested1.nested2.nested3==0})>
-   <div :class('state--0','state--01') :if(state==0)>0th{{state}}</div>
+<div :stateAttr="state" :class="{'state-0':state===0,'state-1':state===1,'state-gt-10':state>10,'nested-3':nested.nested1.nested2.nested3==0}">
+   <div class='state--0 state--01' :if(state==0)>0th{{state}}</div>
    <div :else-if(state==1)>1st{{state}}</div>
    <div :else-if(state===2)>{{state | dollar}}</div>
    <Btn :else-if(state<=3) label='ok'></Btn>
@@ -32,9 +32,8 @@ export default class extends Component {
 
     name = "ujjwal"
 
-    constructor() {
-        super();
-        window["comp"] = this;
+    onInit() {
+        window["ifcomp"] = this;
 
         this.on("update", this.updated);
     }

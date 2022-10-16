@@ -46,7 +46,7 @@ dateCreated:
 	</div>
 	<table class="table table-hover table-striped test-data">
 		<tbody>
-			<tr :for(row in data) :key="row.id" :class({'danger':selected===row.id })>
+			<tr :for(row in data) :key="row.id" :class="{'danger':selected===row.id }">
 				<td class="col-md-1">{{row.id}}</td>
 				<td class="col-md-4">
 					<a @click="select(row)">{{row.label}}</a>
@@ -76,7 +76,7 @@ export default class extends Component {
     onInit() {
         this.run();
         window["comp"] = this;
-        window['buildData'] = buildData;
+        window["buildData"] = buildData;
         // this.on("mount", async () => {
         //     await this.timer.timeout(0);
         //     const table = document.querySelector("table");
@@ -115,7 +115,7 @@ export default class extends Component {
         //     set.add(item);
         // });
         // console.timeEnd("set");
-        
+
         // return;
         this.setState("data", buildData(10000));
         this.setState("selected", 0);

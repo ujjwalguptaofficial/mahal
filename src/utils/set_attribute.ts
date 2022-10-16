@@ -24,14 +24,30 @@ export const setAttribute = (element: HTMLElement, key: string, value: string) =
                 (element as HTMLInputElement).value = value;
                 break;
             }
+        case 'class':
+            const applyClasses = (classes) => {
+                if (isObject(classes)) {
+                    forEach(classes, (isTrue, className) => {
+                        if (isTrue) {
+                            applyClasses(className);
+                        }
+                        else {
+                            element.classList.remove(className);
+                        }
+                    });
+                }
+                else {
+                    element.className = element.classList.length > 0 ? element.className + ' ' + classes : classes;
+                }
+            }
+            applyClasses(value);
+            break;
         default:
             switch (key) {
                 case 'style':
                     value = evalStyle(value);
                     break;
-                case 'class':
-                    value = `${element.className} ${value}`;
-                    break;
+
             }
             element.setAttribute(key, value);
     }

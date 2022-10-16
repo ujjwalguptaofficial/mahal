@@ -1,6 +1,5 @@
 import IfElseComponent from "../src/components/if_else";
 import { app } from "../src/index";
-import { nextTick } from "mahal";
 import { expect } from "chai";
 import { createSandbox } from "sinon";
 

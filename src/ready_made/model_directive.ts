@@ -9,8 +9,10 @@ export function createModelDirective(eventName, propToUse) {
         this['_handleAttr_'](el, isComponent, {
             rAttr: {
                 value: {
-                    k: key,
-                    v: binding[propToUse][0]
+                    k: [key],
+                    get v() {
+                        return binding[propToUse][0];
+                    }
                 } as IReactiveAttrItem
             }
         });

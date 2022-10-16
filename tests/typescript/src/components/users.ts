@@ -32,9 +32,8 @@ export default class extends Component {
         gender: "Male"
     }]
 
-    constructor() {
-        super();
-        window['comp'] = this;
+    onInit() {
+        window['compUsers'] = this;
         this.on("update", () => {
             console.log("updated");
         })

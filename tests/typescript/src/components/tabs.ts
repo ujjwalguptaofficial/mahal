@@ -5,7 +5,7 @@ import { template } from "@mahaljs/util";
 @template(`
     <div>
         <div class="row">
-            <div :class({ 'active' : value===tab }) on:click="()=>{onTabClick(tab)}" class="tab margin-right-10px" :for(tab in tabs) >
+            <div :class="{ 'active' : value===tab }" on:click="()=>{onTabClick(tab)}" class="tab margin-right-10px" :for(tab in tabs) >
                 {{tab}}
             </div>
         </div>
@@ -28,8 +28,8 @@ export default class extends Component {
     }
 
     onInit(): void {
-        this.on('mount',()=>{
-            console.log('el',this.element);
+        this.on('mount', () => {
+            console.log('el', this.element);
         })
     }
 }

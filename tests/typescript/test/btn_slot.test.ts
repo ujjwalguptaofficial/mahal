@@ -11,7 +11,7 @@ import { template } from "@mahaljs/util";
 })
 @template(`
 <div :style="styles">
-    <Btn class="btn-slot" :class({active:isActive}) :style="styles">{{content}}</Btn>
+    <Btn class="btn-slot" :class="{active:isActive}" :style="styles">{{content}}</Btn>
 </div>
 `)
 class Temp extends Component {

@@ -4,7 +4,7 @@ import { template } from "@mahaljs/util";
 
 @template(`
 <div>
-   <TextBox on:update="onUpdate" :id="txtStandardCheckBox" :model(text) />
+   <TextBox on:update="onUpdate" :id="id" :model(text) />
 </div>
 `)
 @children({ TextBox })
@@ -18,5 +18,9 @@ export default class extends Component {
 
     onUpdate() {
         this.emit('update');
+    }
+
+    onInit(): void {
+        window['compModel'] = this;
     }
 }

@@ -3,7 +3,7 @@ import { template } from "@mahaljs/util";
 
 @template(`
 <div>
-    <p :for(val,key in value) :class(key)>{{val}}</p>
+    <p :for(val,key in value) :class="key">{{val}}</p>
 </div>
 `)
 

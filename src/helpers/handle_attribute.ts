@@ -14,7 +14,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
     const handleAttributeForComponent = (key: string, attrItem: IReactiveAttrItem) => {
         const propDescription = component._props_[key];
         if (propDescription) {
-            const attrValue = attrItem.v as string;
+            const attrValue = getAttributeValue(attrItem, attrItem.v);
             if (propDescription.type) {
                 const expected = propDescription.type;
                 const received = getDataype(attrValue);
@@ -92,15 +92,16 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
         }
     };
     const watchAttribute = (key: string, attrItem: IReactiveAttrItem) => {
-        const attributeKey = attrItem.k;
-        if (!attributeKey) return;
+        const attributeKeys = attrItem.k;
+        if (!attributeKeys) return;
         const m = handleReactiveAttribute(key, attrItem);
-        const method = (newValue) => {
-            m(newValue, component);
-        };
-        this.watch(attributeKey, method);
-        methods.set(attributeKey, method);
-
+        attributeKeys.forEach(attributeKey => {
+            const method = (newValue) => {
+                m(newValue, component);
+            };
+            this.watch(attributeKey, method);
+            methods.set(attributeKey, method);
+        });
     };
     if (isComponent) {
         forOwn(reactiveAttr, (key, attrItem: IReactiveAttrItem) => {
