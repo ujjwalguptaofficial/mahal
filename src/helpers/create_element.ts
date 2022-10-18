@@ -1,7 +1,7 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
 import { DEFAULT_SLOT_NAME } from "../constant";
-import { executeRender, replaceEl, createComponent, ILazyComponentPayload, addEventListener, insertBefore, findElement } from "../utils";
+import { executeRender, replaceEl, createComponent, ILazyComponentPayload, addEventListener, insertBefore, findElement, createDocumentFragment } from "../utils";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
 import { emitError } from "./emit_error";
@@ -68,33 +68,46 @@ export const createElement = function (this: Component, tag: string, childs: HTM
 
             let targetSlot = findElement(element, `slot[name='default']`) || (element.tagName.match(/slot/i) ? element : null);
             if (targetSlot) {
+                const documentFrag = createDocumentFragment();
+                let targetSlotParent = targetSlot.parentElement;
+                const removeSlot = () => {
+                    // insert fragment doc
+                    insertBefore(targetSlotParent, documentFrag, targetSlot.nextSibling);
+                    // remove current slot
+                    targetSlot.remove();
+                };
                 childs.forEach(item => {
                     if (item.tagName === "TARGET") {
                         const namedSlot = findElement(element, `slot[name='${item.getAttribute("name")}']`);
-                        if (namedSlot) {
+                        if (namedSlot !== targetSlot) {
+                            removeSlot();
                             targetSlot = namedSlot;
+                            targetSlotParent = targetSlot.parentElement;
                         }
                     }
-                    const targetSlotParent = targetSlot.parentElement;
+                    // const targetSlotParent = targetSlot.parentElement;
                     if (targetSlotParent) {
 
                         const insertSlot = (slotEl: HTMLElement) => {
-                            insertBefore(targetSlotParent, slotEl, targetSlot.nextSibling);
+                            documentFrag.appendChild(slotEl);
                         };
 
                         // nodeType -3 : TextNode
-                        if (item.nodeType === 3) {
-                            insertSlot(item);
-                        }
-                        else {
+                        if (item.tagName === 'TARGET') {
                             item.childNodes.forEach(insertSlot);
                         }
-                        targetSlot.remove();
+                        else {
+                            insertSlot(item);
+                        }
+
                     }
-                    else {
-                        element = component.element = item;
+                    else { // this is needed in case of fragment
+                        element = item;
                     }
                 });
+                if (targetSlotParent) {
+                    removeSlot();
+                }
             }
 
             ctx['_handleAttr_'](

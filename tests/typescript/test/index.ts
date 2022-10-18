@@ -39,3 +39,4 @@ import "./if_with_not.test";
 import "./formatter_error.test";
 import "./extend_reactive.test";
 import "./directive_in_for.test";
+import "./multi_level_slot.test";
