@@ -6,7 +6,7 @@ import Btn from "../src/components/btn";
 
 @template(`
 <div>
-		<div :for(item,index in list) class="row mt-2" :key="item.question" :question='item.question' :answer='item.answer'>
+		<div :for(item,index in list) class="row mt-2" :key="item.question" :question='item.question' :answer='item.answer' :class="{'is-active':item.isActive, 'is-completed': item.completed}">
 			<b  @click="toggleAnswerFAQ(index)" class="question" :question='item.question' :index="index">
 				<div>{{item.question}}</div>
 				<i class="fa fa-chevron-down"></i>
@@ -156,6 +156,41 @@ describe('Directive in for', function () {
         await component.waitFor('update');
         checkQuestionProp();
         checkAnswer();
+
+    })
+
+    it('check for active and completed class', async () => {
+        const el = component.find('.row');
+
+        const check = () => {
+            expect(el.classList.contains('is-active')).equal(
+                Boolean((component.list[0] as any).isActive)
+            );
+            expect(el.classList.contains('is-completed')).equal(
+                Boolean((component.list[0] as any).completed)
+            );
+        }
+        check();
+
+        component.list[0] = {
+            ...component.list[0],
+            ...{
+                isActive: true,
+            }
+        };
+
+        await component.waitFor('update');
+        check();
+
+        component.list[0] = {
+            ...component.list[0],
+            ...{
+                completed: true,
+            }
+        };
+
+        await component.waitFor('update');
+        check();
 
     })
 

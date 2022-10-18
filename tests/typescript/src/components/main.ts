@@ -31,7 +31,7 @@ import { Temp } from '../../test/inplace_if_toggle.test';
 
 @template(`
 <div>
-    <HelloWorld  :style="styles" />
+    <ArrayModel />
 </div>
 `)
 @children({

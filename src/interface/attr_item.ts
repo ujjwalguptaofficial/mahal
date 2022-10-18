@@ -4,5 +4,5 @@ export interface IAttrItem {
 export interface IReactiveAttrItem extends IAttrItem {
     k: string[];
     m?: boolean;
-    rc?: string;
+    rc?: string[];
 }

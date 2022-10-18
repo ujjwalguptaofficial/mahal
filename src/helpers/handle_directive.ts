@@ -20,7 +20,7 @@ Component.prototype['_handleDir_'] = function (this: Component, element: HTMLEle
         const directive: IDirective = storedDirective.call(this, element, compiledDir);
 
         const rc = compiledDir.rc;
-        if (rc) {
+        if (rc && directive) {
             const addRc_ = addRc();
             addRc_(rc, (newValue) => {
                 // compiledDir.value = [newValue];

@@ -14,19 +14,17 @@ const createTextNodeWithRc = (rcKey, element: Text, addRc_) => {
 
 const handleExpWithRc = (rcKeys: string[], exp: Function, addRc_) => {
     let element = exp();
-    rcKeys.forEach(rcKey => {
-        addRc_(rcKey, () => {
-            const newElement = exp();
-            const isPatched = replaceEl(element, newElement);
-            if (!isPatched) {
-                if (element['_setVal_']) {
-                    newElement['_setVal_'] = element['_setVal_'];
-                    newElement['_rc_'] = element['_rc_'];
-                    newElement[MAHAL_KEY] = element[MAHAL_KEY];
-                }
-                element = newElement;
+    addRc_(rcKeys, () => {
+        const newElement = exp();
+        const isPatched = replaceEl(element, newElement);
+        if (!isPatched) {
+            if (element['_setVal_']) {
+                newElement['_setVal_'] = element['_setVal_'];
+                newElement['_rc_'] = element['_rc_'];
+                newElement[MAHAL_KEY] = element[MAHAL_KEY];
             }
-        });
+            element = newElement;
+        }
     });
     return element;
 };
