@@ -27,7 +27,7 @@ export const setAttribute = (element: HTMLElement, key: string, value: string) =
             if (isObject(value)) {
                 let str = '';
                 forEach(value, (styleValue, styleKey) => {
-                    str += `${styleKey}:${styleValue};`
+                    str += `${styleKey}:${styleValue};`;
                 });
                 value = str;
             }

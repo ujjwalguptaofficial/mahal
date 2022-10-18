@@ -5,6 +5,12 @@ const DESTROYED_EVENTS = '__destroyEvents__';
 
 export const onElDestroy = (el: HTMLElement | Comment, cb: () => void) => {
     nextTick(_ => {
+        if (process.env.NODE_ENV !== 'production') {
+            if (!el) {
+                return;
+            }
+        }
+
         let evs = el[DESTROYED_EVENTS];
         if (!evs) {
             el[DESTROYED_EVENTS] = evs = [];

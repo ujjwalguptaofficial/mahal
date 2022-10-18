@@ -7,7 +7,13 @@ Component.prototype['_handleDir_'] = function (this: Component, element: HTMLEle
     if (!dir) return;
     forEach(dir, (compiledDir: IDirectiveBinding, name) => {
         const storedDirective = this['_directive_'][name] || this['_app_']['_directive_'][name];
-        if (!storedDirective) return;
+
+        if (!storedDirective) {
+            if (process.env.NODE_ENV !== 'production') {
+                console.error(`Could not find directive ${name} either locally or globally.`);
+            }
+            return;
+        }
 
         compiledDir.isComponent = isComponent;
 

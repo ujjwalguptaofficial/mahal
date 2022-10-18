@@ -5,7 +5,7 @@ import { createElement } from "./create_element";
 
 export function handleInPlace(this: Component, childs, option: IElementOption) {
     const of = option.rAttr?.of;
-    if (process.env.NODE_ENV == 'production' && !of && option.attr?.of) {
+    if (process.env.NODE_ENV !== 'production' && !of && option.attr?.of) {
         console.warn('Found "of" value as constant, please use component state for setting "of" attribute');
     }
     if (!of) return createCommentNode();
