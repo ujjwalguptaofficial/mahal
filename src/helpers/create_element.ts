@@ -39,25 +39,6 @@ export const createElement = function (this: Component, tag: string, childs: HTM
         return ctx['_createNativeComponent_'](tag, childs, option);
     }
 
-    if (!option) {
-        option = {};
-    }
-
-    switch (tag) {
-        case "slot":
-        case "target":
-            let attribute = option.attr;
-            if (!attribute) {
-                attribute = option.attr = {};
-            }
-            if (!attribute.name) {
-                attribute.name = {
-                    v: DEFAULT_SLOT_NAME
-                };
-            }
-            return ctx['_createNativeComponent_'](tag, childs, option);
-    }
-
     const savedComponent = ctx.children[tag] || ctx['_app_']['_component_'][tag];
     if (savedComponent) {
 
@@ -110,9 +91,11 @@ export const createElement = function (this: Component, tag: string, childs: HTM
                 }
             }
 
-            ctx['_handleAttr_'](
-                element, false, componentOption
-            );
+            if (componentOption) {
+                ctx['_handleAttr_'](
+                    element, false, componentOption
+                );
+            }
             setComponentMount(component, element);
             return element;
         };
