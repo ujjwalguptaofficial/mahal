@@ -1,9 +1,9 @@
 import { Component } from "./abstracts";
-import { initComponent, isObject, executeRender, getDataype, createComponent, EventBus, promiseResolve, findElement } from "./utils";
-import { HTML_TAG, LIFECYCLE_EVENT } from "./enums";
+import { initComponent, isObject, executeRender, getDataype, createComponent, promiseResolve, findElement } from "./utils";
+import { HTML_TAG } from "./enums";
 import { createModelDirective, FragmentComponent, showDirective, refDirective, htmlDirective, eventDirective } from "./ready_made";
 import { Logger, setComponentMount } from "./helpers";
-import { IElementOption, IRenderContext } from "./interface";
+import { IElementOption } from "./interface";
 
 
 
@@ -111,7 +111,9 @@ export class Mahal {
             this._compileTemplate_ = val;
         },
         tag(name: string) {
-            HTML_TAG.set(name, 1);
+            if (process.env.NODE_ENV !== 'production') {
+                HTML_TAG.add(name);
+            }
         }
     }
 

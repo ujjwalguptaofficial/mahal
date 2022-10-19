@@ -53,9 +53,6 @@ export class Logger implements IError {
                 }
                 return str;
             },
-            [ERROR_TYPE.InvalidComponent]() {
-                return `Component "${info.tag}" is not registered. Make sure you have registered component either in parent component or globally.`;
-            },
             [ERROR_TYPE.InvalidFormatter]() {
                 return `Can not find formatter "${info.formatter}". Make sure you have registered formatter either in component or globally.`;
             },
@@ -63,6 +60,9 @@ export class Logger implements IError {
 
         if (process.env.NODE_ENV !== 'production') {
             const devErrors = {
+                [ERROR_TYPE.InvalidComponent]() {
+                    return `Component "${info.tag}" is not registered. Make sure you have registered component either in parent component or globally.`;
+                },
                 [ERROR_TYPE.ForOnPrimitiveOrNull]() {
                     return `For expression can not be run on null or primitive datatype. Initiate variable ${info} as array or object.`;
                 },
