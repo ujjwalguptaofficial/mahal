@@ -37,6 +37,16 @@ describe('Nested For', function () {
         checkContents();
     })
 
+    it('update user', async () => {
+        component.users[0] = {
+            name: 'commander',
+            hobbies: ['food', 'code', 'travel']
+        };
+
+        await component.waitFor('update');
+        checkContents();
+    })
+
     it('remove users', async () => {
         component.users.splice(0, 1);
         await component.waitFor('update');
