@@ -2,7 +2,7 @@ import { MAHAL_KEY } from "../constant";
 import { forEach } from "./for_each";
 import { isObject } from "./is_object";
 
-export const setAttribute = (element: HTMLElement, key: string, value: string) => {
+export const setAttribute = (element: HTMLElement, key: string, value: any) => {
     switch (key) {
         case 'class':
             if (typeof value === 'string') {
@@ -32,6 +32,11 @@ export const setAttribute = (element: HTMLElement, key: string, value: string) =
                 value = str;
             }
         default:
-            element.setAttribute(key, value);
+            if (value === false) {
+                element.removeAttribute(key);
+            }
+            else {
+                element.setAttribute(key, value);
+            }
     }
 };

@@ -5,8 +5,6 @@ import { createModelDirective, FragmentComponent, showDirective, refDirective, h
 import { Logger, setComponentMount } from "./helpers";
 import { IElementOption } from "./interface";
 
-
-
 export class Mahal {
 
     component: Component;
