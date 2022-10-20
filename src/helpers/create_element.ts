@@ -26,18 +26,73 @@ const loadComponent = (componentClass) => {
     return componentClass;
 };
 
+const handleSlot = (element: HTMLElement, childs: HTMLElement[]) => {
+
+    let targetSlot = findElement(element, `slot`);
+    if (targetSlot) {
+        const allSlots = element.querySelectorAll('slot');
+
+        const documentFrag = createDocumentFragment();
+        const insertSlot = (slotEl: HTMLElement) => {
+            documentFrag.appendChild(slotEl);
+        };
+
+        let deletedSlotsCount = 0;
+        const removeSlot = () => {
+            // if document frag does not has any child
+            if (!documentFrag.firstChild) {
+                targetSlot.childNodes.forEach(insertSlot);
+            }
+            // insert fragment doc
+            insertBefore(targetSlot.parentElement, documentFrag, targetSlot.nextSibling);
+
+            // remove current slot
+            targetSlot.remove();
+            ++deletedSlotsCount;
+            targetSlot['deleted'] = true;
+
+        };
+        childs.forEach(item => {
+            if (item.tagName === "TARGET") {
+                const namedSlot = findElement(element, `slot[name='${item.getAttribute("name")}']`);
+                if (namedSlot !== targetSlot) {
+                    if (targetSlot['done']) {
+                        removeSlot();
+                    }
+                    targetSlot = namedSlot;
+                }
+            }
+            if (item.tagName === 'TARGET') {
+                targetSlot['done'] = true;
+                item.childNodes.forEach(insertSlot);
+            }
+            else {
+                insertSlot(item);
+            }
+        });
+        removeSlot();
+        if (allSlots.length !== deletedSlotsCount) {
+            allSlots.forEach((slot) => {
+                if (!slot['deleted']) {
+                    targetSlot = slot;
+                    removeSlot();
+                }
+            })
+        }
+    }
+}
+
 
 export const createElement = function (this: Component, tag: string, childs: HTMLElement[], option): HTMLElement | Comment {
-
-    const ctx = this;
 
     switch (tag) {
         case null:
         case undefined:
             return createCommentNode();
         case 'in-place':
-            return handleInPlace.call(ctx, childs, option);
+            return handleInPlace.call(this, childs, option);
         default:
+            const ctx = this;
             const savedComponent = ctx.children[tag] || ctx['_app_']['_component_'][tag];
             if (savedComponent) {
                 const renderComponent = (compClass) => {
@@ -48,58 +103,8 @@ export const createElement = function (this: Component, tag: string, childs: HTM
                         element = childs[0];
                     }
                     else {
-                        let targetSlot = findElement(element, `slot[name='default']`);
-                        if (targetSlot) {
-                            const allSlots = element.querySelectorAll('slot');
-
-                            const documentFrag = createDocumentFragment();
-                            const insertSlot = (slotEl: HTMLElement) => {
-                                documentFrag.appendChild(slotEl);
-                            };
-
-                            let deletedSlotsCount = 0;
-                            const removeSlot = () => {
-                                // if document frag does not has any child
-                                if (!documentFrag.firstChild) {
-                                    targetSlot.childNodes.forEach(insertSlot);
-                                }
-                                const targetSlotParent = targetSlot.parentElement;
-                                // insert fragment doc
-                                insertBefore(targetSlotParent, documentFrag, targetSlot.nextSibling);
-
-                                // remove current slot
-                                targetSlot.remove();
-                                ++deletedSlotsCount;
-                                targetSlot['deleted'] = true;
-
-                            };
-                            childs.forEach(item => {
-                                if (item.tagName === "TARGET") {
-                                    const namedSlot = findElement(element, `slot[name='${item.getAttribute("name")}']`);
-                                    if (namedSlot !== targetSlot) {
-                                        removeSlot();
-                                        targetSlot = namedSlot;
-                                    }
-                                }
-                                if (item.tagName === 'TARGET') {
-                                    item.childNodes.forEach(insertSlot);
-                                }
-                                else {
-                                    insertSlot(item);
-                                }
-                            });
-                            removeSlot();
-                            if (allSlots.length !== deletedSlotsCount) {
-                                allSlots.forEach((slot) => {
-                                    if (!slot['deleted']) {
-                                        targetSlot = slot;
-                                        removeSlot();
-                                    }
-                                })
-                            }
-                        }
+                        handleSlot(element, childs);
                     }
-
                     if (componentOption) {
                         ctx['_handleAttr_'](
                             element, false, componentOption

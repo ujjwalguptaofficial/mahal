@@ -44,9 +44,29 @@ export class Temp extends Component {
     Button
 })
 @template(`
-<Button class="is-primary">Verify<target name="loader"><span class="loading">Loading</span></target></Button>
+<Button class="is-primary">
+    <target name="default">Verify</target> 
+    <target name="loader">
+        <span class="loading">Loading</span>
+    </target>
+</Button>
 `)
 export class Temp2 extends Component {
+
+}
+
+@children({
+    Button
+})
+@template(`
+<Button class="is-primary">
+    <target name="loader">
+        <span class="loading">Loading</span>
+    </target>
+    <target name="default">Verify</target> 
+</Button>
+`)
+export class Temp3 extends Component {
 
 }
 
@@ -81,6 +101,28 @@ describe('Multi level slot', function () {
         expect(el.innerText).equal('IconVerifyLoading')
 
         // check for child nodes
+        expect(el.childNodes).length(3);
+
+        const icon = el.querySelector('.icon');
+        expect(icon.innerHTML).equal('Icon');
+
+        const text = el.querySelector('.text');
+        expect(text.innerHTML).equal('Verify')
+
+        const loader = el.childNodes[2];
+        expect((loader as any).tagName).equal('SPAN');
+
+        expect(loader.innerHTML).equal('Loading');
+        expect(loader.className).equal('loading');
+    })
+
+    it('check rendering temp3', async () => {
+        const component = await mount(Temp3);
+        const el = component.element;
+        expect(el.className).equal('button is-primary');
+        expect(el.innerText).equal('IconVerifyLoading')
+
+        // check for child nodes
 
         expect(el.childNodes).length(3);
 
@@ -96,5 +138,6 @@ describe('Multi level slot', function () {
         expect(loader.innerHTML).equal('Loading');
         expect(loader.className).equal('loading');
     })
+
 });
 
