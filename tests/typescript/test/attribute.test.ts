@@ -52,6 +52,10 @@ describe('Attribute test', function () {
         expect(el.hasAttribute('disabled')).equal(true);
         expect(el.getAttribute('disabled')).equal('true');
 
+        component.isDisabled = false;
+        await component.waitFor('update');
+        expect(el.hasAttribute('disabled')).equal(false);
+
     })
 });
 

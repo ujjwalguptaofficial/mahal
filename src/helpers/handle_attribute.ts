@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { IAttrItem, IElementOption, IReactiveAttrItem } from "../interface";
-import { getDataype, forOwn, setAttribute, nextTick } from "../utils";
+import { getDataype, forOwn, setAttribute, nextTick, setPlainAttribute } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { Logger } from "./logger";
@@ -45,7 +45,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
         }
         else {
             forOwn(attr, (key, attrItem: IAttrItem) => {
-                setAttribute(component, key, attrItem.v as any);
+                setPlainAttribute(component, key, attrItem.v as any);
             });
         }
     }

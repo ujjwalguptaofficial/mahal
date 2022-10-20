@@ -2,17 +2,10 @@ import { MAHAL_KEY } from "../constant";
 import { forEach } from "./for_each";
 import { isObject } from "./is_object";
 
-export const setAttribute = (element: HTMLElement, key: string, value: any) => {
+export const setPlainAttribute = (element: HTMLElement, key: string, value: any) => {
     switch (key) {
         case 'class':
-            if (typeof value === 'string') {
-                element.className = element.classList.length > 0 ? element.className + ' ' + value : value;
-            }
-            else {
-                forEach(value, (isTrue, className) => {
-                    element.classList[isTrue ? 'add' : 'remove'](className);
-                });
-            }
+            element.className = element.classList.length > 0 ? element.className + ' ' + value : value;
             break;
         case 'key':
             element[MAHAL_KEY] = value;
@@ -21,6 +14,22 @@ export const setAttribute = (element: HTMLElement, key: string, value: any) => {
             // input element
             if (element.nodeType === 1) {
                 (element as HTMLInputElement).value = value;
+                break;
+            }
+
+        default:
+            element.setAttribute(key, value);
+    }
+}
+
+
+export const setAttribute = (element: HTMLElement, key: string, value: any) => {
+    switch (key) {
+        case 'class':
+            if (isObject(value)) {
+                forEach(value, (isTrue, className) => {
+                    element.classList[isTrue ? 'add' : 'remove'](className);
+                });
                 break;
             }
         case 'style':
@@ -36,7 +45,7 @@ export const setAttribute = (element: HTMLElement, key: string, value: any) => {
                 element.removeAttribute(key);
             }
             else {
-                element.setAttribute(key, value);
+                setPlainAttribute(element, key, value);
             }
     }
 };
