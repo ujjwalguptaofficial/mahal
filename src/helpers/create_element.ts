@@ -11,77 +11,7 @@ import "./handle_directive";
 import "./handle_expression";
 import { IElementOption } from "../interface";
 import { setComponentMount } from "./set_component_mount";
-
-const loadComponent = (componentClass) => {
-    if (componentClass instanceof Promise) {
-        return componentClass.then(comp => {
-            return comp.default;
-        });
-    }
-    else if (componentClass.isLazy) {
-        return loadComponent(
-            (componentClass as ILazyComponentPayload).component()
-        );
-    }
-    return componentClass;
-};
-
-const handleSlot = (element: HTMLElement, childs: HTMLElement[]) => {
-
-    let targetSlot = findElement(element, `slot`);
-    if (targetSlot) {
-        const allSlots = element.querySelectorAll('slot');
-
-        const documentFrag = createDocumentFragment();
-        const insertSlot = (slotEl: HTMLElement) => {
-            documentFrag.appendChild(slotEl);
-        };
-
-        let deletedSlotsCount = 0;
-        const removeSlot = () => {
-            // if document frag does not has any child
-            if (!documentFrag.firstChild) {
-                targetSlot.childNodes.forEach(insertSlot);
-            }
-            // insert fragment doc
-            insertBefore(targetSlot.parentElement, documentFrag, targetSlot.nextSibling);
-
-            // remove current slot
-            targetSlot.remove();
-            ++deletedSlotsCount;
-            targetSlot['deleted'] = true;
-
-        };
-        childs.forEach(item => {
-            if (item.tagName === "TARGET") {
-                const namedSlot = findElement(element, `slot[name='${item.getAttribute("name")}']`);
-                if (namedSlot !== targetSlot) {
-                    if (targetSlot['done']) {
-                        removeSlot();
-                    }
-                    targetSlot = namedSlot;
-                }
-            }
-            if (item.tagName === 'TARGET') {
-                targetSlot['done'] = true;
-                item.childNodes.forEach(insertSlot);
-            }
-            else {
-                insertSlot(item);
-            }
-        });
-        removeSlot();
-        if (allSlots.length !== deletedSlotsCount) {
-            allSlots.forEach((slot) => {
-                if (!slot['deleted']) {
-                    targetSlot = slot;
-                    removeSlot();
-                }
-            })
-        }
-    }
-}
-
+import { handleSlot } from "./handle_slot";
 
 export const createElement = function (this: Component, tag: string, childs: HTMLElement[], option): HTMLElement | Comment {
 
@@ -140,6 +70,21 @@ export const createElement = function (this: Component, tag: string, childs: HTM
             return ctx['_createNativeComponent_'](tag, childs, option);
     }
 };
+
+const loadComponent = (componentClass) => {
+    if (componentClass instanceof Promise) {
+        return componentClass.then(comp => {
+            return comp.default;
+        });
+    }
+    else if (componentClass.isLazy) {
+        return loadComponent(
+            (componentClass as ILazyComponentPayload).component()
+        );
+    }
+    return componentClass;
+};
+
 
 
 Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChilds: HTMLElement[], option?: IElementOption): HTMLElement {
