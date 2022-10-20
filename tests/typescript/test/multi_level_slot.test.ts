@@ -22,7 +22,8 @@ export class StandardButton extends Component {
     <span class="icon">Icon</span>
     <span class="text">
         <slot></slot>
-    </span> 
+    </span>
+    <slot name="loader">Loading...</slot> 
 </StandardButton>
 `)
 export class Button extends Component {
@@ -39,28 +40,61 @@ export class Temp extends Component {
 
 }
 
+@children({
+    Button
+})
+@template(`
+<Button class="is-primary">Verify<target name="loader"><span class="loading">Loading</span></target></Button>
+`)
+export class Temp2 extends Component {
+
+}
+
 describe('Multi level slot', function () {
 
-    let component: Temp;
-
-    before(async function () {
-        component = await mount(Temp);
-    });
-
-    it('check rendering', () => {
+    it('check rendering temp', async () => {
+        const component = await mount(Temp);
         const el = component.element;
         expect(el.className).equal('button is-primary');
-        expect(el.innerText).equal('IconVerify')
+        expect(el.innerText).equal('IconVerifyLoading...')
 
         // check for child nodes
 
-        expect(el.childNodes).length(2);
+        expect(el.childNodes).length(3);
 
         const icon = el.querySelector('.icon');
         expect(icon.innerHTML).equal('Icon');
 
         const text = el.querySelector('.text');
         expect(text.innerHTML).equal('Verify')
+
+        const loader = el.childNodes[2];
+        expect((loader as any).tagName).equal(undefined);
+        expect(loader.nodeType).equal(3);
+        expect((loader as Text).nodeValue).equal('Loading...')
+    })
+
+    it('check rendering temp2', async () => {
+        const component = await mount(Temp2);
+        const el = component.element;
+        expect(el.className).equal('button is-primary');
+        expect(el.innerText).equal('IconVerifyLoading')
+
+        // check for child nodes
+
+        expect(el.childNodes).length(3);
+
+        const icon = el.querySelector('.icon');
+        expect(icon.innerHTML).equal('Icon');
+
+        const text = el.querySelector('.text');
+        expect(text.innerHTML).equal('Verify')
+
+        const loader = el.childNodes[2];
+        expect((loader as any).tagName).equal('SPAN');
+
+        expect(loader.innerHTML).equal('Loading');
+        expect(loader.className).equal('loading');
     })
 });
 

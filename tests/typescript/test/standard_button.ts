@@ -3,7 +3,7 @@ import { template } from "@mahaljs/util";
 
 @template(`
     <button>
-        <slot></slot>
+        <slot>OK</slot>
     </button>
 `)
 export default class Btn extends Component {

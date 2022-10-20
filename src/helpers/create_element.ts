@@ -44,48 +44,59 @@ export const createElement = function (this: Component, tag: string, childs: HTM
                     const component: Component = createComponent(compClass, ctx['_app_']);
                     const componentOption = ctx['_initComp_'](component as any, option);
                     let element = executeRender(component, childs);
+                    if (element.tagName === 'SLOT') {
+                        element = childs[0];
+                    }
+                    else {
+                        let targetSlot = findElement(element, `slot[name='default']`);
+                        if (targetSlot) {
+                            const allSlots = element.querySelectorAll('slot');
 
-                    let targetSlot = findElement(element, `slot[name='default']`) || (element.tagName.match(/slot/i) ? element : null);
-                    if (targetSlot) {
-                        const documentFrag = createDocumentFragment();
-                        let targetSlotParent = targetSlot.parentElement;
-                        const removeSlot = () => {
-                            // insert fragment doc
-                            insertBefore(targetSlotParent, documentFrag, targetSlot.nextSibling);
-                            // remove current slot
-                            targetSlot.remove();
-                        };
-                        childs.forEach(item => {
-                            if (item.tagName === "TARGET") {
-                                const namedSlot = findElement(element, `slot[name='${item.getAttribute("name")}']`);
-                                if (namedSlot !== targetSlot) {
-                                    removeSlot();
-                                    targetSlot = namedSlot;
-                                    targetSlotParent = targetSlot.parentElement;
+                            const documentFrag = createDocumentFragment();
+                            const insertSlot = (slotEl: HTMLElement) => {
+                                documentFrag.appendChild(slotEl);
+                            };
+
+                            let deletedSlotsCount = 0;
+                            const removeSlot = () => {
+                                // if document frag does not has any child
+                                if (!documentFrag.firstChild) {
+                                    targetSlot.childNodes.forEach(insertSlot);
                                 }
-                            }
-                            // const targetSlotParent = targetSlot.parentElement;
-                            if (targetSlotParent) {
+                                const targetSlotParent = targetSlot.parentElement;
+                                // insert fragment doc
+                                insertBefore(targetSlotParent, documentFrag, targetSlot.nextSibling);
 
-                                const insertSlot = (slotEl: HTMLElement) => {
-                                    documentFrag.appendChild(slotEl);
-                                };
+                                // remove current slot
+                                targetSlot.remove();
+                                ++deletedSlotsCount;
+                                targetSlot['deleted'] = true;
 
-                                // nodeType -3 : TextNode
+                            };
+                            childs.forEach(item => {
+                                if (item.tagName === "TARGET") {
+                                    const namedSlot = findElement(element, `slot[name='${item.getAttribute("name")}']`);
+                                    if (namedSlot !== targetSlot) {
+                                        removeSlot();
+                                        targetSlot = namedSlot;
+                                    }
+                                }
                                 if (item.tagName === 'TARGET') {
                                     item.childNodes.forEach(insertSlot);
                                 }
                                 else {
                                     insertSlot(item);
                                 }
-
-                            }
-                            else { // this is needed in case of fragment
-                                element = item;
-                            }
-                        });
-                        if (targetSlotParent) {
+                            });
                             removeSlot();
+                            if (allSlots.length !== deletedSlotsCount) {
+                                allSlots.forEach((slot) => {
+                                    if (!slot['deleted']) {
+                                        targetSlot = slot;
+                                        removeSlot();
+                                    }
+                                })
+                            }
                         }
                     }
 

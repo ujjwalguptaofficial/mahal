@@ -36,7 +36,6 @@ describe('Component load fail', function () {
 
     it("initiate btn", async function () {
         const initiateWithApp = getMount(app);
-        debugger;
         component = await initiateWithApp<Temp>(Temp);
         const expectedError = 'load failed';
         await new Promise((res) => {
