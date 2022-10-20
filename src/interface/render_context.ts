@@ -5,6 +5,7 @@ export interface IRenderContext {
     addRc: typeof addRc;
     createTextNodeWithRc: Function;
     handleExpWithRc: Function;
+    handleForExpWithRc: Function;
     createEl: typeof createElement;
 }
 

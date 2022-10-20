@@ -18,6 +18,7 @@ import computed from "./computed";
 import Fruits from "./fruits";
 import Fragment from "./fragment";
 import ArrayModel from "./array_model";
+import UsersHobbie from "./users_hobbie";
 import ObjectResetModel from "./object_reset_model";
 import { IAppGlobal } from "../interfaces";
 import { Temp } from '../../test/inplace_if_toggle.test';
@@ -31,11 +32,12 @@ import { Temp } from '../../test/inplace_if_toggle.test';
 
 @template(`
 <div>
-    <HelloWorld />
+<UsersHobbie/>
 </div>
 `)
 @children({
     // Temp,
+    UsersHobbie,
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, computed,
     Fragment, ArrayModel, ObjectResetModel,
@@ -45,6 +47,12 @@ import { Temp } from '../../test/inplace_if_toggle.test';
     // Btn1: lazyComponent(() => Promise.reject('dd'))
 })
 export default class Main extends Component<IAppGlobal> {
+
+    @reactive
+    nestedArray = [
+        [1, 2],
+        [3, 4]
+    ]
 
     @reactive styles =
         {

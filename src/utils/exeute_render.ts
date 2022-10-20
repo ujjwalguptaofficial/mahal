@@ -2,7 +2,7 @@ import { createTextNode, Logger, onElDestroy, addRc, clearAll, createElement } f
 import { Component } from "../abstracts";
 import { ERROR_TYPE } from "../enums";
 import { IRenderContext } from "../interface";
-import { replaceEl } from "./dom";
+import { createDocumentFragment, removeEl, replaceEl } from "./dom";
 import { MAHAL_KEY } from "../constant";
 
 const createTextNodeWithRc = (rcKey, element: Text, addRc_) => {
@@ -29,6 +29,27 @@ const handleExpWithRc = (rcKeys: string[], exp: Function, addRc_) => {
     return element;
 };
 
+const handleForExpWithRc = (rcKeys: string[], exp: Function, addRc_) => {
+    let elements: HTMLElement[] = exp();
+    addRc_(rcKeys, () => {
+        const refNode = elements[0];
+        for (let i = 1, oldValueCount = elements.length; i < oldValueCount; i++) {
+            const el = elements[i] as any;
+            removeEl(el);
+        }
+        const newElements: HTMLElement[] = exp();
+        const fragDoc = createDocumentFragment();
+        fragDoc.append(...newElements);
+        replaceEl(
+            refNode,
+            fragDoc as any
+        );
+        elements = newElements;
+    });
+    return elements;
+};
+
+
 
 const renderContext: IRenderContext = {
     createTextNode: createTextNode,
@@ -36,6 +57,7 @@ const renderContext: IRenderContext = {
     createTextNodeWithRc: createTextNodeWithRc,
     handleExpWithRc: handleExpWithRc,
     createEl: createElement,
+    handleForExpWithRc: handleForExpWithRc
 };
 
 export const executeRender = (comp: Component, children) => {
