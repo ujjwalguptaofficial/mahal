@@ -13,5 +13,6 @@ if (process.env.NODE_ENV !== 'production') {
         SetSameValue: "set_same_value",
         MutatingProp: "mutating_prop",
         RendererNotFound: "createRenderer_not_found",
+        InvalidSlotTarget: "invalid_slot_target"
     });
 }

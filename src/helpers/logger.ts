@@ -76,7 +76,10 @@ export class Logger implements IError {
                     return `Do not mutate prop "${info.key}" directly. Instead use a reactive property.`
                         + newLine + `found in -` + newLine +
                         `${info.html}`;
-                }
+                },
+                [ERROR_TYPE.InvalidSlotTarget]() {
+                    return `No slot found with name "${info.name}". Make sure you are passing right target. Existing slots name are - ${info.names}`;
+                },
             };
             Object.assign(prodErrors, devErrors);
         }

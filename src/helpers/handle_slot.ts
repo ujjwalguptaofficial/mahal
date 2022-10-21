@@ -1,4 +1,6 @@
+import { ERROR_TYPE } from "../enums";
 import { createDocumentFragment, findElement, insertBefore } from "../utils";
+import { Logger } from "./logger";
 export const handleSlot = (element: HTMLElement, childs: HTMLElement[]) => {
 
     let targetSlot: HTMLElement = findElement(element, `slot`) as any;
@@ -32,6 +34,21 @@ export const handleSlot = (element: HTMLElement, childs: HTMLElement[]) => {
         childs.forEach(item => {
             if (item.tagName === "TARGET") {
                 const namedSlot = findElement(element, `slot[name='${item.getAttribute("name")}']`);
+                if (process.env.NODE_ENV !== 'production') {
+                    if (!namedSlot) {
+                        const names = [];
+                        allSlots.forEach(slot => {
+                            names.push(
+                                slot.getAttribute('name')
+                            );
+                        })
+
+                        new Logger(ERROR_TYPE.InvalidSlotTarget, {
+                            name: item.getAttribute("name"),
+                            names: names
+                        }).throwPlain();
+                    }
+                }
                 if (namedSlot !== targetSlot) {
                     if (targetSlot['done']) {
                         removeSlot();

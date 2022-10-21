@@ -70,6 +70,21 @@ export class Temp3 extends Component {
 
 }
 
+@children({
+    Button
+})
+@template(`
+<Button class="is-primary">
+    <target name="invalid_slot">
+        <span class="loading">Loading</span>
+    </target>
+    <target name="default">Verify</target> 
+</Button>
+`)
+export class Temp4 extends Component {
+
+}
+
 describe('Multi level slot', function () {
 
     it('check rendering temp', async () => {
@@ -138,6 +153,17 @@ describe('Multi level slot', function () {
         expect(loader.innerHTML).equal('Loading');
         expect(loader.className).equal('loading');
     })
+
+    it('check rendering temp4', async () => {
+        try {
+            const component = await mount(Temp4);
+            const el = component.element;
+            throw "should be error"
+        } catch (error) {
+            expect(error).equal('{Mahal throw}: No slot found with name \"invalid_slot\". Make sure you are passing right target. Existing slots name are - default,loader\n\ntype : invalid_slot_target')
+        }
+
+    });
 
 });
 

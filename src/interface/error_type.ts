@@ -7,4 +7,5 @@ export interface IErrorType {
     InvalidEventHandler: "invalid_event_handler";
     SetSameValue: "set_same_value";
     MutatingProp: "mutating_prop";
+    InvalidSlotTarget: "invalid_slot_target";
 }
