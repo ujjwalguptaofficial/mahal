@@ -67,5 +67,38 @@ describe('MODEL', function () {
             expect(component.checkboxValue).equal(false);
         });
     })
+
+    describe('input type radio', () => {
+        it("from component to element", async function () {
+            const input1: HTMLInputElement = component.find('.radio.one') as any;
+            expect(input1.checked).equal(true);
+
+            const input2: HTMLInputElement = component.find('.radio.two') as any;
+            expect(input2.checked).equal(false);
+
+            component.radioButtonValue = "female";
+            await component.waitFor('update');
+
+            expect(input1.checked).equal(false);
+            expect(input2.checked).equal(true);
+
+        });
+
+        it("from element to component", async function () {
+            const input1: HTMLInputElement = component.find('.radio.one') as any;
+            expect(input1.checked).equal(false);
+
+            expect(component.radioButtonValue).equal('female');
+
+            // set false
+            input1.click();
+            expect(component.radioButtonValue).equal('male');
+            expect(input1.checked).equal(true);
+
+            const input2: HTMLInputElement = component.find('.radio.two') as any;
+            expect(input2.checked).equal(false);
+
+        });
+    })
 });
 

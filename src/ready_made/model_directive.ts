@@ -8,7 +8,14 @@ export function createModelDirective(eventName, propToUse) {
         const key = binding.props[0];
         const isComponent = binding.isComponent;
         this['_handleAttr_'](el, isComponent, {
-            rAttr: {
+            rAttr: !isComponent && getAttribute(el, 'type') === 'radio' ? {
+                'checked': {
+                    k: [key],
+                    get v() {
+                        return binding[propToUse][0] === el.value;
+                    }
+                } as IReactiveAttrItem
+            } : {
                 [propToUse]: {
                     k: [key],
                     get v() {
@@ -29,6 +36,7 @@ export function createModelDirective(eventName, propToUse) {
             const propForHTMLElement = (() => {
                 switch (getAttribute(el, 'type')) {
                     case 'checkbox':
+                        // case 'radio':
                         return 'checked';
                     default:
                         return 'value';

@@ -3,7 +3,7 @@ import { app } from "../src/index";
 import { expect } from "chai";
 import { nextTick } from "mahal";
 
-describe('Object prop', function () {
+describe('Hardcode Object prop', function () {
 
     let component;
 
