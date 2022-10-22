@@ -1,5 +1,6 @@
 import { Component } from "../abstracts";
 import { IDirectiveBinding, IReactiveAttrItem } from "../interface";
+import { getAttribute } from "../utils";
 
 // tslint:disable-next-line
 export function createModelDirective(eventName, propToUse) {
@@ -8,7 +9,7 @@ export function createModelDirective(eventName, propToUse) {
         const isComponent = binding.isComponent;
         this['_handleAttr_'](el, isComponent, {
             rAttr: {
-                value: {
+                [propToUse]: {
                     k: [key],
                     get v() {
                         return binding[propToUse][0];
@@ -17,7 +18,7 @@ export function createModelDirective(eventName, propToUse) {
             }
         });
         const setComponentValue = (value) => {
-            binding.value = [value];
+            binding[propToUse] = [value];
         };
         if (isComponent) {
             (el as any).on(eventName, (val) => {
@@ -25,9 +26,17 @@ export function createModelDirective(eventName, propToUse) {
             });
         }
         else {
+            const propForHTMLElement = (() => {
+                switch (getAttribute(el, 'type')) {
+                    case 'checkbox':
+                        return 'checked';
+                    default:
+                        return 'value';
+                }
+            })();
             el.oninput = (event) => {
                 setComponentValue(
-                    (event.target as any)[propToUse]
+                    (event.target as any)[propForHTMLElement]
                 );
             };
         }

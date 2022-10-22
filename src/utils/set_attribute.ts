@@ -1,5 +1,6 @@
 import { MAHAL_KEY } from "../constant";
 import { forEach } from "./for_each";
+import { getAttribute } from "./get_attribute";
 import { isObject } from "./is_object";
 
 export const setPlainAttribute = (element: HTMLElement, key: string, value: any) => {
@@ -13,7 +14,13 @@ export const setPlainAttribute = (element: HTMLElement, key: string, value: any)
         case "value":
             // input element
             if (element.nodeType === 1) {
-                (element as HTMLInputElement).value = value;
+                switch (getAttribute(element, 'type')) {
+                    case 'checkbox':
+                        (element as HTMLInputElement).checked = value;
+                        break;
+                    default:
+                        (element as HTMLInputElement).value = value;
+                }
                 break;
             }
 

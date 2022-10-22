@@ -21,35 +21,14 @@ import ArrayModel from "./array_model";
 import UsersHobbie from "./users_hobbie";
 import ObjectResetModel from "./object_reset_model";
 import { IAppGlobal } from "../interfaces";
-import { Temp2 } from '../../test/multi_level_slot.test';
-// @template(`<div >
-// <in-place :of="name" #if(flag) label="as"/>
-// </div>`)
-// @template(`
-//     <TabRender :label="flag" :count="counter" on:click="incrementCounter" />
-// `)
-
-@template(`
-    <button>
-        <slot>
-            OK
-        </slot>
-    </button>
-`)
-export class BtnWithSlot extends Component {
-
-}
 
 
 @template(`
 <div>
-<Temp2>
-</Temp2>
+<Model />
 </div>
 `)
 @children({
-    BtnWithSlot,
-    Temp2,
     UsersHobbie,
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, computed,

@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@mahaljs/html-compiler": "file:../../mahal-html-compiler/mahaljs-html-compiler-1.8.0.tgz",
-    "@mahaljs/test-utils": "^1.8.0",
+    "@mahaljs/test-utils": "file:../../mahal-test-utils/mahaljs-test-utils-1.8.0.tgz",
     "@mahaljs/util": "^1.8.0",
     "@mahaljs/webpack-loader": "^1.8.0",
     "chai": "^4.3.4",
