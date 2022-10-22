@@ -1,5 +1,5 @@
 import { ERROR_TYPE } from "../enums";
-import { createDocumentFragment, findElement, insertBefore } from "../utils";
+import { createDocumentFragment, findElement, getAttribute, insertBefore } from "../utils";
 import { Logger } from "./logger";
 export const handleSlot = (element: HTMLElement, childs: HTMLElement[]) => {
 
@@ -33,18 +33,18 @@ export const handleSlot = (element: HTMLElement, childs: HTMLElement[]) => {
         };
         childs.forEach(item => {
             if (item.tagName === "TARGET") {
-                const namedSlot = findElement(element, `slot[name='${item.getAttribute("name")}']`);
+                const namedSlot = findElement(element, `slot[name='${getAttribute(item, "name")}']`);
                 if (process.env.NODE_ENV !== 'production') {
                     if (!namedSlot) {
                         const names = [];
                         allSlots.forEach(slot => {
                             names.push(
-                                slot.getAttribute('name')
+                                getAttribute(slot, 'name')
                             );
                         });
 
                         new Logger(ERROR_TYPE.InvalidSlotTarget, {
-                            name: item.getAttribute("name"),
+                            name: getAttribute(item, "name"),
                             names: names
                         }).throwPlain();
                     }

@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { IDirectiveBinding, IReactiveAttrItem } from "../interface";
-import { getAttribute } from "../utils";
+import { addEventListener, getAttribute } from "../utils";
 
 // tslint:disable-next-line
 export function createModelDirective(eventName, propToUse) {
@@ -22,10 +22,11 @@ export function createModelDirective(eventName, propToUse) {
         const attribute = {
             k: [key],
             get v() {
+                const directiveBindingValue = binding[propToUse][0];
                 if (attributeType === 'radio') {
-                    return binding[propToUse][0] === el.value;
+                    return directiveBindingValue === el.value;
                 }
-                return binding[propToUse][0];
+                return directiveBindingValue;
             }
         } as IReactiveAttrItem;
         this['_handleAttr_'](el, isComponent, {
@@ -42,13 +43,13 @@ export function createModelDirective(eventName, propToUse) {
             });
         }
         else {
-            el.oninput = (event) => {
+            addEventListener(el, 'input', (event) => {
                 setComponentValue(
                     (event.target as any)[
-                    getAttribute(el, 'type') === 'checkbox' ? 'checked' : 'value'
+                    attributeType === 'checkbox' ? 'checked' : 'value'
                     ]
                 );
-            };
+            });
         }
     };
 }
