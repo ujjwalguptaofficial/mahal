@@ -14,9 +14,7 @@ export function setPlainAttribute(element: HTMLElement, key: string, value: any)
         default:
             element.setAttribute(key, value);
     }
-};
-
-
+}
 
 export function setAttribute(element: HTMLElement, key: string, value: any) {
 
@@ -46,7 +44,7 @@ export function setAttribute(element: HTMLElement, key: string, value: any) {
                 case 'TEXTAREA':
                     (element as HTMLInputElement).value = value;
                     return;
-            };
+            }
             setOrRemoveAttribute();
             break;
         case 'checked':
@@ -57,7 +55,7 @@ export function setAttribute(element: HTMLElement, key: string, value: any) {
                         (element as HTMLInputElement).checked = value;
                         return;
                 }
-            };
+            }
             setOrRemoveAttribute();
             break;
         case 'html':
@@ -74,4 +72,4 @@ export function setAttribute(element: HTMLElement, key: string, value: any) {
         default:
             setOrRemoveAttribute();
     }
-};
+}
