@@ -154,16 +154,19 @@ describe('Multi level slot', function () {
         expect(loader.className).equal('loading');
     })
 
-    it('check rendering temp4', async () => {
-        try {
-            const component = await mount(Temp4);
-            const el = component.element;
-            throw "should be error"
-        } catch (error) {
-            expect(error).equal('{Mahal throw}: No slot found with name \"invalid_slot\". Make sure you are passing right target. Existing slots name are - default,loader\n\ntype : invalid_slot_target')
-        }
 
-    });
+    if (process.env.NODE_ENV !== 'production') {
+        it('check rendering temp4', async () => {
+            try {
+                const component = await mount(Temp4);
+                const el = component.element;
+                throw "should be error"
+            } catch (error) {
+                expect(error).equal('{Mahal throw}: No slot found with name \"invalid_slot\". Make sure you are passing right target. Existing slots name are - default,loader\n\ntype : invalid_slot_target')
+            }
+
+        });
+    }
 
 });
 
