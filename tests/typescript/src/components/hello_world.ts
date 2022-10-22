@@ -11,7 +11,7 @@ import { template } from "@mahaljs/util";
         {{count}}
     </button>
     <button on:click="destroy">Destory</button>
-    <p class="p-html" :html(myHtml) ></p>
+    <p class="p-html" :html="myHtml" ></p>
 </div>
 `)
 

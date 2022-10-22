@@ -3,7 +3,7 @@ import { forEach } from "./for_each";
 import { getAttribute } from "./get_attribute";
 import { isObject } from "./is_object";
 
-export const setPlainAttribute = (element: HTMLElement, key: string, value: any) => {
+export function setPlainAttribute(element: HTMLElement, key: string, value: any) {
     switch (key) {
         case 'class':
             element.className = element.classList.length > 0 ? element.className + ' ' + value : value;
@@ -18,7 +18,7 @@ export const setPlainAttribute = (element: HTMLElement, key: string, value: any)
 
 
 
-export const setAttribute = (element: HTMLElement, key: string, value: any) => {
+export function setAttribute(element: HTMLElement, key: string, value: any) {
 
     function setOrRemoveAttribute() {
         if (value === false) {
@@ -59,6 +59,9 @@ export const setAttribute = (element: HTMLElement, key: string, value: any) => {
                 }
             };
             setOrRemoveAttribute();
+            break;
+        case 'html':
+            element.innerHTML = value;
             break;
         case 'style':
             if (isObject(value)) {

@@ -12,7 +12,7 @@ import Btn from "../src/components/btn";
 				<i class="fa fa-chevron-down"></i>
 			</b>
             <p class="items-index">{{items}} {{indexes}}</p>
-			<div class="answer" :show(item.show) :html(item.answer) :answer="item.answer"></div>
+			<div class="answer" :show(item.show) :html="item.answer" :answer="item.answer"></div>
 		<Btn :label="item.answer"/>
         </div>
 </div>
