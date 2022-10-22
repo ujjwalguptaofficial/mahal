@@ -16,16 +16,18 @@ export const setPlainAttribute = (element: HTMLElement, key: string, value: any)
     }
 };
 
-const setOrRemoveAttribute = (element: HTMLElement, key: string, value: any) => {
-    if (value === false) {
-        element.removeAttribute(key);
-    }
-    else {
-        setPlainAttribute(element, key, value);
-    }
-}
+
 
 export const setAttribute = (element: HTMLElement, key: string, value: any) => {
+
+    function setOrRemoveAttribute() {
+        if (value === false) {
+            element.removeAttribute(key);
+        }
+        else {
+            setPlainAttribute(element, key, value);
+        }
+    }
 
     switch (key) {
         case 'class':
@@ -35,24 +37,17 @@ export const setAttribute = (element: HTMLElement, key: string, value: any) => {
                 });
                 break;
             }
-            setOrRemoveAttribute(element, key, value);
+            setOrRemoveAttribute();
             break;
         case "value":
             // input element
             switch (element.tagName) {
                 case 'INPUT':
                 case 'TEXTAREA':
-                    switch (getAttribute(element, 'type')) {
-                        case 'checkbox':
-                            (element as HTMLInputElement).checked = value;
-                            break;
-                        default:
-                            (element as HTMLInputElement).value = value;
-                    }
-                    break;
-                default:
-                    setOrRemoveAttribute(element, key, value);
+                    (element as HTMLInputElement).value = value;
+                    return;
             };
+            setOrRemoveAttribute();
             break;
         case 'checked':
             if (element.tagName === 'INPUT') {
@@ -63,7 +58,7 @@ export const setAttribute = (element: HTMLElement, key: string, value: any) => {
                         return;
                 }
             };
-            setOrRemoveAttribute(element, key, value);
+            setOrRemoveAttribute();
             break;
         case 'style':
             if (isObject(value)) {
@@ -74,6 +69,6 @@ export const setAttribute = (element: HTMLElement, key: string, value: any) => {
                 value = str;
             }
         default:
-            setOrRemoveAttribute(element, key, value);
+            setOrRemoveAttribute();
     }
 };
