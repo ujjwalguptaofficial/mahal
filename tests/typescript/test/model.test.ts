@@ -30,6 +30,24 @@ describe('MODEL', function () {
         });
     })
 
+    describe('textarea', () => {
+        it("from component to element", function (done) {
+            const input: HTMLInputElement = component.find('.textarea') as any;
+            expect(input.value).equal('undefined');
+            component.textareaValue = "ujjwal";
+            nextTick(() => {
+                expect(input.value).equal('ujjwal');
+                done();
+            })
+        });
+
+        it("from element to component", function () {
+            const input = component.find('.textarea');
+            setInputValue(input, 'random');
+            expect(component.textareaValue).equal('random');
+        });
+    })
+
     describe('input type checkbox', () => {
         it("from component to element", async function () {
             const input: HTMLInputElement = component.find('input.checkbox') as any;
