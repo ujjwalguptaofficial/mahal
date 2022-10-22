@@ -2,9 +2,15 @@ import { Component } from "mahal";
 import { template } from "@mahaljs/util";
 
 @template(`
-    <button>
-        <slot>OK</slot>
-    </button>
+<button>
+    <slot name="left-content">
+		
+	</slot>
+    <slot>OK</slot>
+    <slot name="right-content">
+		
+	</slot>
+</button>
 `)
 export default class Btn extends Component {
     onInit() {

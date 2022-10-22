@@ -59,6 +59,9 @@ export const handleSlot = (element: HTMLElement, childs: HTMLElement[]) => {
                 item.childNodes.forEach(insertSlot);
             }
             else {
+                if (getAttribute(targetSlot, 'name') !== 'default') {
+                    targetSlot = findElement(element, `slot[name='default']`) as HTMLElement;
+                }
                 insertSlot(item);
             }
         });
