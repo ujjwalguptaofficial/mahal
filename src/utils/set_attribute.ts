@@ -20,7 +20,7 @@ export const setPlainAttribute = (element: HTMLElement, key: string, value: any)
         default:
             element.setAttribute(key, value);
     }
-}
+};
 
 
 export const setAttribute = (element: HTMLElement, key: string, value: any) => {

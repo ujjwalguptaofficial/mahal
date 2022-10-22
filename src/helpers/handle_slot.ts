@@ -41,7 +41,7 @@ export const handleSlot = (element: HTMLElement, childs: HTMLElement[]) => {
                             names.push(
                                 slot.getAttribute('name')
                             );
-                        })
+                        });
 
                         new Logger(ERROR_TYPE.InvalidSlotTarget, {
                             name: item.getAttribute("name"),
@@ -69,7 +69,7 @@ export const handleSlot = (element: HTMLElement, childs: HTMLElement[]) => {
                     targetSlot = slot;
                     removeSlot();
                 }
-            })
+            });
         }
     }
-}
+};
