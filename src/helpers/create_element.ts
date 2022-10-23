@@ -28,20 +28,20 @@ export const createElement = function (this: Component, tag: string, childs: HTM
                 const renderComponent = (compClass) => {
                     const component: Component = createComponent(compClass, ctx['_app_']);
                     const componentOption = ctx['_initComp_'](component as any, option);
-                    let element = executeRender(component, childs);
-                    if (element.tagName === 'SLOT') {
-                        element = childs[0];
+                    let componentElement = executeRender(component, childs);
+                    if (componentElement.tagName === 'SLOT') {
+                        componentElement = childs[0];
                     }
                     else {
-                        handleSlot(element, childs);
+                        handleSlot(componentElement, childs);
                     }
                     if (componentOption) {
                         ctx['_handleAttr_'](
-                            element, false, componentOption
+                            componentElement, false, componentOption
                         );
                     }
-                    setComponentMount(component, element);
-                    return element;
+                    setComponentMount(component, componentElement);
+                    return componentElement;
                 };
                 const compPromise = loadComponent(savedComponent);
                 if (compPromise instanceof Promise) {
@@ -67,7 +67,26 @@ export const createElement = function (this: Component, tag: string, childs: HTM
                     }).throwPlain();
                 }
             }
-            return ctx['_createNativeComponent_'](tag, childs, option);
+
+            const element = document.createElement(tag) as HTMLElement;
+            childs.forEach(item => {
+                element.appendChild(item);
+            });
+
+            if (option) {
+                ctx['_handleAttr_'](element, false, option);
+
+                // register events
+                forEachEvent.call(ctx, option.on, (eventName, listener) => {
+                    addEventListener(
+                        element, eventName, listener,
+                    );
+                });
+
+                ctx['_handleDir_'](element, option.dir, false, option.rcm);
+            }
+
+            return element;
     }
 };
 
@@ -83,31 +102,4 @@ const loadComponent = (componentClass) => {
         );
     }
     return componentClass;
-};
-
-
-
-Component.prototype['_createNativeComponent_'] = function (tag: string, htmlChilds: HTMLElement[], option?: IElementOption): HTMLElement {
-
-    const element = document.createElement(tag) as HTMLElement;
-    htmlChilds.forEach(item => {
-        element.appendChild(item);
-    });
-
-    if (option) {
-        const ctx: Component = this;
-        ctx['_handleAttr_'](element, false, option);
-
-        // register events
-        forEachEvent.call(ctx, option.on, (eventName, listener) => {
-            addEventListener(
-                element, eventName, listener,
-            );
-        });
-
-        ctx['_handleDir_'](element, option.dir, false, option.rcm);
-    }
-
-
-    return element;
 };

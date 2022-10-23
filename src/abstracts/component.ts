@@ -374,8 +374,6 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
         return this[methodName] as Function;
     }
 
-    private _createEl_: (tag: string, childs: HTMLElement[], option) => HTMLElement | Comment;
-    private _createNativeComponent_: (tag: string, childs: HTMLElement[], option) => HTMLElement;
     private _handleExp_: (method: () => HTMLElement, keys: string[], type?: string) => void;
     private _render_: () => () => HTMLElement;
     private _clearAll_: () => void;
