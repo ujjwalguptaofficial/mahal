@@ -100,5 +100,27 @@ describe('MODEL', function () {
 
         });
     })
+
+    describe('select', () => {
+        it("from component to element", async function () {
+            const input: HTMLInputElement = component.find('.dropdown') as any;
+            expect(input.value).equal(component.selectValue);
+
+            component.selectValue = "saab";
+            await component.waitFor('update');
+            expect(input.value).equal(component.selectValue);
+
+        });
+
+        it("from element to component", async function () {
+            const input: HTMLInputElement = component.find('.dropdown') as any;
+
+            // set false
+            setInputValue(input, "volvo");
+            expect(input.value).equal(
+                component.selectValue
+            );
+        });
+    })
 });
 

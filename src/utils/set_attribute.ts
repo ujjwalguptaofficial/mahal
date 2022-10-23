@@ -42,6 +42,7 @@ export function setAttribute(element: HTMLElement, key: string, value: any) {
             switch (element.tagName) {
                 case 'INPUT':
                 case 'TEXTAREA':
+                case 'SELECT':
                     (element as HTMLInputElement).value = value;
                     return;
             }
