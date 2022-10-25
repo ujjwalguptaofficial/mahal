@@ -60,10 +60,15 @@ const renderContext: IRenderContext = {
     handleForExpWithRc: handleForExpWithRc
 };
 
-export const executeRender = (comp: Component, children) => {
+export const executeRender = (comp: Component) => {
     const renderFn = comp['_render_']();
     const el: HTMLElement = renderFn.call(comp, renderContext);
-    onElDestroy(el, clearAll.bind(comp));
+    onElDestroy(el, () => {
+        // if element is changed means no need to destroy the component - its if else probably
+        if (comp.element === el) {
+            clearAll.call(comp);
+        }
+    });
     return el;
 };
 

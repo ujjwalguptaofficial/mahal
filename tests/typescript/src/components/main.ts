@@ -21,15 +21,14 @@ import ArrayModel from "./array_model";
 import UsersHobbie from "./users_hobbie";
 import ObjectResetModel from "./object_reset_model";
 import { IAppGlobal } from "../interfaces";
+import { RouterView } from "../../test/in_palce_at_root.test";
 
 
 @template(`
-<div>
-<Model />
-</div>
+ <RouterView/>
 `)
 @children({
-    UsersHobbie,
+    RouterView,
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, computed,
     Fragment, ArrayModel, ObjectResetModel,
@@ -72,7 +71,7 @@ export default class Main extends Component<IAppGlobal> {
     flag = false;
 
     @reactive
-    name = "Btn"
+    name ; //= "Btn"
 
     flagOne = false
     flagTwo = true

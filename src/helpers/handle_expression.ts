@@ -1,4 +1,4 @@
-import { replaceEl } from "../utils";
+import { replaceElWithCtx } from "../utils";
 import { Component } from "../abstracts";
 import { handleForExp } from "./handle_for_expression";
 import { emitUpdate } from "./emit_update";
@@ -20,14 +20,13 @@ Component.prototype['_handleExp_'] = function (this: Component, method: () => HT
         const onChange = () => {
             try {
                 const newEl = method();
-                const isPatched = replaceEl(el, newEl);
+                const isPatched = replaceElWithCtx(ctx, el, newEl);
                 if (isPatched) {
                     changesQueue.shift();
                     emitUpdate(ctx);
                 }
                 else {
                     subscriveToDestroyFromChild(newEl);
-                    // newEl['_setVal_'] = el['_setVal_'];
                 }
             } catch (err) {
                 emitError.call(ctx, err);

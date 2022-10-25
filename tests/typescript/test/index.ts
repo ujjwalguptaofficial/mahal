@@ -42,3 +42,4 @@ import "./directive_in_for.test";
 import "./multi_level_slot.test";
 import "./nested_for.test";
 import "./btn_slot_default_content.test";
+import "./in_palce_at_root.test";

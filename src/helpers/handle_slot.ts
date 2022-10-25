@@ -2,7 +2,7 @@ import { ERROR_TYPE } from "../enums";
 import { createDocumentFragment, findElement, getAttribute, insertBefore } from "../utils";
 import { Logger } from "./logger";
 export const handleSlot = (element: HTMLElement, childs: HTMLElement[]) => {
-
+    if (!element.tagName) return;
     let targetSlot: HTMLElement = findElement(element, `slot`) as any;
     if (targetSlot) {
         const allSlots = element.querySelectorAll('slot');

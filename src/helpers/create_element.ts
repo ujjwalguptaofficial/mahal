@@ -1,6 +1,6 @@
 import { createCommentNode } from "./create_coment_node";
 import { HTML_TAG, ERROR_TYPE } from "../enums";
-import { executeRender, replaceEl, createComponent, ILazyComponentPayload, addEventListener, insertBefore, findElement, createDocumentFragment } from "../utils";
+import { executeRender, replaceEl, createComponent, ILazyComponentPayload, addEventListener, insertBefore, findElement, createDocumentFragment, replaceElWithCtx } from "../utils";
 import { Component } from "../abstracts";
 import { handleInPlace } from "./handle_in_place";
 import { emitError } from "./emit_error";
@@ -28,7 +28,7 @@ export const createElement = function (this: Component, tag: string, childs: HTM
                 const renderComponent = (compClass) => {
                     const component: Component = createComponent(compClass, ctx['_app_']);
                     const componentOption = ctx['_initComp_'](component as any, option);
-                    let componentElement = executeRender(component, childs);
+                    let componentElement = executeRender(component);
                     if (componentElement.tagName === 'SLOT') {
                         componentElement = childs[0];
                     }
@@ -48,7 +48,8 @@ export const createElement = function (this: Component, tag: string, childs: HTM
                     const el = createCommentNode();
                     compPromise.then(comp => {
                         const newEl = renderComponent(comp);
-                        replaceEl(
+                        replaceElWithCtx(
+                            ctx,
                             el as any,
                             newEl,
                         );

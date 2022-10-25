@@ -65,7 +65,7 @@ export class Mahal {
     create(option?: IElementOption) {
         let componentInstance: Component = this.component;
         initComponent.call(componentInstance, componentInstance, option);
-        const el = executeRender(componentInstance, []);
+        const el = executeRender(componentInstance);
         this.element.appendChild(
             el
         );
