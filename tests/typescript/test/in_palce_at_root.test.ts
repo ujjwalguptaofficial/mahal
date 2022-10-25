@@ -1,5 +1,5 @@
 import { app } from "../src/index";
-import { lazyComponent, computed, Component, prop, children, reactive } from "mahal";
+import { lazyComponent, Component, removeEl, children, reactive } from "mahal";
 import { expect } from "chai";
 import { template } from "@mahaljs/util";
 import { getMount, mount } from "@mahaljs/test-utils";
@@ -18,6 +18,11 @@ export class RouterView extends Component {
 
     onInit(): void {
         window['compTemp'] = this;
+        window['removeEl'] = removeEl;
+
+        this.on('destroy', () => {
+            console.log('destroyed');
+        })
     }
 }
 
@@ -52,6 +57,13 @@ describe('Inplace at root', async function () {
         await component.waitFor('update');
         expect(component.element.nodeType).equal(8);
     });
+
+    it('destroy', (done) => {
+        component.on('destroy', () => {
+            done();
+        });
+        removeEl(component.element);
+    })
 
 });
 

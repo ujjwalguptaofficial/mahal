@@ -1,15 +1,22 @@
 import { Component } from "../abstracts";
 import { EL_REPLACED } from "../constant";
-import { dispatchDestroyed } from "../helpers";
+import { dispatchDestroyed, onElDestroy } from "../helpers";
+import { subscribeToCompDestroy } from "./exeute_render";
 
 export function replaceElWithCtx(component: Component, oldEl: HTMLElement, newEl: HTMLElement) {
     if (oldEl === component.element) {
         component.element = newEl;
+        // const evs: Function[] = oldEl[__destroyEvents__];
+        // if (evs) {
+        //     onElDestroy()
+        // }
+        subscribeToCompDestroy(component, newEl);
         const appComponent = component['_app_'].component;
 
         // update app element when element matched with mounted element 
         if (appComponent.element === oldEl) {
             appComponent.element = newEl;
+            subscribeToCompDestroy(appComponent, newEl);
         }
     }
     return replaceEl(oldEl, newEl);
