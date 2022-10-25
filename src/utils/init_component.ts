@@ -10,6 +10,12 @@ export function initComponent(this: Component, component: Component, option) {
 
     let componentOption: IElementOption;
 
+    const childdrenComponents = this['_childComps_'];
+    component.on("destroy", () => {
+        childdrenComponents.delete(component);
+    });
+    childdrenComponents.add(component);
+
     if (option) {
 
         componentOption = this['_handleAttr_'](component, true, option);

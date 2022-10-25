@@ -5,6 +5,11 @@ const destroyEvent = LIFECYCLE_EVENT.Destroy;
 export function clearAll(this: Component) {
     const ctx = this;
     ctx.element['_comp_destroyed_'] = true;
+
+    ctx['_childComps_'].forEach(item => {
+        item.emit(destroyEvent);
+    });
+
     // need to emit before clearing events
     ctx.emit(destroyEvent).then(_ => {
         ctx['_evBus_'].destroy();

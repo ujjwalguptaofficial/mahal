@@ -53,6 +53,7 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
 
         ctx._evBus_ = new EventBus(ctx._events_);
         ctx._watchBus_ = new EventBus(ctx._watchers_);
+        ctx._childComps_ = new Set();
     }
 
     render?(context: IRenderContext): HTMLElement;
@@ -358,6 +359,8 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
 
     // tslint:disable-next-line
     private _events_: TYPE_EVENT_STORE;
+
+    private _childComps_: Set<Component>;
 
     // tslint:disable-next-line
     private __file__;
