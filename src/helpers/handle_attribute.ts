@@ -41,17 +41,17 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
                     targetObject = {
                         [attributes[key].v]: true,
                         ...attrItem.v
-                    }
+                    };
                 }
                 else {
                     targetObject = {
                         [attrItem.v]: true,
                         ...attributes[key].v
-                    }
+                    };
                 }
                 attributes[key] = {
                     v: targetObject
-                }
+                };
             }
             else {
                 attributes[key] = attrItem;
