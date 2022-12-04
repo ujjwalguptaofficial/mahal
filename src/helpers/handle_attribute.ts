@@ -34,8 +34,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
             return true;
         }
         else {
-            const htmlAttributeKey = attrItem.k ? 'rAttr' : 'attr';
-            const attributes = componentOption[htmlAttributeKey];
+            const attributes = componentOption[attrItem.k ? 'rAttr' : 'attr'];
             if (key === 'class' && attributes[key]) {
                 let targetObject;
                 if (getDataype(attributes[key].v) === 'string') {
