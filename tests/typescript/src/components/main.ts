@@ -21,18 +21,19 @@ import ArrayModel from "./array_model";
 import UsersHobbie from "./users_hobbie";
 import ObjectResetModel from "./object_reset_model";
 import { IAppGlobal } from "../interfaces";
-import { RouterView } from "../../test/in_palce_at_root.test";
+// import { RouterView } from "../../test/in_palce_at_root.test";
 
 
 @template(`
- <RouterView/>
+ <UsersHobbie/>
 `)
 @children({
-    RouterView,
+    // RouterView,
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, computed,
     Fragment, ArrayModel, ObjectResetModel,
     Btn: lazyComponent(() => import('./btn')),
+    UsersHobbie
     // Temp
     // Temp: lazyComponent(() => import('../../test/directive_in_for.test'))
     // Btn1: lazyComponent(() => Promise.reject('dd'))
@@ -71,7 +72,7 @@ export default class Main extends Component<IAppGlobal> {
     flag = false;
 
     @reactive
-    name ; //= "Btn"
+    name; //= "Btn"
 
     flagOne = false
     flagTwo = true

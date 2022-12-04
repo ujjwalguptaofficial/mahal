@@ -1,6 +1,6 @@
 import { Component } from "../abstracts";
 import { IAttrItem, IElementOption, IReactiveAttrItem } from "../interface";
-import { getDataype, forOwn, setAttribute, nextTick, setPlainAttribute } from "../utils";
+import { getDataype, forOwn, setAttribute, nextTick, setPlainAttribute, merge, isObject } from "../utils";
 import { ERROR_TYPE, LIFECYCLE_EVENT } from "../enums";
 import { emitUpdate } from "./emit_update";
 import { Logger } from "./logger";
@@ -34,7 +34,29 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
             return true;
         }
         else {
-            componentOption[attrItem.k ? 'rAttr' : 'attr'][key] = attrItem as any;
+            const htmlAttributeKey = attrItem.k ? 'rAttr' : 'attr';
+            const attributes = componentOption[htmlAttributeKey];
+            if (key === 'class' && attributes[key]) {
+                let targetObject;
+                if (getDataype(attributes[key].v) === 'string') {
+                    targetObject = {
+                        [attributes[key].v]: true,
+                        ...attrItem.v
+                    }
+                }
+                else {
+                    targetObject = {
+                        [attrItem.v]: true,
+                        ...attributes[key].v
+                    }
+                }
+                attributes[key] = {
+                    v: targetObject
+                }
+            }
+            else {
+                attributes[key] = attrItem;
+            }
         }
     };
     if (attr) {
@@ -45,7 +67,7 @@ Component.prototype['_handleAttr_'] = function (this: Component, component, isCo
         }
         else {
             forOwn(attr, (key, attrItem: IAttrItem) => {
-                setPlainAttribute(component, key, attrItem.v as any);
+                setAttribute(component, key, attrItem.v as any);
             });
         }
     }

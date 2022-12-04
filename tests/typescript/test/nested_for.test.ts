@@ -20,6 +20,8 @@ describe('Nested For', function () {
             const name = usersItem.querySelector('.users_item_name');
             expect(name.innerHTML).equal(`name - ${user.name}`)
             const hobbies = usersItem.querySelector('.users_item_hobbies');
+            const indexFromAttribute = hobbies.getAttribute('index');
+            expect(hobbies.classList.contains('ml-4')).equal(indexFromAttribute != '0');
             expect(hobbies.innerHTML).equal(`Hobbies - ${user.hobbies}`)
         });
     }
