@@ -1,6 +1,7 @@
-import { Component, directive, reactive } from "mahal";
+import { Component, directive, reactive, children } from "mahal";
 import { IDirective } from "mahal/dist/ts/interface";
 import { template } from "@mahaljs/util";
+import Btn from "./btn";
 
 
 @template(`
@@ -14,11 +15,17 @@ import { template } from "@mahaljs/util";
   <div :if(el7) id="el7" :highlight(backgroundColor , 'yellow')>Hey</div>
   <div  id="el8" :highlight(backgroundColor , color )>Hey</div>
   <div id="counterFlag" :if(counterFlag) :logCount(counterParam)>{{counter}}</div>
+  <Btn :show="showBtn" :label="counter"/>
 </div>
 `)
+@children({
+    Btn
+})
 export default class extends Component {
 
     counter = 0;
+
+    @reactive showBtn = false;
 
     @reactive
     counterFlag = true;

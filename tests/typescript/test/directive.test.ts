@@ -95,5 +95,15 @@ describe('directive', function () {
         }, 20)
     });
 
+    it('check data on Btn', async () => {
+        const el: HTMLElement = component.find('.btn');
+        expect(el.style.display).equal('none');
+
+        component.showBtn = true;
+        await component.waitFor('update');
+        expect(el.style.display).equal('unset');
+
+    })
+
 });
 

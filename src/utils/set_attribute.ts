@@ -62,6 +62,9 @@ export function setAttribute(element: HTMLElement, key: string, value: any) {
         case 'html':
             element.innerHTML = value;
             break;
+        case 'show':
+            element.style.display = value ? 'unset' : 'none';
+            break;
         case 'style':
             if (isObject(value)) {
                 let str = '';

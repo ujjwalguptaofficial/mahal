@@ -9,12 +9,14 @@ import { getMount, mount } from "@mahaljs/test-utils";
     HelloWorld: lazyComponent(() => import('../src/components/hello_world'))
 })
 @template(`
-    <in-place :of="componentName"/>
+    <in-place :of="componentName" :count="count"/>
 `)
 export class RouterView extends Component {
 
     @reactive
     componentName = null;
+
+    @reactive count = 0;
 
     onInit(): void {
         window['compTemp'] = this;
@@ -38,11 +40,15 @@ describe('Inplace at root', async function () {
         expect(component.element.nodeType).equal(8);
     });
 
-    it("change to hello world", async function () {
+    it("change to hello world with change in count value", async function () {
+        component.count = 1;
         component.componentName = "HelloWorld";
         await component.waitFor('update');
         expect(component.element.nodeType).equal(1);
         expect(component.element.className).equal('hello-world');
+
+        const countBtn = component.element.querySelector('#count');
+        expect(countBtn.innerHTML).equal(component.count.toString());
     });
 
     it("change to users hobbie", async function () {
@@ -50,6 +56,16 @@ describe('Inplace at root', async function () {
         await component.waitFor('update');
         expect(component.element.nodeType).equal(1);
         expect(component.element.className).equal('users');
+    });
+
+    it("change to hello world", async function () {
+        component.componentName = "HelloWorld";
+        await component.waitFor('update');
+        expect(component.element.nodeType).equal(1);
+        expect(component.element.className).equal('hello-world');
+
+        const countBtn = component.element.querySelector('#count');
+        expect(countBtn.innerHTML).equal(component.count.toString());
     });
 
     it("change to null again", async function () {

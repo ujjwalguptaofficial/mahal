@@ -1,4 +1,4 @@
-import { Component, removeEl, prop, formatter, reactive } from "mahal";
+import { Component, removeEl, prop, formatter, reactive, IDirectiveBinding, directive } from "mahal";
 import { template } from "@mahaljs/util";
 
 @template(`
@@ -72,5 +72,29 @@ export default class HelloWorld extends BaseComponent {
         removeEl(this.element);
         // this.element.parentNode.removeChild(this.element);
     }
+
+    @directive("show")
+    showDirective(comp, binding: IDirectiveBinding) {
+        let el: HTMLElement = comp;
+        const setElementShowHide = () => {
+            const value = binding.value[0];
+            el.style.display = value ? 'unset' : 'none';
+        };
+        if (binding.isComponent) {
+            const component = (comp as Component);
+            component.waitFor('mount').then(_ => {
+                el = (comp as Component).element;
+                setElementShowHide();
+            })
+        }
+        else {
+            setElementShowHide();
+        }
+        return {
+            valueUpdated() {
+                setElementShowHide();
+            }
+        };
+    };
 
 }

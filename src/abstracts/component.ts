@@ -194,16 +194,18 @@ export abstract class Component<GLOBAL_TYPE = { [key: string]: any }> {
      * @return {*} 
      * @memberof Component
      */
-    waitFor<T>(eventName: string) {
+    waitFor<T>(eventName: TYPE_ALL_LIFE_CYCLE_EVENT)
+    waitFor<T>(eventName: string)
+    waitFor<T>(eventName: string): Promise<T> {
         let eventCallback: Function;
         return new Promise<T>((res) => {
-            eventCallback = () => {
-                (res as any)();
+            eventCallback = (result) => {
+                (res as any)(result);
             };
             this.on(eventName, eventCallback);
         }).then(() => {
             this.off(eventName, eventCallback);
-        });
+        }) as any;
     }
 
     /**

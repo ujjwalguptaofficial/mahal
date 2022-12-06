@@ -1,7 +1,7 @@
 import { Component } from "./abstracts";
 import { initComponent, isObject, executeRender, getDataype, createComponent, promiseResolve, findElement } from "./utils";
 import { HTML_TAG } from "./enums";
-import { createModelDirective, FragmentComponent, showDirective, refDirective, eventDirective } from "./ready_made";
+import { createModelDirective, FragmentComponent, refDirective, eventDirective } from "./ready_made";
 import { Logger, setComponentMount } from "./helpers";
 import { IElementOption } from "./interface";
 
@@ -45,7 +45,6 @@ export class Mahal {
         const extendDirective = this.extend.directive;
 
         extendDirective("model", createModelDirective("input", "value"));
-        extendDirective("show", showDirective);
         extendDirective("ref", refDirective);
         extendDirective("on", eventDirective);
 
