@@ -65,6 +65,7 @@ export class Mahal {
         let componentInstance: Component = this.component;
         initComponent.call(componentInstance, componentInstance, option);
         const el = executeRender(componentInstance);
+        this.element.innerHTML = ``;
         this.element.appendChild(
             el
         );
