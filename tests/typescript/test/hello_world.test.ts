@@ -124,14 +124,22 @@ describe('HelloWorld', function () {
     })
 
     it("destroy", function (done) {
+        let sandbox = createSandbox();
+        sandbox.stub(window, "clearTimeout");
+        const timerId = component['_timerId_'];
         component.on("destroy", () => {
             new Promise(res => {
                 setTimeout(res, 20)
             }).then(_ => {
+                sandbox.assert.calledOnceWithExactly(window.clearTimeout as any, timerId);
                 expect(component.element).equal(null);
                 expect(component._evBus_).equal(null);
                 expect(component._ob_).equal(null);
                 expect(component._watchBus_._events_).deep.equal({});
+
+                // restore cleartimeout
+
+                sandbox.restore();
                 done();
             })
         });

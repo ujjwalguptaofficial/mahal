@@ -21,14 +21,20 @@ import ArrayModel from "./array_model";
 import UsersHobbie from "./users_hobbie";
 import ObjectResetModel from "./object_reset_model";
 import { IAppGlobal } from "../interfaces";
-// import { RouterView } from "../../test/in_palce_at_root.test";
+import { RouterView } from "../../test/in_palce_at_root.test";
 
 
+// @template(`
+//     <div>
+//         <div :if(flag)>Hellow</div>
+//         <in-place :else-if(comp) :of="comp"/>
+//     </div>
+// `)
 @template(`
- <UsersHobbie/>
+    <RouterView/>
 `)
 @children({
-    // RouterView,
+    RouterView,
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, computed,
     Fragment, ArrayModel, ObjectResetModel,
@@ -45,6 +51,9 @@ export default class Main extends Component<IAppGlobal> {
         [1, 2],
         [3, 4]
     ]
+
+    @reactive
+    comp = 'Fruits';
 
     @reactive styles =
         {
