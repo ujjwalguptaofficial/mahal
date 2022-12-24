@@ -21,7 +21,7 @@ import ArrayModel from "./array_model";
 import UsersHobbie from "./users_hobbie";
 import ObjectResetModel from "./object_reset_model";
 import { IAppGlobal } from "../interfaces";
-import { RouterView } from "../../test/in_palce_at_root.test";
+// import { RouterView } from "../../test/in_palce_at_root.test";
 
 
 // @template(`
@@ -31,10 +31,13 @@ import { RouterView } from "../../test/in_palce_at_root.test";
 //     </div>
 // `)
 @template(`
-    <RouterView/>
+    <div>
+        <div :if(flagOne)>Ujjwal</div>
+        <div :if(flagTwo)>Gupta</div>
+    </div>
 `)
 @children({
-    RouterView,
+    // RouterView,
     HelloWorld, ModelComponent, Student, ObjectComponent, IfElse, TextBox, DirectiveComp,
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, computed,
     Fragment, ArrayModel, ObjectResetModel,
