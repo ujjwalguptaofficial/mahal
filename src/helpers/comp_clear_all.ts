@@ -12,7 +12,7 @@ export function clearAll(this: Component) {
 
     // need to emit before clearing events
     ctx.emit(destroyEvent).then(_ => {
-        clearTimeout(ctx['_timerId_'])
+        clearTimeout(ctx['_timerId_']);
         ctx['_evBus_'].destroy();
         ctx['_watchBus_'].destroy();
         if (ctx['_ob_']) {
