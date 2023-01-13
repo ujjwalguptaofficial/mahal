@@ -15,3 +15,15 @@
 </else-if>
 ```
 5. Allow comment inside comment
+
+6. Allow in-place inside for loop
+
+7. Allow if on root element
+
+8. Fix reactivity issue when using not symbol
+
+```
+<BulmaButton :if(!isSeen) class="button" @click="markAsSeen" :isLoading="isMarking" :disabled="isMarking">
+		Mark as Seen
+	</BulmaButton>
+```
