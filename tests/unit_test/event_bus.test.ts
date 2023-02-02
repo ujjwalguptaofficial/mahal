@@ -92,35 +92,22 @@ describe('event bus', () => {
     });
 
     it('off without method', () => {
-        try {
-            eventBus.off('ev', null);
-            throw new Error('there should be some exception');
-        }
-        catch (ex) {
-            if (process.env.NODE_ENV !== 'production') {
-                expect(ex.message).equal("no event listener is provided in event bus 'off' for event ev");
-            }
-            else {
-                expect(ex.message).equal('there should be some exception');
-            }
-        }
+
+        let sandbox = createSandbox();
+        const stub = sandbox.stub(console, "warn");
+        eventBus.off('ev', null);
+        sandbox.assert.calledOnceWithExactly(stub, `no event listener is provided in event bus 'off' for event 'ev'`);
+        sandbox.restore();
     })
 
     it('off with invalid method', () => {
-        try {
-            eventBus.off('ev', () => {
+        let sandbox = createSandbox();
+        const stub = sandbox.stub(console, "warn");
+        eventBus.off('ev', () => {
 
-            });
-            throw new Error('there should be some exception');
-        }
-        catch (ex) {
-            if (process.env.NODE_ENV !== 'production') {
-                expect(ex.message).equal("supplied event listener is not found for event 'ev'. Please provide same method which was used to subscribe the event.");
-            }
-            else {
-                expect(ex.message).equal('there should be some exception');
-            }
-        }
+        });
+        sandbox.assert.calledOnceWithExactly(stub, `supplied event listener is not found for event 'ev'. Please provide same method which was used to subscribe the event.`);
+        sandbox.restore();
     })
 
     it('off with invalid method which is not stored in events', () => {

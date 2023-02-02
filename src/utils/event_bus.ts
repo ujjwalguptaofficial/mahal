@@ -42,16 +42,17 @@ export class EventBus {
     off(event: string, eventListener: Function) {
         if (process.env.NODE_ENV !== 'production') {
             if (!eventListener) {
-                throw new Error(
-                    `no event listener is provided in event bus 'off' for event ${event}`
+                console.warn(
+                    `no event listener is provided in event bus 'off' for event '${event}'`
                 );
+                return;
             }
         }
         const events = this._events_[event];
         if (events) {
             if (process.env.NODE_ENV !== 'production') {
                 if (!events.has(eventListener)) {
-                    throw new Error(
+                    console.warn(
                         `supplied event listener is not found for event '${event}'. Please provide same method which was used to subscribe the event.`
                     );
                 }
