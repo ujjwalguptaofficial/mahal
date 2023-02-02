@@ -2,7 +2,9 @@
 <img src="./assets/logo.png" width="150">
 </p>
 
+[![osnft](https://img.shields.io/badge/OSNFT-buy%20NFT-brightgreen)](https://osnft.app/nft/mahal@ujjwalguptaofficial)
 [![GitHub version](https://badge.fury.io/gh/ujjwalguptaofficial%2Fmahal.svg)](https://badge.fury.io/gh/ujjwalguptaofficial%2Fmahal) [![CI](https://github.com/ujjwalguptaofficial/mahal/actions/workflows/ci.yml/badge.svg)](https://github.com/ujjwalguptaofficial/mahal/actions/workflows/ci.yml) [![npm version](https://badge.fury.io/js/mahal.svg)](https://badge.fury.io/js/mahal)
+
 # Mahal
 
 Event based modern web application framework for UI development.
