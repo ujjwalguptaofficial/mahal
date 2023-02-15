@@ -60,7 +60,7 @@ export class EventBus {
             events.delete(eventListener);
         }
         else if (process.env.NODE_ENV !== 'production') {
-            throw new Error(
+            console.warn(
                 `supplied event listener is not found for event '${event}'. Please provide same method which was used to subscribe the event.`
             );
         }

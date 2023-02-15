@@ -115,20 +115,14 @@ describe('event bus', () => {
         })
 
         it('off with invalid method which is not stored in events', () => {
-            try {
-                eventBus.off('dsafrgte', () => {
 
-                });
-                throw new Error('there should be some exception');
-            }
-            catch (ex) {
-                if (process.env.NODE_ENV !== 'production') {
-                    expect(ex.message).equal("supplied event listener is not found for event 'dsafrgte'. Please provide same method which was used to subscribe the event.");
-                }
-                else {
-                    expect(ex.message).equal('there should be some exception');
-                }
-            }
+            let sandbox = createSandbox();
+            const stub = sandbox.stub(console, "warn");
+            eventBus.off('dsafrgte', () => {
+
+            });
+            sandbox.assert.calledOnceWithExactly(stub, `supplied event listener is not found for event 'dsafrgte'. Please provide same method which was used to subscribe the event.`);
+            sandbox.restore();
         })
     }
 })

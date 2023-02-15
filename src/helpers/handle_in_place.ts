@@ -10,7 +10,7 @@ export function handleInPlace(this: Component, childs, option: IElementOption) {
     }
     if (!of) return createCommentNode();
     delete option.rAttr.of;
-    const keys = of.k;
+    const keys = of.k || [];
     return this['_handleExp_'](() => {
         return createElement.call(this, (of as any).v, childs, option) as HTMLElement;
     }, keys);
