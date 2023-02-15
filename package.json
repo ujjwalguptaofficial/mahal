@@ -1,6 +1,6 @@
 {
   "name": "mahal",
-  "version": "1.8.7",
+  "version": "1.8.8",
   "description": "Simple, modern web application framework for UI development.",
   "main": "dist/npm.export.js",
   "types": "dist/ts/index.d.ts",
