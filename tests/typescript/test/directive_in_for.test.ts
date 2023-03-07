@@ -67,7 +67,7 @@ describe('Directive in for', function () {
 
         const answerEl = component.find('.answer');
         const display = answerEl.style.display;
-        expect(display).equal('unset');
+        expect(display).equal('');
         expect(display).not.equal('none');
     })
 

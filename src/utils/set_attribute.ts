@@ -63,7 +63,11 @@ export function setAttribute(element: HTMLElement, key: string, value: any) {
             element.innerHTML = value;
             break;
         case 'show':
-            element.style.display = value ? 'unset' : 'none';
+            let prevDisplay = element['_mhl_display_'];
+            if (prevDisplay == null) {
+                prevDisplay = element['_mhl_display_'] = getComputedStyle(element).display;
+            }
+            element.style.display = value ? prevDisplay : 'none';
             break;
         case 'style':
             if (isObject(value)) {

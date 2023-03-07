@@ -101,7 +101,7 @@ describe('directive', function () {
 
         component.showBtn = true;
         await component.waitFor('update');
-        expect(el.style.display).equal('unset');
+        expect(el.style.display).equal('');
 
     })
 

@@ -32,8 +32,7 @@ import { IAppGlobal } from "../interfaces";
 // `)
 @template(`
     <div>
-        <div :if(flagOne)>Ujjwal</div>
-        <div :if(flagTwo)>Gupta</div>
+      <div :show="flag">{{flag}}</div>
     </div>
 `)
 @children({
