@@ -63,7 +63,7 @@ const renderContext: IRenderContext = {
 export const subscribeToCompDestroy = (comp: Component, el) => {
     onElDestroy(el, () => {
         // if element is changed means no need to destroy the component - its if else probably
-        if (comp.element === el) {
+        if (comp.element === el && !comp.element['_comp_destroyed_']) {
             clearAll.call(comp);
         }
     });

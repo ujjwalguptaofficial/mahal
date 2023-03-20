@@ -3,6 +3,7 @@ import { app } from "../src/index";
 import { nextTick } from "mahal";
 import { expect } from "chai";
 import { createSandbox, spy } from "sinon";
+import { mount } from "@mahaljs/test-utils";
 
 describe('HelloWorld', function () {
 
@@ -14,8 +15,8 @@ describe('HelloWorld', function () {
 
     it("initiate component", async function () {
         const consoleSpy = spy(console, "log");
-
-        component = await (app as any).mount(HelloWorld, {
+        const mountwithApp = mount.bind(app);
+        component = await mountwithApp(HelloWorld, {
             props: {
                 count: 0
             }
@@ -128,6 +129,7 @@ describe('HelloWorld', function () {
         sandbox.stub(window, "clearTimeout");
         const timerId = component['_timerId_'];
         component.on("destroy", () => {
+            debugger;
             new Promise(res => {
                 setTimeout(res, 20)
             }).then(_ => {

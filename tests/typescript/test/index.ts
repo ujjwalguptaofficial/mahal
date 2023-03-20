@@ -45,3 +45,4 @@ import "./btn_slot_default_content.test";
 import "./in_palce_at_root.test";
 import "./child_comp_destroy.test";
 import "./if_many";
+import "./nested_inplace.test";

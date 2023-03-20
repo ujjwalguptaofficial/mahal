@@ -1,5 +1,6 @@
 import { LIFECYCLE_EVENT } from "../enums";
 import { Component } from "../abstracts";
+import { dispatchDestroyed } from "./destroy_helper";
 
 const destroyEvent = LIFECYCLE_EVENT.Destroy;
 export function clearAll(this: Component) {
@@ -7,7 +8,8 @@ export function clearAll(this: Component) {
     ctx.element['_comp_destroyed_'] = true;
 
     ctx['_childComps_'].forEach(item => {
-        item.emit(destroyEvent);
+        // item.emit(destroyEvent);
+        dispatchDestroyed(item.element);
     });
 
     // need to emit before clearing events

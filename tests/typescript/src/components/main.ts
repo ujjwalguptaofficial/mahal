@@ -22,6 +22,7 @@ import UsersHobbie from "./users_hobbie";
 import ObjectResetModel from "./object_reset_model";
 import { IAppGlobal } from "../interfaces";
 // import { RouterView } from "../../test/in_palce_at_root.test";
+import { Comp1 } from "../../test/nested_inplace.test";
 
 
 // @template(`
@@ -32,7 +33,7 @@ import { IAppGlobal } from "../interfaces";
 // `)
 @template(`
     <div>
-      <div :show="flag">{{flag}}</div>
+     <Comp1/>
     </div>
 `)
 @children({
@@ -41,7 +42,7 @@ import { IAppGlobal } from "../interfaces";
     Fruits, Model, Form, Users, TabRender, TextAreaBox, ObjectProp, computed,
     Fragment, ArrayModel, ObjectResetModel,
     Btn: lazyComponent(() => import('./btn')),
-    UsersHobbie
+    UsersHobbie, Comp1
     // Temp
     // Temp: lazyComponent(() => import('../../test/directive_in_for.test'))
     // Btn1: lazyComponent(() => Promise.reject('dd'))
