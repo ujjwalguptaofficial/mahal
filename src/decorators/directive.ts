@@ -5,7 +5,7 @@ export function directive(target, key: string): void;
 export function directive(name?: string): Function;
 export function directive(...args) {
     return wrapMethodDecorator(args, createDirective);
-};
+}
 
 function createDirective(target: any, methodName: string, name: string) {
     const obj = {};

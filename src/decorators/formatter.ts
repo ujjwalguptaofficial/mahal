@@ -5,7 +5,7 @@ export function formatter(target, key: string): void;
 export function formatter(name?: string): Function;
 export function formatter(...args) {
     return wrapMethodDecorator(args, createFormatter);
-};
+}
 
 function createFormatter(target: any, methodName: string, name: string) {
     const obj = {};
