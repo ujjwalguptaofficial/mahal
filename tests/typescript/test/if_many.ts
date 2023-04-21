@@ -9,7 +9,8 @@ import { template } from "@mahaljs/util";
 @template(`
 <div>
     <div :if(flagOne) class="flag-one">Ujjwal</div>
-    <div :if(flagTwo) class="flag-two">Gupta</div>
+    <div :if(flagTwo) class="flag-two">Kumar</div>
+    <div :if(!flagThree) class="flag-three">Gupta</div>
 </div>
 `)
 class Temp extends Component {
@@ -19,6 +20,9 @@ class Temp extends Component {
 
     @reactive
     flagTwo = false;
+
+    @reactive
+    flagThree = false;
 }
 
 describe('If many', function () {
@@ -31,13 +35,16 @@ describe('If many', function () {
 
     it("check for initial data", async function () {
         const btn = component.element
-        expect(btn.innerText).equal('');
+        expect(btn.innerText).equal('Gupta');
 
         const flagOneEl = component.find('.flag-one');
         expect(flagOneEl).equal(null);
 
         const flagTwoEl = component.find('.flag-two');
         expect(flagTwoEl).equal(null);
+
+        const flagThreeEl = component.find('.flag-three');
+        expect(flagThreeEl.innerText).equal('Gupta');
     });
 
     it("after making flagone to true", async function () {
@@ -45,13 +52,16 @@ describe('If many', function () {
         await component.waitFor("update");
 
         const btn = component.element
-        expect(btn.innerText).equal('Ujjwal');
+        expect(btn.innerText).equal('Ujjwal\nGupta');
 
         const flagOneEl = component.find('.flag-one');
         expect(flagOneEl.innerText).equal('Ujjwal');
 
         const flagTwoEl = component.find('.flag-two');
         expect(flagTwoEl).equal(null);
+
+        const flagThreeEl = component.find('.flag-three');
+        expect(flagThreeEl.innerText).equal('Gupta');
 
     });
 
@@ -63,23 +73,43 @@ describe('If many', function () {
         expect(flagOneEl.innerText).equal('Ujjwal');
 
         const flagTwoEl = component.find('.flag-two');
-        expect(flagTwoEl.innerText).equal('Gupta');
+        expect(flagTwoEl.innerText).equal('Kumar');
+
+        const flagThreeEl = component.find('.flag-three');
+        expect(flagThreeEl.innerText).equal('Gupta');
 
     });
 
-    it("after making one to true", async function () {
+    it("after making flagThree to true", async function () {
+        component.flagThree = true;
+        await component.waitFor("update");
+
+        const flagOneEl = component.find('.flag-one');
+        expect(flagOneEl.innerText).equal('Ujjwal');
+
+        const flagTwoEl = component.find('.flag-two');
+        expect(flagTwoEl.innerText).equal('Kumar');
+
+        const flagThreeEl = component.find('.flag-three');
+        expect(flagThreeEl).equal(null);
+
+    });
+
+    it("after making flag one to false", async function () {
         component.flagOne = false;
         await component.waitFor("update");
 
         const btn = component.element
-        expect(btn.innerText).equal('Gupta');
+        expect(btn.innerText).equal('Kumar');
 
         const flagOneEl = component.find('.flag-one');
         expect(flagOneEl).equal(null);
 
         const flagTwoEl = component.find('.flag-two');
-        expect(flagTwoEl.innerText).equal('Gupta');
+        expect(flagTwoEl.innerText).equal('Kumar');
 
+        const flagThreeEl = component.find('.flag-three');
+        expect(flagThreeEl).equal(null);
     });
 });
 

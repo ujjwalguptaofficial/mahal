@@ -18,7 +18,7 @@ class Temp extends Component {
     content = "Button"
 }
 
-describe('Btn slot test', function () {
+describe('Btn slot child inside test', function () {
 
     let component;
 

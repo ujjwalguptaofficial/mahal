@@ -14,7 +14,7 @@ import Btn from './standard_button'
 class Temp extends Component {
 }
 
-describe('Btn slot test', function () {
+describe('Btn slot default content test', function () {
 
     let component: Temp;
 

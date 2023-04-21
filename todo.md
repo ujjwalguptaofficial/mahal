@@ -5,7 +5,7 @@
 <div :if(dd)></div>
 <div :if(ff)></div>
 ```
-3. Allow tag without end .eg. - <br>
+3. Allow tag without end .eg. - <br> - done
 4. Add if component - 
 
 ```
