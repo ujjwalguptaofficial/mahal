@@ -14,7 +14,7 @@ Standard Text Area box
 
 export class TextBox extends Component {
 
-    @prop()
+    @prop
     value;
 
     constructor() {

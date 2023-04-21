@@ -10,7 +10,7 @@ Standard Text box
 
 export default class extends Component {
 
-    @prop()
+    @prop
     value;
 
     @prop()
