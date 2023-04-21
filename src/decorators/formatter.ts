@@ -1,7 +1,6 @@
 import { replaceNullProp } from "../utils";
 import { wrapMethodDecorator } from "./wrap_method_decorator";
 
-// tslint:disable-next-line
 export function formatter(target, key: string): void;
 export function formatter(name?: string): Function;
 export function formatter(...args) {

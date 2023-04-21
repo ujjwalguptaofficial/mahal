@@ -1,7 +1,6 @@
 import { Component } from "../abstracts";
 import { ILazyComponent } from "../interface";
 
-// tslint:disable-next-line
 export const children = (value: { [key: string]: typeof Component | Promise<any> | Function | ILazyComponent }) => {
     // tslint:disable-next-line
     return <T extends { new(...args: any[]): {} }>(constructor: T) => {

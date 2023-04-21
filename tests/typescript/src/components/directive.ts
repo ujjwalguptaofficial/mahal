@@ -76,7 +76,7 @@ export default class extends Component {
         }
     }
 
-    @directive()
+    @directive
     logCount(): IDirective {
         ++this.counter;
 

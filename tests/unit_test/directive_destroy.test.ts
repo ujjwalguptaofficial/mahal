@@ -22,7 +22,7 @@ class ArrayComp extends Component {
 
     updateCount = 0;
 
-    @directive()
+    @directive
     dirTest() {
         ++this.updateCount;
         return {

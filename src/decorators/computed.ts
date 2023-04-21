@@ -1,6 +1,5 @@
 import { replaceNullProp } from "../utils";
 
-// tslint:disable-next-line
 export const computed = (...args): MethodDecorator => {
     return ((target: any, methodName: string, descriptor: PropertyDescriptor) => {
         const obj = {};
