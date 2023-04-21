@@ -1,21 +1,12 @@
 import { IPropOption } from "../interface";
 import { getDataype, replaceNullProp } from "../utils";
-
+import { wrapMethodDecorator } from "./wrap_method_decorator";
 
 // tslint:disable-next-line
-// export const prop = (options?: IPropOption | any) => {
 export function prop(target, key: string): void;
 export function prop(options?: IPropOption | any): Function;
 export function prop(...args) {
-    if (args.length >= 2) {
-        const [target, propertyName] = args;
-        createProp(target, propertyName, null);
-        return;
-    }
-    return (target, key: string) => {
-        createProp(target, key, args[0]);
-    };
-
+    return wrapMethodDecorator(args, createProp);
 };
 
 function createProp(target, key: string, options) {
@@ -32,3 +23,5 @@ function createProp(target, key: string, options) {
     }
     target._props_[key] = options || {};
 }
+
+

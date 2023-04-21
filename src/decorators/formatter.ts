@@ -1,10 +1,15 @@
 import { replaceNullProp } from "../utils";
+import { wrapMethodDecorator } from "./wrap_method_decorator";
 
 // tslint:disable-next-line
-export const formatter = (name?: string): MethodDecorator => {
-    return ((target: any, methodName: string, descriptor: PropertyDescriptor) => {
-        const obj = {};
-        replaceNullProp(target, '_formatters_', () => obj);
-        target._formatters_[name || methodName] = target[methodName];
-    });
+export function formatter(target, key: string): void;
+export function formatter(name?: string): Function;
+export function formatter(...args) {
+    return wrapMethodDecorator(args, createFormatter);
 };
+
+function createFormatter(target: any, methodName: string, name: string) {
+    const obj = {};
+    replaceNullProp(target, '_formatters_', () => obj);
+    target._formatters_[name || methodName] = target[methodName];
+}

@@ -26,7 +26,7 @@ class Temp extends Component {
         })
     }
 
-    @formatter()
+    @formatter
     toUpper(value) {
         return value.toUpperCase();
     }
